@@ -1,0 +1,90 @@
+[
+  {
+    "text": "Contractor",
+    "align": "left",
+    "sortable": true,
+    "key": "branch_id",
+    "value": "branch_id",
+    "filterable": true,
+    "filterSpecial": true
+  },
+  {
+    "text": "Manager",
+    "align": "left",
+    "sortable": true,
+    "key": "manager_name",
+    "value": "manager_name",
+    "filterable": true,
+    "filterSpecial": true
+  },
+  {
+    "text": "Term",
+    "align": "left",
+    "sortable": true,
+    "key": "term",
+    "value": "term",
+    "filterable": true,
+    "filterSpecial": true
+  },
+  {
+    "text": "No. EMP",
+    "align": "left",
+    "sortable": false,
+    "key": "employees_count",
+    "value": "employees_count",
+    "filterable": false,
+    "filterSpecial": false
+  },
+  {
+    "text": "phone_number",
+    "align": "left",
+    "sortable": true,
+    "key": "phone_number",
+    "value": "phone_number",
+    "filterable": true,
+    "filterSpecial": true
+  },
+  {
+    "text": "mobile_number",
+    "align": "left",
+    "sortable": true,
+    "key": "mobile_number",
+    "value": "mobile_number",
+    "filterable": true,
+    "filterSpecial": true
+  },
+  {
+    "text": "Licence Info",
+    "align": "left",
+    "sortable": true,
+    "key": "license_info",
+    "value": "license_info",
+    "filterable": true,
+    "filterSpecial": true
+  },
+  {
+    "text": "Vehicle Info",
+    "align": "left",
+    "sortable": false,
+    "key": "vehicle_info",
+    "value": "vehicle_info",
+    "filterable": false,
+    "filterSpecial": true
+  },
+  {
+    "text": "Since",
+    "align": "left",
+    "sortable": false,
+    "key": "timezone",
+    "value": "created_date",
+    "filterable": false,
+    "filterSpecial": true
+  },
+  {
+    "text": "Action",
+    "align": "left",
+    "sortable": false,
+    "key": "options",
+    "value": "options"
+  }
+]
