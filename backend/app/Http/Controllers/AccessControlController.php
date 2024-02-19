@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class AccessControlController extends Controller
 {
-    public function index(AttendanceLog $model, Request $request)
+    public function index(Request $request)
     {
         $model = AttendanceLog::query();
 
@@ -24,7 +24,7 @@ class AccessControlController extends Controller
 
         $model->whereHas('device', fn ($q) => $q->whereIn('device_type', ["all", "Access Control"]));
 
-        $model->whereHas('employee', fn ($q) => $q->where("company_id", $request->company_id));
+        // $model->whereHas('employee', fn ($q) => $q->where("company_id", $request->company_id));
 
         $model->when(request()->filled("report_type"), function ($query) use ($request) {
             if ($request->report_type == "Allowed") {
@@ -50,7 +50,7 @@ class AccessControlController extends Controller
             return $query->where('DeviceID', $request->DeviceID);
         });
 
-        $model->with("device");
+        $model->with(["device", "tanent", "family_member", "relative", "visitor", "delivery", "contractor", "maid"]);
 
         $model->with('employee', function ($q) use ($request) {
             $q->where('company_id', $request->company_id);

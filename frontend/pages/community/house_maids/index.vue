@@ -29,118 +29,113 @@
         </template>
       </v-snackbar>
       <v-card elevation="0">
-          <v-toolbar class="mb-2" dense flat>
-            <v-toolbar-title
-              ><span>{{ Model }}s </span></v-toolbar-title
-            >
-            <span>
-              <v-btn
-                dense
-                class="ma-0 px-0"
-                x-small
-                :ripple="false"
-                text
-                title="Reload"
-              >
-                <v-icon class="ml-2" @click="clearFilters" dark
-                  >mdi mdi-reload</v-icon
-                >
-              </v-btn>
-            </span>
-            <v-spacer></v-spacer>
-          </v-toolbar>
-          <v-data-table
-            dense
-            :headers="headers"
-            :items="data"
-            model-value="data.id"
-            :loading="loadinglinear"
-            :options.sync="options"
-            :footer-props="{
-              itemsPerPageOptions: [100, 500, 1000],
-            }"
-            class="elevation-1"
-            :server-items-length="totalRowsCount"
+        <v-toolbar class="mb-2" dense flat>
+          <v-toolbar-title
+            ><span>{{ Model }} </span></v-toolbar-title
           >
-            <template v-slot:item.category="{ item }">
-              {{ item?.room?.room_category?.name }}
-            </template>
-            <template v-slot:header="{ props: { headers } }">
-              <tr v-if="isFilter">
-                <td v-for="header in headers" :key="header.text">
-                  <v-container>
-                    <v-text-field
-                      clearable
-                      @click:clear="
-                        filters[header.value] = '';
-                        applyFilters();
-                      "
-                      :hide-details="true"
-                      v-if="header.filterable && !header.filterSpecial"
-                      v-model="filters[header.value]"
-                      :id="header.value"
-                      @input="applyFilters(header.key, $event)"
-                      outlined
-                      dense
-                      autocomplete="off"
-                    ></v-text-field>
-                  </v-container>
-                </td>
-              </tr>
-            </template>
-
-            <template v-slot:item.members="{ item }">
-              <v-icon color="primary" class="mx-1" @click="viewMember(item)">
-                mdi-eye
-              </v-icon>
-              {{ item.members.length }}
-            </template>
-
-            <template
-              v-slot:item.full_name="{ item, index }"
-              style="width: 300px"
+          <span>
+            <v-btn
+              dense
+              class="ma-0 px-0"
+              x-small
+              :ripple="false"
+              text
+              title="Reload"
             >
-              <v-row no-gutters>
-                <v-col
+              <v-icon class="ml-2" @click="clearFilters" dark
+                >mdi mdi-reload</v-icon
+              >
+            </v-btn>
+          </span>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-data-table
+          dense
+          :headers="headers"
+          :items="data"
+          model-value="data.id"
+          :loading="loadinglinear"
+          :options.sync="options"
+          :footer-props="{
+            itemsPerPageOptions: [100, 500, 1000],
+          }"
+          class="elevation-1"
+          :server-items-length="totalRowsCount"
+        >
+          <template v-slot:item.category="{ item }">
+            {{ item?.room?.room_category?.name }}
+          </template>
+          <template v-slot:header="{ props: { headers } }">
+            <tr v-if="isFilter">
+              <td v-for="header in headers" :key="header.text">
+                <v-container>
+                  <v-text-field
+                    clearable
+                    @click:clear="
+                      filters[header.value] = '';
+                      applyFilters();
+                    "
+                    :hide-details="true"
+                    v-if="header.filterable && !header.filterSpecial"
+                    v-model="filters[header.value]"
+                    :id="header.value"
+                    @input="applyFilters(header.key, $event)"
+                    outlined
+                    dense
+                    autocomplete="off"
+                  ></v-text-field>
+                </v-container>
+              </td>
+            </tr>
+          </template>
+
+          <template
+            v-slot:item.full_name="{ item, index }"
+            style="width: 300px"
+          >
+            <v-row no-gutters>
+              <v-col
+                style="
+                  padding: 5px;
+                  padding-left: 0px;
+                  width: 50px;
+                  max-width: 50px;
+                "
+              >
+                <v-img
                   style="
-                    padding: 5px;
-                    padding-left: 0px;
+                    border-radius: 50%;
+                    height: 50px;
                     width: 50px;
                     max-width: 50px;
                   "
+                  :src="
+                    item.profile_picture
+                      ? item.profile_picture
+                      : '/no-profile-image.jpg'
+                  "
                 >
-                  <v-img
-                    style="
-                      border-radius: 50%;
-                      height: 50px;
-                      width: 50px;
-                      max-width: 50px;
-                    "
-                    :src="
-                      item.profile_picture
-                        ? item.profile_picture
-                        : '/no-profile-image.jpg'
-                    "
-                  >
-                  </v-img>
-                </v-col>
-                <v-col style="padding: 10px">
-                  <strong> {{ item.full_name }}</strong>
-                  <p>{{ item.phone_number }}<br v-if="item.phone_number" />{{ item.nationality }}</p>
-                </v-col>
-              </v-row>
-            </template>
-          </v-data-table>
-        </v-card>
+                </v-img>
+              </v-col>
+              <v-col style="padding: 10px">
+                <strong> {{ item.full_name }}</strong>
+                <p>
+                  {{ item.phone_number }}<br v-if="item.phone_number" />{{
+                    item.nationality
+                  }}
+                </p>
+              </v-col>
+            </v-row>
+          </template>
+        </v-data-table>
+      </v-card>
     </div>
     <Preloader v-else />
   </div>
 </template>
 
 <script>
-
 export default {
-
   data: () => ({
     disabled: false,
     step: 1,
@@ -210,7 +205,7 @@ export default {
       name: "",
     },
     options: {},
-    Model: "Tanent",
+    Model: "Maids",
     endpoint: "maids",
     search: "",
     snackbar: false,
@@ -249,20 +244,29 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "Phone Number",
+        text: "Tanent",
         align: "left",
         sortable: true,
-        key: "phone_number",
-        value: "phone_number",
+        key: "tanent.full_name",
+        value: "tanent.full_name",
         filterable: true,
         filterSpecial: false,
       },
       {
-        text: "Tanent",
+        text: "Tanent Phone Number",
         align: "left",
         sortable: true,
-        key: "tenant.full_name",
-        value: "tenant.full_name",
+        key: "tanent.phone_number",
+        value: "tanent.phone_number",
+        filterable: true,
+        filterSpecial: false,
+      },
+      {
+        text: "Tanent Term",
+        align: "left",
+        sortable: true,
+        key: "tanent.term",
+        value: "tanent.term",
         filterable: true,
         filterSpecial: false,
       },

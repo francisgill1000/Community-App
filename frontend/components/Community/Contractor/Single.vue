@@ -2,10 +2,8 @@
   <v-dialog persistent v-model="dialog" width="900">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-btn dense small class="primary" text title="Add Company">
-          Create Visitor
-          <v-icon right dark>mdi-plus-circle-outline</v-icon>
-        </v-btn>
+        <v-icon color="black" small>mdi-pencil</v-icon>
+        Edit
       </span>
     </template>
     <v-card>
@@ -47,7 +45,7 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.visitor_company_name"
                   dense
                   outlined
@@ -62,7 +60,7 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.id_number"
                   dense
                   outlined
@@ -75,7 +73,7 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.rfid"
                   dense
                   outlined
@@ -90,7 +88,7 @@
             <v-row class="">
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.first_name"
                   dense
                   outlined
@@ -103,7 +101,7 @@
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.last_name"
                   dense
                   outlined
@@ -116,7 +114,7 @@
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   type="number"
                   v-model="payload.phone_number"
                   dense
@@ -131,7 +129,7 @@
 
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   label="Email"
                   :readonly="disabled"
                   v-model="payload.email"
@@ -183,7 +181,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                    disabled
+                      disabled
                       v-model="payload.visit_from"
                       label="Visit From"
                       append-icon="mdi-calendar"
@@ -217,7 +215,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                    disabled
+                      disabled
                       v-model="payload.visit_to"
                       label="Visit To"
                       append-icon="mdi-calendar"
@@ -267,7 +265,7 @@
               <v-col cols="12"> <b>Enter Host Details</b></v-col>
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.host_flat_number"
                   dense
                   outlined
@@ -282,7 +280,7 @@
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.host_company_name"
                   dense
                   outlined
@@ -297,7 +295,7 @@
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.host_name"
                   dense
                   outlined
@@ -310,7 +308,7 @@
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.host_phone_number"
                   dense
                   outlined
@@ -325,7 +323,7 @@
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.host_email"
                   dense
                   outlined
@@ -338,7 +336,7 @@
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                disabled
+                  disabled
                   v-model="payload.note"
                   dense
                   outlined

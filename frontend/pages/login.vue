@@ -194,6 +194,7 @@
                   {{ msg }}
                 </span>
                 <v-btn
+                  :disabled="disabled"
                   :loading="loading"
                   @click="login()"
                   class="btn primary btn-black btn-block mt-1 mb-3 p-4 btntext"
@@ -296,6 +297,13 @@
         </div>
       </v-col>
     </v-row>
+    <LicenseActivation
+      @verified="
+        (e) => {
+          disabled = e;
+        }
+      "
+    />
   </div>
 </template>
 
@@ -332,6 +340,7 @@ export default {
       password: "",
       source: "admin",
     },
+    disabled: true,
   }),
   created() {
     // this.$store.commit("dashboard/resetState", null);

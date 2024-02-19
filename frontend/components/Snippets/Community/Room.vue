@@ -77,21 +77,6 @@
                 </v-autocomplete>
               </v-col>
               <v-col cols="6">
-                <v-text-field
-                  label="Room Number"
-                  :disabled="disabled"
-                  v-model="payload.room_number"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.room_number"
-                  :error-messages="
-                    errors && errors.room_number ? errors.room_number[0] : ''
-                  "
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="6">
                 <v-autocomplete
                   label="Status"
                   outlined
@@ -110,6 +95,35 @@
                   "
                 >
                 </v-autocomplete>
+              </v-col>
+
+              <v-col cols="6">
+                <v-text-field
+                  label="Start Number"
+                  :disabled="disabled"
+                  v-model="payload.start_number"
+                  dense
+                  class="text-center"
+                  outlined
+                  :hide-details="!errors.start_number"
+                  :error-messages="
+                    errors && errors.start_number ? errors.start_number[0] : ''
+                  "
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  label="End Number"
+                  :disabled="disabled"
+                  v-model="payload.end_number"
+                  dense
+                  class="text-center"
+                  outlined
+                  :hide-details="!errors.end_number"
+                  :error-messages="
+                    errors && errors.end_number ? errors.end_number[0] : ''
+                  "
+                ></v-text-field>
               </v-col>
             </v-row>
           </v-container>
@@ -278,15 +292,13 @@ export default {
     disabled: false,
     room_categories: [],
     room_sub_categories: [],
-    filtered_room_sub_categories:[],
+    filtered_room_sub_categories: [],
     floors: [],
     payload: {
-      room_category_id: 1,
-      room_sub_category_id: 1,
-      floor_id: 1,
-      room_number: null,
+      room_category_id: 7,
+      room_sub_category_id: 633,
+      floor_id: 18,
       status_id: 1,
-      company_id: 0,
     },
 
     tab: null,
@@ -373,7 +385,7 @@ export default {
     errors: [],
 
     headers: [
-    {
+      {
         text: "Category",
         align: "left",
         sortable: true,
@@ -457,7 +469,6 @@ export default {
       );
       this.room_categories = room_categories;
 
-
       let { data: room_sub_categories } = await this.$axios.get(
         `room-sub-category-list`,
         {
@@ -467,12 +478,14 @@ export default {
       this.room_sub_categories = room_sub_categories;
 
       let { data: floors } = await this.$axios.get(`floor`, {
-        params: { company_id: this.id },
+        params: { company_id: this.id, per_page: 1000 },
       });
       this.floors = floors.data;
     },
     setRoomSubCategories(id) {
-      this.filtered_room_sub_categories = this.room_sub_categories.filter((e) => e.room_category_id == id);
+      this.filtered_room_sub_categories = this.room_sub_categories.filter(
+        (e) => e.room_category_id == id
+      );
     },
     closeViewDialog() {
       this.viewDialog = false;

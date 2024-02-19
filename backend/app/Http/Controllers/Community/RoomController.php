@@ -20,7 +20,11 @@ class RoomController extends Controller
      */
     public function index()
     {
-        return Room::where("company_id", request("company_id"))->with(["tanent", "floor", "room_category", "room_sub_category"])->paginate(request("per_page") ?? 10);
+        // Room::truncate();
+
+        return Room::where("company_id", request("company_id"))->with(["tanent", "floor", "room_category", "room_sub_category"])
+            ->orderBy("id", "desc")
+            ->paginate(request("per_page") ?? 10);
     }
 
     public function report()
@@ -126,9 +130,9 @@ class RoomController extends Controller
     public function getRoomsByFloorId()
     {
         return Room::where("company_id", request("company_id"))
-        ->where("floor_id", request("floor_id"))
-        ->where("room_category_id", request("room_category_id"))
-        ->get(["id", "room_number"]);
+            ->where("floor_id", request("floor_id"))
+            ->where("room_category_id", request("room_category_id"))
+            ->get(["id", "room_number"]);
     }
 
     public function getTanentsAndMembersByRoomsId()
@@ -145,8 +149,35 @@ class RoomController extends Controller
     public function store(StoreRequest $request)
     {
         try {
-           
-            $record = Room::create($request->validated());
+
+
+            $start = $request->start_number;
+
+            $end = $request->end_number;
+
+            $data = [];
+
+            // foreach (range($start, $end) as $value) {
+            //     $data[] = [
+            //         'room_number' => $value,
+            //         'floor_id' => $request->floor_id,
+            //         'room_category_id' => $request->room_category_id,
+            //         "room_sub_category_id" => $request->room_sub_category_id,
+            //         'status_id' => $request->status_id,
+            //         'company_id' => $request->company_id,
+            //     ];
+            // }
+
+            // $record = Room::insert($data);
+
+            $record = Room::create([
+                'room_number' => $start,
+                'floor_id' => $request->floor_id,
+                'room_category_id' => $request->room_category_id,
+                "room_sub_category_id" => $request->room_sub_category_id,
+                'status_id' => $request->status_id,
+                'company_id' => $request->company_id,
+            ]);
 
             if ($record) {
                 return $this->response('Room Successfully created.', $record, true);
@@ -192,6 +223,42 @@ class RoomController extends Controller
                 return $this->response('Room successfully deleted.', null, true);
             } else {
                 return $this->response('Room cannot delete.', null, false);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function storeBulk(Request $request)
+    {
+        try {
+
+
+            $start = $request->start_number;
+
+            $end = $request->end_number;
+
+            $data = [];
+
+            foreach (range($start, $end) as $value) {
+                $data[] = [
+                    'room_number' => $value,
+                    'floor_id' => $request->floor_id,
+                    'room_category_id' => $request->room_category_id,
+                    "room_sub_category_id" => $request->room_sub_category_id,
+                    'status_id' => $request->status_id,
+                    'company_id' => $request->company_id,
+                ];
+            }
+
+            $record = Room::insert($data);
+
+            // $record = Room::create($request->validated());
+
+            if ($record) {
+                return $this->response('Room Successfully created.', $record, true);
+            } else {
+                return $this->response('Room cannot create.', null, false);
             }
         } catch (\Throwable $th) {
             throw $th;

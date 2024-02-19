@@ -8,6 +8,8 @@ Route::post('/tanent-register', [TanentController::class,"register"]);
 Route::post('/add-member', [TanentController::class,"addMember"]);
 Route::post('/update-member/{id}', [TanentController::class,"updateMember"]);
 Route::get('/get_member_types', [TanentController::class,"getMemberTypes"]);
+Route::get('/maids', [TanentController::class,"getMaids"]);
+
 Route::delete('/delete-member/{id}', [TanentController::class,"deleteMember"]);
 
 Route::get('/tanent-list', [TanentController::class,"dropDown"]);

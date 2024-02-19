@@ -104,7 +104,7 @@
               <v-col style="padding: 10px">
                 <strong> {{ item.full_name }}</strong>
                 <p>
-                  {{ item.phone_number }}<br v-if="item.phone_number" />{{
+                  {{ item.system_user_id }}<br v-if="item.nationality" />{{
                     item.nationality
                   }}
                 </p>
@@ -127,6 +127,11 @@
                 </v-btn>
               </template>
               <v-list width="150" dense>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
+                    <CommunityDeliveryEdit  :item="item" @success="handleSuccessResponse" />
+                  </v-list-item-title>
+                </v-list-item>
                 <v-list-item>
                   <v-list-item-title style="cursor: pointer">
                     <CommunityDeliverySingle
@@ -273,7 +278,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "gender",
+        text: "Gender",
         align: "left",
         sortable: true,
         key: "gender",
@@ -282,7 +287,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "phone_number",
+        text: "Phone Number",
         align: "left",
         sortable: true,
         key: "phone_number",
@@ -291,7 +296,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "email",
+        text: "Email",
         align: "left",
         sortable: true,
         key: "email",
@@ -309,7 +314,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "id_number",
+        text: "EID",
         align: "left",
         sortable: true,
         key: "id_number",
@@ -318,7 +323,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "host_company_name",
+        text: "Host Company",
         align: "left",
         sortable: true,
         key: "host_company_name",
@@ -327,16 +332,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "status_id",
-        align: "left",
-        sortable: true,
-        key: "status_id",
-        value: "status_id",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
-        text: "date",
+        text: "Date",
         align: "left",
         sortable: true,
         key: "date",
@@ -436,6 +432,7 @@ export default {
           per_page: itemsPerPage,
           company_id: this.$auth.user.company_id,
           ...this.filters,
+          visitor_type: "delivery",
         },
       };
 

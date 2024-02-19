@@ -6,6 +6,7 @@ use App\Http\Requests\Visitor\Register;
 use App\Http\Requests\Visitor\Store;
 use App\Http\Requests\Visitor\Update;
 use App\Http\Requests\Visitor\UploadVisitor;
+use App\Http\Requests\Visitor\VisitorUpdate;
 use App\Jobs\ProcessSDKCommand;
 use App\Models\Company;
 use App\Models\Device;
@@ -63,6 +64,8 @@ class VisitorController extends Controller
     {
         $model = (new Visitor)->filters($request);
 
+        $model->where("visitor_type", "delivery");
+
         $model->with(["branch", "zone", "zone.devices",  "host", "timezone:id,timezone_id,timezone_name", "purpose:id,name"]);
 
         return $model->paginate($request->input("per_page", 100));
@@ -71,7 +74,10 @@ class VisitorController extends Controller
 
     public function visitorList(Request $request)
     {
-        return Visitor::orderBy("id","desc")->with(["branch", "zone", "zone.devices",  "host", "timezone:id,timezone_id,timezone_name", "purpose:id,name"])->paginate($request->input("per_page", 100));
+        return Visitor::orderBy("id", "desc")
+            ->where("visitor_type", $request->visitor_type ?? "casual")
+            ->with(["branch", "zone", "zone.devices",  "host", "timezone:id,timezone_id,timezone_name", "purpose:id,name"])
+            ->paginate($request->input("per_page", 100));
     }
 
 
@@ -348,6 +354,27 @@ class VisitorController extends Controller
             $data['url'] = env("APP_URL") . "/media/visitor/logo/" . $data['logo'];
 
             return $this->response('Form has been submitted successfully.', $data, true);
+        } catch (\Throwable $th) {
+            return $this->response('Form is not submitted.', $th, false);
+        }
+    }
+
+
+    public function visitorUpdate(VisitorUpdate $request, $id)
+    {
+        $data = $request->validated();
+
+        // $data['logo'] = $this->processImage("media/visitor/logo");
+
+        try {
+
+            if (!Visitor::where("id", $id)->update($data)) {
+                return $this->response('Form is not updated.', null, false);
+            }
+
+            // $data['url'] = env("APP_URL") . "/media/visitor/logo/" . $data['logo'];
+
+            return $this->response('Visitor has been submitted successfully.', $data, true);
         } catch (\Throwable $th) {
             return $this->response('Form is not submitted.', $th, false);
         }

@@ -71,12 +71,13 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
-                  v-model="payload.card_rfid_number"
+                  v-model="payload.system_user_id"
                   dense
                   outlined
-                  :hide-details="!errors.card_rfid_number"
-                  :error-messages="errors && errors.card_rfid_number ? errors.card_rfid_number[0] : ''"
-                  label="RFID"
+                  :hide-details="!errors.system_user_id"
+                  :error-messages="errors && errors.system_user_id ? errors.system_user_id[0] : ''"
+                  label="Visitor Device Id"
+                  type="number"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -377,7 +378,7 @@ export default {
       note: null,
 
       timezone_id: 1,
-      purpose_id: 1,
+      purpose_id: 0,
       first_name: null,
       last_name: null,
       gender: "Male",

@@ -4,9 +4,12 @@ use App\Http\Controllers\AlarmLogsController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AttendanceLogController;
 use App\Http\Controllers\CameraController;
+use App\Http\Controllers\Community\RoomController;
 use App\Http\Controllers\DeviceCameraController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\DigitalOceanController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\LicenseKeyController;
 use App\Http\Controllers\Shift\AutoShiftController;
 use App\Http\Controllers\Shift\FiloShiftController;
 use App\Http\Controllers\Shift\MultiInOutShiftController;
@@ -21,6 +24,7 @@ use App\Models\Device;
 use App\Models\Employee;
 use App\Models\ReportNotification;
 use App\Models\Shift;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -29,7 +33,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log as Logger;
 
-Route::get("pdf-merge-test",[TestController::class,"pdfMergeTest"]);
+Route::get("pdf-merge-test", [TestController::class, "pdfMergeTest"]);
 
 Route::get('/test/getLogs', function (Request $request) {
     $curl = curl_init();
@@ -689,3 +693,32 @@ Route::post('/ardino_testing', function (Request $request) {
             'json_content' => $requstJson,
         ]);
 });
+
+
+Route::get('/droplet-sizes', [DigitalOceanController::class, 'getDropletSizes']);
+
+
+
+Route::post('/store-rooms', [RoomController::class, 'storeBulk']);
+
+
+
+
+// Route::get('/check-license-ley', function (Request $request) {
+
+//     // Retrieve the user from the request
+//     $user = $request->user();
+
+//     // Check if the user exists and if the license key is expired
+//     if (!$user || $user->license_key_expiration < Carbon::now()) {
+//         return response()->json(['message' => 'License key expired or invalid'], 401);
+//     }
+//     return "testing";
+// });
+
+Route::get('/verfiy-license-key', [LicenseKeyController::class, 'index']);
+Route::get('/store-license-key', [LicenseKeyController::class, 'store']);
+Route::get('/destroy-license-key', [LicenseKeyController::class, 'destroy']);
+Route::get('/activate-license-key', [LicenseKeyController::class, 'activate']);
+
+

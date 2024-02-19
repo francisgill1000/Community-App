@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Community\Tanent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -72,14 +73,41 @@ class AttendanceLog extends Model
         return $this->hasOne(Reason::class, "id", "reasonable_id")->latest();
     }
 
+    public function tanent()
+    {
+        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Primary");
+    }
+
+    public function family_member()
+    {
+        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Family Member");
+    }
+
+    public function relative()
+    {
+        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Relative");
+    }
+
     public function visitor()
     {
-        return $this->belongsTo(Visitor::class, "UserID", "system_user_id")->with("zone");
+        return $this->belongsTo(Visitor::class, "UserID", "system_user_id")->where("visitor_type", "casual");
     }
-    public function tenant()
+
+    public function delivery()
     {
-        return $this->belongsTo(Visitor::class, "UserID", "system_user_id")->with("zone");
+        return $this->belongsTo(Visitor::class, "UserID", "system_user_id")->where("visitor_type", "delivery");
     }
+
+    public function contractor()
+    {
+        return $this->belongsTo(Visitor::class, "UserID", "system_user_id")->where("visitor_type", "contractor");
+    }
+
+    public function maid()
+    {
+        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Maid");
+    }
+
 
     public function filter($request)
     {

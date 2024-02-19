@@ -15,8 +15,8 @@
     <v-tab-item> <CommunityFilteredRooms report_type="Occupied" /> </v-tab-item>
     <v-tab-item> <CommunityFilteredRooms report_type="Expire" /> </v-tab-item> -->
     <v-tab-item> <SnippetsCommunityRoom :id="companyId" /> </v-tab-item>
-    <v-tab-item> <SnippetsCommunityFloor :id="companyId" /> </v-tab-item>    
-    <v-tab-item> <SnippetsCommunitySubCategory :id="companyId" /> </v-tab-item>
+    <v-tab-item> <SnippetsCommunityFloor :id="companyId" /> </v-tab-item>
+    <v-tab-item> <SnippetsCommunitySubCategory :key="generateRandomId()" :id="companyId" /> </v-tab-item>
     <v-tab-item> <SnippetsCommunityCategory :id="companyId" /> </v-tab-item>
     <v-tab-item> <CommunityParking /></v-tab-item>
     <v-tab-item> <SnippetsCommunityPurpose :id="companyId" /> </v-tab-item>
@@ -30,6 +30,13 @@ export default {
   }),
   created() {
     this.companyId = this.$auth.user.company_id;
+  },
+  methods: {
+    generateRandomId() {
+      const length = 8; // Adjust the length of the ID as needed
+      const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number
+      return randomNumber.toString().padStart(length, "0"); // Convert to string and pad with leading zeros if necessary
+    },
   },
 };
 </script>

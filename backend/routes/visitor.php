@@ -18,6 +18,8 @@ Route::get('visitor-list', [VisitorController::class, "visitorList"]);
 Route::post('visitor-register', [VisitorController::class, "register"]);
 
 Route::post('visitor-self-register', [VisitorController::class, "self_register"]);
+Route::post('visitor-update/{id}', [VisitorController::class, "visitorUpdate"]);
+
 
 Route::get('visitor-search', [VisitorController::class, "search"]);
 

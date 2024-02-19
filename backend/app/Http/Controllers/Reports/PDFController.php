@@ -82,7 +82,7 @@ class PDFController extends Controller
         return Pdf::setPaper('a4', 'landscape')->loadView('pdf.access_control_reports.report', ["chunks" => $chunks])->stream();
     }
 
-    public function accessControlReportPrint(AttendanceLog $model, Request $request)
+    public function accessControlReportPrint(Request $request)
     {
         $data = $this->processFilters($request)->get()->toArray();
 
@@ -118,6 +118,7 @@ class PDFController extends Controller
 
     public function processFilters($request)
     {
+
         $model = AttendanceLog::query();
 
         $model->where("company_id", $request->company_id);
@@ -128,11 +129,7 @@ class PDFController extends Controller
 
         $model->whereHas('device', fn ($q) => $q->whereIn('device_type', ["all", "Access Control"]));
 
-
-        $model->where(function ($m) use ($request) {
-            $m->whereHas('tanent', fn ($q) => $q->where("company_id", $request->company_id));
-            $m->orWhereHas('member', fn ($q) => $q->where("company_id", $request->company_id));
-        });
+        // $model->whereHas('employee', fn ($q) => $q->where("company_id", $request->company_id));
 
         $model->when(request()->filled("report_type"), function ($query) use ($request) {
             if ($request->report_type == "Allowed") {
@@ -142,6 +139,14 @@ class PDFController extends Controller
             }
         });
 
+        // $model->when(request()->filled("user_type"), function ($query) use ($request) {
+        //     if ($request->user_type == "Employee") {
+        //         return $query->where('status', $request->user_type);
+        //     } else if ($request->user_type == "Visitor") {
+        //         return $query->where('status', $request->user_type);
+        //     }
+        // });
+
         $model->when(request()->filled("UserID"), function ($query) use ($request) {
             return $query->where('UserID', $request->UserID);
         });
@@ -150,20 +155,39 @@ class PDFController extends Controller
             return $query->where('DeviceID', $request->DeviceID);
         });
 
-        $model->with("device");
+        $model->with(["device", "tanent", "family_member", "relative", "visitor", "delivery", "contractor", "maid"]);
 
-        $model->with('tanent', fn ($q) => $q->where('company_id', $request->company_id));
-        $model->with('member', fn ($q) => $q->where('company_id', $request->company_id));
+        $model->with('employee', function ($q) use ($request) {
+            $q->where('company_id', $request->company_id);
+            $q->withOut(["schedule", "sub_department", "designation", "user"]);
 
-        // ->distinct("LogTime", "UserID", "company_id")
-        $model->when($request->filled('department_ids'), function ($q) use ($request) {
-            $q->whereHas('employee', fn (Builder $query) => $query->where('department_id', $request->department_ids));
+            $q->select(
+                "first_name",
+                "last_name",
+                "phone_number",
+                "profile_picture",
+                "employee_id",
+                "branch_id",
+                "system_user_id",
+                "display_name",
+                "timezone_id",
+                "department_id",
+            );
         })
+            // ->distinct("LogTime", "UserID", "company_id")
+            ->when($request->filled('department_ids'), function ($q) use ($request) {
+                $q->whereHas('employee', fn (Builder $query) => $query->where('department_id', $request->department_ids));
+            })
 
             ->with('device', function ($q) use ($request) {
                 $q->where('company_id', $request->company_id);
             })
 
+
+            ->when($request->filled('department'), function ($q) use ($request) {
+
+                $q->whereHas('employee', fn (Builder $query) => $query->where('department_id', $request->department));
+            })
 
             ->when($request->filled('device'), function ($q) use ($request) {
                 $q->where('DeviceID', $request->device);
@@ -183,10 +207,36 @@ class PDFController extends Controller
                     $q->whereHas('device', fn (Builder $query) => $query->where('location', 'ILIKE', "$request->devicelocation%"));
                 }
             })
-
+            ->when($request->filled('employee_first_name'), function ($q) use ($request) {
+                $key = strtolower($request->employee_first_name);
+                $q->whereHas('employee', fn (Builder $query) => $query->where('first_name', 'ILIKE', "$key%"));
+            })
             ->when($request->filled('branch_id'), function ($q) {
                 $q->whereHas('employee', fn (Builder $query) => $query->where('branch_id', request("branch_id")));
-            });
+            })
+
+            ->when(
+                $request->filled('sortBy'),
+                function ($q) use ($request) {
+                    $sortDesc = $request->input('sortDesc');
+                    if (strpos($request->sortBy, '.')) {
+                        if ($request->sortBy == 'employee.first_name') {
+                            $q->orderBy(Employee::select("first_name")->where("company_id", $request->company_id)->whereColumn("employees.system_user_id", "attendance_logs.UserID"), $sortDesc == 'true' ? 'desc' : 'asc');
+                        } else if ($request->sortBy == 'device.name') {
+                            $q->orderBy(Device::select("name")->where("company_id", $request->company_id)->whereColumn("devices.device_id", "attendance_logs.DeviceID"), $sortDesc == 'true' ? 'desc' : 'asc');
+                        } else if ($request->sortBy == 'device.location') {
+                            $q->orderBy(Device::select("location")->where("company_id", $request->company_id)->whereColumn("devices.device_id", "attendance_logs.DeviceID"), $sortDesc == 'true' ? 'desc' : 'asc');
+                        }
+                    } else {
+                        $q->orderBy($request->sortBy . "", $sortDesc == 'true' ? 'desc' : 'asc'); {
+                        }
+                    }
+                }
+            );
+
+        if (!$request->sortBy) {
+            $model->orderBy('LogTime', 'DESC');
+        }
 
         return $model;
     }

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Visitor;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class Register extends FormRequest
+class VisitorUpdate extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -46,18 +46,13 @@ class Register extends FormRequest
         $validations['id_type'] = 'nullable';
         $validations['id_number'] = 'nullable|string|max:255';
         $validations['host_company_id'] = 'nullable';
-        $validations['company_id'] = 'required';
-        $validations['status_id'] = 'nullable';
 
         $validations['logo'] = 'nullable';
-        $validations['id_copy'] = 'nullable';
-        $validations['date'] = 'required|date';
 
         $validations["time_in"] = "required";
         $validations["time_out"] = "required";
 
-        $validations["system_user_id"] = "required|regex:/^[1-9][0-9]*$/|min:4|max:9|unique:employees";
-        $validations["visitor_type"] = "required";
+        $validations["system_user_id"] = "required|regex:/^[1-9][0-9]*$/|min:4|max:9";
 
 
         return $validations;

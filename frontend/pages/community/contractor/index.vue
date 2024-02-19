@@ -106,7 +106,7 @@
               <v-col style="padding: 10px">
                 <strong> {{ item.full_name }}</strong>
                 <p>
-                  {{ item.phone_number }}<br v-if="item.phone_number" />{{
+                  {{ item.system_user_id }}<br v-if="item.nationality" />{{
                     item.nationality
                   }}
                 </p>
@@ -272,7 +272,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "gender",
+        text: "Gender",
         align: "left",
         sortable: true,
         key: "gender",
@@ -281,7 +281,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "phone_number",
+        text: "Phone Number",
         align: "left",
         sortable: true,
         key: "phone_number",
@@ -290,7 +290,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "email",
+        text: "Email",
         align: "left",
         sortable: true,
         key: "email",
@@ -299,7 +299,16 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "id_number",
+        text: "Delivery Company",
+        align: "left",
+        sortable: true,
+        key: "visitor_company_name",
+        value: "visitor_company_name",
+        filterable: true,
+        filterSpecial: false,
+      },
+      {
+        text: "EID",
         align: "left",
         sortable: true,
         key: "id_number",
@@ -308,25 +317,7 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "host_company_name",
-        align: "left",
-        sortable: true,
-        key: "host_company_name",
-        value: "host_company_name",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
-        text: "status_id",
-        align: "left",
-        sortable: true,
-        key: "status_id",
-        value: "status_id",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
-        text: "date",
+        text: "Date",
         align: "left",
         sortable: true,
         key: "date",
@@ -426,6 +417,7 @@ export default {
           per_page: itemsPerPage,
           company_id: this.$auth.user.company_id,
           ...this.filters,
+          visitor_type: "contractor",
         },
       };
 

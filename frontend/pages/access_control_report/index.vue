@@ -204,27 +204,286 @@
               </span>
             </template>
             <template v-slot:item.in="{ item, index }">
-              {{ item.device.function !== "out" || item.device.function !== "Out" ? "In" : "---" }}
+              {{
+                item.device.function !== "out" || item.device.function !== "Out"
+                  ? "In"
+                  : "---"
+              }}
             </template>
             <template v-slot:item.out="{ item, index }">
-              {{ item.device.function == "out" || item.device.function == "Out" ? "Out" : "---" }}
+              {{
+                item.device.function == "out" || item.device.function == "Out"
+                  ? "Out"
+                  : "---"
+              }}
             </template>
             <template v-slot:item.user_type="{ item, index }">
-              Employee
+              {{ getUserType(item) }}
             </template>
 
             <template v-slot:item.status="{ item, index }">
               {{ item.status }}
-              <br>
-              <small>{{item.reason ?? ""}}</small>
+              <br />
+              <small>{{ item.reason ?? "" }}</small>
+            </template>
+
+            <template v-slot:item.phone_number="{ item, index }">
+              {{ getUserPhone(item).phone_number }}
+              <br />
+              <small>{{ item.reason ?? "" }}</small>
             </template>
 
             <template v-slot:item.door="{ item, index }">
-              {{item.device.short_name}}
+              {{ item.device.short_name ?? "---" }}
             </template>
-            
+
             <template v-slot:item.user="{ item }" style="padding: 0px">
-              <v-row no-gutters>
+              <v-row v-if="item.tanent" no-gutters>
+                <v-col
+                  md="2"
+                  style="
+                    padding: 3px;
+                    padding-left: 0px;
+                    width: 30px;
+                    max-width: 30px;
+                  "
+                >
+                  <v-img
+                    style="
+                      border-radius: 50%;
+                      height: auto;
+                      width: 30px;
+                      max-width: 30px;
+                    "
+                    :src="item.tanent.profile_picture
+                        ? item.tanent.profile_picture
+                        : '/no-profile-image.jpg'
+                    "
+                  >
+                  </v-img>
+                </v-col>
+                <v-col style="padding: 3px" md="8">
+                  <strong>
+                    {{ item.tanent.first_name ?? "---" }}
+                    {{ item.tanent.last_name ?? "---" }}
+                  </strong>
+                  <div class="secondary-value">
+                    {{ item.UserID }}
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-row v-else-if="item.family_member" no-gutters>
+                <v-col
+                  md="2"
+                  style="
+                    padding: 3px;
+                    padding-left: 0px;
+                    width: 30px;
+                    max-width: 30px;
+                  "
+                >
+                  <v-img
+                    style="
+                      border-radius: 50%;
+                      height: auto;
+                      width: 30px;
+                      max-width: 30px;
+                    "
+                    :src="item.family_member.profile_picture
+                        ? item.family_member.profile_picture
+                        : '/no-profile-image.jpg'
+                    "
+                  >
+                  </v-img>
+                </v-col>
+                <v-col style="padding: 3px" md="8">
+                  <strong>
+                    {{ item.family_member.first_name ?? "---" }}
+                    {{ item.family_member.last_name ?? "---" }}
+                  </strong>
+                  <div class="secondary-value">
+                    {{ item.UserID }}
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-row v-else-if="item.relative" no-gutters>
+                <v-col
+                  md="2"
+                  style="
+                    padding: 3px;
+                    padding-left: 0px;
+                    width: 30px;
+                    max-width: 30px;
+                  "
+                >
+                  <v-img
+                    style="
+                      border-radius: 50%;
+                      height: auto;
+                      width: 30px;
+                      max-width: 30px;
+                    "
+                    :src="item.relative.profile_picture
+                        ? item.relative.profile_picture
+                        : '/no-profile-image.jpg'
+                    "
+                  >
+                  </v-img>
+                </v-col>
+                <v-col style="padding: 3px" md="8">
+                  <strong>
+                    {{ item.relative.first_name ?? "---" }}
+                    {{ item.relative.last_name ?? "---" }}
+                  </strong>
+                  <div class="secondary-value">
+                    {{ item.UserID }}
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-row v-else-if="item.visitor" no-gutters>
+                <v-col
+                  md="2"
+                  style="
+                    padding: 3px;
+                    padding-left: 0px;
+                    width: 30px;
+                    max-width: 30px;
+                  "
+                >
+                  <v-img
+                    style="
+                      border-radius: 50%;
+                      height: auto;
+                      width: 30px;
+                      max-width: 30px;
+                    "
+                    :src="item.visitor.profile_picture
+                        ? item.visitor.profile_picture
+                        : '/no-profile-image.jpg'
+                    "
+                  >
+                  </v-img>
+                </v-col>
+                <v-col style="padding: 3px" md="8">
+                  <strong>
+                    {{ item.visitor.first_name ?? "---" }}
+                    {{ item.visitor.last_name ?? "---" }}
+                  </strong>
+                  <div class="secondary-value">
+                    {{ item.UserID }}
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-row v-else-if="item.delivery" no-gutters>
+                <v-col
+                  md="2"
+                  style="
+                    padding: 3px;
+                    padding-left: 0px;
+                    width: 30px;
+                    max-width: 30px;
+                  "
+                >
+                  <v-img
+                    style="
+                      border-radius: 50%;
+                      height: auto;
+                      width: 30px;
+                      max-width: 30px;
+                    "
+                    :src="item.delivery.profile_picture
+                        ? item.delivery.profile_picture
+                        : '/no-profile-image.jpg'
+                    "
+                  >
+                  </v-img>
+                </v-col>
+                <v-col style="padding: 3px" md="8">
+                  <strong>
+                    {{ item.delivery.first_name ?? "---" }}
+                    {{ item.delivery.last_name ?? "---" }}
+                  </strong>
+                  <div class="secondary-value">
+                    {{ item.UserID }}
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-row v-else-if="item.contractor" no-gutters>
+                <v-col
+                  md="2"
+                  style="
+                    padding: 3px;
+                    padding-left: 0px;
+                    width: 30px;
+                    max-width: 30px;
+                  "
+                >
+                  <v-img
+                    style="
+                      border-radius: 50%;
+                      height: auto;
+                      width: 30px;
+                      max-width: 30px;
+                    "
+                    :src="item.contractor.profile_picture
+                        ? item.contractor.profile_picture
+                        : '/no-profile-image.jpg'
+                    "
+                  >
+                  </v-img>
+                </v-col>
+                <v-col style="padding: 3px" md="8">
+                  <strong>
+                    {{ item.contractor.first_name ?? "---" }}
+                    {{ item.contractor.last_name ?? "---" }}
+                  </strong>
+                  <div class="secondary-value">
+                    {{ item.UserID }}
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-row v-else-if="item.maid" no-gutters>
+                <v-col
+                  md="2"
+                  style="
+                    padding: 3px;
+                    padding-left: 0px;
+                    width: 30px;
+                    max-width: 30px;
+                  "
+                >
+                  <v-img
+                    style="
+                      border-radius: 50%;
+                      height: auto;
+                      width: 30px;
+                      max-width: 30px;
+                    "
+                    :src="item.maid.profile_picture
+                        ? item.maid.profile_picture
+                        : '/no-profile-image.jpg'
+                    "
+                  >
+                  </v-img>
+                </v-col>
+                <v-col style="padding: 3px" md="8">
+                  <strong>
+                    {{ item.maid.first_name ?? "---" }}
+                    {{ item.maid.last_name ?? "---" }}
+                  </strong>
+                  <div class="secondary-value">
+                    {{ item.UserID }}
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-row v-else-if="item.employee" no-gutters>
                 <v-col
                   md="2"
                   style="
@@ -251,8 +510,8 @@
                 </v-col>
                 <v-col style="padding: 3px" md="8">
                   <strong>
-                    {{ item.employee ? item.employee.first_name : "---" }}
-                    {{ item.employee ? item.employee.last_name : "---" }}
+                    {{ item.employee.first_name ?? "---" }}
+                    {{ item.employee.last_name ?? "---" }}
                   </strong>
                   <div class="secondary-value">
                     {{ item.UserID }}
@@ -260,6 +519,7 @@
                 </v-col>
               </v-row>
             </template>
+
           </v-data-table>
         </v-card>
       </div>
@@ -335,7 +595,6 @@ export default {
         sortable: true,
         key: "id",
         value: "id",
-        width: "50px",
       },
       {
         text: "Name",
@@ -343,21 +602,19 @@ export default {
         sortable: true,
         key: "user",
         value: "user",
-        width: "300px",
       },
       {
         text: "Phone",
         align: "left",
         sortable: true,
-        key: "employee.phone_number",
-        value: "employee.phone_number",
-        width: "300px",
+        key: "phone_number",
+        value: "phone_number",
       },
       {
         text: "Door",
         align: "left",
         sortable: true,
-        key: "device",
+        key: "door",
         value: "door",
       },
       {
@@ -425,25 +682,88 @@ export default {
     });
   },
   created() {
-    let branch_header = [
-      {
-        text: "Branch/Department",
-        align: "left",
-        sortable: true,
-        key: "branch_id", //sorting
-        value: "branch", //edit purpose
+    // let branch_header = [
+    //   {
+    //     text: "Branch/Department",
+    //     align: "left",
+    //     sortable: true,
+    //     key: "branch_id", //sorting
+    //     value: "branch", //edit purpose
 
-        filterable: true,
-        filterSpecial: true,
-      },
-    ];
-    this.headers.splice(2, 0, ...branch_header);
+    //     filterable: true,
+    //     filterSpecial: true,
+    //   },
+    // ];
+    // this.headers.splice(2, 0, ...branch_header);
     this.setFromDate();
-    this.getBranches();
+    // this.getBranches();
     this.getScheduledEmployees();
     this.getDeviceList();
   },
   methods: {
+    getUserType(item) {
+      const relationships = {
+        Tanent: item.tanent,
+        "Family Member": item.family_member,
+        Relative: item.relative,
+        Visitor: item.visitor,
+        Delivery: item.delivery,
+        Contractor: item.contractor,
+        Maid: item.maid,
+      };
+
+      for (const [type, value] of Object.entries(relationships)) {
+        if (value) {
+          return type;
+        }
+      }
+
+      return "Employee";
+    },
+
+    getUserPhone(item){
+      const relationships = {
+        Tanent: item.tanent,
+        "Family Member": item.family_member,
+        Relative: item.relative,
+        Visitor: item.visitor,
+        Delivery: item.delivery,
+        Contractor: item.contractor,
+        Maid: item.maid,
+      };
+
+      for (const [type, value] of Object.entries(relationships)) {
+        if (value) {
+          return value;
+        }
+      }
+
+      return "---";
+    },
+
+    getUserInfo(item) {
+      const relationships = {
+        Tanent: item.tanent,
+        "Family Member": item.family_member,
+        Relative: item.relative,
+        Visitor: item.visitor,
+        Delivery: item.delivery,
+        Contractor: item.contractor,
+        Maid: item.maid,
+        Employee: item.employee,
+      };
+
+      for (const [type, value] of Object.entries(relationships)) {
+        if (value) {
+          this.userObject = value;
+          return value;
+        }
+      }
+
+      this.userObject = false;
+
+      return false;
+    },
     filterAttr(data) {
       this.payload.from_date = data.from;
       this.payload.to_date = data.to;

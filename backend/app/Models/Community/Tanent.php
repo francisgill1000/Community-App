@@ -36,6 +36,10 @@ class Tanent extends Model
         return $this->hasMany(Tanent::class,"parent_id");
     }
 
+    public function tanent()
+    {
+        return $this->belongsTo(Tanent::class,"parent_id");
+    }
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class)->with("parking");

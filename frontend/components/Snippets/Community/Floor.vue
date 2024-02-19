@@ -323,6 +323,15 @@ export default {
     // "webaccess": true,
     headers: [
       {
+        text: "Ref #",
+        align: "left",
+        sortable: true,
+        key: "id",
+        value: "id",
+        filterable: true,
+        filterSpecial: false,
+      },
+      {
         text: "Floor No",
         align: "left",
         sortable: true,
