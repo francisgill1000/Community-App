@@ -74,4 +74,16 @@ class Tanent extends Model
         $file->move(public_path($path), $fileName);
         return asset($path . '/' . $fileName);
     }
+
+    public function processImage($folder): string
+    {
+        $base64Image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', request('profile_picture')));
+        $imageName = time() . ".png";
+        $publicDirectory = public_path($folder);
+        if (!file_exists($publicDirectory)) {
+            mkdir($publicDirectory);
+        }
+        file_put_contents($publicDirectory . '/' . $imageName, $base64Image);
+        return $imageName;
+    }
 }

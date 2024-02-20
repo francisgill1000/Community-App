@@ -130,13 +130,15 @@ class TanentController extends Controller
 
             $data = $request->validated();
 
-            if (isset($request->profile_picture)) {
-                $file = $request->file('profile_picture');
-                $ext = $file->getClientOriginalExtension();
-                $fileName = time() . '.' . $ext;
-                $request->file('profile_picture')->move(public_path('/community/profile_picture'), $fileName);
-                $data['profile_picture'] = $fileName;
-            }
+            $data['profile_picture'] = $this->processImage("community/profile_picture");
+
+            // if (isset($request->profile_picture)) {
+            //     $file = $request->file('profile_picture');
+            //     $ext = $file->getClientOriginalExtension();
+            //     $fileName = time() . '.' . $ext;
+            //     $request->file('profile_picture')->move(public_path('/community/profile_picture'), $fileName);
+            //     $data['profile_picture'] = $fileName;
+            // }
 
             $data["full_name"] = "{$data["first_name"]} {$data["last_name"]}";
 
