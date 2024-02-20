@@ -23,7 +23,6 @@ Route::post('/store-multiple-vehicles/{id}', [TanentController::class,"storeMult
 Route::post('/tanent-update-validate/{id}', [TanentController::class,"validateUpdateTanent"]);
 
 
-Route::post('/tanent-clean', [TanentController::class,"clean"]);
 
 
 
