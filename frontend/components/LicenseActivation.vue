@@ -2,7 +2,7 @@
   <v-app>
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
-        <v-card-title> License Key Activation </v-card-title>
+        <v-card-title> License Activation Key</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="licenseKey"
