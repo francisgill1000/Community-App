@@ -367,7 +367,8 @@ class TanentController extends Controller
         }
     }
 
-    public function getMaids() {
+    public function getMaids()
+    {
         return Tanent::where("company_id", request("company_id"))->where("member_type", "Maid")->with("tanent")->orderBy('id', 'desc')->paginate(request("per_page") ?? 10);
     }
 
@@ -381,5 +382,11 @@ class TanentController extends Controller
             'Maid',
             'Visitor',
         ];
+    }
+
+    public function clean()
+    {
+        Tanent::truncate();
+        return 0;
     }
 }

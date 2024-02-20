@@ -19,13 +19,12 @@ Route::post('/tanent-validate', [TanentController::class,"validateTanent"]);
 Route::post('/vehicle-validate', [TanentController::class,"validateVehicle"]);
 Route::post('/vehicle-store', [TanentController::class,"storeVehicles"]);
 
-
 Route::post('/store-multiple-vehicles/{id}', [TanentController::class,"storeMultipleVehicles"]);
-
-
-
-
 Route::post('/tanent-update-validate/{id}', [TanentController::class,"validateUpdateTanent"]);
+
+
+Route::post('/tanent-clean', [TanentController::class,"clean"]);
+
 
 
 
