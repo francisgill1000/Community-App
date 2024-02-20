@@ -111,9 +111,8 @@ class TanentController extends Controller
                     $data[$document] = Tanent::ProcessDocument($request->file($document), "/community/$document");
                 }
             }
-            $model = new Tanent;
 
-            $record = $model->setConnection("pgsql")->create($data);
+            $record = Tanent::create($data);
 
             if ($record) {
                 return $this->response('Tanent Successfully created.', $record, true);
@@ -366,8 +365,7 @@ class TanentController extends Controller
         }
     }
 
-    public function getMaids()
-    {
+    public function getMaids() {
         return Tanent::where("company_id", request("company_id"))->where("member_type", "Maid")->with("tanent")->orderBy('id', 'desc')->paginate(request("per_page") ?? 10);
     }
 

@@ -17,8 +17,7 @@ class RoomCategoryController extends Controller
      */
     public function dropDown()
     {
-        $model = new RoomCategory;
-        return $model->where("company_id", request("company_id") ?? 0)->get();
+        return RoomCategory::where("company_id", request("company_id") ?? 0)->get();
     }
 
 

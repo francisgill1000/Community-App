@@ -9,7 +9,5 @@ class RoomCategory extends Model
 {
     use HasFactory;
 
-    protected $connection = "sqlite";
-
     protected $guarded = [];
 }
