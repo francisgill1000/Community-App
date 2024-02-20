@@ -405,7 +405,7 @@ class Controller extends BaseController
 
     public function processImage($folder): string
     {
-        $base64Image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', request('logo')));
+        $base64Image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', request('profile_picture')));
         $imageName = time() . ".png";
         $publicDirectory = public_path($folder);
         if (!file_exists($publicDirectory)) {
@@ -413,7 +413,5 @@ class Controller extends BaseController
         }
         file_put_contents($publicDirectory . '/' . $imageName, $base64Image);
         return $imageName;
-        $imageUrl = asset($folder . '/' . $imageName);
-        return $imageUrl;
     }
 }
