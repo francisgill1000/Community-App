@@ -372,6 +372,7 @@ class TanentController extends Controller
     public function getMemberTypes()
     {
         return [
+            'Owner',
             'Primary',
             'Family Member',
             'Relative',
