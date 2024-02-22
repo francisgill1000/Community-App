@@ -372,7 +372,7 @@
                   ></v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col cols="12">
+              <!-- <v-col cols="12">
                 <v-switch
                   style="margin-top: 5px"
                   label="Web Access"
@@ -386,7 +386,7 @@
                   "
                 >
                 </v-switch>
-              </v-col>
+              </v-col> -->
               <v-col cols="6" class="my-1">
                 <v-btn
                   v-if="formAction == 'Edit'"

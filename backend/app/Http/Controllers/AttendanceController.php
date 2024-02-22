@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log as Logger;
 
 class AttendanceController extends Controller
 {
-    public function seedDefaultData($company_id, $UserIds = [], $branch_id = '')
+    public function seedDefaultData($company_id, $UserIds = [], $branch_id = 0)
     {
 
 

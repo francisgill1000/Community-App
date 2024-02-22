@@ -95,10 +95,10 @@
                     <small> {{ item.end_date }} </small>
                   </v-col>
 
-                  <v-col cols="6"> <small>Web Access</small> </v-col>
+                  <!-- <v-col cols="6"> <small>Web Access</small> </v-col>
                   <v-col cols="6" class="text-right">
                     <small> {{ item.web_access ? "Yes" : "No" }}</small>
-                  </v-col>
+                  </v-col> -->
                 </v-row>
               </v-col>
             </v-row>

@@ -283,11 +283,7 @@
                     "
                   ></v-text-field>
                 </v-col>
-                <v-col v-if="isCompany" cols="6">
-                  <!-- <label class="col-form-label"
-                    >Branch <span class="text-danger">*</span></label
-                  > -->
-
+                <!-- <v-col v-if="isCompany" cols="6">
                   <v-select
                     label="Branch"
                     @change="filterDepartmentsByBranch(employee.branch_id)"
@@ -304,24 +300,24 @@
                     "
                   >
                   </v-select>
-                </v-col>
+                </v-col> -->
 
                 <v-col cols="6">
                   <!-- <label class="col-form-label"
                     >Department <span class="text-danger">*</span></label
                   > -->
                   <v-autocomplete
-                    label="Department"
-                    :items="departments"
+                    label="Designations"
+                    :items="designations"
                     item-text="name"
                     item-value="id"
                     placeholder="Select"
-                    v-model="employee.department_id"
-                    :hide-details="!errors.department_id"
-                    :error="errors.department_id"
+                    v-model="employee.designation_id"
+                    :hide-details="!errors.designation_id"
+                    :error="errors.designation_id"
                     :error-messages="
-                      errors && errors.department_id
-                        ? errors.department_id[0]
+                      errors && errors.designation_id
+                        ? errors.designation_id[0]
                         : ''
                     "
                     dense
@@ -1310,6 +1306,8 @@ export default {
     this.loading = false;
     this.boilerplate = true;
 
+    this.getDesignations(null);
+
     if (this.$auth.user.branch_id) {
       this.branch_id = this.$auth.user.branch_id;
       this.employee.branch_id = this.$auth.user.branch_id;
@@ -1426,6 +1424,27 @@ export default {
         };
         this.departments = await this.$store.dispatch(
           "department_list",
+          options
+        );
+      }
+      // else {
+      //   this.departments = [];
+      // }
+    },
+
+    async getDesignations(filterBranchId) {
+      // if (filterBranchId > 0)
+      {
+        let options = {
+          endpoint: "designation-list",
+          isFilter: this.isFilter,
+          params: {
+            company_id: this.$auth.user.company_id,
+            branch_id: filterBranchId,
+          },
+        };
+        this.designations = await this.$store.dispatch(
+          "designation_list",
           options
         );
       }

@@ -20,7 +20,7 @@
     <v-tab-item> <SnippetsCommunityCategory :id="companyId" /> </v-tab-item>
     <v-tab-item> <CommunityParking /></v-tab-item>
     <v-tab-item> <SnippetsCommunityPurpose :id="companyId" /> </v-tab-item>
-    <v-tab-item> <SnippetsCommunitySingle :id="companyId" /> </v-tab-item>
+    <v-tab-item> <CompanyProfile :id="companyId" /> </v-tab-item>
   </v-tabs>
 </template>
 <script>

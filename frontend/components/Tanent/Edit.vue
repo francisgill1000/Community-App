@@ -322,7 +322,7 @@
                   </v-menu>
                 </v-col>
 
-                <v-col cols="12">
+                <!-- <v-col cols="12">
                   <v-switch
                     style="margin-top: 5px"
                     label="Web Access"
@@ -335,7 +335,7 @@
                     "
                   >
                   </v-switch>
-                </v-col>
+                </v-col> -->
 
                 <v-col cols="12" class="text-right my-1">
                   <v-btn @click="dialog = false">Close</v-btn>

@@ -29,10 +29,10 @@
                   id: `Door Wise Access Control Report`,
                   name: `Door Wise Access Control Report`,
                 },
-                {
-                  id: `Branch Wise Access Control Report`,
-                  name: `Branch Wise Access Control Report`,
-                },
+                // {
+                //   id: `Branch Wise Access Control Report`,
+                //   name: `Branch Wise Access Control Report`,
+                // },
                 {
                   id: `Allowed`,
                   name: `Access Granted Access Control Report`,
@@ -47,7 +47,7 @@
               :hide-details="true"
             ></v-select>
           </v-col>
-          <v-col md="2" sm="2" v-if="isCompany">
+          <!-- <v-col md="2" sm="2" v-if="isCompany">
             Branch
             <v-select
               placeholder="Branch"
@@ -61,7 +61,7 @@
               item-text="branch_name"
               :hide-details="true"
             ></v-select>
-          </v-col>
+          </v-col> -->
           <v-col md="2" sm="4">
             Door
             <v-select

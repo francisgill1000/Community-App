@@ -75,17 +75,22 @@ class AttendanceLog extends Model
 
     public function tanent()
     {
-        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Primary");
+        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Primary")->with("room");
     }
 
     public function family_member()
     {
-        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Family Member");
+        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Family Member")->with("room");
     }
 
     public function relative()
     {
-        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Relative");
+        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Relative")->with("room");
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(Tanent::class, "UserID", "system_user_id")->where("member_type", "Owner")->with("room");
     }
 
     public function visitor()

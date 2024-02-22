@@ -65,7 +65,9 @@
                   dense
                   outlined
                   :hide-details="!errors.id_number"
-                  :error-messages="errors && errors.id_number ? errors.id_number[0] : ''"
+                  :error-messages="
+                    errors && errors.id_number ? errors.id_number[0] : ''
+                  "
                   label="Emirates ID"
                 ></v-text-field>
               </v-col>
@@ -75,7 +77,11 @@
                   dense
                   outlined
                   :hide-details="!errors.system_user_id"
-                  :error-messages="errors && errors.system_user_id ? errors.system_user_id[0] : ''"
+                  :error-messages="
+                    errors && errors.system_user_id
+                      ? errors.system_user_id[0]
+                      : ''
+                  "
                   label="Visitor Device Id"
                   type="number"
                 ></v-text-field>
@@ -382,6 +388,7 @@ export default {
       first_name: null,
       last_name: null,
       gender: "Male",
+      visitor_type: "casual",
       phone_number: null,
       email: null,
       visitor_company_name: null,

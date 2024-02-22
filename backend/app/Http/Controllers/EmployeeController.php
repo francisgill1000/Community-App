@@ -104,7 +104,7 @@ class EmployeeController extends Controller
         //     return $this->response("Account Maximum " . $maximumEmployeeCount . " Employee count is reached.", null, false);
         // }
 
-        // DB::beginTransaction();
+        DB::beginTransaction();
 
         if ($request->filled('email')) {
 
@@ -127,13 +127,15 @@ class EmployeeController extends Controller
 
         try {   
 
+            $data["branch_id"] = $data["branch_id"] ?? 0;
+
             $employee = Employee::create($data);
             if (!$employee) {
                 return $this->response('Employee cannot add.', null, false);
             }
             $employee->profile_picture = asset('media/employee/profile_picture' . $employee->profile_picture);
 
-            // DB::commit();
+            DB::commit();
 
             //set default attendance data for new Employees(1 month) 
 
@@ -142,8 +144,8 @@ class EmployeeController extends Controller
 
             return $this->response('Employee successfully created.', null, true);
         } catch (\Throwable $th) {
-            // DB::rollBack();
-            return $this->response('Error Occured. Try again ', null, false);
+            DB::rollBack();
+            return $this->response($th->getMessage(), null, false);
             throw $th;
         }
     }

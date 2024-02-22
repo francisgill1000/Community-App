@@ -187,8 +187,7 @@
                     <td class="text-left border-none col-4">
                         <div class="logo pt">
                             @if (env('APP_ENV') == 'local')
-                                <img style="width: 100%" src="https://amc.mytime2cloud.com/mail-logo.png"
-                                    alt="Company Logo" />
+                                <img style="width: 100%" src="{{ getcwd() . '/upload/app-logo.jpeg' }}" alt="Company Logo" />
                             @else
                                 <img style="width: 100%" src="{{ $company->logo }}" alt="Company Logo" />
                             @endif
@@ -217,7 +216,7 @@
                 <tr>
                     <th>S.NO</th>
                     <th>Name</th>
-                    <th>Branch/Department</th>
+                    <th>Flat</th>
                     <th>Phone</th>
                     <th>Door</th>
                     <th>DateTime</th>
@@ -233,58 +232,56 @@
 
                         <td>
                             @php
-                                $pic = 'https://i.pinimg.com/originals/df/5f/5b/df5f5b1b174a2b4b6026cc6c8f9395c1.jpg';
+                                // $pic = 'https://i.pinimg.com/originals/df/5f/5b/df5f5b1b174a2b4b6026cc6c8f9395c1.jpg';
 
-                                if ($data['employee']['profile_picture_raw']) {
-                                    $pic = getcwd() . '/media/employee/profile_picture/' . $data['employee']['profile_picture_raw'];
-                                }
+                                // $pic = 'http://localhost:8000/upload/1707982257.png';
 
+                                // if ($data['employee']) {
+                                // $pic = getcwd() . '/upload/no-profile-image.jpg';
+                                // }
                             @endphp
 
                             <table>
                                 <tr>
-                                    <td style="width:20px;" class="border-none">
+                                    {{-- <td style="width:20px;" class="border-none">
                                         <img alt="{{ $pic }}"
                                             style="border-radius: 50%;width:40px;padding-top:5px;"src="{{ $pic }}" />
-                                    </td>
+                                    </td> --}}
                                     <td class="border-none">
-                                        <b style="margin-left:5px; padding-top:-30px;">
-                                            {{ $data['employee']['first_name'] ?? '---' }}
-                                            {{ $data['employee']['last_name'] ?? '---' }}
+                                        <b style="margin-left:0px; padding-top:-30px;">
+                                            @if ($data['employee'])
+                                                {{ $data['employee']['first_name'] ?? '---' }}
+                                                {{ $data['employee']['last_name'] ?? '---' }}
+                                            @else
+                                                {{ getUserType($data)['value']['full_name'] ?? '---' }}
+                                            @endif
+
+
                                         </b>
                                         <br>
-                                        <small
-                                            style="margin-left:5px;">EID:{{ $data['employee']['employee_id'] ?? '---' }}</small>
-
-                                        {{-- <br>
-                                        <small style="margin-left:5px;">Branch:
-                                            {{ $data['employee']['branch']['branch_name'] ?? '---' }}</small>
-                                        <br>
-                                        <small style="margin-left:5px;">Department:
-                                            {{ $data['employee']['department']['name'] ?? '---' }}</small> --}}
+                                        <small>
+                                            {{ $data['UserID'] ?? '---' }}
+                                        </small>
                                     </td>
                                 </tr>
                             </table>
                         </td>
 
-                        <td>
-                            <b> {{ $data['employee']['branch']['branch_name'] ?? '---' }}</b>
-                            <br>
-                            {{ $data['employee']['department']['name'] ?? '---' }}
-                        </td>
-                        <td>{{ $data['employee']['phone_number'] ?? '---' }}</td>
+                        <td>{{ $data['tanent']['room']['room_number'] ?? '---' }}</td>
+                        <td>{{ getUserType($data)['value']['phone_number'] ?? '---' }}</td>
+
                         <td>{{ $data['device']['location'] ?? '---' }}</td>
                         <td>{{ $data['date'] }} {{ $data['time'] }}</td>
                         <td>
-                            {{ strtolower($data['device']['function']) !== 'out' ? 'In' : '---' }}
+                            {{ strtolower($data['device']['function']) !== 'out' ? 'IN' : '---' }}
                         </td>
                         <td>
-                            {{ strtolower($data['device']['function']) == 'out' ? 'Out' : '---' }}
+                            {{ strtolower($data['device']['function']) == 'out' ? 'OUT' : '---' }}
                         </td>
                         </td>
                         <td>{{ $data['device']['mode'] ?? '---' }}</td>
                         <td>{{ $data['status'] }}</td>
-                        <td>Employee</td>
+                        <td>{{ getUserType($data)['type'] ?? '---' }}</td>
                     </tr>
                 @endforeach
             </table>
@@ -314,6 +311,35 @@
             </footer>
         @endforeach
     </div>
+    @php
+        function getUserType($item)
+        {
+            $relationships = [
+                'Employee' => $item['employee'],
+                'Tanent' => $item['tanent'],
+                'Family Member' => $item['family_member'],
+                'Relative' => $item['relative'],
+                'Visitor' => $item['visitor'],
+                'Delivery' => $item['delivery'],
+                'Contractor' => $item['contractor'],
+                'Maid' => $item['maid'],
+            ];
+
+            foreach ($relationships as $type => $value) {
+                if ($value) {
+                    return [
+                        'type' => $type,
+                        'value' => $value,
+                    ];
+                }
+            }
+
+            return [
+                'type' => false,
+                'value' => false,
+            ];
+        }
+    @endphp
 </body>
 
 </html>

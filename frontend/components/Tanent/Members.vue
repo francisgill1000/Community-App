@@ -6,7 +6,8 @@
           <v-row>
             <v-col cols="12" class="text-center">
               <v-avatar size="100" style="border: 1px solid #dddddd">
-                <v-img :src="item.profile_picture"></v-img>
+                <v-img v-if="item.profile_picture" :src="item.profile_picture"></v-img>
+                <v-img v-else src="/no-profile-image.jpg"></v-img>
               </v-avatar>
               <div class="mt-1" style="font-size: 14px;height: 10px">{{ item.member_type }}</div>
             </v-col>
