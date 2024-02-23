@@ -182,11 +182,14 @@ class AuthController extends Controller
             ]);
         }
 
-
+        if ($user->user_type == "employee") {
+            $user->permissions = $user->assigned_permissions->permission_names ?? [];
+        }
 
         unset($user->company);
         unset($user->employee);
         unset($user->assigned_permissions);
+
 
         return [
             'token' => $user->createToken('myApp')->plainTextToken,
@@ -235,7 +238,6 @@ class AuthController extends Controller
                         "user_id",
                         "overtime",
                         "display_name",
-                        "display_name",
                         "branch_id",
                         "leave_group_id",
                         "reporting_manager_id",
@@ -259,7 +261,6 @@ class AuthController extends Controller
                     "joining_date",
                     "user_id",
                     "overtime",
-                    "display_name",
                     "display_name",
                     "branch_id",
                     "leave_group_id",

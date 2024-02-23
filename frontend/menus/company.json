@@ -4,9 +4,37 @@
     "title": "Dashboard",
     "to": "/dashboard",
     "submenu": "dashboard",
+    "menu": "visitor_dashboard_access",
+    "module": "visitor_dashboard_access"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Visitors",
+    "to": "/community/visitor",
+    "submenu": "dashboard",
+    "menu": "visitor_dashboard_access",
+    "module": "visitor_dashboard_access"
+  },
+
+  {
+    "icon": "mdi-account",
+    "title": "Visitors",
+    "to": "/community/visitor",
+    "submenu": "dashboard",
+    "menu": "visitor_dashboard_access",
+    "module": "visitor_access"
+  },
+
+  {
+    "icon": "mdi-view-dashboard",
+    "title": "Dashboard",
+    "to": "/dashboard",
+    "submenu": "dashboard",
     "menu": "branch_access",
     "module": "dashboard"
   },
+
+
   {
     "icon": "mdi-account-tie",
     "title": "Employees",
@@ -365,7 +393,7 @@
     "to": "/web_login_logs",
     "module": "reports"
   },
-  
+
   {
     "icon": "mdi-file-remove-outline",
     "title": "Document Expiry",

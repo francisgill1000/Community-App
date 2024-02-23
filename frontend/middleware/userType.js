@@ -27,7 +27,7 @@ const data = async ({ $auth, redirect }) => {
 
   if ($auth.user.role_id == 0 && user_type == "employee") {
     try {
-      window.location.href = process.env.EMPLOYEE_APP_URL;
+      redirect("community/visitor/dashboard");
       return "";
     } catch (e) {
       redirect("logout");

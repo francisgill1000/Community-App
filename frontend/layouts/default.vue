@@ -185,23 +185,6 @@
                 >
               </v-list-item-content>
             </v-list-item>
-            <v-list-item
-              v-if="$auth.user.user_type != 'company'"
-              @click="changeLoginType()"
-            >
-              <v-list-item-icon>
-                <v-icon>mdi-account-multiple-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title class="black--text">
-                  Login Into employee
-                  <!-- {{
-                    caps(getLoginType == "branch" ? "employee" : "branch")
-                  }} -->
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
             <v-list-item @click="logout">
               <v-list-item-icon>
                 <v-icon>mdi-logout</v-icon>
@@ -551,13 +534,15 @@
 
 <script>
 import company_menus from "../menus/company.json";
+import visitor_menus from "../menus/visitor.json";
+
 import employee_menus from "../menus/employee.json";
 import branch_menus from "../menus/branch.json";
 import guard_menus from "../menus/guard.json";
 import host_menus from "../menus/host.json";
 
 import company_top_menu from "../menus/company_modules_top.json";
-import employee_top_menu from "../menus/employee_modules_top.json";
+import visitor_top_menu from "../menus/visitor_modules_top.json";
 
 export default {
   data() {
@@ -646,12 +631,13 @@ export default {
 
       topMenu_Selected: "dashboard",
       company_menus,
+      visitor_menus,
       employee_menus,
       branch_menus,
       guard_menus,
       host_menus,
       company_top_menu,
-      employee_top_menu,
+      visitor_top_menu,
       pendingLeavesCount: 0,
       pendingNotificationsCount: 0,
       snackNotificationText: "",
@@ -694,16 +680,18 @@ export default {
     };
   },
   created() {
-    this.updateTopmenu();
+   
 
     this.$store.commit("loginType", this.$auth.user.user_type);
     this.getCompanyDetails();
-    this.setMenus();
-    this.setSubLeftMenuItems("dashboard", "/dashboard2", false);
+    // this.setMenus();
+    this.setSubLeftMenuItems("dashboard", "/dashboard", false);
     this.logo_src = require("@/static/logo22.png");
     this.pendingNotificationsCount = 0;
     this.loadNotificationMenu();
     this.verifyAlarmStatus();
+
+    this.updateTopmenu();
 
     // setInterval(() => {
     //   this.verifyAlarmStatus();
@@ -809,7 +797,7 @@ export default {
     toggleTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
 
-      if(!this.$vuetify.theme.dark) {
+      if (!this.$vuetify.theme.dark) {
         this.$vuetify.theme.themes.light = {
           primary: "#6946dd", //violoet
           accent: "#d8363a",
@@ -820,13 +808,30 @@ export default {
           popup_background: "#ecf0f4",
         };
       }
-
     },
     updateTopmenu() {
       //update company Top menu
       //filter Display Modules From Company Settings
 
       try {
+        console.log("Calling top menu");
+
+        if (this.$auth.user.user_type == "employee") {
+          let { permissions } = this.$auth.user;
+
+          let filteredArr = this.visitor_top_menu.filter((item) =>
+            permissions.includes(item.menu)
+          );
+
+          this.company_top_menu = filteredArr;
+
+
+          this.setSubLeftMenuItems("visitor_dashboard_access", "/dashboard", false);
+          // this.items = this.visitor_menus;
+
+          return;
+        }
+
         if (this.$auth.user.company.display_modules) {
           let display_modules = JSON.parse(
             this.$auth.user.company.display_modules
@@ -867,7 +872,7 @@ export default {
       // Handle inactivity
       this.handleInactivity = () => {
         // Perform actions when the user is inactive
-        this.$router.push(`/dashboard2`);
+        this.$router.push(`/dashboard`);
         // For example, you could redirect the user, show a message, etc.
       };
 

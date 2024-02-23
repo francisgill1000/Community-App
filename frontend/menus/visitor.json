@@ -1,0 +1,17 @@
+[
+  {
+    "icon": "mdi-transit-transfer",
+    "title": "Visitors",
+    "to": "/community/visitor/dashboard",
+    "menu": "visitor_dashboard_access",
+    "submenu": "visitor_dashboard_access",
+    "module": "dashboard"
+  },
+  {
+    "icon": "",
+    "title": "Visitors",
+    "to": "/community/visitor",
+    "menu": "visitors_access",
+    "module": "visitor_access"
+  }
+]

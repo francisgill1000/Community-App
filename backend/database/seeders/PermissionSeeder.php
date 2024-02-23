@@ -10,6 +10,7 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         // Permission::truncate();
+        // return;
 
         $data = [
             ['module' => 'company', 'title' => 'Company access', 'name' => 'company_access'],
@@ -308,12 +309,6 @@ class PermissionSeeder extends Seeder
             ['module' => 'web_logs', 'title' => 'Web Logs edit', 'name' => 'web_logs_edit'],
             ['module' => 'web_logs', 'title' => 'Web Logs delete', 'name' => 'web_logs_delete'],
 
-            ['module' => 'visitor', 'title' => 'Visitor access', 'name' => 'visitor_access'],
-            ['module' => 'visitor', 'title' => 'Visitor view', 'name' => 'visitor_view'],
-            ['module' => 'visitor', 'title' => 'Visitor create', 'name' => 'visitor_create'],
-            ['module' => 'visitor', 'title' => 'Visitor edit', 'name' => 'visitor_edit'],
-            ['module' => 'visitor', 'title' => 'Visitor delete', 'name' => 'visitor_delete'],
-
             ['module' => 'host', 'title' => 'Host access', 'name' => 'host_access'],
             ['module' => 'host', 'title' => 'Host view', 'name' => 'host_view'],
             ['module' => 'host', 'title' => 'Host create', 'name' => 'host_create'],
@@ -331,6 +326,55 @@ class PermissionSeeder extends Seeder
             ['module' => 'zone', 'title' => 'Zone create', 'name' => 'zone_create'],
             ['module' => 'zone', 'title' => 'Zone edit', 'name' => 'zone_edit'],
             ['module' => 'zone', 'title' => 'Zone delete', 'name' => 'zone_delete'],
+
+
+            ['module' => 'community', 'title' => 'Community Dashboard', 'name' => 'community_dashboard_access'],
+            ['module' => 'community', 'title' => 'Community Dashboard view', 'name' => 'community_dashboard_view'],
+            ['module' => 'community', 'title' => 'Community Dashboard create', 'name' => 'community_dashboard_create'],
+            ['module' => 'community', 'title' => 'Community Dashboard edit', 'name' => 'community_dashboard_edit'],
+            ['module' => 'community', 'title' => 'Community Dashboard delete', 'name' => 'community_dashboard_delete'],
+
+            ['module' => 'visitor_dashboard', 'title' => 'Visitor Dashboard', 'name' => 'visitor_dashboard_access'],
+            ['module' => 'visitor_dashboard', 'title' => 'Visitor Dashboard view', 'name' => 'visitor_dashboard_view'],
+            ['module' => 'visitor_dashboard', 'title' => 'Visitor Dashboard create', 'name' => 'visitor_dashboard_create'],
+            ['module' => 'visitor_dashboard', 'title' => 'Visitor Dashboard edit', 'name' => 'visitor_dashboard_edit'],
+            ['module' => 'visitor_dashboard', 'title' => 'Visitor Dashboard delete', 'name' => 'visitor_dashboard_delete'],
+
+            ['module' => 'tanent', 'title' => 'Tanent access', 'name' => 'tanent_access'],
+            ['module' => 'tanent', 'title' => 'Tanent view', 'name' => 'tanent_view'],
+            ['module' => 'tanent', 'title' => 'Tanent create', 'name' => 'tanent_create'],
+            ['module' => 'tanent', 'title' => 'Tanent edit', 'name' => 'tanent_edit'],
+            ['module' => 'tanent', 'title' => 'Tanent delete', 'name' => 'tanent_delete'],
+
+            ['module' => 'visitor', 'title' => 'Visitor access', 'name' => 'visitor_access'],
+            ['module' => 'visitor', 'title' => 'Visitor view', 'name' => 'visitor_view'],
+            ['module' => 'visitor', 'title' => 'Visitor create', 'name' => 'visitor_create'],
+            ['module' => 'visitor', 'title' => 'Visitor edit', 'name' => 'visitor_edit'],
+            ['module' => 'visitor', 'title' => 'Visitor delete', 'name' => 'visitor_delete'],
+
+            ['module' => 'delivery', 'title' => 'Delivery access', 'name' => 'delivery_access'],
+            ['module' => 'delivery', 'title' => 'Delivery view', 'name' => 'delivery_view'],
+            ['module' => 'delivery', 'title' => 'Delivery create', 'name' => 'delivery_create'],
+            ['module' => 'delivery', 'title' => 'Delivery edit', 'name' => 'delivery_edit'],
+            ['module' => 'delivery', 'title' => 'Delivery delete', 'name' => 'delivery_delete'],
+
+            ['module' => 'contractor', 'title' => 'Contractor access', 'name' => 'contractor_access'],
+            ['module' => 'contractor', 'title' => 'Contractor view', 'name' => 'contractor_view'],
+            ['module' => 'contractor', 'title' => 'Contractor create', 'name' => 'contractor_create'],
+            ['module' => 'contractor', 'title' => 'Contractor edit', 'name' => 'contractor_edit'],
+            ['module' => 'contractor', 'title' => 'Contractor delete', 'name' => 'contractor_delete'],
+
+            ['module' => 'maid', 'title' => 'Maid access', 'name' => 'maid_access'],
+            ['module' => 'maid', 'title' => 'Maid view', 'name' => 'maid_view'],
+            ['module' => 'maid', 'title' => 'Maid create', 'name' => 'maid_create'],
+            ['module' => 'maid', 'title' => 'Maid edit', 'name' => 'maid_edit'],
+            ['module' => 'maid', 'title' => 'Maid delete', 'name' => 'maid_delete'],
+
+            ['module' => 'parking', 'title' => 'Parking access', 'name' => 'parking_access'],
+            ['module' => 'parking', 'title' => 'Parking view', 'name' => 'parking_view'],
+            ['module' => 'parking', 'title' => 'Parking create', 'name' => 'parking_create'],
+            ['module' => 'parking', 'title' => 'Parking edit', 'name' => 'parking_edit'],
+            ['module' => 'parking', 'title' => 'Parking delete', 'name' => 'parking_delete'],
 
 
             //['module' => 'access_control', 'title' => 'Access Control access', 'name' => 'access_control_access'],
@@ -353,6 +397,6 @@ class PermissionSeeder extends Seeder
         }
 
         // run this command to seed the data => php artisan db:seed --class=PermissionSeeder
-        //Permission::insert($data);
+        // Permission::insert($data);
     }
 }
