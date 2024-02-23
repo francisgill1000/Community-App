@@ -8,10 +8,8 @@
       <v-card-text class="py-3">
         <v-row>
           <v-col md="2" sm="2">
-            Report Type
             <v-select
-              placeholder="Report Type"
-              class="mt-2"
+              label="Report Type"
               outlined
               dense
               v-model="payload.report_type"
@@ -29,10 +27,6 @@
                   id: `Door Wise Access Control Report`,
                   name: `Door Wise Access Control Report`,
                 },
-                // {
-                //   id: `Branch Wise Access Control Report`,
-                //   name: `Branch Wise Access Control Report`,
-                // },
                 {
                   id: `Allowed`,
                   name: `Access Granted Access Control Report`,
@@ -63,9 +57,8 @@
             ></v-select>
           </v-col> -->
           <v-col md="2" sm="4">
-            Door
             <v-select
-              class="mt-2"
+              label="Door"
               outlined
               dense
               v-model="payload.DeviceID"
@@ -77,17 +70,25 @@
             ></v-select>
           </v-col>
           <v-col md="2" sm="2">
-            User Type
             <v-select
-              placeholder="User Type"
-              class="mt-2"
+              label="User Type"
               outlined
               dense
               v-model="payload.user_type"
               x-small
               :items="[
-                { id: `Employee`, name: `Employee` },
-                { id: `Visitor`, name: `Visitor` },
+                {
+                  id: ``,
+                  name: `Select All`,
+                },
+                { id: `tanent`, name: `Tanent` },
+                { id: `family_member`, name: `Family Member` },
+                { id: `relative`, name: `Relative` },
+                { id: `visitor`, name: `Visitor` },
+                { id: `delivery`, name: `Delivery` },
+                { id: `contractor`, name: `Contractor` },
+                { id: `maid`, name: `Maid` },
+                { id: `employee`, name: `Employee` },
               ]"
               item-value="id"
               item-text="name"
@@ -95,33 +96,30 @@
             ></v-select>
           </v-col>
           <v-col md="2" sm="4">
-            User ID
             <v-autocomplete
               density="comfortable"
-              class="mt-2"
+              label="User ID"
               outlined
               dense
               v-model="payload.UserID"
               x-small
               :items="[
-                { system_user_id: ``, name_with_user_id: `Select All` },
-                ...employees,
+                { system_user_id: ``, full_name: `Select All` },
+                ...users,
               ]"
               item-value="system_user_id"
-              item-text="name_with_user_id"
+              item-text="full_name"
               :hide-details="true"
             ></v-autocomplete>
           </v-col>
           <v-col md="2" sm="5">
-            <div class="mb-2">Date</div>
             <CustomFilter
               @filter-attr="filterAttr"
               :defaultFilterType="1"
-              :height="'45px '"
+              :height="'40px '"
             />
           </v-col>
           <v-col md="2" sm="2">
-            <div class="mb-2">&nbsp;</div>
             <v-btn @click="getDataFromApi()" color="primary" primary fill
               >Generate
             </v-btn>
@@ -255,7 +253,8 @@
                       width: 30px;
                       max-width: 30px;
                     "
-                    :src="item.tanent.profile_picture
+                    :src="
+                      item.tanent.profile_picture
                         ? item.tanent.profile_picture
                         : '/no-profile-image.jpg'
                     "
@@ -290,7 +289,8 @@
                       width: 30px;
                       max-width: 30px;
                     "
-                    :src="item.family_member.profile_picture
+                    :src="
+                      item.family_member.profile_picture
                         ? item.family_member.profile_picture
                         : '/no-profile-image.jpg'
                     "
@@ -325,7 +325,8 @@
                       width: 30px;
                       max-width: 30px;
                     "
-                    :src="item.relative.profile_picture
+                    :src="
+                      item.relative.profile_picture
                         ? item.relative.profile_picture
                         : '/no-profile-image.jpg'
                     "
@@ -360,7 +361,8 @@
                       width: 30px;
                       max-width: 30px;
                     "
-                    :src="item.visitor.profile_picture
+                    :src="
+                      item.visitor.profile_picture
                         ? item.visitor.profile_picture
                         : '/no-profile-image.jpg'
                     "
@@ -395,7 +397,8 @@
                       width: 30px;
                       max-width: 30px;
                     "
-                    :src="item.delivery.profile_picture
+                    :src="
+                      item.delivery.profile_picture
                         ? item.delivery.profile_picture
                         : '/no-profile-image.jpg'
                     "
@@ -430,7 +433,8 @@
                       width: 30px;
                       max-width: 30px;
                     "
-                    :src="item.contractor.profile_picture
+                    :src="
+                      item.contractor.profile_picture
                         ? item.contractor.profile_picture
                         : '/no-profile-image.jpg'
                     "
@@ -465,7 +469,8 @@
                       width: 30px;
                       max-width: 30px;
                     "
-                    :src="item.maid.profile_picture
+                    :src="
+                      item.maid.profile_picture
                         ? item.maid.profile_picture
                         : '/no-profile-image.jpg'
                     "
@@ -519,7 +524,6 @@
                 </v-col>
               </v-row>
             </template>
-
           </v-data-table>
         </v-card>
       </div>
@@ -564,7 +568,7 @@ export default {
     to_menu: false,
     ids: [],
     departments: [],
-    employees: [],
+    users: [],
     DateRange: true,
     devices: [],
 
@@ -572,15 +576,15 @@ export default {
     total: 0,
 
     payload: {
-      report_type: "Date Wise Report",
-      from_date: null,
-      to_date: null,
-      daily_date: null,
-      UserID: "",
+      DeviceID: ``,
+      report_type: ``,
+      user_type: ``,
+      from_date: ``,
+      to_date: ``,
+      UserID: ``,
       department_ids: [],
       status: "-1",
-      DeviceID: "",
-      branch_id: "",
+      branch_id: ``,
       include_device_types: ["all", "Access Control"],
     },
 
@@ -697,7 +701,7 @@ export default {
     // this.headers.splice(2, 0, ...branch_header);
     this.setFromDate();
     // this.getBranches();
-    this.getScheduledEmployees();
+    this.getUsers();
     this.getDeviceList();
   },
   methods: {
@@ -721,7 +725,7 @@ export default {
       return "Employee";
     },
 
-    getUserPhone(item){
+    getUserPhone(item) {
       const relationships = {
         Tanent: item.tanent,
         "Family Member": item.family_member,
@@ -788,20 +792,17 @@ export default {
         });
     },
 
-    getScheduledEmployees() {
+    getUsers() {
       let options = {
         params: {
           per_page: 1000,
           company_id: this.$auth.user.company_id,
-          shift_type_id: this.shift_type_id,
         },
       };
 
-      this.$axios
-        .get(`/scheduled_employees_with_type`, options)
-        .then(({ data }) => {
-          this.employees = data;
-        });
+      this.$axios.get(`/get_users`, options).then(({ data }) => {
+        this.users = data;
+      });
     },
 
     getDeviceList() {
