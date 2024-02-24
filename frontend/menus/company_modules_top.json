@@ -53,7 +53,7 @@
     "icon": "mdi mdi-calendar-account",
     "title": "Parking",
     "to": "/community/parking",
-    "menu": "house_maids",
+    "menu": "parkings",
     "module": "topmenu"
   },
  

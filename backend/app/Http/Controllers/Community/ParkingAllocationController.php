@@ -13,7 +13,6 @@ class ParkingAllocationController extends Controller
 {
     public function index()
     {
-        // return Parking::get();
         return Vehicle::orderBy('id', 'desc')->with(["parking", "tanent"])->paginate(request("per_page") ?? 10);
     }
 

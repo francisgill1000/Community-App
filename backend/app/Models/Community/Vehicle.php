@@ -16,9 +16,16 @@ class Vehicle extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parking() 
+    public function parking()
     {
-        return $this->belongsTo(Parking::class)->with("floor");
+        return $this->belongsTo(Parking::class)->withDefault([
+            "isAllocated" => false,
+            "category" => "---",
+            "parking_number" => "---",
+            "floor" => [
+                "floor_number" => "---"
+            ]
+        ])->with("floor");
     }
 
     /**
@@ -28,6 +35,16 @@ class Vehicle extends Model
      */
     public function tanent()
     {
-        return $this->belongsTo(Tanent::class)->with("room");
+        return $this->belongsTo(Tanent::class)->withDefault([
+            "full_name" => "---",
+            "phone_number" => "---",
+            "email" => "---",
+            "start_date" => "---",
+            "end_date" => "---",
+            "status" => "---",
+            "room" => [
+                "room_number" => "---"
+            ]
+        ])->with("room");
     }
 }

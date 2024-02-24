@@ -165,6 +165,19 @@
                   :error-messages="errors && errors.pin ? errors.pin[0] : ''"
                 ></v-text-field>
               </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  label="Phone Number"
+                  v-model="payload.phone_number"
+                  dense
+                  class="text-center"
+                  outlined
+                  :hide-details="!errors.phone_number"
+                  :error-messages="
+                    errors && errors.phone_number ? errors.phone_number[0] : ''
+                  "
+                ></v-text-field>
+              </v-col>
             </v-row>
           </v-col>
         </v-row>

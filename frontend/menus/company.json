@@ -52,14 +52,6 @@
     "module": "dashboard"
   },
   {
-    "icon": "mdi-cash-multiple",
-    "title": "Payroll",
-    "to": "/payroll/salary",
-    "menu": "payroll_access",
-    "submenu": "payroll",
-    "module": "dashboard"
-  },
-  {
     "icon": "mdi-security",
     "title": "Access Control",
     "to": "/timezone",
@@ -84,6 +76,7 @@
     "submenu": "visitors",
     "module": "dashboard"
   },
+  
 
   {
     "icon": "mdi-filmstrip-box-multiple",
@@ -274,16 +267,16 @@
     "module": "payroll"
   },
   {
-    "icon": "mdi mdi-clock-time-four-outline",
-    "title": "Timezones",
-    "to": "/timezone",
+    "icon": "mdi-home",
+    "title": "Dashboard",
+    "to": "/dashboard",
     "menu": "timezone",
     "module": "access_control"
   },
   {
-    "icon": "mdi mdi-credit-card-clock-outline",
-    "title": "Mapped List",
-    "to": "/timezonemapping/list",
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/employees/reports",
     "menu": "timezone_mapping_list",
     "module": "access_control"
   },
@@ -295,16 +288,16 @@
     "module": "access_control"
   },
   {
-    "icon": "mdi mdi-clock-time-four-outline",
-    "title": "Access Control Report",
-    "to": "/access_control_report",
-    "menu": "timezone",
-    "module": "access_control"
-  },
-  {
     "icon": "mdi-home",
     "title": "Dashboard",
     "to": "/community/visitor/dashboard",
+    "menu": "visitors_access",
+    "module": "visitors"
+  },
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/community/visitor/reports",
     "menu": "visitors_access",
     "module": "visitors"
   },
@@ -316,11 +309,117 @@
     "module": "visitors"
   },
   {
+    "icon": "mdi-home",
+    "title": "Dashboard",
+    "to": "/community/delivery_man/dashboard",
+    "menu": "delivery_access",
+    "module": "delivery_man"
+  },
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/community/delivery_man/reports",
+    "menu": "delivery_access",
+    "module": "delivery_man"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Delivery Man",
+    "to": "/community/delivery_man",
+    "menu": "delivery_access",
+    "module": "delivery_man"
+  },
+
+  {
+    "icon": "mdi-home",
+    "title": "Dashboard",
+    "to": "/community/contractor/dashboard",
+    "menu": "contractor_access",
+    "module": "contractors"
+  },
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/community/contractor/reports",
+    "menu": "contractor_access",
+    "module": "contractors"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Contractors",
+    "to": "/community/contractor",
+    "menu": "contractor_access",
+    "module": "contractors"
+  },
+
+  {
+    "icon": "mdi-home",
+    "title": "Dashboard",
+    "to": "/community/house_maids/dashboard",
+    "menu": "contractor_access",
+    "module": "house_maids"
+  },
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/community/house_maids/reports",
+    "menu": "contractor_access",
+    "module": "house_maids"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "House Maids",
+    "to": "/community/house_maids",
+    "menu": "contractor_access",
+    "module": "house_maids"
+  },
+
+
+  {
+    "icon": "mdi-home",
+    "title": "Dashboard",
+    "to": "/dashboard",
+    "menu": "parking_access",
+    "module": "parkings"
+  },
+  
+  {
+    "icon": "mdi-account",
+    "title": "Parking",
+    "to": "/community/parking",
+    "menu": "parking_access",
+    "module": "parkings"
+  },
+
+  {
+    "icon": "mdi-filmstrip-box-multiple",
+    "title": "Companies",
+    "to": "/community/contractors",
+    "menu": "contractor_access",
+    "module": "contractors"
+  },
+
+
+  {
     "icon": "mdi-home ",
     "title": "Tanent",
     "to": "/community/tanent/dashboard",
     "menu": "community",
     "module": "dashboard"
+  },
+  {
+    "icon": "mdi-home",
+    "title": "Dashboard",
+    "to": "/community/tanent/dashboard",
+    "menu": "community",
+    "module": "community"
+  },
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/community/tanent/reports",
+    "menu": "community",
+    "module": "community"
   },
   {
     "icon": "mdi-account-card-details",

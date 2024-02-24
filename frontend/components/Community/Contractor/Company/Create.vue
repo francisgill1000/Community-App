@@ -33,7 +33,7 @@
             
               <v-col cols="6">
                 <v-text-field
-                  label="Branch Name"
+                  label="Contractor Company Name"
                   :readonly="disabled"
                   v-model="payload.branch_name"
                   dense
@@ -90,7 +90,7 @@
              
               <v-col cols="6">
                 <v-text-field
-                  label="Phone Number"
+                  label="Office Phone Number"
                   :readonly="disabled"
                   v-model="payload.phone_number"
                   dense
@@ -187,7 +187,7 @@
               </v-col>
               <v-col cols="4">
                 <v-text-field
-                  label="Car Brand"
+                  label="Car License Expiry"
                   :readonly="disabled"
                   v-model="payload.car_brand"
                   dense

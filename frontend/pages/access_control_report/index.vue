@@ -192,6 +192,10 @@
               {{ item.date }} {{ item.time }}
             </template>
 
+            <template v-slot:item.flat="{ item, index }">
+              {{ item?.tanent?.room?.room_number ?? "---" }} 
+            </template>
+
             <template v-slot:item.branch="{ item, index }">
               <span>
                 <b>{{
@@ -237,7 +241,7 @@
 
             <template v-slot:item.user="{ item }" style="padding: 0px">
               <v-row v-if="item.tanent" no-gutters>
-                <v-col
+                <!-- <v-col
                   md="2"
                   style="
                     padding: 3px;
@@ -260,20 +264,17 @@
                     "
                   >
                   </v-img>
-                </v-col>
-                <v-col style="padding: 3px" md="8">
-                  <strong>
+                </v-col> -->
+                <v-col  md="8">
+                  <div>
                     {{ item.tanent.first_name ?? "---" }}
                     {{ item.tanent.last_name ?? "---" }}
-                  </strong>
-                  <div class="secondary-value">
-                    {{ item.UserID }}
                   </div>
                 </v-col>
               </v-row>
 
               <v-row v-else-if="item.family_member" no-gutters>
-                <v-col
+                <!-- <v-col
                   md="2"
                   style="
                     padding: 3px;
@@ -296,20 +297,17 @@
                     "
                   >
                   </v-img>
-                </v-col>
-                <v-col style="padding: 3px" md="8">
-                  <strong>
+                </v-col> -->
+                <v-col  md="8">
+                  <div>
                     {{ item.family_member.first_name ?? "---" }}
                     {{ item.family_member.last_name ?? "---" }}
-                  </strong>
-                  <div class="secondary-value">
-                    {{ item.UserID }}
                   </div>
                 </v-col>
               </v-row>
 
               <v-row v-else-if="item.relative" no-gutters>
-                <v-col
+                <!-- <v-col
                   md="2"
                   style="
                     padding: 3px;
@@ -332,20 +330,17 @@
                     "
                   >
                   </v-img>
-                </v-col>
-                <v-col style="padding: 3px" md="8">
-                  <strong>
+                </v-col> -->
+                <v-col  md="8">
+                  <div>
                     {{ item.relative.first_name ?? "---" }}
                     {{ item.relative.last_name ?? "---" }}
-                  </strong>
-                  <div class="secondary-value">
-                    {{ item.UserID }}
                   </div>
                 </v-col>
               </v-row>
 
               <v-row v-else-if="item.visitor" no-gutters>
-                <v-col
+                <!-- <v-col
                   md="2"
                   style="
                     padding: 3px;
@@ -368,20 +363,17 @@
                     "
                   >
                   </v-img>
-                </v-col>
-                <v-col style="padding: 3px" md="8">
-                  <strong>
+                </v-col> -->
+                <v-col  md="8">
+                  <div>
                     {{ item.visitor.first_name ?? "---" }}
                     {{ item.visitor.last_name ?? "---" }}
-                  </strong>
-                  <div class="secondary-value">
-                    {{ item.UserID }}
                   </div>
                 </v-col>
               </v-row>
 
               <v-row v-else-if="item.delivery" no-gutters>
-                <v-col
+                <!-- <v-col
                   md="2"
                   style="
                     padding: 3px;
@@ -404,20 +396,17 @@
                     "
                   >
                   </v-img>
-                </v-col>
-                <v-col style="padding: 3px" md="8">
-                  <strong>
+                </v-col> -->
+                <v-col  md="8">
+                  <div>
                     {{ item.delivery.first_name ?? "---" }}
                     {{ item.delivery.last_name ?? "---" }}
-                  </strong>
-                  <div class="secondary-value">
-                    {{ item.UserID }}
                   </div>
                 </v-col>
               </v-row>
 
               <v-row v-else-if="item.contractor" no-gutters>
-                <v-col
+                <!-- <v-col
                   md="2"
                   style="
                     padding: 3px;
@@ -440,20 +429,17 @@
                     "
                   >
                   </v-img>
-                </v-col>
-                <v-col style="padding: 3px" md="8">
-                  <strong>
+                </v-col> -->
+                <v-col  md="8">
+                  <div>
                     {{ item.contractor.first_name ?? "---" }}
                     {{ item.contractor.last_name ?? "---" }}
-                  </strong>
-                  <div class="secondary-value">
-                    {{ item.UserID }}
                   </div>
                 </v-col>
               </v-row>
 
               <v-row v-else-if="item.maid" no-gutters>
-                <v-col
+                <!-- <v-col
                   md="2"
                   style="
                     padding: 3px;
@@ -476,20 +462,17 @@
                     "
                   >
                   </v-img>
-                </v-col>
-                <v-col style="padding: 3px" md="8">
-                  <strong>
+                </v-col> -->
+                <v-col  md="8">
+                  <div>
                     {{ item.maid.first_name ?? "---" }}
                     {{ item.maid.last_name ?? "---" }}
-                  </strong>
-                  <div class="secondary-value">
-                    {{ item.UserID }}
                   </div>
                 </v-col>
               </v-row>
 
               <v-row v-else-if="item.employee" no-gutters>
-                <v-col
+                <!-- <v-col
                   md="2"
                   style="
                     padding: 3px;
@@ -512,14 +495,11 @@
                     "
                   >
                   </v-img>
-                </v-col>
-                <v-col style="padding: 3px" md="8">
-                  <strong>
+                </v-col> -->
+                <v-col  md="8">
+                  <div>
                     {{ item.employee.first_name ?? "---" }}
                     {{ item.employee.last_name ?? "---" }}
-                  </strong>
-                  <div class="secondary-value">
-                    {{ item.UserID }}
                   </div>
                 </v-col>
               </v-row>
@@ -606,6 +586,13 @@ export default {
         sortable: true,
         key: "user",
         value: "user",
+      },
+      {
+        text: "Flat",
+        align: "left",
+        sortable: true,
+        key: "flat",
+        value: "flat",
       },
       {
         text: "Phone",

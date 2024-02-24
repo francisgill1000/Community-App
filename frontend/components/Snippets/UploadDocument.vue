@@ -14,7 +14,7 @@
       type="file"
       @change="attachment"
       style="display: none"
-      accept="image/*"
+      accept="image/*, application/pdf"
       ref="attachment_input"
     />
   </div>

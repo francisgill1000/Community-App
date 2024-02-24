@@ -814,7 +814,6 @@ export default {
       //filter Display Modules From Company Settings
 
       try {
-        console.log("Calling top menu");
 
         if (this.$auth.user.user_type == "employee") {
           let { permissions } = this.$auth.user;
@@ -999,7 +998,7 @@ export default {
       this.$router.push(page);
     },
     goToSettings() {
-      this.setSubLeftMenuItems("settings", "/branches");
+      this.setSubLeftMenuItems("settings", "/community/contractors");
     },
     setSubLeftMenuItems(menu_name, page, redirect = true) {
       this.topMenu_Selected = menu_name;

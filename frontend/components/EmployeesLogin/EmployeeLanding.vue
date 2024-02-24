@@ -194,7 +194,7 @@
             <v-tab> Attendance </v-tab>
             <v-tab> Schedule </v-tab>
             <v-tab> leave Quota </v-tab>
-            <v-tab> Payslips </v-tab>
+            <!-- <v-tab> Payslips </v-tab> -->
             <v-tab> Profile</v-tab>
             <v-tab @click="loadMappedDevicesList()"> Mapped Devices</v-tab>
 
@@ -433,12 +433,12 @@
                   </v-card-text>
                 </v-card>
               </v-tab-item>
-              <v-tab-item>
+              <!-- <v-tab-item>
                 <EmployeePayslips
                   :id="table_id"
                   :employee_id="employee_id"
                   :system_user_id="system_user_id"
-              /></v-tab-item>
+              /></v-tab-item> -->
               <v-tab-item>
                 <EmployeePersonal
                   :employeeObject="employeeObject"

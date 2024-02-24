@@ -674,7 +674,7 @@
             ></v-text-field>
           </v-col>
 
-          <v-col style="max-width: 10%" v-if="$auth.user.branch_id == 0">
+          <!-- <v-col style="max-width: 10%" v-if="$auth.user.branch_id == 0">
             <v-autocomplete
               style="width: 100%"
               clearable
@@ -695,7 +695,7 @@
               flat
               @change="applyFilters(filters['branch_id'])"
             ></v-autocomplete>
-          </v-col>
+          </v-col> -->
           <v-col style="max-width: 15%">
             <v-autocomplete
               style="width: 100%"
@@ -1039,7 +1039,7 @@ import Bank from "../../components/employee/Bank.vue";
 import Document from "../../components/employee/Document.vue";
 import Qualification from "../../components/employee/Qualification.vue";
 import Setting from "../../components/employee/Setting.vue";
-import Payroll from "../../components/employee/Payroll.vue";
+// import Payroll from "../../components/employee/Payroll.vue";
 import Login from "../../components/employee/Login.vue";
 import Rfid from "../../components/employee/Rfid.vue";
 
@@ -1062,7 +1062,7 @@ export default {
     Document,
     Qualification,
     Setting,
-    Payroll,
+    // Payroll,
     Login,
     Rfid,
   },
@@ -1145,19 +1145,14 @@ export default {
         value: 8,
       },
       {
-        text: "Payroll",
-        icon: "mdi-briefcase",
-        value: 9,
-      },
-      {
         text: "Login",
         icon: "mdi-lock",
-        value: 10,
+        value: 9,
       },
       {
         text: "RFID",
         icon: "mdi-lock",
-        value: 11,
+        value: 10,
       },
     ],
     tab: 0,

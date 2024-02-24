@@ -38,6 +38,7 @@ class MemberRequest extends FormRequest
             "rfid" => "nullable",
             "pin" => "nullable",
             "full_name" => "nullable|min:3|max:20",
+            "phone_number" => "required|min:10|max:20",
         ];
     }
 }

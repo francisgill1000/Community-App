@@ -3,13 +3,9 @@
 namespace App\Http\Controllers\Community;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Community\Parking\AllocateParkingRequest;
-use App\Http\Requests\Community\Parking\AllocateUpdateParkingRequest;
 use App\Http\Requests\Community\Parking\StoreRequest;
 use App\Http\Requests\Community\Parking\UpdateRequest;
 use App\Models\Community\Parking;
-use App\Models\Community\Vehicle;
-use Illuminate\Http\Request;
 
 class ParkingController extends Controller
 {

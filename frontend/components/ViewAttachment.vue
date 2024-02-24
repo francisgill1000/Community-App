@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" height="700" width="700">
+  <v-dialog v-model="dialog" height="900" width="900">
     <template v-slot:activator="{ on, attrs }">
       <!-- <v-icon color="primary" v-bind="attrs" v-on="on">mdi-attachment</v-icon> -->
       <!-- <v-icon color="primary" v-bind="attrs" v-on="on"
@@ -9,7 +9,7 @@
       <v-icon color="primary" v-bind="attrs" v-on="on">mdi-paperclip</v-icon> -->
 
       <v-btn v-bind="attrs" v-on="on" outlined block color="primary"
-        >{{label}}
+        >{{ label }}
         <v-icon right dark>mdi-file</v-icon>
       </v-btn>
     </template>
@@ -18,11 +18,21 @@
         ><v-icon color="primary">mdi-close-circle-outline</v-icon></v-btn
       >
     </div>
-    <v-img :src="src" :alt="altText"></v-img>
+    <div v-if="src && src.includes(`.pdf`)">
+      <iframe
+          :src="src"
+          frameborder="0"
+          style="width: 100%; height: 600px"
+        ></iframe>
+      <!-- <pdf-viewer :src="src"></pdf-viewer> -->
+    </div>
+    <v-img v-else :src="src" :alt="altText"></v-img>
   </v-dialog>
 </template>
 
 <script>
+import { PDFViewer } from "vue-pdf";
+
 export default {
   props: {
     label: {

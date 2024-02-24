@@ -165,20 +165,11 @@
       </v-snackbar>
       <div v-if="can(`employee_view`)">
         <v-card class="mb-5" flat dense>
-          <v-container>
+          <v-container fluid>
             <v-row>
               <v-col cols="12">
                 <div class="headline mb-1">Filters</div>
                 <v-row no-gutters>
-                  <v-col cols="1" class="mr-1">
-                    <v-autocomplete
-                      v-model="filters.status"
-                      outlined
-                      dense
-                      :items="['Allocated', 'Free']"
-                      label="Status"
-                    ></v-autocomplete>
-                  </v-col>
                   <v-col cols="1" class="mr-1">
                     <v-autocomplete
                       @change="getFloorByCategory(filters.category)"
@@ -267,7 +258,7 @@
                       :height="'40px '"
                     />
                   </v-col>
-                  <v-col cols="1">
+                  <v-col cols="1" class="ml-5">
                     <v-btn class="primary" title="Generate" @click="generate">
                       Generate
                     </v-btn>
@@ -324,9 +315,11 @@
             class="elevation-1"
             :server-items-length="totalRowsCount"
           >
-            <template v-slot:item.status="{ item }">
-              {{ item?.vehicle?.tanent ? "Allocated" : "Free" }}
+            <template v-slot:item.car_number="{ item }">
+              ---
             </template>
+
+            
             <template v-slot:item.options="{ item }">
               <v-menu bottom left>
                 <template v-slot:activator="{ on, attrs }">
@@ -515,6 +508,15 @@ export default {
         filterSpecial: false,
       },
       {
+        text: "Flat/Room",
+        align: "left",
+        sortable: true,
+        key: "tanent.room.room_number",
+        value: "tanent.room.room_number",
+        filterable: true,
+        filterSpecial: false,
+      },
+      {
         text: "Parking Number",
         align: "left",
         sortable: true,
@@ -542,15 +544,7 @@ export default {
         filterable: true,
         filterSpecial: false,
       },
-      {
-        text: "Flat/Room",
-        align: "left",
-        sortable: true,
-        key: "tanent.room.room_number",
-        value: "tanent.room.room_number",
-        filterable: true,
-        filterSpecial: false,
-      },
+      
       {
         text: "Phone Number",
         align: "left",
@@ -584,15 +578,6 @@ export default {
         sortable: true,
         key: "tanent.end_date",
         value: "tanent.end_date",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
-        text: "Status",
-        align: "left",
-        sortable: true,
-        key: "status",
-        value: "status",
         filterable: true,
         filterSpecial: false,
       },

@@ -58,15 +58,14 @@ class StoreRequest extends FormRequest
             "nationality" => "required",
             "address" => "nullable",
 
-            "passport_doc" => "nullable",
-            "id_doc" => "nullable",
-            "contract_doc" => "nullable",
-            "ejari_doc" => "nullable",
-            "license_doc" => "nullable",
-
+            "passport_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "id_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "contract_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "ejari_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "license_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "others_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            
             "web_access" => "nullable",
-
-            "others_doc" => "nullable",
 
             "gender" => "required",
 
