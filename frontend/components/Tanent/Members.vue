@@ -13,23 +13,24 @@
             </v-col>
             <v-col cols="12">
               <v-row no-gutters>
-
                 <v-col cols="6">
                   <small style="font-size: 11px">ID</small>
                 </v-col>
                 <v-col cols="6" class="text-right">
                   <small style="font-size: 11px"> {{ item.system_user_id }} </small>
                 </v-col>
-
                 <v-col cols="6">
                   <small style="font-size: 11px">Full Name</small>
                 </v-col>
                 <v-col cols="6" class="text-right">
                   <small style="font-size: 11px"> {{ item.full_name }} </small>
                 </v-col>
-
-               
-
+                <v-col cols="6">
+                  <small style="font-size: 11px">Phone Number</small>
+                </v-col>
+                <v-col cols="6" class="text-right">
+                  <small style="font-size: 11px"> {{ item.phone_number }} </small>
+                </v-col>
                 <v-col cols="6">
                   <small style="font-size: 11px">Age</small>
                 </v-col>
@@ -38,8 +39,6 @@
                     {{ item.age }} years old
                   </small>
                 </v-col>
-
-            
                 <v-col cols="4">
                   <small style="font-size: 11px">Nationality</small>
                 </v-col>
@@ -52,14 +51,12 @@
                 <v-col cols="9" class="text-right">
                   <small style="font-size: 11px"> {{item.gender}} </small>
                 </v-col>
-
                 <v-col cols="3">
                   <small style="font-size: 11px">RFID</small>
                 </v-col>
                 <v-col cols="9" class="text-right">
                   <small style="font-size: 11px"> {{item.rfid}} </small>
                 </v-col>
-
                 <v-col cols="3">
                   <small style="font-size: 11px">Pin</small>
                 </v-col>
