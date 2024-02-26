@@ -131,6 +131,11 @@
               <v-list width="150" dense>
                 <v-list-item>
                   <v-list-item-title style="cursor: pointer">
+                    <CommunityContractorEdit :key="generateRandomId()" :item="item" />
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
                     <CommunityContractorSingle :key="generateRandomId()" :item="item" />
                   </v-list-item-title>
                 </v-list-item>

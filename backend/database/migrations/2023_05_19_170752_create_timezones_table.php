@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger("timezone_id");
             $table->string("timezone_name");
+            $table->string("description")->nullable();
             $table->longText("interval");
             $table->json("scheduled_days");
             $table->longText("json");

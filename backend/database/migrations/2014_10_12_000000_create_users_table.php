@@ -25,6 +25,8 @@ return new class extends Migration
             $table->integer('company_id')->default(0);
             $table->integer('branch_id')->default(0);
             $table->integer('employee_role_id')->default(0);
+            $table->integer('web_login_access')->default(1);
+            $table->integer('mobile_app_login_access')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

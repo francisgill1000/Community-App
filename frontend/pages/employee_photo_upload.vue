@@ -14,39 +14,6 @@
         {{ response }}
       </v-snackbar>
     </div>
-
-    <v-row>
-      <v-col cols="12">
-        <!-- <Back class="primary white--text" /> -->
-      </v-col>
-      <v-col v-if="isCompany" cols="3">
-        <v-select
-          @change="filterDepartmentsByBranch($event)"
-          v-model="branch_id"
-          :items="[{ branch_name: `All Branches`, id: `` }, ...branchesList]"
-          dense
-          placeholder="All Branches"
-          outlined
-          item-value="id"
-          item-text="branch_name"
-        >
-        </v-select>
-      </v-col>
-      <v-col cols="3">
-        <v-select
-          @change="loadDepartmentemployees"
-          v-model="departmentselected"
-          :items="departments"
-          dense
-          outlined
-          item-value="id"
-          item-text="name"
-          hide-details
-          label="Department"
-          :search-input.sync="searchInput"
-        ></v-select>
-      </v-col>
-    </v-row>
     <v-row>
       <v-col cols="5">
         <v-card class="photo-displaylist" style="height: 300px">
@@ -274,65 +241,6 @@
                 </v-col>
               </v-row>
             </v-card-text>
-            <!-- <v-card-text
-              class="photo-displaylistview"
-              v-for="(user, index) in rightEmployees"
-              :id="user.id"
-              v-model="rightSelectedEmp"
-              :key="user.id"
-            >
-              <div class="row">
-                <v-col class="col-1" style="padding: 0px">
-                  <v-checkbox
-                    hideDetails
-                    class="col-1 d-flex flex-column justify-center"
-                    v-model="rightSelectedEmp"
-                    :value="user.id"
-                    primary
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-                <v-col col="2" class="col" style="padding-top: 21px">
-                  {{ user.employee_id }} : {{ user.display_name }}
-                </v-col>
-                <v-col col="4">
-                  <span
-                    ><v-img
-                      v-if="user.profile_picture != ''"
-                      style="border-radius: 50%; width: 40px"
-                      :src="user.profile_picture"
-                    >
-                    </v-img
-                  ></span>
-                </v-col>
-                <v-col col="4">
-                  <span
-                    v-if="user.sdkEmpResponse == 'Success'"
-                    style="color: green"
-                    >{{ user.sdkEmpResponse }}</span
-                  >
-                  <span v-else style="color: red">{{
-                    user.sdkEmpResponse
-                  }}</span>
-                </v-col>
-              </div>
-            </v-card-text> -->
-
-            <!-- <select
-              multiple
-              v-model="rightSelectedEmp"
-              @dblclick="moveToLeftemp"
-              class="form-control"
-              size="13"
-            >
-              <option
-                v-for="(user, index) in rightEmployees"
-                :key="index"
-                :value="user.id"
-              >
-                Eid: {{ user.employee_id }} : {{ user.display_name }} :
-              </option>
-            </select> -->
           </div>
         </v-card>
       </v-col>
@@ -401,45 +309,6 @@
                 </v-col>
               </v-row>
             </v-card-text>
-            <!-- <v-card-text
-              class="photo-displaylistview"
-              v-for="(user, index) in leftDevices"
-              :id="user.id"
-              v-model="leftSelectedDevices"
-              :key="user.id"
-            >
-              <div class="row">
-                <v-col class="col-1" style="padding: 0px">
-                  <v-checkbox
-                    v-if="user.status.name == 'active'"
-                    hideDetails
-                    class="col-1 d-flex flex-column justify-center"
-                    v-model="leftSelectedDevices"
-                    :value="user.id"
-                    primary
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-else
-                    indeterminate
-                    value
-                    disabled
-                    hide-details
-                    class="col-1 d-flex flex-column justify-center"
-                  ></v-checkbox>
-                </v-col>
-                <div col-4 class="col" style="padding-top: 21px">
-                  {{ user.name }} : {{ user.device_id }}
-                  <span
-                    style="color: green"
-                    v-if="user.status.name == 'active'"
-                  >
-                    Online</span
-                  >
-                  <span style="color: red" v-else>Offline </span>
-                </div>
-              </div>
-            </v-card-text> -->
           </div>
         </v-card>
       </v-col>
@@ -561,39 +430,6 @@
                 </v-col>
               </v-row>
             </v-card-text>
-            <!-- <v-card-text
-              class="photo-displaylistview"
-              v-for="(user, index) in rightDevices"
-              :id="user.id"
-              v-model="rightSelectedDevices"
-              :key="user.id"
-            >
-              <div class="row">
-                <v-col class="col-1" style="padding: 0px">
-                  <v-checkbox
-                    hideDetails
-                    class="col-1 d-flex flex-column justify-center"
-                    v-model="rightSelectedDevices"
-                    :value="user.id"
-                    primary
-                    hide-details
-                  ></v-checkbox>
-                </v-col>
-                <div col class="col-sm" style="padding-top: 21px">
-                  {{ user.name }} : {{ user.device_id }}
-                </div>
-                <div col class="col-sm d-flex flex-column justify-center">
-                  <span
-                    v-if="user.sdkDeviceResponse == 'Success'"
-                    style="color: green"
-                    >{{ user.sdkDeviceResponse }}</span
-                  >
-                  <span v-else style="color: red">{{
-                    user.sdkDeviceResponse
-                  }}</span>
-                </div>
-              </div>
-            </v-card-text> -->
           </div>
         </v-card>
       </v-col>
@@ -714,38 +550,14 @@ export default {
     }, 2000);
   },
   async created() {
-    if (this.$auth.user.branch_id == 0) {
-      this.isCompany = true;
-      try {
-        const { data } = await this.$axios.get(`branches_list`, {
-          params: {
-            per_page: 100,
-            company_id: this.$auth.user.company_id,
-          },
-        });
-        this.branchesList = data;
-      } catch (error) {
-        // Handle the error
-        console.error("Error fetching branch list", error);
-      }
-    } else {
-      this.branch_id = this.$auth.user.branch_id;
-      this.isCompany = false;
-    }
     this.progressloading = true;
-    await this.filterDepartmentsByBranch(this.branch_id);
+    this.loadDepartmentemployees();
+    this.getDevisesDataFromApi();
   },
   methods: {
     can(per) {
       return this.$pagePermission.can(per, this);
     },
-    async filterDepartmentsByBranch(branch_id) {
-      await this.getDepartmentsApi(this.options, branch_id);
-      await this.getDevisesDataFromApi(branch_id);
-      await this.getEmployeesDataFromApi(branch_id);
-      await this.getTimezonesFromApi(branch_id);
-    },
-    fetch_logs() {},
     loadDepartmentemployees() {
       //this.loading = true;
       // let page = this.pagination.current;
@@ -825,176 +637,6 @@ export default {
         element["sdkDeviceResponse"] = "";
       });
     },
-
-    // onSubmit_old() {
-    //   this.resetErrorMessages();
-
-    //   if (this.timezonesselected == "") {
-    //     this.response = this.response + "Timezones not selected";
-    //   } else if (this.rightEmployees.length == 0) {
-    //     this.response = this.response + " Atleast select one Employee Details";
-    //   } else if (this.rightDevices.length == 0) {
-    //     this.response = this.response + " Atleast select one Device Details";
-    //   }
-
-    //   if (this.response != "") {
-    //     this.snackbar.show = true;
-    //     this.snackbar.message = this.response;
-    //     this.snackbar.color = "red";
-    //     setTimeout(() => {
-    //       this.snackbar.show = false;
-    //     }, 1000 * 10);
-    //     return false;
-    //   }
-    //   this.loading = true;
-
-    //   let columnsToFilter = ["systeM_user_id"];
-    //   let onlyUserSystemids = {};
-    //   // $.each(columnsToFilter, function (index, column) {
-    //   //   if (this.timezonesselected.hasOwnProperty(column)) {
-    //   //     onlyUserSystemids[column] = jsonData[column];
-    //   //   }
-    //   // });
-
-    //   // Define the keys you want to select
-    //   let keysToSelect = ["system_user_id"];
-
-    //   // Select the specified keys from each object
-    //   let filteredDataEmp = [];
-    //   this.rightEmployees.map(function (obj) {
-    //     let selectedObj = {};
-    //     keysToSelect.forEach(function (key) {
-    //       if (obj.hasOwnProperty(key)) {
-    //         // selectedObj[key] = obj[key];
-    //         selectedObj = obj[key];
-    //         filteredDataEmp.push(selectedObj);
-    //       }
-    //     });
-    //     return selectedObj;
-    //   });
-    //   //
-    //   // Define the keys you want to select
-    //   keysToSelect = ["device_id"];
-
-    //   // Select the specified keys from each object
-    //   let filteredDataDevices = [];
-    //   this.rightDevices.map(function (obj) {
-    //     let selectedObj = {};
-    //     keysToSelect.forEach(function (key) {
-    //       if (obj.hasOwnProperty(key)) {
-    //         // selectedObj[key] = obj[key];
-    //         selectedObj = obj[key];
-    //         filteredDataDevices.push(selectedObj);
-    //       }
-    //     });
-    //     return selectedObj;
-    //   });
-
-    //   let options = {
-    //     timezone_id: this.timezonesselected,
-    //     employee_id: this.rightEmployees,
-    //     device_id: this.rightDevices,
-    //     company_id: this.$auth.user.company_id,
-    //     employee_ids: filteredDataEmp,
-    //     device_ids: filteredDataDevices,
-    //   };
-
-    //   let url = this.endpointUpdatetimezoneStore;
-
-    //   this.progressloading = true;
-    //   let jsrightEmployees = this.rightEmployees;
-
-    //   this.snackbar.show = true;
-    //   this.response = "Connecting to devices... Please wait...";
-
-    //   let SDKSuccessStatus = true;
-    //   this.$axios.post(`${url}`, options).then(({ data }) => {
-    //     this.displaybutton = false;
-    //     if (data.record.SDKResponse.data) {
-    //       this.loading = false;
-
-    //       this.rightDevices.forEach((rightDevicesobj) => {
-    //         // $.each(this.rightDevices, function (index, rightDevicesobj) {
-    //         let SdkResponseDeviceobject = data.record.SDKResponse.data.find(
-    //           (e) => e.sn == rightDevicesobj.device_id
-    //         );
-
-    //         let deviceStatusResponse = "";
-    //         let EmpStatusResponse = "";
-
-    //         if (SdkResponseDeviceobject.message == "") {
-    //           deviceStatusResponse = "Success";
-    //         } else if (
-    //           SdkResponseDeviceobject.message == "The device was not found"
-    //         ) {
-    //           deviceStatusResponse = "The device was not found or offline";
-    //           SDKSuccessStatus = false;
-    //         } else if (SdkResponseDeviceobject.message == "person info error") {
-    //           let SDKUseridArray = SdkResponseDeviceobject.userList; //SDK error userslist
-    //           jsrightEmployees.forEach((element) => {
-    //             let systemUserid = element.system_user_id;
-    //             SDKSuccessStatus = false;
-    //             let selectedEmpobject = SDKUseridArray.find(
-    //               (e) => e.userCode == systemUserid
-    //             );
-    //             EmpStatusResponse = SdkResponseDeviceobject.sdkEmpResponse;
-    //             deviceStatusResponse = "";
-
-    //             if (EmpStatusResponse != "") {
-    //               //Adding extra parameters for Employee object
-    //               if (selectedEmpobject) {
-    //                 element.sdkEmpResponse = "person info error ";
-    //                 // $.extend(element, {
-    //                 //   sdkEmpResponse: "person info error ",
-    //                 // });
-    //               } else {
-    //                 element.sdkEmpResponse = "Success ";
-    //                 // $.extend(element, {
-    //                 //   sdkEmpResponse: "Success",
-    //                 // });
-    //               }
-    //             }
-    //           });
-    //         } else {
-    //         }
-
-    //         //Adding extra parameters for Devices object
-    //         // $.extend(rightDevicesobj, {
-    //         //   sdkDeviceResponse:
-    //         //     deviceStatusResponse != "" ? deviceStatusResponse : "Success",
-    //         // });
-
-    //         rightDevicesobj.forEach((element) => {
-    //           element["sdkDeviceResponse"] =
-    //             deviceStatusResponse != "" ? deviceStatusResponse : "Success";
-    //         });
-    //         this.errors = [];
-    //       });
-    //       this.rightEmployees = jsrightEmployees;
-    //       this.progressloading = false;
-
-    //       this.loading = false;
-    //       if (!SDKSuccessStatus) {
-    //         {
-    //           this.errors = data.errors;
-    //         }
-    //         this.errors = [];
-    //         this.errors["message"] =
-    //           "Device/Employee Error:   Device and Employee details are Mapped. You can add/remove items from Edit list ";
-
-    //         //this.displaybutton = false;
-    //       } else {
-    //         this.$router.push("/timezonemapping/list");
-    //       }
-    //     } else {
-    //       this.errors = [];
-    //       this.progressloading = false;
-
-    //       this.errors["message"] = "Device Communication is not available";
-    //       return false;
-    //     }
-    //   });
-    // },
     goback() {
       this.$router.push("/timezonemapping/list");
     },

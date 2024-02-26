@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('LogTime');
             $table->string('DeviceID');
             $table->string('SerialNumber')->nullable();
+            $table->datetime("checked_datetime")->nullable();
+            $table->integer('company_id')->default(0);
+            $table->integer('branch_id')->default(0);
             $table->timestamps();
         });
     }

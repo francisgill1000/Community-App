@@ -21,7 +21,8 @@ return new class extends Migration
             $table->integer("shift_type_id")->default(0);
             $table->integer('company_id')->default(0);
             $table->integer('branch_id')->default(0);
-
+            $table->integer("is_week")->default(0);
+            $table->integer("roster_id")->nullable();
             $table->timestamps();
         });
     }

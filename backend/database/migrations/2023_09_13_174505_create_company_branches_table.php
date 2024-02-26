@@ -29,6 +29,16 @@ return new class extends Migration
             $table->string('logo')->default(null)->nullable();
             $table->integer('user_id')->default(0);
             $table->integer('company_id')->default(0);
+            $table->string("term")->default("Long Term");
+            $table->string("email")->nullable();
+            $table->string("phone_number")->nullable();
+            $table->string("mobile_number")->nullable();
+            $table->string("car_number")->nullable();
+            $table->string("car_brand")->nullable();
+            $table->string("car_issued_city")->nullable();
+            $table->string("manager_name")->nullable();
+            $table->string("lat")->nullable();
+            $table->string("lon")->nullable();
             $table->timestamps();
         });
     }

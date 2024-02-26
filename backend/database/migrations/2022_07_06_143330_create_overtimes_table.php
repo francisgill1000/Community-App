@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('amount');
             $table->integer('employee_id');
+            $table->string('no_of_hours')->nullable();
+            $table->string('no_of_days')->nullable();
             $table->integer('company_id')->default(0); 
             $table->integer('branch_id')->default(0);
             $table->timestamps();

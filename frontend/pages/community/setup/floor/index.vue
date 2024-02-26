@@ -8,13 +8,13 @@
     <div v-if="!loading">
       <v-dialog persistent v-model="DialogBox" width="500">
         <v-card>
-          <v-toolbar class="popup_background" flat>
+          <v-toolbar class="popup_background" flat dense>
             {{ formAction }} Floor
 
             <v-spacer></v-spacer>
             <span>
               <v-icon class="ml-2" @click="DialogBox = false" dark>
-                mdi mdi-close-circle</v-icon
+                mdi mdi-close-circle-outline</v-icon
               >
             </span>
           </v-toolbar>

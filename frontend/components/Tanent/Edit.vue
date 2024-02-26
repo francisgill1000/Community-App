@@ -356,7 +356,11 @@
               >
             </v-col>
           </v-row>
-          <v-alert
+          <TanentAddMemberFromEdit
+            :item="payload"
+            v-if="!payload.members.length"
+          />
+          <!-- <v-alert
             v-if="!payload.members.length"
             outlined
             color="primary"
@@ -364,7 +368,7 @@
             class="text-center"
           >
             No Member(s) found
-          </v-alert>
+          </v-alert> -->
           <v-card
             v-else
             outlined
@@ -551,12 +555,7 @@
       <v-tab-item>
         <v-container>
           <v-row>
-            <v-col cols="6">
-              <v-icon color="primary" @click="addVehicleInfo"
-                >mdi-plus-circle-outline</v-icon
-              >
-            </v-col>
-            <v-col cols="6" class="text-right">
+            <v-col cols="12" class="text-right">
               <v-icon color="primary" @click="dialog = false"
                 >mdi-close-circle-outline</v-icon
               >
@@ -617,18 +616,17 @@
               >
               </v-autocomplete>
             </v-col>
-
-            <v-col cols="3" class="text-rights">
-              <v-icon
-                v-if="index > 0"
-                @click="delete_vehicle(index)"
-                color="error"
+          </v-row>
+          <v-row>
+            <v-col cols="9" class="text-right">
+              <v-icon color="" @click="addVehicleInfo"
+                >mdi-plus-circle-outline</v-icon
+              >
+              <v-icon @click="delete_vehicle(index)" color=""
                 >mdi-delete</v-icon
               >
             </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
+            <v-col cols="12">
               <v-btn @click="add_vehicles" class="primary">Submit</v-btn>
             </v-col>
           </v-row>
@@ -644,7 +642,11 @@
                 @uploaded="updatePayload(document.key, $event)"
               />
             </v-col>
-
+            <v-col v-if="singleMessage">
+              <span class="red--text">
+                {{ singleMessage }}
+              </span>
+            </v-col>
             <v-col cols="12" class="text-right my-1">
               <v-btn @click="dialog = false">close</v-btn>
               <v-btn class="primary" @click="update_data">Update</v-btn>
@@ -716,6 +718,7 @@ export default {
     response: "",
     data: [],
     errors: [],
+    singleMessage: null,
     member_types: [],
 
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -872,6 +875,7 @@ export default {
           vehicles: dataToInsert,
         })
         .then(({ data }) => {
+          this.singleMessage = null;
           this.errors = [];
           this.$emit("success", "Vehicle has been added");
         })
@@ -883,9 +887,16 @@ export default {
       this.$axios
         .post(
           this.endpoint + "-update/" + this.payload.id,
-          this.mapper(Object.assign(this.payload))
+
+          this.mapper(Object.assign(this.payload)),
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         )
         .then(({ data }) => {
+          this.singleMessage = null;
           this.errors = [];
           this.$emit("success", "Tanent has been updated");
         })
@@ -916,6 +927,7 @@ export default {
       this.$axios
         .post("/update-member/" + member.id, formData)
         .then(({ data }) => {
+          this.singleMessage = null;
           this.errors = [];
           this.$emit("success", "Member has been updated");
         })
@@ -948,6 +960,8 @@ export default {
 
       if (status && status == 422) {
         this.errors = data.errors;
+        this.singleMessage = data.message;
+
         return;
       }
 

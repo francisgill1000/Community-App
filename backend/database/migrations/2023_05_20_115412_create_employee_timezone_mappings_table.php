@@ -19,6 +19,8 @@ return new class extends Migration
             $table->json('employee_id');
             $table->json('device_id');
             $table->integer('company_id');
+            $table->json('employee_ids')->nullable();
+            $table->json('device_ids')->nullable();
             $table->timestamps();
         });
     }

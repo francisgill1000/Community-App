@@ -3,14 +3,14 @@
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
         <v-btn dense small class="primary" text title="Add Company">
-          Create Contractor
+          Create Contractor Man
           <v-icon right dark>mdi-plus-circle-outline</v-icon>
         </v-btn>
       </span>
     </template>
     <v-card>
       <v-toolbar dense flat>
-        <v-card-title>Create Contractor</v-card-title>
+        <v-card-title>Create Contractor Man</v-card-title>
         <v-spacer></v-spacer>
         <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
       </v-toolbar>
@@ -77,8 +77,12 @@
                   dense
                   outlined
                   :hide-details="!errors.system_user_id"
-                  :error-messages="errors && errors.system_user_id ? errors.system_user_id[0] : ''"
-                  label="Contractor Device Id"
+                  :error-messages="
+                    errors && errors.system_user_id
+                      ? errors.system_user_id[0]
+                      : ''
+                  "
+                  label="Visitor Device Id"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -139,8 +143,13 @@
               </v-col>
               <v-col cols="6">
                 <v-select
+                  @change="openDialogForCustom(payload.purpose_id)"
                   v-model="payload.purpose_id"
-                  :items="purposes"
+                  :items="[
+                    { id: ``, name: `Select Purpose` },
+                    ...purposes,
+                    { id: `custom`, name: `Custom` },
+                  ]"
                   dense
                   outlined
                   item-text="name"
@@ -255,65 +264,81 @@
                 />
               </v-col>
 
-              <v-col cols="12"> <b>Contractor Company Details</b></v-col>
-              <v-col cols="6">
-                <v-select
-                  @change="setContractorCompany(contractor.company_id)"
-                  v-model="contractor.company_id"
-                  :items="[
-                    { id: ``, branch_name: `Select Contractor Company` },
-                    ...contractor_companies,
-                  ]"
-                  dense
-                  outlined
-                  item-text="branch_name"
-                  item-value="id"
-                  :hide-details="!errors.company_id"
-                  :error-messages="
-                    errors && errors.company_id ? errors.company_id[0] : ''
-                  "
-                  label="Contractor Company"
-                ></v-select>
-              </v-col>
-
+              <v-col cols="12"> <b>Enter Host Details</b></v-col>
               <v-col cols="6">
                 <v-text-field
-                  readonly
-                  v-model="contractor.manager_name"
+                  v-model="payload.host_flat_number"
                   dense
                   outlined
-                  :hide-details="!errors.manager_name"
+                  :hide-details="!errors.host_flat_number"
                   :error-messages="
-                    errors && errors.manager_name ? errors.manager_name[0] : ''
+                    errors && errors.host_flat_number
+                      ? errors.host_flat_number[0]
+                      : ''
                   "
-                  label="Manager Name"
+                  label="Flat Number"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                readonly
-                  v-model="contractor.phone_number"
+                  v-model="payload.host_company_name"
                   dense
                   outlined
-                  :hide-details="!errors.phone_number"
+                  :hide-details="!errors.host_company_name"
                   :error-messages="
-                    errors && errors.phone_number ? errors.phone_number[0] : ''
+                    errors && errors.host_company_name
+                      ? errors.host_company_name[0]
+                      : ''
+                  "
+                  label="Host Company Name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="payload.host_name"
+                  dense
+                  outlined
+                  :hide-details="!errors.host_name"
+                  :error-messages="
+                    errors && errors.host_name ? errors.host_name[0] : ''
+                  "
+                  label="Host Name"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="payload.host_phone_number"
+                  dense
+                  outlined
+                  :hide-details="!errors.host_phone_number"
+                  :error-messages="
+                    errors && errors.host_phone_number
+                      ? errors.host_phone_number[0]
+                      : ''
                   "
                   label="Phone Number"
                 ></v-text-field>
               </v-col>
-
               <v-col cols="6">
                 <v-text-field
-                readonly
-                  v-model="contractor.email"
+                  v-model="payload.host_email"
                   dense
                   outlined
-                  :hide-details="!errors.email"
+                  :hide-details="!errors.host_email"
                   :error-messages="
-                    errors && errors.email ? errors.email[0] : ''
+                    errors && errors.host_email ? errors.host_email[0] : ''
                   "
-                  label="Email"
+                  label="Host Email Address"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="payload.note"
+                  dense
+                  outlined
+                  :hide-details="!errors.note"
+                  :error-messages="errors && errors.note ? errors.note[0] : ''"
+                  label="Note/Comment"
                 ></v-text-field>
               </v-col>
 
@@ -326,6 +351,11 @@
         </v-row>
       </v-container>
     </v-card>
+    <CommunityPurposeCreate
+      ref="customPopup"
+      type="contractor"
+      @success="handleResponse"
+    />
   </v-dialog>
 </template>
 
@@ -347,9 +377,6 @@ export default {
   data: () => ({
     disabled: false,
     step: 1,
-    contractor: {
-      company_id:0
-    },
     payload: {
       company_id: 0,
       visit_from: date,
@@ -381,7 +408,6 @@ export default {
       company_name: null,
       reason: null,
       host_company_id: 0,
-      host_flat_number: 0,
       visitor_type: "contractor",
     },
     imagePreview: "/no-profile-image.jpg",
@@ -484,31 +510,22 @@ export default {
     floors: [],
     rooms: [],
     purposes: [],
-    contractor_companies: [],
   }),
 
   async created() {
     this.loading = false;
     await this.getPurposes();
-    await this.getContractorCompanies();
   },
 
   methods: {
-    setContractorCompany(id) {
-     console.log(id);
-      this.contractor = this.contractor_companies.find((e) => e.id == id);
+    openDialogForCustom(id) {
+      if (id == "custom") {
+        this.$refs["customPopup"].DialogBox = true;
+      }
     },
-    async getContractorCompanies() {
-      this.$axios
-        .get(`branch`, {
-          params: {
-            company_id: this.$auth.user.company_id,
-          },
-        })
-        .then(({ data }) => {
-          this.contractor_companies = data.data;
-        })
-        .catch((e) => console.log(e));
+    async handleResponse(e) {
+      this.payload.purpose_id = e;
+      await this.getPurposes();
     },
     async getPurposes() {
       this.$axios

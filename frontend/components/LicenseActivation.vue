@@ -15,7 +15,6 @@
           <span class="error--text" v-if="response">{{ response }}</span>
         </v-card-text>
         <v-card-actions>
-            
           <v-spacer></v-spacer>
           <v-btn color="primary" @click="activateLicense">Activate</v-btn>
         </v-card-actions>
@@ -37,18 +36,17 @@ export default {
     };
   },
   created() {
-    this.$axios
-      .get(`verfiy-license-key`)
-      .then(({ data }) => {
-        if (!data) {
-          this.dialog = true;
-          this.$emit("verified", true);
-          return;
-        }
-
-        this.$emit("verified", false);
-      })
-      .catch((err) => console.log(err));
+    // this.$axios
+    //   .get(`verfiy-license-key`)
+    //   .then(({ data }) => {
+    //     if (!data) {
+    //       this.dialog = true;
+    //       this.$emit("verified", true);
+    //       return;
+    //     }
+    //     this.$emit("verified", false);
+    //   })
+    //   .catch((err) => console.log(err));
   },
   methods: {
     openDialog() {

@@ -8,7 +8,7 @@
     <div v-if="!loading">
       <v-dialog persistent v-model="DialogBox" width="900">
         <v-card>
-          <v-toolbar class="popup_background" flat>
+          <v-toolbar class="popup_background" flat dense>
             {{ formAction }} Host
           </v-toolbar>
           <v-container>

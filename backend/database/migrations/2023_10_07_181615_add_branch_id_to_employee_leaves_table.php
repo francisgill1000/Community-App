@@ -66,9 +66,7 @@ return new class extends Migration
         Schema::table('holidays', function (Blueprint $table) {
             $table->integer("branch_id")->nullable();
         });
-        Schema::table('host_companies', function (Blueprint $table) {
-            $table->integer("branch_id")->nullable();
-        });
+       
 
         Schema::table('leave_count', function (Blueprint $table) {
             $table->integer("branch_id")->nullable();

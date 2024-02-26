@@ -32,6 +32,19 @@ return new class extends Migration
             $table->json('days')->nullable();
             $table->integer('company_id')->default(0);
             $table->integer('branch_id')->default(0);
+            $table->string('halfday')->default("Not Applicable");
+            $table->string('halfday_working_hours')->default("00:00");
+            $table->string('weekend1')->nullable();
+            $table->string('weekend2')->nullable();
+            $table->string('monthly_flexi_holidays')->nullable();
+            $table->string('on_duty_time1')->default("---");
+            $table->string('off_duty_time1')->default("---");
+            $table->string('beginning_in1')->default("---");
+            $table->string('beginning_out1')->default("---");
+            $table->string('ending_in1')->default("---");
+            $table->string('ending_out1')->default("---");
+            $table->date("from_date")->nullable();
+            $table->date("to_date")->nullable();
             $table->timestamps();
         });
     }

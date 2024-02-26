@@ -42,7 +42,7 @@
       </v-dialog>
       <v-dialog persistent v-model="DialogBox" width="1100">
         <v-card>
-          <v-toolbar class="popup_background" flat>
+          <v-toolbar class="popup_background" flat dense>
             {{ formAction }} Visitor
           </v-toolbar>
           <v-container>

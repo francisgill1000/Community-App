@@ -8,7 +8,7 @@
     </template>
     <v-card>
       <v-toolbar dense flat>
-        <v-card-title>Edit Visitor</v-card-title>
+        <v-card-title>Edit Delivery Man</v-card-title>
         <v-spacer></v-spacer>
         <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
       </v-toolbar>
@@ -142,8 +142,13 @@
               </v-col>
               <v-col cols="6">
                 <v-select
+                  @change="openDialogForCustom(payload.purpose_id)"
                   v-model="payload.purpose_id"
-                  :items="purposes"
+                  :items="[
+                    { id: ``, name: `Select Purpose` },
+                    ...purposes,
+                    { id: `custom`, name: `Custom` },
+                  ]"
                   dense
                   outlined
                   item-text="name"
@@ -345,6 +350,11 @@
         </v-row>
       </v-container>
     </v-card>
+    <CommunityPurposeCreate
+      ref="customPopup"
+      type="delivery man"
+      @success="handleResponse"
+    />
   </v-dialog>
 </template>
 
@@ -508,11 +518,21 @@ export default {
   },
 
   methods: {
+    openDialogForCustom(id) {
+      if (id == "custom") {
+        this.$refs["customPopup"].DialogBox = true;
+      }
+    },
+    async handleResponse(e) {
+      this.payload.purpose_id = e;
+      await this.getPurposes();
+    },
     async getPurposes() {
       this.$axios
         .get(`purpose_list`, {
           params: {
             company_id: this.$auth.user.company_id,
+            type: "delivery man",
           },
         })
         .then(({ data }) => {

@@ -417,13 +417,6 @@
 
       <v-stepper-content step="2">
         <v-container>
-          <v-row no-gutters>
-            <v-col cols="2">
-              <v-icon color="primary" @click="addItem"
-                >mdi-plus-circle-outline</v-icon
-              >
-            </v-col>
-          </v-row>
           <v-row
             class="mt-0"
             v-for="(vehicles, index) in vehicles"
@@ -476,10 +469,15 @@
               >
               </v-autocomplete>
             </v-col>
-
-            <v-col cols="3">
-              <v-icon v-if="index > 0" color="red" @click="deleteItem(index)"
-                >mdi-close-circle-outline</v-icon
+          </v-row>
+        
+          <v-row no-gutters class="mt-1">
+            <v-col cols="9" class="text-right">
+              <v-icon @click="addItem"
+                >mdi-plus-circle-outline</v-icon
+              >
+              <v-icon class=""  @click="deleteItem(index)"
+                >mdi-delete</v-icon
               >
             </v-col>
           </v-row>
@@ -554,7 +552,7 @@ export default {
       { label: "License", key: "license_doc" },
       { label: "Other", key: "others_doc" },
     ],
-    vehicles: [{ car_number: "",car_brand: "", parking_id: "" }],
+    vehicles: [{ car_number: "", car_brand: "", parking_id: "" }],
     imagePreview: "/no-profile-image.jpg",
     setImagePreview: null,
     imageMemberPreview: "/no-profile-image.jpg",
@@ -773,7 +771,7 @@ export default {
       return this.$pagePermission.can(per, this);
     },
     addItem() {
-      this.vehicles.push({ car_number: "",car_brand:"", parking_id: "" });
+      this.vehicles.push({ car_number: "", car_brand: "", parking_id: "" });
     },
 
     deleteItem(index) {

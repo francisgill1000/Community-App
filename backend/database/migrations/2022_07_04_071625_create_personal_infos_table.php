@@ -28,6 +28,10 @@ return new class extends Migration
             $table->integer("employee_id");
             $table->integer("company_id")->default(0);
             $table->integer("branch_id")->default(0);
+            $table->string('father_name')->nullable();
+            $table->string('mother_name')->nullable();
+            $table->integer('gender')->nullable();
+            $table->date('date_of_birth')->nullable();
             $table->timestamps();
         });
     }

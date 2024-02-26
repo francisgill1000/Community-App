@@ -59,7 +59,7 @@
             dark
             color="black"
             size="x-large"
-            >mdi mdi-close-circle</v-icon
+            >mdi mdi-close-circle-outline</v-icon
           >
           <!-- <v-btn class="primary" small fab @click="addRow">
             <b>+</b>

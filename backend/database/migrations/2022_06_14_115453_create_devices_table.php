@@ -24,10 +24,20 @@ return new class extends Migration
             $table->string('short_name')->nullable();
             $table->string('device_id');
             $table->string('location')->nullable();
+            $table->integer("alarm_status")->default(0);
+            $table->dateTime("alarm_start_datetime")->nullable();
+            $table->dateTime("alarm_end_datetime")->nullable();
             $table->timestamps();
+
+            $table->string("function")->nullable();
+            $table->string("serial_number")->nullable();
+            $table->string("utc_time_zone")->nullable();
 
             $table->string('ip');
             $table->string('port');
+
+            $table->string('model_number')->nullable();
+            $table->enum('device_type', ['in', 'out', 'auto']);
 
 
             $table->foreign("company_id")->references("id")->on("companies")->cascadeOnDelete();

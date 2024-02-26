@@ -243,16 +243,6 @@ export default {
     data: [],
     errors: [],
     headers: [
-      // {
-      //   text: "User Device Id",
-      //   align: "left",
-      //   sortable: true,
-      //   key: "system_user_id",
-      //   value: "system_user_id",
-      //   filterable: true,
-      //   filterSpecial: false,
-      // },
-
       {
         text: "Full Name",
         align: "left",

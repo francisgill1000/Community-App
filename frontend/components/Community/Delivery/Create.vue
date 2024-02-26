@@ -65,7 +65,9 @@
                   dense
                   outlined
                   :hide-details="!errors.id_number"
-                  :error-messages="errors && errors.id_number ? errors.id_number[0] : ''"
+                  :error-messages="
+                    errors && errors.id_number ? errors.id_number[0] : ''
+                  "
                   label="Emirates ID"
                 ></v-text-field>
               </v-col>
@@ -75,7 +77,11 @@
                   dense
                   outlined
                   :hide-details="!errors.system_user_id"
-                  :error-messages="errors && errors.system_user_id ? errors.system_user_id[0] : ''"
+                  :error-messages="
+                    errors && errors.system_user_id
+                      ? errors.system_user_id[0]
+                      : ''
+                  "
                   label="Visitor Device Id"
                 ></v-text-field>
               </v-col>
@@ -137,8 +143,13 @@
               </v-col>
               <v-col cols="6">
                 <v-select
+                  @change="openDialogForCustom(payload.purpose_id)"
                   v-model="payload.purpose_id"
-                  :items="purposes"
+                  :items="[
+                    { id: ``, name: `Select Purpose` },
+                    ...purposes,
+                    { id: `custom`, name: `Custom` },
+                  ]"
                   dense
                   outlined
                   item-text="name"
@@ -340,6 +351,11 @@
         </v-row>
       </v-container>
     </v-card>
+    <CommunityPurposeCreate
+      ref="customPopup"
+      type="delivery man"
+      @success="handleResponse"
+    />
   </v-dialog>
 </template>
 
@@ -502,12 +518,21 @@ export default {
   },
 
   methods: {
+    openDialogForCustom(id) {
+      if (id == "custom") {
+        this.$refs["customPopup"].DialogBox = true;
+      }
+    },
+    async handleResponse(e) {
+      this.payload.purpose_id = e;
+      await this.getPurposes();
+    },
     async getPurposes() {
       this.$axios
         .get(`purpose_list`, {
           params: {
             company_id: this.$auth.user.company_id,
-            type:"delivery man"
+            type: "delivery man",
           },
         })
         .then(({ data }) => {

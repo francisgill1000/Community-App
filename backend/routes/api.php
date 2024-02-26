@@ -35,6 +35,7 @@ include('realtime_location.php');
 include('clocking.php');
 include('change_request.php');
 
+include('community/setup.php');
 include('community/room.php');
 include('community/floor.php');
 include('community/tanent.php');
@@ -43,6 +44,8 @@ include('community/report.php');
 include('community/dashboard.php');
 include('community/parking.php');
 include('community/contractor.php');
+include('community/card.php');
+
 
 
 include('csv.php');

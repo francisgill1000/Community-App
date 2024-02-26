@@ -2,13 +2,13 @@
   <v-dialog persistent v-model="dialog" width="900">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-icon color="black" small>mdi-pencil</v-icon>
-        Edit
+        <v-icon color="black" small>mdi-eye</v-icon>
+        View
       </span>
     </template>
     <v-card>
       <v-toolbar dense flat>
-        <v-card-title>Create Visitor</v-card-title>
+        <v-card-title>View Contractor</v-card-title>
         <v-spacer></v-spacer>
         <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
       </v-toolbar>
@@ -144,6 +144,7 @@
               </v-col>
               <v-col cols="6">
                 <v-select
+                  disabled
                   v-model="payload.purpose_id"
                   :items="purposes"
                   dense

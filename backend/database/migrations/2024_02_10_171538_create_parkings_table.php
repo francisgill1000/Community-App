@@ -16,6 +16,9 @@ return new class extends Migration
         Schema::create('parkings', function (Blueprint $table) {
             $table->id();
             $table->string("parking_number");
+            $table->string("category")->default("Residence");
+            $table->integer("floor_id")->default(0);
+            $table->integer("status_id")->default(1);
             $table->timestamps();
         });
     }

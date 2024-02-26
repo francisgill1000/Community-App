@@ -34,7 +34,6 @@
     "module": "dashboard"
   },
 
-
   {
     "icon": "mdi-account-tie",
     "title": "Employees",
@@ -69,21 +68,27 @@
     "module": "dashboard"
   },
   {
-    "icon": "mdi-chart-box-outline",
-    "title": "Reports",
-    "to": "/dashboard",
-    "menu": "true",
-    "submenu": "visitors",
-    "module": "dashboard"
+    "icon": "mdi-home",
+    "title": "Dashboard",
+    "to": "/community/visitor/dashboard",
+    "menu": "visitors_access",
+    "module": "visitors"
   },
-  
-
   {
     "icon": "mdi-filmstrip-box-multiple",
     "title": "Contractor",
     "to": "/community/contractors",
     "menu": "branch_access",
     "module": "settings"
+  },
+
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/dashboard",
+    "menu": "true",
+    "submenu": "visitors",
+    "module": "dashboard"
   },
   {
     "icon": "mdi-chair-rolling",
@@ -274,13 +279,6 @@
     "module": "access_control"
   },
   {
-    "icon": "mdi-chart-box-outline",
-    "title": "Reports",
-    "to": "/employees/reports",
-    "menu": "timezone_mapping_list",
-    "module": "access_control"
-  },
-  {
     "icon": "mdi mdi-camera-account",
     "title": "Photo Upload",
     "to": "/employee_photo_upload",
@@ -288,9 +286,30 @@
     "module": "access_control"
   },
   {
-    "icon": "mdi-home",
-    "title": "Dashboard",
-    "to": "/community/visitor/dashboard",
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/employees/reports",
+    "menu": "timezone_mapping_list",
+    "module": "access_control"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Visitors",
+    "to": "/community/visitor",
+    "menu": "visitors_access",
+    "module": "visitors"
+  },
+  {
+    "icon": "mdi-card-outline",
+    "title": "Visitor Cards",
+    "to": "/community/visitor/card",
+    "menu": "visitors_access",
+    "module": "visitors"
+  },
+  {
+    "icon": "mdi-upload-outline",
+    "title": "Card Upload",
+    "to": "/community/visitor/card/upload",
     "menu": "visitors_access",
     "module": "visitors"
   },
@@ -302,16 +321,30 @@
     "module": "visitors"
   },
   {
-    "icon": "mdi-account",
-    "title": "Visitors",
-    "to": "/community/visitor",
-    "menu": "visitors_access",
-    "module": "visitors"
-  },
-  {
     "icon": "mdi-home",
     "title": "Dashboard",
     "to": "/community/delivery_man/dashboard",
+    "menu": "delivery_access",
+    "module": "delivery_man"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Delivery Man",
+    "to": "/community/delivery_man",
+    "menu": "delivery_access",
+    "module": "delivery_man"
+  },
+  {
+    "icon": "mdi-card-outline",
+    "title": "Delivery Cards",
+    "to": "/community/delivery_man/card",
+    "menu": "delivery_access",
+    "module": "delivery_man"
+  },
+  {
+    "icon": "mdi-upload-outline",
+    "title": "Card Upload",
+    "to": "/community/delivery_man/card/upload",
     "menu": "delivery_access",
     "module": "delivery_man"
   },
@@ -323,17 +356,37 @@
     "module": "delivery_man"
   },
   {
-    "icon": "mdi-account",
-    "title": "Delivery Man",
-    "to": "/community/delivery_man",
-    "menu": "delivery_access",
-    "module": "delivery_man"
-  },
-
-  {
     "icon": "mdi-home",
     "title": "Dashboard",
     "to": "/community/contractor/dashboard",
+    "menu": "contractor_access",
+    "module": "contractors"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Contractors",
+    "to": "/community/contractor",
+    "menu": "contractor_access",
+    "module": "contractors"
+  },
+  {
+    "icon": "mdi-filmstrip-box-multiple",
+    "title": "Companies",
+    "to": "/community/contractors",
+    "menu": "contractor_access",
+    "module": "contractors"
+  },
+  {
+    "icon": "mdi-card-outline",
+    "title": "Contractor Cards",
+    "to": "/community/contractor/card",
+    "menu": "contractor_access",
+    "module": "contractors"
+  },
+  {
+    "icon": "mdi-upload-outline",
+    "title": "Card Upload",
+    "to": "/community/contractor/card/upload",
     "menu": "contractor_access",
     "module": "contractors"
   },
@@ -345,17 +398,16 @@
     "module": "contractors"
   },
   {
-    "icon": "mdi-account",
-    "title": "Contractors",
-    "to": "/community/contractor",
-    "menu": "contractor_access",
-    "module": "contractors"
-  },
-
-  {
     "icon": "mdi-home",
     "title": "Dashboard",
     "to": "/community/house_maids/dashboard",
+    "menu": "contractor_access",
+    "module": "house_maids"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "House Maids",
+    "to": "/community/house_maids",
     "menu": "contractor_access",
     "module": "house_maids"
   },
@@ -367,22 +419,12 @@
     "module": "house_maids"
   },
   {
-    "icon": "mdi-account",
-    "title": "House Maids",
-    "to": "/community/house_maids",
-    "menu": "contractor_access",
-    "module": "house_maids"
-  },
-
-
-  {
     "icon": "mdi-home",
     "title": "Dashboard",
     "to": "/dashboard",
     "menu": "parking_access",
     "module": "parkings"
   },
-  
   {
     "icon": "mdi-account",
     "title": "Parking",
@@ -390,16 +432,6 @@
     "menu": "parking_access",
     "module": "parkings"
   },
-
-  {
-    "icon": "mdi-filmstrip-box-multiple",
-    "title": "Companies",
-    "to": "/community/contractors",
-    "menu": "contractor_access",
-    "module": "contractors"
-  },
-
-
   {
     "icon": "mdi-home ",
     "title": "Tanent",
@@ -415,13 +447,6 @@
     "module": "community"
   },
   {
-    "icon": "mdi-chart-box-outline",
-    "title": "Reports",
-    "to": "/community/tanent/reports",
-    "menu": "community",
-    "module": "community"
-  },
-  {
     "icon": "mdi-account-card-details",
     "title": "Tanent",
     "to": "/community/tanent",
@@ -432,6 +457,13 @@
     "icon": "mdi-camera-account",
     "title": "Tanent Upload",
     "to": "/community/tanent/tanent_upload",
+    "menu": "community",
+    "module": "community"
+  },
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/community/tanent/reports",
     "menu": "community",
     "module": "community"
   },
@@ -454,20 +486,6 @@
     "title": "Device Logs",
     "to": "/devicelogs",
     "menu": "logs_access",
-    "module": "reports"
-  },
-  {
-    "icon": "mdi-cash",
-    "title": "Salary",
-    "to": "/payroll/salary",
-    "menu": "reports",
-    "module": "reports"
-  },
-  {
-    "icon": "mdi mdi-calendar-account",
-    "title": "Leaves",
-    "to": "/leaves",
-    "menu": "reports",
     "module": "reports"
   },
   {

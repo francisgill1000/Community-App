@@ -20,10 +20,10 @@
     </div>
     <div v-if="src && src.includes(`.pdf`)">
       <iframe
-          :src="src"
-          frameborder="0"
-          style="width: 100%; height: 600px"
-        ></iframe>
+        :src="src"
+        frameborder="0"
+        style="width: 100%; height: 600px"
+      ></iframe>
       <!-- <pdf-viewer :src="src"></pdf-viewer> -->
     </div>
     <v-img v-else :src="src" :alt="altText"></v-img>
@@ -31,8 +31,6 @@
 </template>
 
 <script>
-import { PDFViewer } from "vue-pdf";
-
 export default {
   props: {
     label: {

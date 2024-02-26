@@ -53,6 +53,19 @@ return new class extends Migration
 
             $table->string('reason')->nullable();
 
+            $table->string("host_flat_number")->nullable();
+            $table->string("host_company_name")->nullable();
+            $table->string("host_name")->nullable();
+
+            $table->string('visitor_filled_datetime')->nullable();
+            $table->string('host_changed_status_datetime')->nullable();
+            $table->string('guard_changed_status_datetime')->nullable();
+            $table->string('checked_in_datetime')->nullable();
+            $table->string('checked_out_datetime')->nullable();
+
+            $table->string("time_in")->nullable();
+            $table->string("time_out")->nullable();
+
             $table->string('company_id')->nullable();
 
             $table->timestamps();

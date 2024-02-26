@@ -47,13 +47,13 @@ class UpdateRequest extends FormRequest
             "rfid" => "required",
             "pin" => "required",
             "address" => "required",
-            
-            "passport_doc" => "nullable",
-            "id_doc" => "nullable",
-            "contract_doc" => "nullable",
-            "ejari_doc" => "nullable",
-            "license_doc" => "nullable",
-            "others_doc" => "nullable",
+
+            "passport_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "id_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "contract_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "ejari_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            "license_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
+            'others_doc' => 'nullable|file|mimes:jpeg,png,gif,pdf|max:2048',
 
             "gender" => "required",
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AttendanceLog;
 use App\Models\Device;
 use App\Models\Employee;
+use App\Models\Visitor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
@@ -553,7 +554,7 @@ class AttendanceLogController extends Controller
 
         $data = [];
 
-        foreach (range(1, 25) as $_) {
+        foreach (range(1, 1) as $_) {
 
             $logTime = date("Y-m-d") . " " . Arr::random($logs) . ":" . Arr::random($logs);
 
@@ -562,6 +563,7 @@ class AttendanceLogController extends Controller
                 'LogTime' => $logTime,
                 'DeviceID' => Arr::random($deviceIds),
                 'company_id' => $company_id,
+                'visitor_id' => Visitor::where("system_user_id",$user_id)->orderBy("id","desc")->value("id"),
             ];
         }
         AttendanceLog::insert($data);

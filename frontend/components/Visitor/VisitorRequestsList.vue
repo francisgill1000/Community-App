@@ -475,7 +475,7 @@
             <v-spacer></v-spacer>
 
             <v-icon outlined @click="uploadedUserInfoDialog = false"
-              >mdi-close-circle</v-icon
+              >mdi-close-circle-outline</v-icon
             >
           </v-card-actions>
 

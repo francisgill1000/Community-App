@@ -296,13 +296,14 @@
         </div>
       </v-col>
     </v-row>
-    <LicenseActivation
+    <!-- <LicenseActivation
       @verified="
         (e) => {
           disabled = e;
         }
       "
-    />
+    /> -->
+    <component :is="setupComponent"></component>
   </div>
 </template>
 
@@ -340,6 +341,7 @@ export default {
       source: "admin",
     },
     disabled: true,
+    setupComponent: null,
   }),
   created() {
     // this.$store.commit("dashboard/resetState", null);
@@ -347,6 +349,8 @@ export default {
     this.$store.dispatch("resetState");
 
     this.verifyToken();
+
+    this.setupComponent = "CommunityInitialConfig";
   },
   mounted() {
     // setTimeout(() => {

@@ -32,7 +32,7 @@
           <v-spacer></v-spacer>
 
           <v-icon outlined @click="uploadedUserInfoDialog = false"
-            >mdi-close-circle</v-icon
+            >mdi-close-circle-outline</v-icon
           >
         </v-card-title>
 
@@ -146,7 +146,7 @@
           <v-spacer></v-spacer>
 
           <v-icon outlined @click="DialogDeviceSettings = false"
-            >mdi-close-circle</v-icon
+            >mdi-close-circle-outline</v-icon
           >
         </v-card-title>
 
@@ -414,7 +414,7 @@
           <v-spacer></v-spacer>
 
           <v-icon outlined @click="DialogDeviceMegviiSettings = false"
-            >mdi-close-circle</v-icon
+            >mdi-close-circle-outline</v-icon
           >
         </v-card-title>
 

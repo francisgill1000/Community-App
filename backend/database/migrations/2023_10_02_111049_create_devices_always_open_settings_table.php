@@ -16,13 +16,11 @@ return new class extends Migration
         Schema::create('devices_active_settings', function (Blueprint $table) {
             $table->id();
             $table->integer('company_id');
-
             $table->integer('device_id');
             $table->date('date_from')->nullable();
             $table->date('date_to')->nullable();
-
-
-
+            $table->json("open_json")->nullable();
+            $table->json("close_json")->nullable();
             $table->timestamps();
         });
     }

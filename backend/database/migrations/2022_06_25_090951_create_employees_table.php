@@ -64,6 +64,9 @@ return new class extends Migration
             $table->integer('company_id')->default(0);
             $table->integer('branch_id')->default(0);
 
+            $table->string("rfid_card_number")->nullable();
+            $table->string("rfid_card_password")->nullable();
+
             $table->timestamps();
         });
     }

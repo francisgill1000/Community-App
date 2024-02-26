@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class,'user_id')->default(null)->nullable()->index();
+            $table->foreignIdFor(User::class, 'user_id')->default(null)->nullable()->index();
             $table->string('name');
             $table->date('member_from');
             $table->date('expiry');
@@ -26,6 +26,20 @@ return new class extends Migration
             $table->string('logo')->default(null)->nullable();
             $table->string('p_o_box_no')->nullable();
             $table->string('mol_id')->nullable();
+            $table->json("modules")->nullable();
+            $table->string("api_access_token")->nullable();
+            $table->string("api_datetime")->nullable();
+            $table->string('whatsapp_instance_id')->nullable();
+            $table->string('whatsapp_access_token')->nullable();
+            $table->string('company_code')->comment('AE0001');
+            $table->boolean('no_branch')->default(0);
+            $table->string('max_branches')->default(0);
+
+            $table->string('lat')->nullable();
+            $table->string('lon')->nullable();
+            $table->string("management_company")->nullable();
+            $table->string("account_type")->default("company");
+            $table->boolean("status")->default(1);
             $table->timestamps();
 
 
