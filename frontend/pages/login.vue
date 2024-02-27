@@ -241,14 +241,13 @@
         class="hide-on-mobile d-none d-lg-flex"
       >
         <div class="about-content">
-          <h3>About Mytime2Cloud</h3>
+          <h3>About MyHome2Cloud</h3>
           <div style="font-weight: 300">
-            MyTime2Cloud is an innovative and comprehensive platform
-            meticulously crafted to redefine how organizations approach
-            workforce management. By combining time attendance management with
-            facial recognition access control, MyTime2Cloud simplifies and
-            provides a streamlined experience for both employees and HR
-            professionals.<br />
+            Tenant management refers to the administration and oversight of
+            tenants within a property or organizational context. In the case of
+            MyTime2Cloud, tenant management involves the systematic handling of
+            users, which could include employees, contractors, or any
+            individuals granted access to the platform's services.<br />
             Customization and Reporting: The platform offers customizable
             settings to fit the specific needs of different organizations. It
             generates comprehensive reports and analytics based on attendance
@@ -257,17 +256,17 @@
           </div>
           <h3 class="pt-10">Features</h3>
           <ul style="font-weight: 300">
-            <li>Employees management</li>
-
-            <li>Time Attendance</li>
-            <li>Leave management</li>
-            <li>Payroll management</li>
-            <li>Access Controll</li>
+           
+            <li>Tanent and Members management</li>
             <li>Visitor management</li>
-            <li>Face Recognisation Integration</li>
+            <li>Contractor management</li>
+            <li>Parking management</li>
+            <li>Employees management</li>
+            <li>Access Controll</li>
+            <li>Time Attendance</li>
+            <li>Face Recognition Integration</li>
             <li>Custom Reports</li>
             <li>Custom Dashboards</li>
-            <li>Email and Whatsapp Notifications</li>
           </ul>
           <v-row class="text-left pt-10">
             <v-col class="pa-5">

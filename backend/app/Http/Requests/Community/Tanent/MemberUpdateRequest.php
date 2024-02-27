@@ -27,6 +27,7 @@ class MemberUpdateRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'age' => 'required|string|max:255',
+            "phone_number" => "required|min:10|max:20",
             'member_type' => 'required',
             'nationality' => 'required',
             'gender' => 'required',

@@ -24,7 +24,14 @@ class TanentController extends Controller
      */
     public function dropDown()
     {
-        return Tanent::where("company_id", request("company_id"))->orderBy('full_name', 'asc')->get(["id", "full_name"]);
+        return Tanent::where([
+            "company_id" => request("company_id"),
+            "parent_id" => 0,
+        ])
+        ->select("id","full_name","system_user_id")
+        ->withCount("members")
+        ->orderBy('full_name', 'asc')
+        ->get();
     }
 
     /**
@@ -34,7 +41,14 @@ class TanentController extends Controller
      */
     public function index()
     {
-        return Tanent::where("company_id", request("company_id"))->where("parent_id", 0)->withCount("members")->with(["vehicles", "members", "floor", "room"])->orderBy('id', 'desc')->paginate(request("per_page") ?? 10);
+        return Tanent::where([
+            "company_id" => request("company_id"),
+            "parent_id" => 0,
+        ])
+        ->withCount("members")
+        ->with(["vehicles", "members", "floor", "room"])
+        ->orderBy('id', 'desc')
+        ->paginate(request("per_page") ?? 10);
     }
 
     /**

@@ -6,21 +6,6 @@
       </v-snackbar>
     </div>
     <div v-if="!loading">
-      <v-dialog persistent v-model="viewMemberDialogBox" width="700">
-        <v-toolbar flat dense>
-          <b> Members </b>
-          <v-spacer></v-spacer>
-          <v-icon color="primary" @click="viewMemberDialogBox = false"
-            >mdi-close-circle-outline</v-icon
-          >
-        </v-toolbar>
-        <v-card>
-          <v-container>
-            <TanentMembers :members="payload.members" />
-          </v-container>
-        </v-card>
-      </v-dialog>
-
       <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
         {{ snackText }}
 
@@ -42,12 +27,13 @@
               text
               title="Reload"
             >
-              <v-icon class="ml-2" @click="clearFilters" dark
-                >mdi mdi-reload</v-icon
+              <v-icon class="ml-2" @click="getDataFromApi" dark
+                >mdi-reload</v-icon
               >
             </v-btn>
           </span>
           <v-spacer></v-spacer>
+          <CommunityMaidCreate @response="handleResponse" :key="generateRandomId()" />
         </v-toolbar>
         <v-data-table
           dense
@@ -62,32 +48,6 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
-          <template v-slot:item.category="{ item }">
-            {{ item?.room?.room_category?.name }}
-          </template>
-          <template v-slot:header="{ props: { headers } }">
-            <tr v-if="isFilter">
-              <td v-for="header in headers" :key="header.text">
-                <v-container>
-                  <v-text-field
-                    clearable
-                    @click:clear="
-                      filters[header.value] = '';
-                      applyFilters();
-                    "
-                    :hide-details="true"
-                    v-if="header.filterable && !header.filterSpecial"
-                    v-model="filters[header.value]"
-                    :id="header.value"
-                    @input="applyFilters(header.key, $event)"
-                    outlined
-                    dense
-                    autocomplete="off"
-                  ></v-text-field>
-                </v-container>
-              </td>
-            </tr>
-          </template>
 
           <template
             v-slot:item.full_name="{ item, index }"
@@ -127,6 +87,31 @@
               </v-col>
             </v-row>
           </template>
+          <template v-slot:item.options="{ item }">
+            <v-menu bottom left>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn dark-2 icon v-bind="attrs" v-on="on">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
+              <v-list width="150" dense>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
+                    <CommunityMaidEdit
+                      @response="handleResponse"
+                      :item="item"
+                    />
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="deleteItem(item)">
+                  <v-list-item-title style="cursor: pointer">
+                    <v-icon color="error" small> mdi-delete </v-icon>
+                    Delete
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
         </v-data-table>
       </v-card>
     </div>
@@ -137,59 +122,12 @@
 <script>
 export default {
   data: () => ({
-    disabled: false,
-    step: 1,
-
-    members: [],
-
-    payload: {
-      full_name: "",
-      phone_number: "",
-      floor_id: "",
-      room_id: "",
-      start_date: "",
-      end_date: "",
-    },
-    imagePreview: "/no-profile-image.jpg",
-    setImagePreview: null,
-    imageMemberPreview: "/no-profile-image.jpg",
-
-    tab: null,
-
-    totalRowsCount: 0,
-    filters: {},
-    isFilter: false,
-    sortBy: "id",
-    sortDesc: false,
     snack: false,
     snackColor: "",
     snackText: "",
     loadinglinear: true,
     displayErrormsg: false,
-    image: "",
-    mime_type: "",
-    cropedImage: "",
-    cropper: "",
-    autoCrop: false,
-    dialogCropping: false,
-    tab: "0",
-    attrs: [],
     dialog: false,
-    editDialog: false,
-    viewDialog: false,
-    selectedFile: "",
-    DialogBox: false,
-    memberDialogBox: false,
-    viewMemberDialogBox: false,
-    m: false,
-    expand: false,
-    expand2: false,
-    boilerplate: false,
-    tab: null,
-    selectedItem: 1,
-    on: "",
-    files: "",
-    search: "",
     loading: false,
     //total: 0,
     next_page_url: "",
@@ -201,19 +139,14 @@ export default {
     response: "",
     snackbar: false,
     btnLoader: false,
-    upload: {
-      name: "",
-    },
     options: {},
     Model: "Maids",
     endpoint: "maids",
     search: "",
     snackbar: false,
-    ids: [],
     loading: false,
-    //total: 0,
     data: [],
-    errors: [],
+    totalRowsCount:0,
     headers: [
       {
         text: "User Device Id",
@@ -297,34 +230,14 @@ export default {
         filterable: true,
         filterSpecial: false,
       },
-      // {
-      //   text: "Details",
-      //   align: "left",
-      //   sortable: false,
-      //   key: "options",
-      //   value: "options",
-      // },
+      {
+        text: "Details",
+        align: "left",
+        sortable: false,
+        key: "options",
+        value: "options",
+      },
     ],
-    formAction: "Create",
-
-    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
-    menu: false,
-    menu2: false,
-    menu3: false,
-
-    floors: [],
-    member_types: [],
-    rooms: [],
-    member: {
-      full_name: null,
-      phone_number: null,
-      age: null,
-      member_type: null,
-      nationality: null,
-      tanent_id: 0,
-    },
   }),
 
   async created() {
@@ -348,29 +261,8 @@ export default {
       const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number
       return randomNumber.toString().padStart(length, "0"); // Convert to string and pad with leading zeros if necessary
     },
-    caps(str) {
-      if (str == "" || str == null) {
-        return "---";
-      } else {
-        let res = str.toString();
-        return res.replace(/\b\w/g, (c) => c.toUpperCase());
-      }
-    },
     can(per) {
       return this.$pagePermission.can(per, this);
-    },
-    applyFilters() {
-      this.getDataFromApi();
-    },
-    toggleFilter() {
-      // this.filters = {};
-      this.isFilter = !this.isFilter;
-    },
-    clearFilters() {
-      this.filters = {};
-
-      this.isFilter = false;
-      this.getDataFromApi();
     },
     getDataFromApi() {
       //this.loading = true;
@@ -378,13 +270,11 @@ export default {
 
       let { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-      let sortedBy = sortBy ? sortBy[0] : "";
-      let sortedDesc = sortDesc ? sortDesc[0] : "";
       let options = {
         params: {
           page: page,
-          sortBy: sortedBy,
-          sortDesc: sortedDesc,
+          sortBy: sortBy ? sortBy[0] : "",
+          sortDesc: sortDesc ? sortDesc[0] : "",
           per_page: itemsPerPage,
           company_id: this.$auth.user.company_id,
           ...this.filters,
@@ -404,85 +294,13 @@ export default {
         this.loadinglinear = false;
       });
     },
-    addItem() {
-      this.disabled = false;
-      this.formAction = "Create";
-      this.DialogBox = true;
-      this.payload = {};
-      this.setImagePreview = "/no-profile-image.jpg";
-    },
-    addMember(item) {
-      this.disabled = false;
-      this.formAction = "Create";
-      this.memberDialogBox = true;
-      this.payload = item;
-      this.member.tanent_id = item.id;
-      this.member.system_user_id =
-        parseInt(item.system_user_id) + parseInt(item.members.length) + 1;
-      this.member.company_id = this.$auth.user.company_id;
-
-      this.getExistingMembers(item.id);
-    },
-    viewMember(item) {
-      this.disabled = true;
-      this.formAction = "View";
-      this.viewMemberDialogBox = true;
-      this.payload = item;
-
-      this.getExistingMembers(item.id);
-    },
-    editItem({
-      profile_picture,
-      passport_doc,
-      id_doc,
-      contract_doc,
-      ejari_doc,
-      license_doc,
-      others_doc,
-      floor,
-      room,
-      ...payload
-    }) {
-      this.formAction = "Edit";
-      this.disabled = false;
-      this.DialogBox = true;
-
-      this.setImagePreview = profile_picture;
-      this.payload = payload;
-
-      this.getRoomsByFloorId(payload.floor_id);
-    },
-    viewItem({ profile_picture, ...payload }) {
-      this.formAction = "View";
-      this.disabled = true;
-      this.DialogBox = true;
-
-      this.imagePreview = profile_picture;
-      this.payload = payload;
-    },
-    getExistingMembers(id) {
-      this.$axios.get(`/members/${id}`).then(({ data }) => {
-        this.members = data;
-
-        if (!data.length) {
-          this.members.push({
-            full_name: null,
-            phone_number: null,
-            age: null,
-            member_type: null,
-            nationality: null,
-            tanent_id: id,
-          });
-        }
-      });
-    },
 
     deleteItem(item) {
       confirm(
         "Are you sure you wish to delete , to mitigate any inconvenience in future."
       ) &&
         this.$axios
-          .delete(`${this.endpoint}/${item.id}`)
+          .delete(`delete-member/${item.id}`)
           .then(({ data }) => {
             this.getDataFromApi();
             this.snackbar = true;
@@ -490,91 +308,7 @@ export default {
           })
           .catch((err) => console.log(err));
     },
-    close() {
-      this.dialog = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
-    },
-    previewImage(event) {
-      const file = this.payload.profile_picture;
-
-      if (file) {
-        // Read the selected file and create a preview
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imagePreview = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.imagePreview = null;
-      }
-    },
-
-    previewMemberImage(event) {
-      const file = this.member.profile_picture;
-
-      if (file) {
-        // Read the selected file and create a preview
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imageMemberPreview = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.imageMemberPreview = null;
-      }
-    },
-    others_doc(e) {
-      this.upload.name = e.target.files[0] || "";
-
-      let input = this.$refs.otherDoc_input;
-      let file = input.files;
-
-      if (file[0].size > 1024 * 1024) {
-        e.preventDefault();
-        this.errors["profile_picture"] = [
-          "File too big (> 1MB). Upload less than 1MB",
-        ];
-        return;
-      }
-
-      if (file && file[0]) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          //croppedimage step6
-          // this.previewImage = e.target.result;
-
-          this.selectedFile = event.target.result;
-
-          this.$refs.cropper.replace(this.selectedFile);
-        };
-        reader.readAsDataURL(file[0]);
-        this.$emit("input", file[0]);
-
-        this.dialogCropping = true;
-      }
-    },
-    mapper(obj) {
-      let formData = new FormData();
-
-      for (let x in obj) {
-        formData.append(x, obj[x]);
-      }
-      if (this.payload.profile_picture) {
-        formData.append("profile_picture", this.upload.name);
-      }
-
-      if (this.payload.passport_doc) {
-        formData.append("passport_doc", this.payload.passport_doc.name);
-      }
-
-      formData.append("company_id", this.$auth.user.company_id);
-
-      return formData;
-    },
-    handleSuccessResponse(message) {
+    handleResponse(message) {
       this.snackbar = true;
       this.response = message;
       this.dialog = true;
