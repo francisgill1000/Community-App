@@ -10,10 +10,11 @@ use App\Http\Requests\Community\Tanent\MemberUpdateRequest;
 use App\Http\Requests\Community\Tanent\StoreRequest;
 use App\Http\Requests\Community\Tanent\UpdateRequest;
 use App\Http\Requests\Community\Tanent\VehicleRequest;
-
+use App\Models\Community\MaidRelationTenant;
 use App\Models\Community\Tanent;
 use App\Models\Community\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TanentController extends Controller
 {
@@ -28,10 +29,11 @@ class TanentController extends Controller
             "company_id" => request("company_id"),
             "parent_id" => 0,
         ])
-        ->select("id","full_name","system_user_id")
-        ->withCount("members")
-        ->orderBy('full_name', 'asc')
-        ->get();
+            ->with(["floor", "room"])
+            ->withCount("members")
+
+            ->orderBy('full_name', 'asc')
+            ->get();
     }
 
     /**
@@ -43,12 +45,13 @@ class TanentController extends Controller
     {
         return Tanent::where([
             "company_id" => request("company_id"),
-            "parent_id" => 0,
+            // "parent_id" => 0,
         ])
-        ->withCount("members")
-        ->with(["vehicles", "members", "floor", "room"])
-        ->orderBy('id', 'desc')
-        ->paginate(request("per_page") ?? 10);
+            ->when(request()->filled("member_type"), fn ($q) => $q->where("member_type", request("member_type")))
+            ->withCount("members")
+            ->with(["vehicles", "members", "floor", "room"])
+            ->orderBy('id', 'desc')
+            ->paginate(request("per_page") ?? 10);
     }
 
     /**
@@ -225,6 +228,42 @@ class TanentController extends Controller
         }
     }
 
+    public function assignTanentstoMaid(Request $request, $id)
+    {
+        $arr = [];
+
+        foreach ($request->parent_ids as $p_id) {
+            $arr[] = [
+                "maid_id" => $id,
+                "tanent_id" => $p_id,
+
+            ];
+        }
+
+        try {
+
+            MaidRelationTenant::where("maid_id", $id)->delete();
+
+            $record = MaidRelationTenant::insert($arr);
+
+            if ($record) {
+                return $this->response('Maid has been assigned.', $record, true);
+            } else {
+                return $this->response('Maid not assigned.', null, false);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function getAssociatedTanentIds($id)
+    {
+        return MaidRelationTenant::where("maid_id", $id)->pluck('tanent_id')->toArray();
+    }
+
+
+
+
     public function updateMember(MemberUpdateRequest $request, $id)
     {
         try {
@@ -383,8 +422,32 @@ class TanentController extends Controller
 
     public function getMaids()
     {
-        return Tanent::where("company_id", request("company_id"))->where("member_type", "Maid")->with("tanent")->orderBy('id', 'desc')->paginate(request("per_page") ?? 10);
+        return Tanent::where("company_id", request("company_id"))->where("member_type", "Maid")->with("tanent_for_maid")->orderBy('id', 'desc')->paginate(request("per_page") ?? 10);
     }
+
+    public function getSingleMaid($id)
+    {
+        // Retrieve the tenant IDs associated with the maid
+        $tenantIds = MaidRelationTenant::where('maid_id', $id)->pluck('tanent_id')->toArray();
+
+        // Retrieve the maid with its associated tenant
+        $maid = Tanent::where('id', $id)
+            ->where('member_type', 'Maid')
+            ->first();
+
+        if (!$maid) {
+            return null; // Return null if the maid is not found
+        }
+
+        // Retrieve the associated tenants
+        $associatedTenants = Tanent::whereIn('id', $tenantIds)->get();
+
+        // Assign associated tenants to the maid object
+        $maid->associatedTenants = $associatedTenants;
+
+        return $maid;
+    }
+
 
     public function getMemberTypes()
     {
