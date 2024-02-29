@@ -356,15 +356,14 @@
     </v-card>
     <CommunityPurposeCreate
       ref="customPopup"
-      type="visitor"
+      :type="visitor_type"
       @success="handleResponse"
     />
   </v-dialog>
 </template>
 
 <script>
-import "cropperjs/dist/cropper.css";
-import VueCropper from "vue-cropperjs";
+
 let date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
   .toISOString()
   .substring(0, 10);
@@ -373,9 +372,7 @@ let hours = String(new Date().getHours()).padStart(2, "0");
 let minutes = String(new Date().getMinutes()).padStart(2, "0");
 let dynamicTime = hours + ":" + minutes;
 export default {
-  components: {
-    VueCropper,
-  },
+  props: ["visitor_type"],
 
   data: () => ({
     disabled: false,
@@ -401,7 +398,6 @@ export default {
       first_name: null,
       last_name: null,
       gender: "Male",
-      visitor_type: "casual",
       phone_number: null,
       email: null,
       visitor_company_name: null,
@@ -576,6 +572,7 @@ export default {
       return this.$pagePermission.can(per, this);
     },
     submit() {
+      this.payload.visitor_type =  this.visitor_type,
       this.$axios
         .post(`visitor-self-register`, this.payload)
         .then(({ data }) => {

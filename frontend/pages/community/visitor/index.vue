@@ -1,9 +1,11 @@
 <template>
   <Visitor
-    :access="`visitor_access`"
-    :view="`visitor_view`"
-    :create="`visitor_create`"
-    :edit="`visitor_edit`"
-    :delete="`visitor_delete`"
+    access="visitor_access"
+    view="visitor_view"
+    create="visitor_create"
+    edit="visitor_edit"
+    delete="visitor_delete"
+    visitor_type="visitor"
+    label="Visitor"
   />
 </template>

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('visitors', function (Blueprint $table) {
-            $table->string("visitor_type")->default('casual');
+            $table->string("visitor_type")->default('visitor');
         });
     }
 

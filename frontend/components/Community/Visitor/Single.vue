@@ -117,7 +117,6 @@
                 <v-text-field
                   readonly
                   label="Email"
-                  :readonly="readonly"
                   v-model="payload.email"
                   dense
                   class="text-center"

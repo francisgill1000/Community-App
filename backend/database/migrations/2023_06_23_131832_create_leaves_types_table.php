@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('leaves_types', function (Blueprint $table) {
             $table->id();
             $table->integer('company_id');
-            $table->string('name'); //casual /medical //
-            $table->string('short_name'); //casual /medical //
+            $table->string('name'); //visitor /medical //
+            $table->string('short_name'); //visitor /medical //
             $table->timestamps();
         });
     }

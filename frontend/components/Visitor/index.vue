@@ -16,7 +16,7 @@
       <v-card v-if="can(view)" elevation="0">
         <v-toolbar class="mb-2" dense flat>
           <v-toolbar-title
-            ><span>{{ Model }}s </span></v-toolbar-title
+            ><span>{{ label }}</span></v-toolbar-title
           >
           <span>
             <v-btn
@@ -34,6 +34,7 @@
           </span>
           <v-spacer></v-spacer>
           <CommunityVisitorCreate
+            :visitor_type="visitor_type"
             v-if="can(create)"
             @success="handleSuccessResponse"
           />
@@ -135,6 +136,7 @@
                 <v-list-item>
                   <v-list-item-title style="cursor: pointer">
                     <CommunityVisitorEdit
+                      :visitor_type="visitor_type"
                       v-if="can(edit)"
                       :item="item"
                       @success="handleSuccessResponse"
@@ -144,6 +146,7 @@
                 <v-list-item>
                   <v-list-item-title style="cursor: pointer">
                     <CommunityVisitorSingle
+                      :visitor_type="visitor_type"
                       v-if="can(view)"
                       :key="generateRandomId()"
                       :item="item"
@@ -163,7 +166,15 @@
 
 <script>
 export default {
-  props: ["access", "view", "create", "edit", "delete"],
+  props: [
+    "access",
+    "view",
+    "create",
+    "edit",
+    "delete",
+    "visitor_type",
+    "label",
+  ],
   data: () => ({
     disabled: false,
     step: 1,
@@ -233,7 +244,6 @@ export default {
       name: "",
     },
     options: {},
-    Model: "Visitor",
     endpoint: "visitor-list",
     search: "",
     snackbar: false,
@@ -315,7 +325,7 @@ export default {
         filterable: true,
         filterSpecial: false,
       },
-      
+
       {
         text: "EID",
         align: "left",
@@ -435,6 +445,7 @@ export default {
           per_page: itemsPerPage,
           company_id: this.$auth.user.company_id,
           ...this.filters,
+          visitor_type: this.visitor_type,
         },
       };
 

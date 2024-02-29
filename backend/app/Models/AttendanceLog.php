@@ -95,7 +95,7 @@ class AttendanceLog extends Model
 
     public function visitor()
     {
-        return $this->belongsTo(Visitor::class)->where("visitor_type", "casual");
+        return $this->belongsTo(Visitor::class)->where("visitor_type", "visitor");
     }
 
     public function delivery()

@@ -24,7 +24,7 @@
               label="Type"
               outlined
               v-model="payload.type"
-              :items="[`contractor`, `visitor`, `delivery man`]"
+              :items="[`contractor`, `visitor`, `delivery`]"
               dense
               :hide-details="!errors.type"
               :error-messages="errors && errors.type ? errors.type[0] : ''"

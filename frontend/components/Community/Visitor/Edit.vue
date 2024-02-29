@@ -352,15 +352,13 @@
     </v-card>
     <CommunityPurposeCreate
       ref="customPopup"
-      type="visitor"
+      :type="visitor_type"
       @success="handleResponse"
     />
   </v-dialog>
 </template>
 
 <script>
-import "cropperjs/dist/cropper.css";
-import VueCropper from "vue-cropperjs";
 let date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
   .toISOString()
   .substring(0, 10);
@@ -369,10 +367,7 @@ let hours = String(new Date().getHours()).padStart(2, "0");
 let minutes = String(new Date().getMinutes()).padStart(2, "0");
 let dynamicTime = hours + ":" + minutes;
 export default {
-  props: ["item"],
-  components: {
-    VueCropper,
-  },
+  props: ["item","visitor_type"],
 
   data: () => ({
     disabled: false,
