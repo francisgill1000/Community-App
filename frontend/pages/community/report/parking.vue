@@ -64,6 +64,14 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.room_number"
+                      outlined
+                      dense
+                      label="Room/Flat"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
                     <v-autocomplete
                       label="Tanent"
                       outlined
@@ -200,6 +208,13 @@
             class="elevation-1"
             :server-items-length="totalRowsCount"
           >
+            <!-- <template v-slot:header="{ props: { headers } }">
+              <SnippetsFiltersRenderFields
+                :fields="headers.map((e) => e.key)"
+                @filtered="handleFilter"
+                :headers="headers"
+              />
+            </template> -->
           </v-data-table>
         </v-card>
       </div>
@@ -304,11 +319,11 @@ export default {
       {
         text: "#",
         align: "left",
-        sortable: true,
+        sortable: false,
         key: "id",
         value: "id",
-        filterable: true,
-        filterSpecial: false,
+        filterable: false,
+        width: "10px",
       },
       {
         text: "Category",
@@ -317,25 +332,35 @@ export default {
         key: "category",
         value: "category",
         filterable: true,
-        filterSpecial: false,
+        type: "dropdown",
+        render_childens: true,
+        items: [
+          { id: `Commercial`, name: `Commercial` },
+          { id: `Residence`, name: `Residence` },
+          { id: `VIP`, name: `VIP` },
+          { id: `Guest`, name: `Guest` },
+          { id: `Green`, name: `Green` },
+          { id: `Special Needs`, name: `Special Needs` },
+        ],
       },
       {
         text: "Floor",
         align: "left",
         sortable: true,
-        key: "floor.floor_number",
+        key: "floor_id",
         value: "floor.floor_number",
         filterable: true,
-        filterSpecial: false,
+        type: "dropdown",
+        items: [{ id: ``, name: `` }],
       },
       {
         text: "Flat/Room",
         align: "left",
         sortable: true,
-        key: "vehicle.tanent.room.room_number",
+        key: "room_number",
         value: "vehicle.tanent.room.room_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Parking Number",
@@ -344,72 +369,72 @@ export default {
         key: "parking_number",
         value: "parking_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Car Number",
         align: "left",
         sortable: true,
-        key: "vehicle.car_number",
+        key: "car_number",
         value: "vehicle.car_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Car Brand",
         align: "left",
         sortable: true,
-        key: "vehicle.car_brand",
+        key: "car_brand",
         value: "vehicle.car_brand",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Tanent",
         align: "left",
         sortable: true,
-        key: "vehicle.tanent.full_name",
+        key: "full_name",
         value: "vehicle.tanent.full_name",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
 
       {
         text: "Phone Number",
         align: "left",
         sortable: true,
-        key: "vehicle.tanent.phone_number",
+        key: "phone_number",
         value: "vehicle.tanent.phone_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Email",
         align: "left",
         sortable: true,
-        key: "vehicle.tanent.email",
+        key: "email",
         value: "vehicle.tanent.email",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
-      {
-        text: "Start Date",
-        align: "left",
-        sortable: true,
-        key: "vehicle.tanent.start_date",
-        value: "vehicle.tanent.start_date",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
-        text: "End Date",
-        align: "left",
-        sortable: true,
-        key: "vehicle.tanent.end_date",
-        value: "vehicle.tanent.end_date",
-        filterable: true,
-        filterSpecial: false,
-      },
+      // {
+      //   text: "Start Date",
+      //   align: "left",
+      //   sortable: true,
+      //   key: "start_date",
+      //   value: "vehicle.tanent.start_date",
+      //   filterable: true,
+      //   type: "date_range",
+      // },
+      // {
+      //   text: "End Date",
+      //   align: "left",
+      //   sortable: true,
+      //   key: "end_date",
+      //   value: "vehicle.tanent.end_date",
+      //   filterable: true,
+      //   type: "date_range",
+      // },
     ],
     tanents: [],
     floors: [],
@@ -431,6 +456,13 @@ export default {
     },
   },
   methods: {
+    handleFilter({ key, search_value, render_childens = false }) {
+      this.filters[key] = search_value;
+      if (render_childens) {
+        this.getFloorByCategory(search_value);
+      }
+      this.getDataFromApi(this.endpoint);
+    },
     filterAttr(data) {
       this.filters.from_date = data.from;
       this.filters.to_date = data.to;
@@ -465,11 +497,20 @@ export default {
 
       this.getDataFromApi();
     },
+    handleDatesFilter(dates) {
+      if (dates.length > 1) {
+        this.getDataFromApi(this.endpoint, "dates", dates);
+      }
+    },
     async getFloorByCategory(category) {
       let { data } = await this.$axios.get(
         `parking-floor-by-category/${category}`
       );
       this.floors = data;
+
+      let header = this.headers.find((e) => e.key == "floor_id");
+
+      header.items = data.map((e) => ({ id: e.id, name: e.floor_number }));
     },
     async getTanents() {
       let { data: tanents } = await this.$axios.get(`tanent-list`, {

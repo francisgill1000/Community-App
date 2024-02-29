@@ -33,6 +33,7 @@
             </v-btn>
           </span>
           <v-spacer></v-spacer>
+          <ExportData :data="exportData()" />
           <CommunityVisitorCreate
             :visitor_type="visitor_type"
             v-if="can(create)"
@@ -56,27 +57,11 @@
             {{ item?.room?.room_category?.name }}
           </template>
           <template v-slot:header="{ props: { headers } }">
-            <tr v-if="isFilter">
-              <td v-for="header in headers" :key="header.text">
-                <v-container>
-                  <v-text-field
-                    clearable
-                    @click:clear="
-                      filters[header.value] = '';
-                      applyFilters();
-                    "
-                    :hide-details="true"
-                    v-if="header.filterable && !header.filterSpecial"
-                    v-model="filters[header.value]"
-                    :id="header.value"
-                    @input="applyFilters(header.key, $event)"
-                    outlined
-                    dense
-                    autocomplete="off"
-                  ></v-text-field>
-                </v-container>
-              </td>
-            </tr>
+            <SnippetsFiltersRenderFields
+              :fields="headers.map((e) => e.key)"
+              @filtered="handleFilter"
+              :headers="headers"
+            />
           </template>
 
           <template
@@ -260,7 +245,7 @@ export default {
         key: "full_name",
         value: "full_name",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Company",
@@ -269,7 +254,7 @@ export default {
         key: "visitor_company_name",
         value: "visitor_company_name",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "From",
@@ -278,7 +263,7 @@ export default {
         key: "from",
         value: "from",
         filterable: true,
-        filterSpecial: false,
+        type: "date_range",
       },
       {
         text: "To",
@@ -287,7 +272,7 @@ export default {
         key: "to",
         value: "to",
         filterable: true,
-        filterSpecial: false,
+        type: "date_range",
       },
       {
         text: "Purpose",
@@ -296,7 +281,7 @@ export default {
         key: "purpose.name",
         value: "purpose.name",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Gender",
@@ -305,7 +290,7 @@ export default {
         key: "gender",
         value: "gender",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Phone Number",
@@ -314,7 +299,7 @@ export default {
         key: "phone_number",
         value: "phone_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Email",
@@ -323,7 +308,7 @@ export default {
         key: "email",
         value: "email",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
 
       {
@@ -333,7 +318,7 @@ export default {
         key: "id_number",
         value: "id_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Tanent",
@@ -351,7 +336,7 @@ export default {
         key: "date",
         value: "date",
         filterable: true,
-        filterSpecial: false,
+        type: "date_range",
       },
 
       {
@@ -400,6 +385,35 @@ export default {
     },
   },
   methods: {
+    handleFilter({ key, search_value }) {
+      this.filters[key] = search_value;
+      this.getDataFromApi(this.endpoint);
+    },
+    exportData() {
+      let cols = [
+        "full_name",
+        "visitor_company_name",
+        "from",
+        "to",
+        "purpose.name",
+        "gender",
+        "phone_number",
+        "email",
+        "id_number",
+        "date",
+      ];
+
+      return this.data.map((item) => {
+        let filteredItem = {};
+        Object.keys(item).forEach((key) => {
+          if (cols.includes(key)) {
+            filteredItem[key] = item[key];
+            filteredItem["tanent_full_name"] = item?.tanent?.full_name ?? "---";
+          }
+        });
+        return filteredItem;
+      });
+    },
     generateRandomId() {
       const length = 8; // Adjust the length of the ID as needed
       const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number

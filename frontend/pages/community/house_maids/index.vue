@@ -33,7 +33,11 @@
             </v-btn>
           </span>
           <v-spacer></v-spacer>
-          <CommunityMaidCreate @response="handleResponse" :key="generateRandomId()" />
+          <ExportData :data="exportData()" />
+          <CommunityMaidCreate
+            @response="handleResponse"
+            :key="generateRandomId()"
+          />
         </v-toolbar>
         <v-data-table
           dense
@@ -48,7 +52,6 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
-
           <template
             v-slot:item.full_name="{ item, index }"
             style="width: 300px"
@@ -162,7 +165,7 @@ export default {
     snackbar: false,
     loading: false,
     data: [],
-    totalRowsCount:0,
+    totalRowsCount: 0,
     headers: [
       {
         text: "User Device Id",
@@ -272,6 +275,29 @@ export default {
     },
   },
   methods: {
+    exportData() {
+      let cols = [
+        "system_user_id",
+        "full_name",
+        "gender",
+        "phone_number",
+        "age",
+        "nationality",
+      ];
+
+      return this.data.map((item) => {
+        let filteredItem = {};
+        Object.keys(item).forEach((key) => {
+          if (cols.includes(key)) {
+            filteredItem[key] = item[key];
+            filteredItem["tanent_full_name"] = item?.tanent_for_maid?.tanent?.full_name ?? "---";
+            filteredItem["tanent_phone_number"] = item?.tanent_for_maid?.tanent?.phone_number ?? "---";
+            filteredItem["tanent_term"] = item?.tanent_for_maid?.tanent?.term ?? "---";
+          }
+        });
+        return filteredItem;
+      });
+    },
     generateRandomId() {
       const length = 8; // Adjust the length of the ID as needed
       const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number

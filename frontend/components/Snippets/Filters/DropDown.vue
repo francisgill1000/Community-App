@@ -4,7 +4,7 @@
       v-if="header.key == column || header.type == 'dropdown'"
       :hide-details="true"
       v-model="header.search_value"
-      @input="handleChange"
+      @change="handleChange"
       outlined
       dense
       item-text="name"

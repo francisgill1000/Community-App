@@ -43,7 +43,10 @@ class Vehicle extends Model
             "status" => "---",
             "room" => [
                 "room_number" => "---"
-            ]
+            ],
+            "car_number" => "---",
+            "car_brand" => "---",
+
         ])->with("room");
     }
 }

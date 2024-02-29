@@ -963,12 +963,6 @@
             </v-row>
           </template>
 
-          <template v-slot:item.branch.branch_name="{ item }">
-            {{ caps(item.branch && item.branch.branch_name) }}
-            <div class="secondary-value">
-              {{ item.user.branch_login && "(Branch Owner)" }}
-            </div>
-          </template>
           <template v-slot:item.department_name_id="{ item }">
             <strong>{{ caps(item.department.name) }}</strong>
             <div>{{ caps(item.sub_department.name) }}</div>

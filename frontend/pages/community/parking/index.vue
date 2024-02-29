@@ -6,156 +6,6 @@
       </v-snackbar>
     </div>
     <div v-if="!loading">
-      <v-dialog persistent v-model="DialogBox" width="500">
-        <v-card>
-          <v-toolbar class="popup_background" flat dense>
-            Parking Allocation
-
-            <v-spacer></v-spacer>
-            <span>
-              <v-icon class="ml-2" @click="DialogBox = false" dark>
-                mdi mdi-close-circle-outline</v-icon
-              >
-            </span>
-          </v-toolbar>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-autocomplete
-                  @change="getFloorByCategory(payload.category)"
-                  label="Category"
-                  outlined
-                  :disabled="disabled"
-                  v-model="payload.category"
-                  :items="[
-                    `Commercial`,
-                    `Residence`,
-                    `VIP`,
-                    `Guest`,
-                    `Green`,
-                    `Special Needs`,
-                  ]"
-                  dense
-                  :hide-details="!errors.category"
-                  :error-messages="
-                    errors && errors.category ? errors.category[0] : ''
-                  "
-                >
-                </v-autocomplete>
-              </v-col>
-              <v-col cols="12">
-                <v-autocomplete
-                  @change="getParkingsByFloor(payload.floor_id)"
-                  label="Floor Number"
-                  outlined
-                  :readonly="disabled"
-                  v-model="payload.floor_id"
-                  :items="floors"
-                  dense
-                  item-text="floor_number"
-                  item-value="id"
-                  :hide-details="!errors.floor_id"
-                  :error-messages="
-                    errors && errors.floor_id ? errors.floor_id[0] : ''
-                  "
-                >
-                </v-autocomplete>
-              </v-col>
-              <v-col cols="12">
-                <v-autocomplete
-                  label="Parking Number"
-                  outlined
-                  :readonly="disabled"
-                  v-model="payload.parking_id"
-                  :items="parkings"
-                  dense
-                  item-text="parking_number"
-                  item-value="id"
-                  :hide-details="!errors.parking_id"
-                  :error-messages="
-                    errors && errors.parking_id ? errors.parking_id[0] : ''
-                  "
-                >
-                </v-autocomplete>
-              </v-col>
-              <v-col cols="12">
-                <v-autocomplete
-                  label="Tanent"
-                  outlined
-                  :readonly="disabled"
-                  v-model="payload.tanent_id"
-                  :items="tanents"
-                  dense
-                  item-text="full_name"
-                  item-value="id"
-                  :hide-details="!errors.tanent_id"
-                  :error-messages="
-                    errors && errors.tanent_id ? errors.tanent_id[0] : ''
-                  "
-                >
-                </v-autocomplete>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Car Number"
-                  :readonly="disabled"
-                  v-model="payload.car_number"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.car_number"
-                  :error-messages="
-                    errors && errors.car_number ? errors.car_number[0] : ''
-                  "
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12">
-                <v-text-field
-                  label="Car Brand"
-                  :readonly="disabled"
-                  v-model="payload.car_brand"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.car_brand"
-                  :error-messages="
-                    errors && errors.car_brand ? errors.car_brand[0] : ''
-                  "
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <div class="text-right">
-              <v-btn small color="grey white--text" @click="DialogBox = false">
-                Close
-              </v-btn>
-
-              <v-btn
-                v-if="can('employee_create') && formAction == 'Create'"
-                small
-                :loading="loading"
-                color="primary"
-                @click="submit"
-              >
-                Submit
-              </v-btn>
-              <v-btn
-                v-else-if="can('employee_create') && formAction == 'Edit'"
-                small
-                :loading="loading"
-                color="primary"
-                @click="update_data"
-              >
-                Update
-              </v-btn>
-            </div>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
       <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
         {{ snackText }}
 
@@ -184,19 +34,56 @@
               </v-btn>
             </span>
             <v-spacer></v-spacer>
-            <span>
-              <v-btn
-                dense
-                small
-                class="primary"
-                text
-                title="Create Parking"
-                @click="addItem"
-              >
-                Allocate Parking
-                <v-icon right dark>mdi-plus-circle-outline</v-icon>
-              </v-btn>
-            </span>
+            <ExportData :data="exportData()" />
+            <CommunityParkingAllocationCreate @success="getDataFromApi" />
+            <!-- <v-tooltip top color="primary">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="ma-0"
+                  x-small
+                  :ripple="false"
+                  text
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="process_file(`parkingReportPrint`)"
+                >
+                  <img src="/icons/icon_print.png" class="iconsize" />
+                </v-btn>
+              </template>
+              <span>PRINT</span>
+            </v-tooltip>
+
+            <v-tooltip top color="primary">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  x-small
+                  :ripple="false"
+                  text
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="process_file(`parkingReportDownload`)"
+                >
+                  <img src="/icons/icon_pdf.png" class="iconsize" />
+                </v-btn>
+              </template>
+              <span>DOWNLOAD</span>
+            </v-tooltip> -->
+
+            <!-- <v-tooltip top color="primary">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  x-small
+                  :ripple="false"
+                  text
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="process_file(report_type + '_download_csv')"
+                >
+                <img src="/icons/icon_excel.png" class="iconsize" />
+                </v-btn>
+              </template>
+              <span>CSV</span>
+            </v-tooltip> -->
           </v-toolbar>
           <v-data-table
             dense
@@ -211,8 +98,13 @@
             class="elevation-1"
             :server-items-length="totalRowsCount"
           >
-            <template v-slot:item.car_number="{ item }"> --- </template>
-
+            <template v-slot:header="{ props: { headers } }">
+              <SnippetsFiltersRenderFields
+                :fields="headers.map((e) => e.key)"
+                @filtered="handleFilter"
+                :headers="headers"
+              />
+            </template>
             <template v-slot:item.options="{ item }">
               <v-menu bottom left>
                 <template v-slot:activator="{ on, attrs }">
@@ -226,10 +118,12 @@
                       <CommunityParkingAllocationSingle :item="item" />
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item @click="editItem(item)">
+                  <v-list-item>
                     <v-list-item-title style="cursor: pointer">
-                      <v-icon color="secondary" small> mdi-pencil </v-icon>
-                      Edit
+                      <CommunityParkingAllocationEdit
+                        @success="getDataFromApi"
+                        :item="item"
+                      />
                     </v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="deleteItem(item.vehicle.id)">
@@ -252,33 +146,15 @@
 </template>
 
 <script>
-import "cropperjs/dist/cropper.css";
-import VueCropper from "vue-cropperjs";
-
 export default {
   props: ["id"],
-  components: {
-    VueCropper,
-  },
 
   data: () => ({
-    originalURL: `https://mytime2cloud.com/register/visitor/`,
-    fullCompanyLink: ``,
-    encryptedID: "",
-    fullLink: "",
-    qrCodeDataURL: "",
-    qrCompanyCodeDataURL: "",
     disabled: false,
     openTimePicker: false,
     closeTimePicker: false,
 
     menu: false,
-    payload: {
-      tanent_id: "",
-      parking_id: "",
-      car_number: "",
-      car_brand: "",
-    },
 
     tab: null,
 
@@ -311,7 +187,6 @@ export default {
     m: false,
     expand: false,
     expand2: false,
-    boilerplate: false,
     right: true,
     rightDrawer: false,
     drawer: true,
@@ -349,7 +224,7 @@ export default {
       per_page: 10,
     },
     options: {},
-    Model: "Parking",
+    Model: "Parking Report",
     endpoint: "parking-allocation",
     search: "",
     snackbar: false,
@@ -360,26 +235,15 @@ export default {
     response: "",
     data: [],
     errors: [],
-    designations: [],
-    roles: [],
-    employees: [],
-    department_filter_id: "",
-    dialogVisible: false,
-    payloadOptions: {},
-    // "": "03:50:00",
-    // "": "08:50:00",
-    // "zone_id": 1,
-    // "weekend": true,
-    // "webaccess": true,
     headers: [
       {
         text: "#",
         align: "left",
-        sortable: true,
+        sortable: false,
         key: "id",
         value: "id",
-        filterable: true,
-        filterSpecial: false,
+        filterable: false,
+        width: "10px",
       },
       {
         text: "Category",
@@ -388,25 +252,35 @@ export default {
         key: "category",
         value: "category",
         filterable: true,
-        filterSpecial: false,
+        type: "dropdown",
+        render_childens: true,
+        items: [
+          { id: `Commercial`, name: `Commercial` },
+          { id: `Residence`, name: `Residence` },
+          { id: `VIP`, name: `VIP` },
+          { id: `Guest`, name: `Guest` },
+          { id: `Green`, name: `Green` },
+          { id: `Special Needs`, name: `Special Needs` },
+        ],
       },
       {
         text: "Floor",
         align: "left",
         sortable: true,
-        key: "floor.floor_number",
+        key: "floor_id",
         value: "floor.floor_number",
         filterable: true,
-        filterSpecial: false,
+        type: "dropdown",
+        items: [{ id: ``, name: `` }],
       },
       {
         text: "Flat/Room",
         align: "left",
         sortable: true,
-        key: "vehicle.tanent.room.room_number",
+        key: "room_number",
         value: "vehicle.tanent.room.room_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Parking Number",
@@ -415,72 +289,72 @@ export default {
         key: "parking_number",
         value: "parking_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Car Number",
         align: "left",
         sortable: true,
-        key: "vehicle.car_number",
+        key: "car_number",
         value: "vehicle.car_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Car Brand",
         align: "left",
         sortable: true,
-        key: "vehicle.car_brand",
+        key: "car_brand",
         value: "vehicle.car_brand",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Tanent",
         align: "left",
         sortable: true,
-        key: "vehicle.tanent.full_name",
+        key: "full_name",
         value: "vehicle.tanent.full_name",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
 
       {
         text: "Phone Number",
         align: "left",
         sortable: true,
-        key: "vehicle.tanent.phone_number",
+        key: "phone_number",
         value: "vehicle.tanent.phone_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Email",
         align: "left",
         sortable: true,
-        key: "vehicle.tanent.email",
+        key: "email",
         value: "vehicle.tanent.email",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
-      {
-        text: "Start Date",
-        align: "left",
-        sortable: true,
-        key: "vehicle.tanent.start_date",
-        value: "vehicle.tanent.start_date",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
-        text: "Expire Date",
-        align: "left",
-        sortable: true,
-        key: "tanent.end_date",
-        value: "tanent.end_date",
-        filterable: true,
-        filterSpecial: false,
-      },
+      // {
+      //   text: "Start Date",
+      //   align: "left",
+      //   sortable: true,
+      //   key: "start_date",
+      //   value: "vehicle.tanent.start_date",
+      //   filterable: true,
+      //   type: "date_range",
+      // },
+      // {
+      //   text: "End Date",
+      //   align: "left",
+      //   sortable: true,
+      //   key: "end_date",
+      //   value: "vehicle.tanent.end_date",
+      //   filterable: true,
+      //   type: "date_range",
+      // },
       {
         text: "Details",
         align: "left",
@@ -489,23 +363,12 @@ export default {
         value: "options",
       },
     ],
-    parkings: [],
     tanents: [],
     floors: [],
-    formAction: "Create",
   }),
 
   async created() {
     this.loading = false;
-    this.boilerplate = true;
-
-    this.payloadOptions = {
-      params: {
-        per_page: 10,
-        company_id: this.id,
-      },
-    };
-
     this.getDataFromApi();
     await this.getTanents();
   },
@@ -520,21 +383,87 @@ export default {
     },
   },
   methods: {
+    exportData() {
+      let cols = [
+        "category",
+        "parking_number",
+      ];
+
+      return this.data.map((item) => {
+        let filteredItem = {};
+        Object.keys(item).forEach((key) => {
+          if (cols.includes(key)) {
+            filteredItem[key] = item[key];
+            filteredItem["floor_number"] = item?.floor?.floor_number ?? "---";
+            filteredItem["car_number"] = item?.vehicle?.car_number ?? "---";
+            filteredItem["car_brand"] = item?.vehicle?.car_brand ?? "---";
+            filteredItem["room_number"] = item?.vehicle?.tanent?.room?.room_number ?? "---";
+            filteredItem["tanent_full_name"] =
+              item?.vehicle?.tanent?.full_name ?? "---";
+            filteredItem["tanent_phone_number"] =
+              item?.vehicle?.tanent?.phone_number ?? "---";
+            filteredItem["tanent_email"] =
+              item?.vehicle?.tanent?.email ?? "---";
+          }
+        });
+        return filteredItem;
+      });
+    },
+    handleFilter({ key, search_value, render_childens = false }) {
+      this.filters[key] = search_value;
+      if (render_childens) {
+        this.getFloorByCategory(search_value);
+      }
+      this.getDataFromApi(this.endpoint);
+    },
     filterAttr(data) {
       this.filters.from_date = data.from;
       this.filters.to_date = data.to;
       this.filters.filterType = "Monthly";
     },
-    generate() {},
+    process_file(endpoint) {
+      if (!this.data || this.data.length === 0) {
+        alert("No data found");
+        return;
+      }
+
+      const baseUrl = process.env.BACKEND_URL;
+      const queryParams = {
+        company_id: this.$auth.user.company_id,
+        ...this.filters,
+      };
+
+      const queryString = Object.entries(queryParams)
+        .filter(
+          ([key, value]) =>
+            value !== undefined && value !== null && value !== ""
+        )
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
+
+      const url = `${baseUrl}/${endpoint}?${queryString}`;
+
+      let report = document.createElement("a");
+      report.setAttribute("href", url);
+      report.setAttribute("target", "_blank");
+      report.click();
+
+      this.getDataFromApi();
+    },
+    handleDatesFilter(dates) {
+      if (dates.length > 1) {
+        this.getDataFromApi(this.endpoint, "dates", dates);
+      }
+    },
     async getFloorByCategory(category) {
       let { data } = await this.$axios.get(
         `parking-floor-by-category/${category}`
       );
       this.floors = data;
-    },
-    async getParkingsByFloor(id) {
-      let { data } = await this.$axios.get(`parkings-by-floor/${id}`);
-      this.parkings = data;
+
+      let header = this.headers.find((e) => e.key == "floor_id");
+
+      header.items = data.map((e) => ({ id: e.id, name: e.floor_number }));
     },
     async getTanents() {
       let { data: tanents } = await this.$axios.get(`tanent-list`, {
@@ -543,37 +472,8 @@ export default {
 
       this.tanents = tanents;
     },
-    encrypt() {
-      this.encryptedID = this.$crypto.encrypt(id);
-      // this.fullLink = this.originalURL + this.encryptedID;
-    },
-    closeViewDialog() {
-      this.viewDialog = false;
-    },
-    caps(str) {
-      if (str == "" || str == null) {
-        return "---";
-      } else {
-        let res = str.toString();
-        return res.replace(/\b\w/g, (c) => c.toUpperCase());
-      }
-    },
-    closePopup() {
-      //croppingimagestep5
-      this.$refs.attachment_input.value = null;
-      this.dialogCropping = false;
-    },
-    close() {
-      this.dialog = false;
-      this.errors = [];
-      setTimeout(() => {}, 300);
-    },
     can(per) {
       return this.$pagePermission.can(per, this);
-    },
-
-    onPageChange() {
-      this.getDataFromApi();
     },
     applyFilters() {
       this.getDataFromApi();
@@ -588,19 +488,16 @@ export default {
       this.isFilter = false;
       this.getDataFromApi();
     },
-    getDataFromApi(url = this.endpoint) {
-      //this.loading = true;
+    getDataFromApi() {
       this.loadinglinear = true;
 
       let { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-      let sortedBy = sortBy ? sortBy[0] : "";
-      let sortedDesc = sortDesc ? sortDesc[0] : "";
       let options = {
         params: {
           page: page,
-          sortBy: sortedBy,
-          sortDesc: sortedDesc,
+          sortBy: sortBy ? sortBy[0] : "",
+          sortDesc: sortDesc ? sortDesc[0] : "",
           per_page: itemsPerPage, //this.pagination.per_page,
           company_id: this.$auth.user.company_id,
           ...this.filters,
@@ -622,24 +519,6 @@ export default {
         this.loadinglinear = false;
       });
     },
-    addItem() {
-      this.disabled = false;
-      this.formAction = "Create";
-      this.DialogBox = true;
-      this.payload = {};
-    },
-    editItem(item) {
-      this.disabled = false;
-      this.formAction = "Edit";
-      this.DialogBox = true;
-      this.payload = item;
-    },
-    viewItem(item) {
-      this.disabled = true;
-      this.formAction = "View";
-      this.DialogBox = true;
-      this.payload = item;
-    },
     deleteItem(id) {
       confirm(
         "Are you sure you wish to delete , to mitigate any inconvenience in future."
@@ -652,69 +531,6 @@ export default {
             this.response = data.message;
           })
           .catch((err) => console.log(err));
-    },
-    close() {
-      this.dialog = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
-    },
-
-    submit() {
-      this.$axios
-        .post(this.endpoint, this.payload)
-        .then(({ data }) => {
-          // this.encrypt(data.record.id);
-          this.errors = [];
-          this.snackbar = true;
-          this.response = data.message;
-          this.getDataFromApi();
-          this.DialogBox = false;
-          this.dialog = true;
-        })
-        .catch(({ response }) => {
-          if (!response) {
-            return false;
-          }
-          let { status, data, statusText } = response;
-
-          if (status && status == 422) {
-            this.errors = data.errors;
-            return;
-          }
-
-          this.snackbar = true;
-          this.response = statusText;
-        });
-
-      // }
-    },
-
-    update_data() {
-      this.$axios
-        .put(this.endpoint + "/" + this.payload.vehicle.id, this.payload)
-        .then(({ data }) => {
-          this.errors = [];
-          this.snackbar = true;
-          this.response = data.message;
-          this.getDataFromApi();
-          this.DialogBox = false;
-        })
-        .catch(({ response }) => {
-          if (!response) {
-            return false;
-          }
-          let { status, data, statusText } = response;
-
-          if (status && status == 422) {
-            this.errors = data.errors;
-            return;
-          }
-
-          this.snackbar = true;
-          this.response = statusText;
-        });
     },
   },
 };

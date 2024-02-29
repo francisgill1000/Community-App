@@ -48,6 +48,7 @@
             </v-btn>
           </span>
           <v-spacer></v-spacer>
+          <ExportData :data="exportData()" />
           <TanentCreate @success="handleSuccessResponse" />
         </v-toolbar>
         <v-data-table
@@ -63,31 +64,12 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
-          <template v-slot:item.category="{ item }">
-            {{ item?.room?.room_category?.name }}
-          </template>
           <template v-slot:header="{ props: { headers } }">
-            <tr v-if="isFilter">
-              <td v-for="header in headers" :key="header.text">
-                <v-container>
-                  <v-text-field
-                    clearable
-                    @click:clear="
-                      filters[header.value] = '';
-                      applyFilters();
-                    "
-                    :hide-details="true"
-                    v-if="header.filterable && !header.filterSpecial"
-                    v-model="filters[header.value]"
-                    :id="header.value"
-                    @input="applyFilters(header.key, $event)"
-                    outlined
-                    dense
-                    autocomplete="off"
-                  ></v-text-field>
-                </v-container>
-              </td>
-            </tr>
+            <SnippetsFiltersRenderFields
+              :fields="headers.map((e) => e.key)"
+              @filtered="handleFilter"
+              :headers="headers"
+            />
           </template>
 
           <template v-slot:item.members="{ item }">
@@ -273,39 +255,38 @@ export default {
       {
         text: "Ref #",
         align: "left",
-        sortable: true,
+        sortable: false,
         key: "id",
         value: "id",
-        filterable: true,
-        filterSpecial: false,
+        filterable: false,
       },
       {
         text: "User Device Id",
         align: "left",
-        sortable: true,
+        sortable: false,
         key: "system_user_id",
         value: "system_user_id",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
 
       {
         text: "Full Name",
         align: "left",
-        sortable: true,
+        sortable: false,
         key: "full_name",
         value: "full_name",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
 
       {
         text: "Members",
         align: "left",
-        sortable: true,
+        sortable: false,
         key: "members",
         value: "members",
-        filterable: true,
+        filterable: false,
         filterSpecial: false,
       },
       {
@@ -315,7 +296,7 @@ export default {
         key: "term",
         value: "term",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
 
       // {
@@ -332,28 +313,28 @@ export default {
         text: "Floor No",
         align: "left",
         sortable: true,
-        key: "floor.floor_number",
+        key: "floor_number",
         value: "floor.floor_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Room No",
         align: "left",
         sortable: true,
-        key: "room.room_number",
+        key: "room_number",
         value: "room.room_number",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Category",
         align: "left",
         sortable: true,
         key: "category",
-        value: "category",
+        value: "room.room_category.name",
         filterable: true,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Start Date",
@@ -362,7 +343,7 @@ export default {
         key: "start_date",
         value: "start_date",
         filterable: true,
-        filterSpecial: false,
+        type: "date_range",
       },
 
       {
@@ -372,7 +353,7 @@ export default {
         key: "end_date",
         value: "end_date",
         filterable: true,
-        filterSpecial: false,
+        type: "date_range",
       },
       {
         text: "Details",
@@ -420,6 +401,36 @@ export default {
     },
   },
   methods: {
+    exportData() {
+      let cols = [
+        "system_user_id",
+        "full_name",
+        "members_count",
+        "term",
+        "floor_number",
+        "room_number",
+        "category",
+        "start_date",
+        "end_date",
+      ];
+
+      return this.data.map((item) => {
+        let filteredItem = {};
+        Object.keys(item).forEach((key) => {
+          if (cols.includes(key)) {
+            filteredItem[key] = item[key];
+            filteredItem["floor"] = item?.floor?.floor_number ?? "---";
+            filteredItem["room"] = item?.room?.room_number ?? "---";
+            filteredItem["category"] = item?.room?.room_category?.name ?? "---";
+          }
+        });
+        return filteredItem;
+      });
+    },
+    handleFilter({ key, search_value }) {
+      this.filters[key] = search_value;
+      this.getDataFromApi(this.endpoint);
+    },
     generateRandomId() {
       const length = 8; // Adjust the length of the ID as needed
       const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number

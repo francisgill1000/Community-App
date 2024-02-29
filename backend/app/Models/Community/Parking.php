@@ -24,8 +24,20 @@ class Parking extends Model
 
     public function vehicle()
     {
-        return $this->hasOne(Vehicle::class)->with([
-            "tanent" => fn ($q) => $q->with(["floor", "room"])
+
+        return $this->hasOne(Vehicle::class)->withDefault([
+            "tanent" => [
+                fn ($q) => $q->with(["floor", "room"]),
+                "full_name" => "---",
+                "phone_number" => "---",
+                "email" => "---",
+                "start_date" => "---",
+                "end_date" => "---",
+                "status" => "---",
+                "room" => [
+                    "room_number" => "---"
+                ]
+            ]
         ]);
     }
 }

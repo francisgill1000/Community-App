@@ -41,13 +41,43 @@ class TanentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $data = Tanent::where([
             "company_id" => request("company_id"),
             // "parent_id" => 0,
         ])
+
+            ->when(request()->filled("system_user_id"), fn ($q) => $q->where("system_user_id", request("system_user_id")))
+
+            ->when(request()->filled("full_name"), fn ($q) => $q->whereRaw('LOWER(full_name) LIKE ?', "%" . strtolower(request("full_name")) . "%"))
+            ->when(request()->filled("term"), fn ($q) => $q->whereRaw('LOWER(term) LIKE ?', "%" . strtolower(request("term")) . "%"))
             ->when(request()->filled("member_type"), fn ($q) => $q->where("member_type", request("member_type")))
+
+
+
+            ->when($request->filled("floor_number"), function ($q) use ($request) {
+                $q->whereHas("floor", function ($qu) use ($request) {
+                    $qu->where("floor_number", $request->input("floor_number"));
+                });
+            })
+            ->when($request->filled("room_number"), function ($q) use ($request) {
+                $q->whereHas("room", function ($qu) use ($request) {
+                    $qu->where("room_number", $request->input("room_number"));
+                });
+            })
+
+            ->when($request->filled("category"), function ($q) use ($request) {
+                $q->whereHas("room.room_category", function ($qu) use ($request) {
+                    $qu->where("name", $request->input("category"));
+                });
+            })
+
+            ->when(request()->filled("start_date") && request()->filled("end_date"), function ($q) {
+                $q->whereDate('start_date', '>=', request("start_date"))
+                    ->whereDate('end_date', '<=', request("end_date"));
+            })
+
             ->withCount("members")
             ->with(["vehicles", "members", "floor", "room"])
             ->orderBy('id', 'desc')

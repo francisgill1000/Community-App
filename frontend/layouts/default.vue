@@ -347,7 +347,9 @@
       class="main_bg"
       :style="miniVariant ? 'padding-left: 60px;' : 'padding-left: 140px;'"
     >
-      <nuxt />
+      <v-container fluid>
+        <nuxt />
+      </v-container>
     </v-main>
   </v-app>
 </template>
@@ -710,7 +712,6 @@ export default {
         }
 
         this.pendingNotificationsCount = pendingcount;
-        
       });
     },
     getTopMenuItems(i) {
