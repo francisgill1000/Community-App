@@ -42,7 +42,6 @@
                   </v-col>
                   <v-col cols="1" class="mr-1">
                     <v-autocomplete
-                      @change="getParkingsByFloor(filters.floor_id)"
                       label="Floor Number"
                       outlined
                       :readonly="disabled"
@@ -212,33 +211,15 @@
 </template>
 
 <script>
-import "cropperjs/dist/cropper.css";
-import VueCropper from "vue-cropperjs";
-
 export default {
   props: ["id"],
-  components: {
-    VueCropper,
-  },
 
   data: () => ({
-    originalURL: `https://mytime2cloud.com/register/visitor/`,
-    fullCompanyLink: ``,
-    encryptedID: "",
-    fullLink: "",
-    qrCodeDataURL: "",
-    qrCompanyCodeDataURL: "",
     disabled: false,
     openTimePicker: false,
     closeTimePicker: false,
 
     menu: false,
-    payload: {
-      tanent_id: "",
-      parking_id: "",
-      car_number: "",
-      car_brand: "",
-    },
 
     tab: null,
 
@@ -271,7 +252,6 @@ export default {
     m: false,
     expand: false,
     expand2: false,
-    boilerplate: false,
     right: true,
     rightDrawer: false,
     drawer: true,
@@ -320,17 +300,6 @@ export default {
     response: "",
     data: [],
     errors: [],
-    designations: [],
-    roles: [],
-    employees: [],
-    department_filter_id: "",
-    dialogVisible: false,
-    payloadOptions: {},
-    // "": "03:50:00",
-    // "": "08:50:00",
-    // "zone_id": 1,
-    // "weekend": true,
-    // "webaccess": true,
     headers: [
       {
         text: "#",
@@ -442,23 +411,12 @@ export default {
         filterSpecial: false,
       },
     ],
-    parkings: [],
     tanents: [],
     floors: [],
-    formAction: "Create",
   }),
 
   async created() {
     this.loading = false;
-    this.boilerplate = true;
-
-    this.payloadOptions = {
-      params: {
-        per_page: 10,
-        company_id: this.id,
-      },
-    };
-
     this.getDataFromApi();
     await this.getTanents();
   },
@@ -479,57 +437,39 @@ export default {
       this.filters.filterType = "Monthly";
     },
     process_file(endpoint) {
-      if (this.data && !this.data.length) {
+      if (!this.data || this.data.length === 0) {
         alert("No data found");
         return;
       }
 
-      let path = process.env.BACKEND_URL + "/" + endpoint;
+      const baseUrl = process.env.BACKEND_URL;
+      const queryParams = {
+        company_id: this.$auth.user.company_id,
+        ...this.filters,
+      };
 
-      let qs = ``;
+      const queryString = Object.entries(queryParams)
+        .filter(
+          ([key, value]) =>
+            value !== undefined && value !== null && value !== ""
+        )
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
 
-      qs += `${path}`;
-      qs += `?company_id=${this.$auth.user.company_id}`;
-
-      if (this.filters.category) {
-        qs += `&category=${this.filters.category}`;
-      }
-      if (this.filters.floor_id) {
-        qs += `&floor_id=${this.filters.floor_id}`;
-      }
-      if (this.filters.parking_number) {
-        qs += `&parking_number=${this.filters.parking_number}`;
-      }
-      if (this.filters.tanent_id) {
-        qs += `&tanent_id=${this.filters.tanent_id}`;
-      }
-      if (this.filters.car_number) {
-        qs += `&car_number=${this.filters.car_number}`;
-      }
-      if (this.filters.phone_number) {
-        qs += `&phone_number=${this.filters.phone_number}`;
-      }
-      if (this.filters.email) {
-        qs += `&email=${this.filters.email}`;
-      }
+      const url = `${baseUrl}/${endpoint}?${queryString}`;
 
       let report = document.createElement("a");
-      report.setAttribute("href", qs);
+      report.setAttribute("href", url);
       report.setAttribute("target", "_blank");
       report.click();
 
       this.getDataFromApi();
-      return;
     },
     async getFloorByCategory(category) {
       let { data } = await this.$axios.get(
         `parking-floor-by-category/${category}`
       );
       this.floors = data;
-    },
-    async getParkingsByFloor(id) {
-      let { data } = await this.$axios.get(`parkings-by-floor/${id}`);
-      this.parkings = data;
     },
     async getTanents() {
       let { data: tanents } = await this.$axios.get(`tanent-list`, {
@@ -538,37 +478,8 @@ export default {
 
       this.tanents = tanents;
     },
-    encrypt() {
-      this.encryptedID = this.$crypto.encrypt(id);
-      // this.fullLink = this.originalURL + this.encryptedID;
-    },
-    closeViewDialog() {
-      this.viewDialog = false;
-    },
-    caps(str) {
-      if (str == "" || str == null) {
-        return "---";
-      } else {
-        let res = str.toString();
-        return res.replace(/\b\w/g, (c) => c.toUpperCase());
-      }
-    },
-    closePopup() {
-      //croppingimagestep5
-      this.$refs.attachment_input.value = null;
-      this.dialogCropping = false;
-    },
-    close() {
-      this.dialog = false;
-      this.errors = [];
-      setTimeout(() => {}, 300);
-    },
     can(per) {
       return this.$pagePermission.can(per, this);
-    },
-
-    onPageChange() {
-      this.getDataFromApi();
     },
     applyFilters() {
       this.getDataFromApi();
@@ -583,19 +494,16 @@ export default {
       this.isFilter = false;
       this.getDataFromApi();
     },
-    getDataFromApi(url = this.endpoint) {
-      //this.loading = true;
+    getDataFromApi() {
       this.loadinglinear = true;
 
       let { sortBy, sortDesc, page, itemsPerPage } = this.options;
 
-      let sortedBy = sortBy ? sortBy[0] : "";
-      let sortedDesc = sortDesc ? sortDesc[0] : "";
       let options = {
         params: {
           page: page,
-          sortBy: sortedBy,
-          sortDesc: sortedDesc,
+          sortBy: sortBy ? sortBy[0] : "",
+          sortDesc: sortDesc ? sortDesc[0] : "",
           per_page: itemsPerPage, //this.pagination.per_page,
           company_id: this.$auth.user.company_id,
           ...this.filters,
@@ -616,100 +524,6 @@ export default {
 
         this.loadinglinear = false;
       });
-    },
-    addItem() {
-      this.disabled = false;
-      this.formAction = "Create";
-      this.DialogBox = true;
-      this.payload = {};
-    },
-    editItem(item) {
-      this.disabled = false;
-      this.formAction = "Edit";
-      this.DialogBox = true;
-      this.payload = item;
-    },
-    viewItem(item) {
-      this.disabled = true;
-      this.formAction = "View";
-      this.DialogBox = true;
-      this.payload = item;
-    },
-    deleteItem(id) {
-      confirm(
-        "Are you sure you wish to delete , to mitigate any inconvenience in future."
-      ) &&
-        this.$axios
-          .delete(`${this.endpoint}/${id}`)
-          .then(({ data }) => {
-            this.getDataFromApi();
-            this.snackbar = true;
-            this.response = data.message;
-          })
-          .catch((err) => console.log(err));
-    },
-    close() {
-      this.dialog = false;
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      }, 300);
-    },
-
-    submit() {
-      this.$axios
-        .post(this.endpoint, this.payload)
-        .then(({ data }) => {
-          // this.encrypt(data.record.id);
-          this.errors = [];
-          this.snackbar = true;
-          this.response = data.message;
-          this.getDataFromApi();
-          this.DialogBox = false;
-          this.dialog = true;
-        })
-        .catch(({ response }) => {
-          if (!response) {
-            return false;
-          }
-          let { status, data, statusText } = response;
-
-          if (status && status == 422) {
-            this.errors = data.errors;
-            return;
-          }
-
-          this.snackbar = true;
-          this.response = statusText;
-        });
-
-      // }
-    },
-
-    update_data() {
-      this.$axios
-        .put(this.endpoint + "/" + this.payload.vehicle.id, this.payload)
-        .then(({ data }) => {
-          this.errors = [];
-          this.snackbar = true;
-          this.response = data.message;
-          this.getDataFromApi();
-          this.DialogBox = false;
-        })
-        .catch(({ response }) => {
-          if (!response) {
-            return false;
-          }
-          let { status, data, statusText } = response;
-
-          if (status && status == 422) {
-            this.errors = data.errors;
-            return;
-          }
-
-          this.snackbar = true;
-          this.response = statusText;
-        });
     },
   },
 };
