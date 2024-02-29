@@ -18,6 +18,13 @@ class RoomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function show($room_number)
+    {
+        return Room::where("room_number", $room_number)->with(["tanent", "floor", "room_category", "room_sub_category"])
+            ->orderBy("room_number", "asc")
+            ->first();
+    }
+
     public function index()
     {
         // Room::truncate();

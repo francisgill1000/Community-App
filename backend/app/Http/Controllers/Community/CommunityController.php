@@ -127,13 +127,13 @@ class CommunityController extends Controller
 
             $company->logo = asset('media/company/logo' . $company->logo);
 
-            DB::commit();
-
             $record = Company::with(['user', 'contact'])->find($company->id);
 
             if (!$this->addDefaults($company->id)) {
                 return $this->response('Default cannot add.', null, false);
             }
+
+            DB::commit();
 
             return $this->response('Company Successfully created.', $record, true);
         } catch (\Throwable $th) {

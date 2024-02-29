@@ -43,7 +43,7 @@ class TanentController extends Controller
      */
     public function index()
     {
-        return Tanent::where([
+        $data = Tanent::where([
             "company_id" => request("company_id"),
             // "parent_id" => 0,
         ])
@@ -52,6 +52,59 @@ class TanentController extends Controller
             ->with(["vehicles", "members", "floor", "room"])
             ->orderBy('id', 'desc')
             ->paginate(request("per_page") ?? 10);
+
+        return $data;
+    }
+
+    public function recordsCsv()
+    {
+        $data = Tanent::where([
+            "company_id" => request("company_id"),
+            // "parent_id" => 0,
+        ])
+            ->select("full_name", "phone_number", "floor_id", "room_id", "nationality", "gender", "term", "age", "member_type", "parent_id")
+            ->when(request()->filled("member_type"), fn ($q) => $q->where("member_type", request("member_type")))
+            ->withCount("members")
+            ->with(["floor:id,floor_number", "room:id,room_number", "parent_member:id,full_name"])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="records.csv"');
+
+        $output = fopen('php://output', 'w');
+
+        fputcsv($output, [
+            "Full Name",
+            "Phone Number",
+            "Floor Number",
+            "Room Number",
+            "Nationality",
+            "Gender",
+            "Term",
+            "Age",
+            "Member Type",
+            "Parent Member"
+        ]);
+
+        foreach ($data as $value) {
+            fputcsv($output, [
+                $value->full_name,
+                $value->phone_number,
+                $value->floor->floor_number ?? "---",
+                $value->room->room_number ?? "---",
+                $value->nationality,
+                $value->gender,
+                $value->term,
+                $value->age,
+                $value->member_type,
+                $value->parent_member->full_name ?? "---",
+            ]);
+        }
+
+        fclose($output);
+
+        return "done";
     }
 
     /**

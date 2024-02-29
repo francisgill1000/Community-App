@@ -6,156 +6,6 @@
       </v-snackbar>
     </div>
     <div v-if="!loading">
-      <v-dialog persistent v-model="DialogBox" width="500">
-        <v-card>
-          <v-toolbar class="popup_background" flat dense>
-            Parking Allocation
-
-            <v-spacer></v-spacer>
-            <span>
-              <v-icon class="ml-2" @click="DialogBox = false" dark>
-                mdi mdi-close-circle-outline</v-icon
-              >
-            </span>
-          </v-toolbar>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-autocomplete
-                  @change="getFloorByCategory(payload.category)"
-                  label="Category"
-                  outlined
-                  :disabled="disabled"
-                  v-model="payload.category"
-                  :items="[
-                    `Commercial`,
-                    `Residence`,
-                    `VIP`,
-                    `Guest`,
-                    `Green`,
-                    `Special Needs`,
-                  ]"
-                  dense
-                  :hide-details="!errors.category"
-                  :error-messages="
-                    errors && errors.category ? errors.category[0] : ''
-                  "
-                >
-                </v-autocomplete>
-              </v-col>
-              <v-col cols="12">
-                <v-autocomplete
-                  @change="getParkingsByFloor(payload.floor_id)"
-                  label="Floor Number"
-                  outlined
-                  :readonly="disabled"
-                  v-model="payload.floor_id"
-                  :items="floors"
-                  dense
-                  item-text="floor_number"
-                  item-value="id"
-                  :hide-details="!errors.floor_id"
-                  :error-messages="
-                    errors && errors.floor_id ? errors.floor_id[0] : ''
-                  "
-                >
-                </v-autocomplete>
-              </v-col>
-              <v-col cols="12">
-                <v-autocomplete
-                  label="Parking Number"
-                  outlined
-                  :readonly="disabled"
-                  v-model="payload.parking_id"
-                  :items="parkings"
-                  dense
-                  item-text="parking_number"
-                  item-value="id"
-                  :hide-details="!errors.parking_id"
-                  :error-messages="
-                    errors && errors.parking_id ? errors.parking_id[0] : ''
-                  "
-                >
-                </v-autocomplete>
-              </v-col>
-              <v-col cols="12">
-                <v-autocomplete
-                  label="Tanent"
-                  outlined
-                  :readonly="disabled"
-                  v-model="payload.tanent_id"
-                  :items="tanents"
-                  dense
-                  item-text="full_name"
-                  item-value="id"
-                  :hide-details="!errors.tanent_id"
-                  :error-messages="
-                    errors && errors.tanent_id ? errors.tanent_id[0] : ''
-                  "
-                >
-                </v-autocomplete>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Car Number"
-                  :readonly="disabled"
-                  v-model="payload.car_number"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.car_number"
-                  :error-messages="
-                    errors && errors.car_number ? errors.car_number[0] : ''
-                  "
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12">
-                <v-text-field
-                  label="Car Brand"
-                  :readonly="disabled"
-                  v-model="payload.car_brand"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.car_brand"
-                  :error-messages="
-                    errors && errors.car_brand ? errors.car_brand[0] : ''
-                  "
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <div class="text-right">
-              <v-btn small color="grey white--text" @click="DialogBox = false">
-                Close
-              </v-btn>
-
-              <v-btn
-                v-if="can('employee_create') && formAction == 'Create'"
-                small
-                :loading="loading"
-                color="primary"
-                @click="submit"
-              >
-                Submit
-              </v-btn>
-              <v-btn
-                v-else-if="can('employee_create') && formAction == 'Edit'"
-                small
-                :loading="loading"
-                color="primary"
-                @click="update_data"
-              >
-                Update
-              </v-btn>
-            </div>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
       <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
         {{ snackText }}
 
@@ -164,6 +14,111 @@
         </template>
       </v-snackbar>
       <div v-if="can(`employee_view`)">
+        <v-card class="mb-5" flat dense>
+          <v-container fluid>
+            <v-row>
+              <v-col cols="12">
+                <div class="headline mb-1">Filters</div>
+                <v-row no-gutters>
+                  <v-col cols="1" class="mr-1">
+                    <v-autocomplete
+                      @change="getFloorByCategory(filters.category)"
+                      label="Category"
+                      outlined
+                      :disabled="disabled"
+                      v-model="filters.category"
+                      :items="[
+                        `Commercial`,
+                        `Residence`,
+                        `VIP`,
+                        `Guest`,
+                        `Green`,
+                        `Special Needs`,
+                      ]"
+                      dense
+                      :hide-details="true"
+                    >
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-autocomplete
+                      @change="getParkingsByFloor(filters.floor_id)"
+                      label="Floor Number"
+                      outlined
+                      :readonly="disabled"
+                      v-model="filters.floor_id"
+                      :items="floors"
+                      dense
+                      item-text="floor_number"
+                      item-value="id"
+                      :hide-details="true"
+                    >
+                    </v-autocomplete>
+                  </v-col>
+
+                  <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.parking_number"
+                      outlined
+                      dense
+                      label="Parking #"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-autocomplete
+                      label="Tanent"
+                      outlined
+                      :readonly="disabled"
+                      v-model="filters.tanent_id"
+                      :items="[
+                        { id: ``, full_name: `Select Tanent` },
+                        ...tanents,
+                      ]"
+                      dense
+                      item-text="full_name"
+                      item-value="id"
+                      :hide-details="true"
+                    >
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.car_number"
+                      outlined
+                      dense
+                      label="Car #"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.phone_number"
+                      outlined
+                      dense
+                      label="Phone Number"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.email"
+                      outlined
+                      dense
+                      label="Email"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="ml-5">
+                    <v-btn
+                      class="primary"
+                      title="Generate"
+                      @click="getDataFromApi"
+                    >
+                      Generate
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card>
         <v-card elevation="0">
           <v-toolbar class="mb-2" dense flat>
             <v-toolbar-title>
@@ -184,19 +139,54 @@
               </v-btn>
             </span>
             <v-spacer></v-spacer>
-            <span>
-              <v-btn
-                dense
-                small
-                class="primary"
-                text
-                title="Create Parking"
-                @click="addItem"
-              >
-                Allocate Parking
-                <v-icon right dark>mdi-plus-circle-outline</v-icon>
-              </v-btn>
-            </span>
+            <v-tooltip top color="primary">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="ma-0"
+                  x-small
+                  :ripple="false"
+                  text
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="process_file(`parkingReportPrint`)"
+                >
+                  <img src="/icons/icon_print.png" class="iconsize" />
+                </v-btn>
+              </template>
+              <span>PRINT</span>
+            </v-tooltip>
+
+            <v-tooltip top color="primary">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  x-small
+                  :ripple="false"
+                  text
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="process_file(`parkingReportDownload`)"
+                >
+                  <img src="/icons/icon_pdf.png" class="iconsize" />
+                </v-btn>
+              </template>
+              <span>DOWNLOAD</span>
+            </v-tooltip>
+
+            <!-- <v-tooltip top color="primary">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  x-small
+                  :ripple="false"
+                  text
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="process_file(report_type + '_download_csv')"
+                >
+                <img src="/icons/icon_excel.png" class="iconsize" />
+                </v-btn>
+              </template>
+              <span>CSV</span>
+            </v-tooltip> -->
           </v-toolbar>
           <v-data-table
             dense
@@ -211,36 +201,6 @@
             class="elevation-1"
             :server-items-length="totalRowsCount"
           >
-            <template v-slot:item.car_number="{ item }"> --- </template>
-
-            <template v-slot:item.options="{ item }">
-              <v-menu bottom left>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn dark-2 icon v-bind="attrs" v-on="on">
-                    <v-icon>mdi-dots-vertical</v-icon>
-                  </v-btn>
-                </template>
-                <v-list width="120" dense>
-                  <v-list-item>
-                    <v-list-item-title style="cursor: pointer">
-                      <CommunityParkingAllocationSingle :item="item" />
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="editItem(item)">
-                    <v-list-item-title style="cursor: pointer">
-                      <v-icon color="secondary" small> mdi-pencil </v-icon>
-                      Edit
-                    </v-list-item-title>
-                  </v-list-item>
-                  <v-list-item @click="deleteItem(item.vehicle.id)">
-                    <v-list-item-title style="cursor: pointer">
-                      <v-icon color="error" small> mdi-delete </v-icon>
-                      Delete
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </template>
           </v-data-table>
         </v-card>
       </div>
@@ -349,7 +309,7 @@ export default {
       per_page: 10,
     },
     options: {},
-    Model: "Parking",
+    Model: "Parking Report",
     endpoint: "parking-allocation",
     search: "",
     snackbar: false,
@@ -473,20 +433,13 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "Expire Date",
+        text: "End Date",
         align: "left",
         sortable: true,
-        key: "tanent.end_date",
-        value: "tanent.end_date",
+        key: "vehicle.tanent.end_date",
+        value: "vehicle.tanent.end_date",
         filterable: true,
         filterSpecial: false,
-      },
-      {
-        text: "Details",
-        align: "left",
-        sortable: false,
-        key: "options",
-        value: "options",
       },
     ],
     parkings: [],
@@ -525,7 +478,49 @@ export default {
       this.filters.to_date = data.to;
       this.filters.filterType = "Monthly";
     },
-    generate() {},
+    process_file(endpoint) {
+      if (this.data && !this.data.length) {
+        alert("No data found");
+        return;
+      }
+
+      let path = process.env.BACKEND_URL + "/" + endpoint;
+
+      let qs = ``;
+
+      qs += `${path}`;
+      qs += `?company_id=${this.$auth.user.company_id}`;
+
+      if (this.filters.category) {
+        qs += `&category=${this.filters.category}`;
+      }
+      if (this.filters.floor_id) {
+        qs += `&floor_id=${this.filters.floor_id}`;
+      }
+      if (this.filters.parking_number) {
+        qs += `&parking_number=${this.filters.parking_number}`;
+      }
+      if (this.filters.tanent_id) {
+        qs += `&tanent_id=${this.filters.tanent_id}`;
+      }
+      if (this.filters.car_number) {
+        qs += `&car_number=${this.filters.car_number}`;
+      }
+      if (this.filters.phone_number) {
+        qs += `&phone_number=${this.filters.phone_number}`;
+      }
+      if (this.filters.email) {
+        qs += `&email=${this.filters.email}`;
+      }
+
+      let report = document.createElement("a");
+      report.setAttribute("href", qs);
+      report.setAttribute("target", "_blank");
+      report.click();
+
+      this.getDataFromApi();
+      return;
+    },
     async getFloorByCategory(category) {
       let { data } = await this.$axios.get(
         `parking-floor-by-category/${category}`

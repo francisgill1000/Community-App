@@ -27,18 +27,18 @@
                 <v-icon left> fab fa-wpforms </v-icon>
                 <span>License</span>
               </v-tab> -->
-              <v-tab>
+              <!-- <v-tab>
                 <v-icon left> mdi-account </v-icon>
                 <span>Contact</span>
-              </v-tab>
+              </v-tab> -->
               <!-- <v-tab>
                 <v-icon left> mdi-earth </v-icon>
                 <span>Location</span>
               </v-tab> -->
-              <!-- <v-tab>
+              <v-tab>
                 <v-icon left> mdi-file </v-icon>
                 <span>Documents</span>
-              </v-tab> -->
+              </v-tab>
               <v-tab>
                 <v-icon left> mdi-lock </v-icon>
                 <span>Password</span>
@@ -443,86 +443,6 @@
                 </v-card>
               </v-tab-item> -->
 
-              <v-tab-item>
-                <v-container fluid>
-                  <v-row v-if="contact_payload && contact_payload.id">
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Name"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="contact_payload.name"
-                      ></v-text-field>
-                      <span
-                        v-if="errors && errors.name"
-                        class="text-danger mt-2"
-                        >{{ errors.name[0] }}</span
-                      >
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Number"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="contact_payload.number"
-                      ></v-text-field>
-                      <span
-                        v-if="errors && errors.number"
-                        class="text-danger mt-2"
-                        >{{ errors.number[0] }}</span
-                      >
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Position"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="contact_payload.position"
-                      ></v-text-field>
-                      <span
-                        v-if="errors && errors.position"
-                        class="text-danger mt-2"
-                        >{{ errors.position[0] }}</span
-                      >
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Whatsapp (with Country Code ex:
-                      919999988888)"
-                        hide-details
-                        dense
-                        outlined
-                        v-model="contact_payload.whatsapp"
-                      ></v-text-field>
-                      <span
-                        v-if="errors && errors.whatsapp"
-                        class="text-danger mt-2"
-                        >{{ errors.whatsapp[0] }}</span
-                      >
-                    </v-col>
-                    <v-col cols="12">
-                      <div class="text-right">
-                        <v-btn
-                          v-if="can('company_edit')"
-                          small
-                          :loading="loading"
-                          color="primary"
-                          @click="update_contact"
-                        >
-                          Submit
-                        </v-btn>
-                      </div>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-tab-item>
-
               <!-- <v-tab-item>
                 <v-card flat>
                   <v-card-text>
@@ -588,9 +508,9 @@
                 </v-card>
               </v-tab-item> -->
 
-              <!-- <v-tab-item>
+              <v-tab-item>
                 <Document />
-              </v-tab-item> -->
+              </v-tab-item>
 
               <v-tab-item>
                 <v-container fluid>

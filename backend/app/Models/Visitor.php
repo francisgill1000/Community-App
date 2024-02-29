@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Community\Tanent;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -42,6 +43,11 @@ class Visitor extends Model
     public function getStatusAttribute()
     {
         return $this->getVisitorStatusIds($this->status_id);
+    }
+
+    public function tanent()
+    {
+        return $this->belongsTo(Tanent::class);
     }
 
     public function getFromDateDisplayAttribute()

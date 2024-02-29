@@ -10,3 +10,9 @@ Route::get('parking-list', [ParkingController::class, "dropDown"]);
 Route::get('parking-floor-by-category/{category}', [ParkingController::class, "floorByCategory"]);
 Route::get('parkings-by-floor/{id}', [ParkingController::class, "parkingsByFloor"]);
 Route::apiResource('parking-allocation', ParkingAllocationController::class);
+
+
+Route::get('/parkingReportPrint', [ParkingAllocationController::class, 'parkingReportPrint']);
+Route::get('/parkingReportDownload', [ParkingAllocationController::class, 'parkingReportDownload']);
+
+

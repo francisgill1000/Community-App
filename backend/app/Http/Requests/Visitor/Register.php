@@ -25,15 +25,6 @@ class Register extends FormRequest
     {
         $validations = [];
 
-        if ($this->withOutHost) {
-            $validations['host_flat_number'] = 'required';
-            $validations['host_company_name'] = 'nullable';
-            $validations['host_name'] = 'nullable';
-            $validations['host_phone_number'] = 'nullable';
-            $validations['host_email'] = 'nullable';
-            $validations['note'] = 'nullable';
-        }
-
         $validations['visit_from'] = 'required|date';
         $validations['visit_to'] = 'required|date';
         $validations['purpose_id'] = 'required';
@@ -59,6 +50,9 @@ class Register extends FormRequest
         $validations["system_user_id"] = "required|regex:/^[1-9][0-9]*$/|min:4|max:9|unique:employees";
         $validations["visitor_type"] = "required";
 
+        $validations['tanent_id'] = 'required';
+        $validations['note'] = 'nullable';
+
 
         return $validations;
     }
@@ -67,6 +61,7 @@ class Register extends FormRequest
     {
         return [
             'logo.required' => 'The Photo field is required',
+            'tanent_id.required' => 'No tanent found',
         ];
     }
 }

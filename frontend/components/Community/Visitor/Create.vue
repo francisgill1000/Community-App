@@ -265,71 +265,73 @@
                 />
               </v-col>
 
-              <v-col cols="12"> <b>Enter Host Details</b></v-col>
+              <v-col cols="12"> <b>Enter Tanent Details</b></v-col>
               <v-col cols="6">
                 <v-text-field
-                  v-model="payload.host_flat_number"
+                  @input="getDetailsByRoomNumber(payload.tanent_room_number)"
+                  v-model="payload.tanent_room_number"
                   dense
                   outlined
-                  :hide-details="!errors.host_flat_number"
+                  :hide-details="!errors.tanent_id"
                   :error-messages="
-                    errors && errors.host_flat_number
-                      ? errors.host_flat_number[0]
-                      : ''
+                    errors && errors.tanent_id ? errors.tanent_id[0] : ''
                   "
-                  label="Flat Number"
+                  label="Room Number"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                  v-model="payload.host_company_name"
+                  v-model="payload.tanent_full_name"
                   dense
                   outlined
-                  :hide-details="!errors.host_company_name"
-                  :error-messages="
-                    errors && errors.host_company_name
-                      ? errors.host_company_name[0]
-                      : ''
-                  "
-                  label="Host Company Name"
+                  :hide-details="true"
+                  label="Full Name"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                  v-model="payload.host_name"
+                  v-model="payload.tanent_phone_number"
                   dense
                   outlined
-                  :hide-details="!errors.host_name"
-                  :error-messages="
-                    errors && errors.host_name ? errors.host_name[0] : ''
-                  "
-                  label="Host Name"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="payload.host_phone_number"
-                  dense
-                  outlined
-                  :hide-details="!errors.host_phone_number"
-                  :error-messages="
-                    errors && errors.host_phone_number
-                      ? errors.host_phone_number[0]
-                      : ''
-                  "
+                  :hide-details="true"
                   label="Phone Number"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                  v-model="payload.host_email"
+                  v-model="payload.tanent_email"
                   dense
                   outlined
-                  :hide-details="!errors.host_email"
-                  :error-messages="
-                    errors && errors.host_email ? errors.host_email[0] : ''
-                  "
-                  label="Host Email Address"
+                  :hide-details="true"
+                  label="Email Address"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="payload.tanent_gender"
+                  dense
+                  outlined
+                  :hide-details="true"
+                  label="Gender"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="6">
+                <v-text-field
+                  v-model="payload.tanent_term"
+                  dense
+                  outlined
+                  :hide-details="true"
+                  label="Term"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="payload.tanent_nationality"
+                  dense
+                  outlined
+                  :hide-details="true"
+                  label="Nationality"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
@@ -385,12 +387,13 @@ export default {
       time_in: dynamicTime,
       time_out: dynamicTime,
 
-      withOutHost: true,
-      host_flat_number: null,
-      host_company_name: null,
-      host_name: null,
-      host_phone_number: null,
-      host_email: null,
+      tanent_room_number: null,
+      tanent_full_name: null,
+      tanent_phone_number: null,
+      tanent_gender: null,
+      tanent_email: null,
+      tanent_term: null,
+      tanent_nationality: null,
       note: null,
 
       timezone_id: 1,
@@ -519,6 +522,32 @@ export default {
   },
 
   methods: {
+    async getDetailsByRoomNumber(room) {
+      try {
+        // Make a GET request to the endpoint
+        const { tanent } = await this.$axios.$get(`/room/${room}`);
+
+        if (!tanent) {
+          this.payload.tanent_id = null;
+          this.payload.tanent_full_name = null;
+          this.payload.tanent_phone_number = null;
+          this.payload.tanent_gender = null;
+          this.payload.tanent_email = null;
+          this.payload.tanent_term = null;
+          this.payload.tanent_nationality = null;
+        }
+
+        this.payload.tanent_id = tanent.id;
+        this.payload.tanent_full_name = tanent.full_name;
+        this.payload.tanent_phone_number = tanent.phone_number;
+        this.payload.tanent_gender = tanent.email;
+        this.payload.tanent_email = tanent.gender;
+        this.payload.tanent_term = tanent.term;
+        this.payload.tanent_nationality = tanent.nationality;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    },
     openDialogForCustom(id) {
       if (id == "custom") {
         this.$refs["customPopup"].DialogBox = true;

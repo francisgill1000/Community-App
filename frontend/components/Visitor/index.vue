@@ -253,6 +253,15 @@ export default {
         filterSpecial: false,
       },
       {
+        text: "Company",
+        align: "left",
+        sortable: true,
+        key: "visitor_company_name",
+        value: "visitor_company_name",
+        filterable: true,
+        filterSpecial: false,
+      },
+      {
         text: "From",
         align: "left",
         sortable: true,
@@ -306,15 +315,7 @@ export default {
         filterable: true,
         filterSpecial: false,
       },
-      {
-        text: "Delivery Company",
-        align: "left",
-        sortable: true,
-        key: "visitor_company_name",
-        value: "visitor_company_name",
-        filterable: true,
-        filterSpecial: false,
-      },
+      
       {
         text: "EID",
         align: "left",
@@ -325,11 +326,11 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "Host Company",
+        text: "Tanent",
         align: "left",
         sortable: true,
-        key: "host_company_name",
-        value: "host_company_name",
+        key: "tanent.full_name",
+        value: "tanent.full_name",
         filterable: true,
         filterSpecial: false,
       },

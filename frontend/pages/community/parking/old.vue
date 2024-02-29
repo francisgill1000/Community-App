@@ -164,6 +164,110 @@
         </template>
       </v-snackbar>
       <div v-if="can(`employee_view`)">
+        <v-card class="mb-5" flat dense>
+          <v-container fluid>
+            <v-row>
+              <v-col cols="12">
+                <div class="headline mb-1">Filters</div>
+                <v-row no-gutters>
+                  <v-col cols="1" class="mr-1">
+                    <v-autocomplete
+                      @change="getFloorByCategory(filters.category)"
+                      label="Category"
+                      outlined
+                      :disabled="disabled"
+                      v-model="filters.category"
+                      :items="[
+                        `Commercial`,
+                        `Residence`,
+                        `VIP`,
+                        `Guest`,
+                        `Green`,
+                        `Special Needs`,
+                      ]"
+                      dense
+                      :hide-details="true"
+                    >
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-autocomplete
+                      @change="getParkingsByFloor(payload.floor_id)"
+                      label="Floor Number"
+                      outlined
+                      :readonly="disabled"
+                      v-model="filters.floor_id"
+                      :items="floors"
+                      dense
+                      item-text="floor_number"
+                      item-value="id"
+                      :hide-details="true"
+                    >
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-autocomplete
+                      label="Tanent"
+                      outlined
+                      :readonly="disabled"
+                      v-model="filters.tanent_id"
+                      :items="tanents"
+                      dense
+                      item-text="full_name"
+                      item-value="id"
+                      :hide-details="true"
+                    >
+                    </v-autocomplete>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.parking_number"
+                      outlined
+                      dense
+                      label="Parking #"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.car_number"
+                      outlined
+                      dense
+                      label="Car #"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.phone_number"
+                      outlined
+                      dense
+                      label="Phone Number"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="mr-1">
+                    <v-text-field
+                      v-model="filters.email"
+                      outlined
+                      dense
+                      label="Email"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="1" class="mr-15">
+                    <CustomFilter
+                      @filter-attr="filterAttr"
+                      :defaultFilterType="1"
+                      :height="'40px '"
+                    />
+                  </v-col>
+                  <v-col cols="1" class="ml-5">
+                    <v-btn class="primary" title="Generate" @click="generate">
+                      Generate
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card>
         <v-card elevation="0">
           <v-toolbar class="mb-2" dense flat>
             <v-toolbar-title>

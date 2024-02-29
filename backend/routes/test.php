@@ -722,3 +722,11 @@ Route::get('/destroy-license-key', [LicenseKeyController::class, 'destroy']);
 Route::get('/activate-license-key', [LicenseKeyController::class, 'activate']);
 
 
+
+
+// 
+
+
+Route::get('/get-system-details', function () {
+    return base_path("datebase");
+});

@@ -4,36 +4,9 @@
     "title": "Dashboard",
     "to": "/dashboard",
     "submenu": "dashboard",
-    "menu": "visitor_dashboard_access",
-    "module": "visitor_dashboard_access"
-  },
-  {
-    "icon": "mdi-account",
-    "title": "Visitors",
-    "to": "/community/visitor",
-    "submenu": "dashboard",
-    "menu": "visitor_dashboard_access",
-    "module": "visitor_dashboard_access"
-  },
-
-  {
-    "icon": "mdi-account",
-    "title": "Visitors",
-    "to": "/community/visitor",
-    "submenu": "dashboard",
-    "menu": "visitor_dashboard_access",
-    "module": "visitor_access"
-  },
-
-  {
-    "icon": "mdi-view-dashboard",
-    "title": "Dashboard",
-    "to": "/dashboard",
-    "submenu": "dashboard",
     "menu": "branch_access",
     "module": "dashboard"
   },
-
   {
     "icon": "mdi-account-tie",
     "title": "Employees",
@@ -58,7 +31,6 @@
     "submenu": "access_control",
     "module": "dashboard"
   },
-
   {
     "icon": "mdi-transit-transfer",
     "title": "Visitors",
@@ -66,6 +38,47 @@
     "menu": "true",
     "submenu": "visitors",
     "module": "dashboard"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Tanent",
+    "to": "/community/tanent/dashboard",
+    "menu": "true",
+    "submenu": "tanents",
+    "module": "dashboard"
+  },
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/dashboard",
+    "menu": "true",
+    "submenu": "visitors",
+    "module": "dashboard"
+  },
+  {
+    "icon": "mdi-view-dashboard",
+    "title": "Dashboard",
+    "to": "/dashboard",
+    "submenu": "dashboard",
+    "menu": "visitor_dashboard_access",
+    "module": "visitor_dashboard_access"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Visitors",
+    "to": "/community/visitor",
+    "submenu": "dashboard",
+    "menu": "visitor_dashboard_access",
+    "module": "visitor_dashboard_access"
+  },
+
+  {
+    "icon": "mdi-account",
+    "title": "Visitors",
+    "to": "/community/visitor",
+    "submenu": "dashboard",
+    "menu": "visitor_dashboard_access",
+    "module": "visitor_access"
   },
   {
     "icon": "mdi-home",
@@ -80,15 +93,6 @@
     "to": "/community/contractors",
     "menu": "branch_access",
     "module": "settings"
-  },
-
-  {
-    "icon": "mdi-chart-box-outline",
-    "title": "Reports",
-    "to": "/dashboard",
-    "menu": "true",
-    "submenu": "visitors",
-    "module": "dashboard"
   },
   {
     "icon": "mdi-chair-rolling",
@@ -141,13 +145,6 @@
     "module": "settings"
   },
   {
-    "icon": "mdi mdi-calendar",
-    "title": "Leaves",
-    "to": "/leaves/leave_types",
-    "menu": "leave_type_access",
-    "module": "settings"
-  },
-  {
     "icon": "mdi-bell",
     "title": "Announcements",
     "open_menu": false,
@@ -183,14 +180,6 @@
     "menu": "employee_access",
     "module": "employees"
   },
-  {
-    "icon": "mdi mdi-calendar-account",
-    "title": "Leaves",
-    "to": "/leaves",
-    "menu": "leave_application_access",
-    "module": "employees"
-  },
-
   {
     "icon": "mdi-bell",
     "title": "Announcements",
@@ -360,42 +349,42 @@
     "title": "Dashboard",
     "to": "/community/contractor/dashboard",
     "menu": "contractor_access",
-    "module": "contractors"
+    "module": "contractor"
   },
   {
     "icon": "mdi-account",
     "title": "Contractors",
     "to": "/community/contractor",
     "menu": "contractor_access",
-    "module": "contractors"
+    "module": "contractor"
   },
   {
     "icon": "mdi-filmstrip-box-multiple",
     "title": "Companies",
     "to": "/community/contractors",
     "menu": "contractor_access",
-    "module": "contractors"
+    "module": "contractor"
   },
   {
     "icon": "mdi-card-outline",
     "title": "Contractor Cards",
     "to": "/community/contractor/card",
     "menu": "contractor_access",
-    "module": "contractors"
+    "module": "contractor"
   },
   {
     "icon": "mdi-upload-outline",
     "title": "Card Upload",
     "to": "/community/contractor/card/upload",
     "menu": "contractor_access",
-    "module": "contractors"
+    "module": "contractor"
   },
   {
     "icon": "mdi-chart-box-outline",
     "title": "Reports",
     "to": "/community/contractor/reports",
     "menu": "contractor_access",
-    "module": "contractors"
+    "module": "contractor"
   },
   {
     "icon": "mdi-home",
@@ -423,49 +412,49 @@
     "title": "Dashboard",
     "to": "/dashboard",
     "menu": "parking_access",
-    "module": "parkings"
+    "module": "parking"
   },
   {
     "icon": "mdi-account",
     "title": "Parking",
     "to": "/community/parking",
     "menu": "parking_access",
-    "module": "parkings"
-  },
-  {
-    "icon": "mdi-home ",
-    "title": "Tanent",
-    "to": "/community/tanent/dashboard",
-    "menu": "community",
-    "module": "dashboard"
+    "module": "parking"
   },
   {
     "icon": "mdi-home",
     "title": "Dashboard",
     "to": "/community/tanent/dashboard",
-    "menu": "community",
-    "module": "community"
+    "menu": "tanent",
+    "module": "tanents"
   },
   {
     "icon": "mdi-account-card-details",
     "title": "Tanent",
     "to": "/community/tanent",
-    "menu": "community",
-    "module": "community"
+    "menu": "tanent",
+    "module": "tanents"
   },
   {
     "icon": "mdi-camera-account",
     "title": "Tanent Upload",
     "to": "/community/tanent/tanent_upload",
-    "menu": "community",
-    "module": "community"
+    "menu": "tanent",
+    "module": "tanents"
   },
   {
     "icon": "mdi-chart-box-outline",
     "title": "Reports",
     "to": "/community/tanent/reports",
-    "menu": "community",
-    "module": "community"
+    "menu": "tanent",
+    "module": "tanents"
+  },
+  {
+    "icon": "mdi-car",
+    "title": "Parking",
+    "to": "/community/report/parking",
+    "menu": "attendance_report_access",
+    "module": "reports"
   },
   {
     "icon": "mdi-clock-time-four",
@@ -510,7 +499,6 @@
     "to": "/web_login_logs",
     "module": "reports"
   },
-
   {
     "icon": "mdi-file-remove-outline",
     "title": "Document Expiry",

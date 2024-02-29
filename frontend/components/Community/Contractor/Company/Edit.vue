@@ -2,10 +2,7 @@
   <v-dialog persistent v-model="dialog" width="900">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-btn dense small class="primary" text title="Add Contractor">
-          Create Contractor
-          <v-icon right dark>mdi-plus-circle-outline</v-icon>
-        </v-btn>
+        <v-icon small color="black">mdi-pencil</v-icon> Edit
       </span>
     </template>
     <v-card>

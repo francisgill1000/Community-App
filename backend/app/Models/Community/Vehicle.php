@@ -19,7 +19,6 @@ class Vehicle extends Model
     public function parking()
     {
         return $this->belongsTo(Parking::class)->withDefault([
-            "isAllocated" => false,
             "category" => "---",
             "parking_number" => "---",
             "floor" => [

@@ -33,13 +33,25 @@ class Tanent extends Model
      */
     public function members()
     {
-        return $this->hasMany(Tanent::class,"parent_id");
+        return $this->hasMany(Tanent::class, "parent_id");
     }
 
     public function tanent()
     {
-        return $this->belongsTo(Tanent::class,"parent_id");
+        return $this->belongsTo(Tanent::class, "parent_id");
     }
+
+    public function parent_member()
+    {
+        return $this->belongsTo(Tanent::class, "parent_id");
+    }
+
+    public function tanent_for_maid()
+    {
+        return $this->hasOne(MaidRelationTenant::class, "maid_id")->orderBy("id", "desc")->with("tanent");
+    }
+
+
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class)->with("parking");
@@ -57,7 +69,7 @@ class Tanent extends Model
 
     public function getProfilePictureNameAttribute()
     {
-       return explode("community/profile_picture/" , $this->profile_picture)[1] ?? "";
+        return explode("community/profile_picture/", $this->profile_picture)[1] ?? "";
     }
 
     public function getProfilePictureAttribute($value)
@@ -65,7 +77,7 @@ class Tanent extends Model
         if (!$value) return null;
         return asset('community/profile_picture/' . $value);
     }
-    
+
 
     public static function ProcessDocument($file, $path)
     {

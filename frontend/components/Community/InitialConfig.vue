@@ -18,26 +18,6 @@
               label="Email"
             ></v-text-field>
           </v-col>
-          <v-col cols="12">
-            <v-text-field
-              outlined
-              dense
-              hide-details
-              v-model="payload.password"
-              label="Password"
-              type="password"
-            ></v-text-field>
-           
-          </v-col>
-          <v-col cols="12">
-            <v-text-field
-              outlined
-              dense
-              hide-details
-              v-model="payload.path"
-              label="Database Path"
-            ></v-text-field>
-          </v-col>
         </v-row>
       </v-card-text>
       <div class="text-right mx-6 pb-2">
@@ -67,26 +47,7 @@ export default {
   },
   methods: {
     async saveConfig() {
-      try {
-        // Display a loading indicator or disable the save button
-        this.loading = true;
-
-        // Make the POST request to save configuration
-        const { data } = await this.$axios.post("setup", this.payload);
-        // Check if the response was successful
-        if (data.status) {
-          await this.generateSchema();
-        } else {
-          // Display an error message to the user
-          alert("Failed to submit record. Please try again.");
-        }
-      } catch (error) {
-        // Handle errors appropriately
-        console.error("Error occurred while saving configuration:", error);
-        alert(
-          "An error occurred while saving configuration. Please try again later."
-        );
-      }
+      await this.generateSchema();
     },
 
     async generateSchema() {

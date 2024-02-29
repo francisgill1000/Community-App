@@ -97,6 +97,22 @@
               <v-list width="150" dense>
                 <v-list-item>
                   <v-list-item-title style="cursor: pointer">
+                    <CommunityMaidAssignTanents
+                      @response="handleResponse"
+                      :id="item.id"
+                    />
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
+                    <CommunityMaidSingle
+                      @response="handleResponse"
+                      :item="item"
+                    />
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
                     <CommunityMaidEdit
                       @response="handleResponse"
                       :item="item"
@@ -198,8 +214,8 @@ export default {
         text: "Tanent",
         align: "left",
         sortable: true,
-        key: "tanent.full_name",
-        value: "tanent.full_name",
+        key: "tanent_for_maid.tanent.full_name",
+        value: "tanent_for_maid.tanent.full_name",
         filterable: true,
         filterSpecial: false,
       },
@@ -207,8 +223,8 @@ export default {
         text: "Tanent Phone Number",
         align: "left",
         sortable: true,
-        key: "tanent.phone_number",
-        value: "tanent.phone_number",
+        key: "tanent_for_maid.tanent.phone_number",
+        value: "tanent_for_maid.tanent.phone_number",
         filterable: true,
         filterSpecial: false,
       },
@@ -216,8 +232,8 @@ export default {
         text: "Tanent Term",
         align: "left",
         sortable: true,
-        key: "tanent.term",
-        value: "tanent.term",
+        key: "tanent_for_maid.tanent.term",
+        value: "tanent_for_maid.tanent.term",
         filterable: true,
         filterSpecial: false,
       },

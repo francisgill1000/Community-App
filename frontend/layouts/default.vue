@@ -256,60 +256,9 @@
                 item.title
               }}</v-list-item-title>
             </v-list-item-content>
-            <!-- <v-list-item-title
-              style="cursor: pointer"
-              @click="goToPage(item.click)"
-              >{{ item.title }}
-            </v-list-item-title> -->
           </v-list-item>
         </v-list>
       </v-menu>
-
-      <!-- <v-menu
-        bottom
-        origin="center center"
-        offset-y
-        transition="scale-transition"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-badge
-            v-bind="attrs"
-            v-on="on"
-            :color="pendingLeavesCount > 0 ? 'red' : 'red'"
-            content="1"
-            style="top: 10px; left: -19px"
-          >
-            <v-icon style="top: -10px; left: 10px" class="violet--text"
-              >mdi mdi-bell-ring</v-icon
-            >
-          </v-badge>
-        </template>
-
-        <v-list>
-          <v-list-item v-for="(item, i) in notificationItems" :key="i">
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu> -->
-      <!-- <label class=" ">
-        <v-badge
-          v-if="pendingLeavesCount > 0"
-          @click="navigateToLeavePage()"
-          :color="pendingLeavesCount > 0 ? 'red' : 'white'"
-          :content="pendingLeavesCount"
-        >
-          <v-icon class="violet--text" @click="navigateToLeavePage()"
-            >mdi mdi-bell-ring</v-icon
-          >
-        </v-badge>
-        <v-badge v-else @click="navigateToLeavePage()" content="0">
-          <v-icon
-            style="color: #e91919 !important"
-            @click="navigateToLeavePage()"
-            >mdi mdi-bell-ring</v-icon
-          >
-        </v-badge>
-      </label> -->
       <v-snackbar
         top="top"
         v-model="snackNotification"
@@ -348,7 +297,7 @@
             <v-card-text>
               <v-row
                 v-for="(device, index) in notificationAlarmDevices"
-                key="index"
+                :key="index"
               >
                 <v-col cols="2"
                   ><img src="../static/fire2.png" width="50px"
@@ -398,137 +347,8 @@
       class="main_bg"
       :style="miniVariant ? 'padding-left: 60px;' : 'padding-left: 140px;'"
     >
-      <v-container style="max-width: 100%">
-        <nuxt />
-      </v-container>
+      <nuxt />
     </v-main>
-
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :clipped="true"
-      :right="right"
-      fixed
-      style="z-index: 1000"
-    >
-      <v-row style="margin-top: 50px">
-        <v-col>
-          <v-card class="pa-2" elevation="0">
-            <v-col cols="12">
-              <div class="mb-3">
-                <Strong>Theme</Strong>
-              </div>
-              <div
-                class="btn-group"
-                role="group"
-                aria-label="Basic radio toggle button group"
-              >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="theme"
-                  id="light"
-                  autocomplete="off"
-                  @click="changeTheme('light')"
-                />
-                <label class="btn" :class="'btn-outline-dark'" for="light"
-                  >Light</label
-                >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="theme"
-                  id="dark"
-                  autocomplete="off"
-                  @click="changeTheme('dark')"
-                />
-                <label class="btn btn-outline-dark" for="dark">Dark</label>
-              </div>
-            </v-col>
-            <v-divider></v-divider>
-            <v-col cols="12">
-              <div class="mb-3">
-                <Strong>Top Bar</Strong>
-              </div>
-              <div class="d-flex">
-                <v-btn
-                  class="mx-2 stg-color-icon"
-                  fab
-                  dark
-                  x-small
-                  color="primary"
-                  @click="changeTopBarColor('primary')"
-                ></v-btn>
-                <v-btn
-                  class="mx-2 stg-color-icon"
-                  fab
-                  dark
-                  x-small
-                  color="error"
-                  @click="changeTopBarColor('error')"
-                ></v-btn>
-                <v-btn
-                  class="mx-2 stg-color-icon"
-                  fab
-                  dark
-                  x-small
-                  color="indigo"
-                  @click="changeTopBarColor('indigo')"
-                ></v-btn>
-                <v-btn
-                  class="mx-2 stg-color-icon"
-                  fab
-                  dark
-                  x-small
-                  color="background"
-                  @click="changeTopBarColor('background')"
-                ></v-btn>
-              </div>
-            </v-col>
-            <v-divider></v-divider>
-            <v-col cols="12">
-              <div class="mb-3">
-                <Strong>Side Bar</Strong>
-              </div>
-              <div class="d-flex">
-                <v-btn
-                  class="mx-2 stg-color-icon"
-                  fab
-                  dark
-                  x-small
-                  color="primary"
-                  @click="changeSideBarColor('primary')"
-                ></v-btn>
-                <v-btn
-                  class="mx-2 stg-color-icon"
-                  fab
-                  dark
-                  x-small
-                  color="error"
-                  @click="changeSideBarColor('error')"
-                ></v-btn>
-                <v-btn
-                  class="mx-2 stg-color-icon"
-                  fab
-                  dark
-                  x-small
-                  color="indigo"
-                  @click="changeSideBarColor('indigo')"
-                ></v-btn>
-                <v-btn
-                  class="mx-2 stg-color-icon"
-                  fab
-                  dark
-                  x-small
-                  color="background"
-                  @click="changeSideBarColor('background')"
-                >
-                </v-btn>
-              </div>
-            </v-col>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-navigation-drawer>
   </v-app>
 </template>
 
@@ -536,10 +356,7 @@
 import company_menus from "../menus/company.json";
 import visitor_menus from "../menus/visitor.json";
 
-import employee_menus from "../menus/employee.json";
-import branch_menus from "../menus/branch.json";
 import guard_menus from "../menus/guard.json";
-import host_menus from "../menus/host.json";
 
 import company_top_menu from "../menus/company_modules_top.json";
 import visitor_top_menu from "../menus/visitor_modules_top.json";
@@ -548,12 +365,6 @@ export default {
   data() {
     return {
       notificationsMenuItems: [
-        {
-          title: "Leaves Pending (0)",
-          click: "/leaves",
-          icon: "mdi-calendar-account",
-          key: "leaves",
-        },
         {
           title: "Visitors Pending (0)",
           click: "/visitor/requests",
@@ -594,6 +405,22 @@ export default {
           elevation: 0,
           selected: "",
         },
+        delivery_man: {
+          elevation: 0,
+          selected: "",
+        },
+        contractor: {
+          elevation: 0,
+          selected: "",
+        },
+        house_maids: {
+          elevation: 0,
+          selected: "",
+        },
+        parking: {
+          elevation: 0,
+          selected: "",
+        },
         reports: {
           elevation: 0,
           selected: "",
@@ -603,27 +430,8 @@ export default {
           elevation: 0,
           selected: "",
         },
-        attendance_topmenu: {
-          elevation: 0,
-          selected: "",
-        },
-        requests_topmenu: {
-          elevation: 0,
-          selected: "",
-        },
-        announcements_topmenu: {
-          elevation: 0,
-          selected: "",
-        },
-        payslips_topmenu: {
-          elevation: 0,
-          selected: "",
-        },
-        schedule_topmenu: {
-          elevation: 0,
-          selected: "",
-        },
-        community: {
+
+        tanents: {
           elevation: 0,
           selected: "",
         },
@@ -632,10 +440,7 @@ export default {
       topMenu_Selected: "dashboard",
       company_menus,
       visitor_menus,
-      employee_menus,
-      branch_menus,
       guard_menus,
-      host_menus,
       company_top_menu,
       visitor_top_menu,
       pendingLeavesCount: 0,
@@ -658,7 +463,6 @@ export default {
       fixed: false,
       order_count: "",
       logo_src: "",
-      logo_src2: "",
       items: [],
       modules: {
         module_ids: [],
@@ -667,7 +471,7 @@ export default {
       clipped: true,
 
       miniVariant: true,
-      title: "MyTime2Cloud",
+      title: "MyHouse2Cloud",
       socket: null,
       logout_btn: {
         icon: "mdi-logout",
@@ -680,25 +484,14 @@ export default {
     };
   },
   created() {
-   
-
     this.$store.commit("loginType", this.$auth.user.user_type);
     this.getCompanyDetails();
-    // this.setMenus();
     this.setSubLeftMenuItems("dashboard", "/dashboard", false);
     this.logo_src = require("@/static/logo22.png");
     this.pendingNotificationsCount = 0;
     this.loadNotificationMenu();
-    this.verifyAlarmStatus();
 
     this.updateTopmenu();
-
-    // setInterval(() => {
-    //   this.verifyAlarmStatus();
-    // }, 1000 * 65);
-    // setInterval(() => {
-    //   this.loadNotificationMenu();
-    // }, 1000 * 45 * 3);
   },
 
   mounted() {
@@ -710,7 +503,7 @@ export default {
 
     menu_name = menu_name.replaceAll("-", "/");
 
-    if (this.getLoginType === "company" || this.getLoginType === "branch") {
+    if (this.getLoginType === "company") {
       //-------------------
       loadSelectedMenu = this.company_menus.filter(
         (item) => item.to === "/" + menu_name && item.submenu == null
@@ -768,29 +561,14 @@ export default {
     getLogo() {
       let logosrc = "/no-image.PNG";
 
-      if (
-        this.$auth.user &&
-        this.$auth.user.user_type == "company" &&
-        this.$auth.user.company.logo
-      ) {
-        logosrc = this.$auth.user.company.logo || "/no-image.PNG1111111";
-      } else if (this.$auth.user && this.$auth.user.user_type == "master") {
-        logosrc = "/no-image.PNG";
-      } else if (this.$auth.user && this.$auth.user.user_type == "employee") {
-        logosrc =
-          this.$auth.user.employee.profile_picture || "/no-profile-image.jpg";
-      } else if (this.$auth.user && this.$auth.user.user_type == "branch") {
-        logosrc = this.$auth.user.branch_logo || "/no-profile-image.jpg";
+      if (this.$auth.user && this.$auth.user.company.logo) {
+        logosrc = this.$auth.user.company.logo ?? "/no-image.PNG";
       }
 
       return logosrc;
     },
     getLoginType() {
       return this.$store.state.loginType;
-    },
-
-    hasDepartments() {
-      return this.$auth.user && this.$auth.user.assignedDepartments.length > 0;
     },
   },
   methods: {
@@ -814,7 +592,6 @@ export default {
       //filter Display Modules From Company Settings
 
       try {
-
         if (this.$auth.user.user_type == "employee") {
           let { permissions } = this.$auth.user;
 
@@ -824,8 +601,11 @@ export default {
 
           this.company_top_menu = filteredArr;
 
-
-          this.setSubLeftMenuItems("visitor_dashboard_access", "/dashboard", false);
+          this.setSubLeftMenuItems(
+            "visitor_dashboard_access",
+            "/dashboard",
+            false
+          );
           // this.items = this.visitor_menus;
 
           return;
@@ -904,12 +684,6 @@ export default {
       this.$axios.get(`get-notifications-count`, options).then(({ data }) => {
         this.notificationsMenuItems = [
           {
-            title: "Leaves Pending (0)",
-            click: "/leaves",
-            icon: "mdi-calendar-account",
-            key: "leaves",
-          },
-          {
             title: "Visitors Pending (0)",
             click: "/visitor/requests",
             icon: "mdi-transit-transfer",
@@ -936,58 +710,8 @@ export default {
         }
 
         this.pendingNotificationsCount = pendingcount;
-        // console.log("pendingcount", pendingcount);
-        // if (pendingcount == 0) {
-        //   this.pendingNotificationsCount = 0;
-        // } else this.pendingNotificationsCount = pendingcount;
-        // console.log(
-        //   "pendingcount",
-        //   pendingcount,
-        //   this.pendingNotificationsCount
-        // );
-        // if (this.pendingNotificationsCount == "") {
-        //   this.pendingNotificationsCount = 0;
-        // }
-        // if (this.pendingNotificationsCount > 0) {
-        //   //console.log("this.$config", this.$config);
-        //   document.title =
-        //     "Mytime2Cloud " +
-        //     " - Notifications Pending : " +
-        //     this.pendingNotificationsCount;
-        // }
-
-        // let menu1 = { title: "Leave Notifications (2)", click: "Test" };
-        // let menu2 = { title: "Visitor Notifications (2)", click: "Test" };
-        // this.notificationsMenuItems.push(menu1);
-        // this.notificationsMenuItems.push(menu2);
+        
       });
-    },
-    verifyAlarmStatus() {
-      let company_id = this.$auth.user?.company?.id || 0;
-      //console.log("company_id", company_id);
-      if (company_id == 0) {
-        return false;
-      }
-      let options = {
-        params: {
-          company_id: company_id,
-        },
-      };
-      //this.pendingNotificationsCount = 0;
-      let pendingcount = 0;
-      this.$axios.get(`get_notifications_alarm`, options).then(({ data }) => {
-        if (data.length > 0) {
-          this.notificationAlarmDevices = data;
-
-          this.alarmNotificationStatus = true;
-        } else {
-          this.alarmNotificationStatus = false;
-        }
-      });
-    },
-
-    getBranchName() {
-      return this.$auth.user.branch_name;
     },
     getTopMenuItems(i) {
       if (i.module == "dashboard") {
@@ -1056,60 +780,6 @@ export default {
         }
       }
     },
-
-    changeLoginType() {
-      try {
-        // if (this.getLoginType == "branch")
-        {
-          // this.$store.commit("loginType", "employee");
-          // this.setMenus();
-          let email = this.$store.state.email;
-          let password = this.$store.state.password;
-
-          email = this.$crypto.encrypt(email);
-          password = this.$crypto.encrypt(password);
-
-          email = encodeURIComponent(email);
-          password = encodeURIComponent(password);
-
-          if (email && password) {
-            window.location.href =
-              process.env.EMPLOYEE_APP_URL +
-              "/loginwithtoken?email=" +
-              email +
-              "&password=" +
-              password;
-
-            return "";
-          } else {
-            console.log("Empty Username and Password");
-          }
-          // this.$router.push("/employees/profile");
-        }
-        // else {
-        //   this.$store.commit("loginType", "branch");
-        //   this.setMenus();
-        //   this.$router.push("/dashboard2");
-        // }
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    navigateToLeavePage() {
-      this.$router.push("/leaves");
-    },
-
-    filterBranch(branch) {
-      this.$emit("openalert", "");
-
-      if (branch) {
-        this.selectedBranchName = branch.branch_name;
-        this.seelctedBranchId = branch.id;
-      } else {
-        this.selectedBranchName = "All Branches";
-        this.seelctedBranchId = "";
-      }
-    },
     collapseSubItems() {
       this.company_menus.map((item) => (item.active = false));
     },
@@ -1118,22 +788,12 @@ export default {
       this.$store.commit("change_color", color);
     },
 
-    changeTheme(color) {
-      // alert(color);
-    },
-
     changeSideBarColor(color) {
       this.sideBarcolor = color;
     },
 
     caps(str) {
       return str.replace(/\b\w/g, (c) => c.toUpperCase());
-    },
-    goToSetting() {
-      this.$router.push("/setting");
-    },
-    goToLeaves() {
-      this.$router.push("/leaves");
     },
     goToCompany() {
       this.$router.push(`/companies/${this.$auth.user?.company_id}`);

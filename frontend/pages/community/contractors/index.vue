@@ -579,6 +579,14 @@
                   </v-btn>
                 </template>
                 <v-list width="120" dense>
+                  <v-list-item v-if="can('branch_edit')">
+                    <v-list-item-title style="cursor: pointer">
+                      <CommunityContractorCompanyDocument
+                        :id="item.id"
+                        @success="handleSuccessResponse"
+                      />
+                    </v-list-item-title>
+                  </v-list-item>
                   <v-list-item
                     v-if="can('branch_view')"
                     @click="viewItem(item)"
@@ -588,10 +596,7 @@
                       View
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item
-                    v-if="can('branch_edit')"
-                    @click="editItem(item)"
-                  >
+                  <v-list-item v-if="can('branch_edit')">
                     <v-list-item-title style="cursor: pointer">
                       <CommunityContractorCompanyEdit
                         :item="item"

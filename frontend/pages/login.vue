@@ -302,7 +302,7 @@
         }
       "
     /> -->
-    <component :is="setupComponent"></component>
+    <!-- <component :is="setupComponent"></component> -->
   </div>
 </template>
 
