@@ -49,6 +49,6 @@ Route::post('renderMultiRequest', [MultiShiftController::class, 'renderRequest']
 
 
 Route::get('access_control_report', [AccessControlController::class, 'index']);
+Route::get('get_logs_by_user_id', [AccessControlController::class, 'get_logs_by_user_id']);
 Route::get('get_users', [AccessControlController::class, 'getUniqueUsers']);
-
 Route::post('renderAutoRequest', [AutoShiftController::class, 'renderRequest']);

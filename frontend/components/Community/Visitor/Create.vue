@@ -2,9 +2,12 @@
   <v-dialog persistent v-model="dialog" width="900">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-btn dense small class="primary" text title="Add Company">
+        <v-icon v-if="button_type == 'icon'" color="black" title="Create Visitor"
+          >mdi-plus-circle-outline</v-icon
+        >
+        <v-btn v-else dense small class="primary" text title="Create Visitor">
           Create Visitor
-          <v-icon right dark>mdi-plus-circle-outline</v-icon>
+          <v-icon  right dark>mdi-plus-circle-outline</v-icon>
         </v-btn>
       </span>
     </template>
@@ -82,7 +85,7 @@
                       ? errors.system_user_id[0]
                       : ''
                   "
-                  label="Visitor Device Id"
+                  label="Visitor Card ID"
                   type="number"
                 ></v-text-field>
               </v-col>
@@ -363,7 +366,6 @@
 </template>
 
 <script>
-
 let date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
   .toISOString()
   .substring(0, 10);
@@ -372,7 +374,7 @@ let hours = String(new Date().getHours()).padStart(2, "0");
 let minutes = String(new Date().getMinutes()).padStart(2, "0");
 let dynamicTime = hours + ":" + minutes;
 export default {
-  props: ["visitor_type"],
+  props: ["visitor_type", "button_type"],
 
   data: () => ({
     disabled: false,
@@ -572,15 +574,15 @@ export default {
       return this.$pagePermission.can(per, this);
     },
     submit() {
-      this.payload.visitor_type =  this.visitor_type,
-      this.$axios
-        .post(`visitor-self-register`, this.payload)
-        .then(({ data }) => {
-          this.handleSuccessResponse("Visitor inserted successfully");
-        })
-        .catch(({ response }) => {
-          this.handleErrorResponse(response);
-        });
+      (this.payload.visitor_type = this.visitor_type),
+        this.$axios
+          .post(`visitor-self-register`, this.payload)
+          .then(({ data }) => {
+            this.handleSuccessResponse("Visitor inserted successfully");
+          })
+          .catch(({ response }) => {
+            this.handleErrorResponse(response);
+          });
 
       // }
     },
@@ -608,3 +610,16 @@ export default {
   },
 };
 </script>
+ <style>
+    /* Hide the up and down arrows */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  </style>

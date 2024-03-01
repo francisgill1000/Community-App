@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-select
+      :placeholder="header.text"
       v-if="header.key == column || header.type == 'dropdown'"
       :hide-details="true"
       v-model="header.search_value"

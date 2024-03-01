@@ -41,21 +41,6 @@
               :hide-details="true"
             ></v-select>
           </v-col>
-          <!-- <v-col md="2" sm="2" v-if="isCompany">
-            Branch
-            <v-select
-              placeholder="Branch"
-              class="mt-2"
-              outlined
-              dense
-              v-model="payload.branch_id"
-              x-small
-              :items="[{ id: ``, branch_name: `Select All` }, ...branches]"
-              item-value="id"
-              item-text="branch_name"
-              :hide-details="true"
-            ></v-select>
-          </v-col> -->
           <v-col md="2" sm="4">
             <v-select
               label="Door"

@@ -118,6 +118,11 @@ class Visitor extends Model
     {
         return $this->hasMany(VisitorAttendance::class);
     }
+
+    public function attendance_logs()
+    {
+        return $this->hasMany(AttendanceLog::class,"UserID","system_user_id")->orderBy("LogTime","asc")->with("device")->take(10);
+    }
     public function purpose()
     {
         return $this->belongsTo(Purpose::class, "purpose_id");

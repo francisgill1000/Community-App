@@ -32,8 +32,7 @@
           style="width: 100%; height: 600px"
         ></iframe>
       </v-dialog>
-      <v-col lg="12" md="12" sm="12" xs="12">
-        <v-row>
+      <v-row>
           <v-col md="12">
             <v-card class="pa-2" style="height: 354px; overflow: hidden">
               <v-row background fill>
@@ -130,29 +129,7 @@
             </v-card>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col lg="12" md="12" sm="12" xs="12">
-            <v-card
-              class="py-2"
-              style="height: 600px; overflow-x: hidden; overflow-y: scroll"
-            >
-              <VisitorLogs />
-              <!-- <VisitorReport></VisitorReport> -->
-            </v-card>
-          </v-col>
-        </v-row>
-        <!-- <v-row>
-          <v-col lg="12" md="12" sm="12" xs="12">
-            <v-card class="py-2" style="overflow: hidden">
-              <VisitorHourChart
-                :name="'visitor'"
-                :branch_id="null"
-                :height="300"
-              ></VisitorHourChart>
-            </v-card>
-          </v-col>
-        </v-row> -->
-      </v-col>
+      <CommunityVisitorDashboardDeviceLogs />
     </div>
     <Preloader v-else />
   </div>

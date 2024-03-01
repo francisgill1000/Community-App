@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceLog;
+use App\Models\Visitor;
 use Illuminate\Support\Facades\DB;
 
 class AccessControlController extends Controller
@@ -21,6 +22,17 @@ class AccessControlController extends Controller
         return $this->processFilter()->paginate(request("per_page") ?? 10);
     }
 
+    public function get_logs_by_user_id()
+    {
+        $userType = request("user_type") ?? "visitor";
+
+        if ($userType === "visitor") {
+            return  Visitor::with(["attendance_logs","purpose"])->where("system_user_id", request("UserID"))->first(); // Or use your specific query logic
+        } else {
+            return false;
+        }
+    }
+
     public function processFilter()
     {
         $model = AttendanceLog::query();
@@ -31,7 +43,7 @@ class AccessControlController extends Controller
 
         $model->whereDate('LogTime', '<=', request()->filled("to_date") && request("to_date") !== 'null' ? request("to_date") : date("Y-m-d"));
 
-        $model->whereHas('device', fn ($q) => $q->whereIn('device_type', ["all", "Access Control"]));
+        // $model->whereHas('device', fn ($q) => $q->whereIn('device_type', ["all", "Access Control"]));
 
         $model->when(request()->filled("user_type"), fn ($q) => $q->whereHas(request("user_type")));
 

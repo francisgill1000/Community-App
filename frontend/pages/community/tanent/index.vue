@@ -51,6 +51,11 @@
           <ExportData :data="exportData()" />
           <TanentCreate @success="handleSuccessResponse" />
         </v-toolbar>
+        <SnippetsFiltersRenderFields
+          :fields="headers.map((e) => e.key)"
+          @filtered="handleFilter"
+          :headers="headers"
+        />
         <v-data-table
           dense
           :headers="headers"
@@ -64,14 +69,6 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
-          <template v-slot:header="{ props: { headers } }">
-            <SnippetsFiltersRenderFields
-              :fields="headers.map((e) => e.key)"
-              @filtered="handleFilter"
-              :headers="headers"
-            />
-          </template>
-
           <template v-slot:item.members="{ item }">
             <v-icon color="primary" class="mx-1" @click="viewMember(item)">
               mdi-eye
@@ -129,6 +126,21 @@
                 <v-list-item>
                   <v-list-item-title style="cursor: pointer">
                     <TanentAddMember
+                      :key="generateRandomId()"
+                      @success="handleSuccessResponse"
+                      :item="{
+                        tanent_id: item.id,
+                        system_user_id:
+                          parseInt(item.system_user_id) +
+                          parseInt(item.members_count) +
+                          1,
+                      }"
+                    />
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
+                    <TanentAddCard
                       :key="generateRandomId()"
                       @success="handleSuccessResponse"
                       :item="{
