@@ -84,7 +84,7 @@ export default {
             data: [],
           },
         ],
-        colors: ["#14B012", "#FF0000", "#FFB600"],
+        colors: ["#14B012", "#FFB600", "#2196f3", "#FF0000"],
         chart: {
           toolbar: {
             show: false,

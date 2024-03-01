@@ -187,6 +187,8 @@ export default {
     }
   },
   async created() {
+    this.$router.push(`community/dashboard`);
+
     if (this.$auth.user.user_type == "employee") {
       this.$router.push(`community/visitor/dashboard`);
       return;

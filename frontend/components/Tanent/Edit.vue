@@ -115,6 +115,46 @@
                     <v-radio label="Other" value="Other"></v-radio>
                   </v-radio-group>
                 </v-col>
+
+                <v-col cols="6">
+                  <v-autocomplete
+                    @change="getRelatedChildDetails"
+                    label="Room Category"
+                    outlined
+                    :disabled="disabled"
+                    v-model="payload.room_category_id"
+                    :items="room_categories"
+                    dense
+                    item-text="name"
+                    item-value="id"
+                    :hide-details="!errors.room_category_id"
+                    :error-messages="
+                      errors && errors.room_category_id
+                        ? errors.room_category_id[0]
+                        : ''
+                    "
+                  >
+                  </v-autocomplete>
+                </v-col>
+                <v-col cols="6">
+                  <v-autocomplete
+                    label="Room Sub Category"
+                    outlined
+                    :disabled="disabled"
+                    v-model="payload.room_sub_category_id"
+                    :items="filtered_room_sub_categories"
+                    dense
+                    item-text="name"
+                    item-value="id"
+                    :hide-details="!errors.room_sub_category_id"
+                    :error-messages="
+                      errors && errors.room_sub_category_id
+                        ? errors.room_sub_category_id[0]
+                        : ''
+                    "
+                  >
+                  </v-autocomplete>
+                </v-col>
                 <v-col cols="6">
                   <v-autocomplete
                     @change="getRoomsByFloorId(payload.floor_id)"
@@ -669,6 +709,10 @@ export default {
   },
 
   data: () => ({
+    room_categories: [],
+    room_sub_categories: [],
+    filtered_room_sub_categories: [],
+    disabled: false,
     parkings: [],
     payload: {
       term: "Long Term",
@@ -744,6 +788,20 @@ export default {
     this.boilerplate = true;
     this.editItem(this.item);
     await this.getFloors();
+    let config = {
+      params: { company_id: this.$auth.user.company_id },
+    };
+    let { data: room_categories } = await this.$axios.get(
+      `room-category-list`,
+      config
+    );
+    this.room_categories = room_categories;
+
+    let { data: room_sub_categories } = await this.$axios.get(
+      `room-sub-category-list`,
+      config
+    );
+    this.room_sub_categories = room_sub_categories;
     await this.getMemberTypes();
 
     let { data } = await this.$axios.get(`parking-list`);
@@ -751,6 +809,22 @@ export default {
   },
 
   methods: {
+    async getRelatedChildDetails() {
+      await this.setRoomSubCategories(this.payload.room_category_id);
+    },
+    async setRoomSubCategories(id) {
+      this.filtered_room_sub_categories = this.room_sub_categories.filter(
+        (e) => e.room_category_id == id
+      );
+
+      await this.getFloorByCategory(id);
+    },
+    async getFloorByCategory(id) {
+      let { data } = await this.$axios.get(`room-floor-by-category/${id}`);
+      this.floors = data;
+
+      this.getRoomsByFloorId(this.payload);
+    },
     updatePayload(key, document) {
       this.payload[key] = document;
     },

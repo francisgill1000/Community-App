@@ -30,7 +30,7 @@
                 ></v-text-field>
               </v-col>
               <!-- {{ employees_dialog }} -->
-              <v-col cols="4">
+              <!-- <v-col cols="4">
                 <label for="">Branch</label>
                 <v-select
                   v-model="editedItem.branch_id"
@@ -47,7 +47,7 @@
                   @change="getDepartments()"
                 >
                 </v-select>
-              </v-col>
+              </v-col> 
               <v-col cols="4">
                 <label for="">Department</label>
                 <v-autocomplete
@@ -104,7 +104,7 @@
                     </span>
                   </template>
                 </v-autocomplete>
-              </v-col>
+              </v-col>-->
               <v-col cols="4">
                 <label for="">Employee</label>
                 <v-autocomplete
@@ -705,7 +705,7 @@ export default {
       start_date: null,
       end_date: null,
       category_id: null,
-      branch_id: "",
+      branch_id: 0,
     },
     defaultItem: {
       title: "",
@@ -715,7 +715,7 @@ export default {
       start_date: null,
       end_date: null,
       category_id: null,
-      branch_id: "",
+      branch_id: 0,
     },
     response: "",
     headerText: "",

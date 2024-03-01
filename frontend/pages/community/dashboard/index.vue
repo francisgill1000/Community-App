@@ -54,7 +54,7 @@
       </v-col>
 
       <v-col lg="3" md="3" sm="12" xs="12">
-        <v-card class="py-2 mb-2" v-if="branchList.length > 1">
+        <!-- <v-card class="py-2 mb-2" v-if="branchList.length > 1">
           <v-row class="mt-2">
             <v-col cols="1">
               <label> </label>
@@ -78,7 +78,7 @@
               <label> </label>
             </v-col>
           </v-row>
-        </v-card>
+        </v-card> -->
 
         <CommDashboardRightsideStaticstics :branch_id="branch_id" />
         <v-row>
@@ -153,7 +153,6 @@ export default {
     // if (this.$auth.user.user_type == "employee") {
     //   this.$router.push(`/dashboard/employee`);
     // }
-
     // if (this.$auth.user.branch_id == 0 && this.$auth.user.is_master == false) {
     //   alert("You do not have permission to access this branch");
     //   //this.$router.push("/login");
@@ -161,7 +160,6 @@ export default {
     //     this.$auth.logout();
     //     this.$router.push(`/login`);
     //   });
-
     //   this.$router.push(`/login`);
     //   return "";
     // }

@@ -138,7 +138,7 @@ class RoomController extends Controller
     {
         return Room::where("company_id", request("company_id"))
             ->where("floor_id", request("floor_id"))
-            ->where("room_category_id", request("room_category_id"))
+            //->where("room_category_id", request("room_category_id"))
             ->get(["id", "room_number"]);
     }
 

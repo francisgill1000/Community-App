@@ -146,9 +146,16 @@
   },
   {
     "icon": "mdi-bell",
-    "title": "Announcements",
+    "title": "Announ..Categories",
     "open_menu": false,
     "to": "/announcement_type",
+    "module": "settings"
+  },
+  {
+    "icon": "mdi-bell",
+    "title": "Announcements",
+    "open_menu": false,
+    "to": "/announcements",
     "module": "settings"
   },
 

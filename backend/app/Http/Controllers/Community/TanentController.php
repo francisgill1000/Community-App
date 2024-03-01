@@ -11,6 +11,7 @@ use App\Http\Requests\Community\Tanent\StoreRequest;
 use App\Http\Requests\Community\Tanent\UpdateRequest;
 use App\Http\Requests\Community\Tanent\VehicleRequest;
 use App\Models\Community\MaidRelationTenant;
+use App\Models\Community\Room;
 use App\Models\Community\Tanent;
 use App\Models\Community\Vehicle;
 use Illuminate\Http\Request;
@@ -214,6 +215,10 @@ class TanentController extends Controller
 
             $record = Tanent::create($data);
 
+            if ($record->id && $request->room_id) {
+                Room::where("id", $request->room_id)->update(["tenant_id" => $record->id]);
+            }
+
             if ($record) {
                 return $this->response('Tanent Successfully created.', $record, true);
             } else {
@@ -272,6 +277,12 @@ class TanentController extends Controller
             }
             // return $data;
             $record = Tanent::create($data);
+
+            if ($record->id && $request->room_number && $request->room_category_id) {
+                Room::where("room_number", $request->room_number)
+                    ->where("room_category_id", $request->room_category_id)
+                    ->update(["tenant_id" => $record->id]);
+            }
 
             if ($record) {
                 return $this->response('Tanent Successfully created.', $record, true);
@@ -463,6 +474,14 @@ class TanentController extends Controller
             }
 
             $record = $Tanent->update($data);
+
+
+
+            if ($request->room_id) {
+                Room::where("id", $request->room_id)
+                    ->where("company_id", $request->company_id)
+                    ->update(["tenant_id" => $id]);
+            }
 
             return $this->response('Tanent successfully updated.', $record, true);
         } catch (\Throwable $th) {

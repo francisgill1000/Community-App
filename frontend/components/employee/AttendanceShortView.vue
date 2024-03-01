@@ -1,6 +1,6 @@
 <template>
   <div v-if="can(`attendance_report_view`)">
-    <v-dialog v-model="dialog" max-width="1000">
+    <v-dialog v-model="dialog" max-width="550">
       <v-card>
         <v-container>
           <v-row no-gutters class="pa-0 ma-0">
@@ -12,16 +12,16 @@
           </v-row>
 
           <EmployeeShortView
-            v-if="selectedItem.employee != null"
+            v-if="item.employee != null"
             :item="selectedItem"
           />
-          <AttendanceShortView v-else :key="key" :item="selectedItem" />
+          <AttendanceShortView v-else :item="selectedItem" />
         </v-container>
       </v-card>
     </v-dialog>
     <v-card elevation="0" class="mt-2">
       <v-toolbar dense flat>
-        <span class="headline black--text"> Live Access Control Logs </span>
+        <span class="black--text">Recent Access Control Logs </span>
 
         <span>
           <v-btn
@@ -43,7 +43,6 @@
       <div v-if="can(`attendance_report_access`)">
         <v-card class="mb-5" elevation="0">
           <v-data-table
-            @click:row="showDialog"
             dense
             :headers="headers"
             :items="data"
@@ -195,18 +194,13 @@
   <NoAccess v-else />
 </template>
 <script>
-import AttendanceShortView from "../../../components/employee/AttendanceShortView.vue";
 export default {
-  components: {
-    AttendanceShortView,
-  },
-  props: ["user_type", "dropdown"],
+  props: ["item", "user_type", "dropdown"],
 
   data: () => ({
-    key: 1,
     selectedItem: {},
     url: process.env.SOCKET_ENDPOINT,
-    tableHeight: 750,
+    tableHeight: 400,
     status: "",
     department_ids: "",
     employee_id: "",
@@ -283,13 +277,13 @@ export default {
         key: "flat",
         value: "flat",
       },
-      // {
-      //   text: "Phone",
-      //   align: "left",
-      //   sortable: true,
-      //   key: "phone_number",
-      //   value: "phone_number",
-      // },
+      {
+        text: "Phone",
+        align: "left",
+        sortable: true,
+        key: "phone_number",
+        value: "phone_number",
+      },
       {
         text: "Door",
         align: "left",
@@ -305,20 +299,20 @@ export default {
         value: "dateTime",
         fieldType: "date_range_picker",
       },
-      // {
-      //   text: "In",
-      //   align: "left",
-      //   sortable: false,
-      //   key: "in",
-      //   value: "in",
-      // },
-      // {
-      //   text: "Out",
-      //   align: "left",
-      //   sortable: false,
-      //   key: "out",
-      //   value: "out",
-      // },
+      {
+        text: "In",
+        align: "left",
+        sortable: false,
+        key: "in",
+        value: "in",
+      },
+      {
+        text: "Out",
+        align: "left",
+        sortable: false,
+        key: "out",
+        value: "out",
+      },
       {
         text: "Mode",
         align: "left",
@@ -355,36 +349,8 @@ export default {
       deep: true,
     },
   },
-  mounted() {
-    // this.tableHeight = window.innerHeight - 370;
-    // window.addEventListener("resize", () => {
-    //   this.tableHeight = window.innerHeight - 370;
-    // });
-
-    setTimeout(() => {
-      this.socketConnection();
-    }, 1000 * 10);
-
-    setInterval(() => {
-      if (this.$route.name == "community-dashboard") {
-        if (this.$auth.user) this.getDataFromApi(1);
-      }
-    }, 1000 * 30);
-  },
+  mounted() {},
   created() {
-    // let branch_header = [
-    //   {
-    //     text: "Branch/Department",
-    //     align: "left",
-    //     sortable: true,
-    //     key: "branch_id", //sorting
-    //     value: "branch", //edit purpose
-
-    //     filterable: true,
-    //     filterSpecial: true,
-    //   },
-    // ];
-    // this.headers.splice(2, 0, ...branch_header);
     this.setFromDate();
     // this.getBranches();
     this.getUsers();
@@ -395,7 +361,6 @@ export default {
   },
   methods: {
     showDialog(item) {
-      this.key++;
       this.selectedItem = item;
       this.dialog = true;
     },
@@ -577,6 +542,11 @@ export default {
           this.payload.to_date = this.payload.to_date;
         }
       }
+      this.payload.UserID = this.item.UserID;
+
+      this.payload.from_date = null;
+      this.payload.to_date = null;
+
       this.loading = true;
       const { data, total } = await this.$store.dispatch("fetchData", {
         key: "access_control_report",
@@ -645,92 +615,6 @@ export default {
         // Handle the error (e.g., show an error message to the user)
       }
     },
-    socketConnection() {
-      this.socket = new WebSocket(this.url);
-      //console.log("this.$store.state.devices", this.devices);
-      this.socket.onmessage = ({ data }) => {
-        let json = JSON.parse(data).Data;
-
-        const { UserCode, SN, RecordDate, RecordNumber, status } = json;
-        // console.log("socket UserCode", UserCode);
-        if (UserCode > 0) {
-          this.getDetails(json);
-        }
-      };
-    },
-    getDetails(item) {
-      let DeviceId = item.SN;
-
-      if (DeviceId != "") {
-        let isCompanyDevice = this.$store.state.devices_list?.filter(
-          (e) => e.device_id == DeviceId
-        );
-
-        if (isCompanyDevice?.length > 0) {
-          this.tableloading = true;
-          //this.getRecords(true);
-          try {
-            this.pushSocketEmployeeToTable(item);
-          } catch (e) {
-            console.log(e);
-          }
-
-          this.tableloading = false;
-        }
-      }
-    },
-    pushSocketEmployeeToTable(item) {
-      this.$axios
-        .get("socket_call_attendance_logs", {
-          params: {
-            per_page: 1000,
-            company_id: this.$auth.user.company_id,
-          },
-        })
-        .then(({ data }) => {
-          this.$axios
-            .get("socket_call_attendance_logs_update_company_ids", {
-              params: {
-                per_page: 1000,
-                company_id: this.$auth.user.company_id,
-              },
-            })
-            .then(({ data }) => {
-              this.getDataFromApi(1);
-            });
-        });
-    },
-    // pushSocketEmployeeToTable(item) {
-
-    //   //  console.log("pushSocketEmployee", item);
-    //   //--------------------------
-    //   let UserCode1 = item.UserCode;
-    //   let SN1 = item.SN;
-    //   let employee = this.employees.find(
-    //     (e) => e.employee.system_user_id == UserCode1
-    //   );
-    //   //  console.log("pushSocketEmployee employee", employee);
-    //   let device = this.$store.state.devices_list?.find(
-    //     (e) => e.device_id == SN1
-    //   );
-
-    //   let itemTable = {
-    //     UserID: UserCode1,
-    //     status: item.status,
-    //     DeviceID: SN1,
-    //     visitor: { first_name: UserCode1 },
-    //     delivery: null,
-    //     contractor: null,
-    //     maid: null,
-    //     employee: null,
-
-    //     device: { location: device.location, name: device.name },
-    //     LogTime: this.setTime(item.RecordDate),
-    //   };
-
-    //   this.data = [itemTable, ...this.data];
-    //   //this.logs.unshift(itemTable);
-    // },
   },
 };
 </script>

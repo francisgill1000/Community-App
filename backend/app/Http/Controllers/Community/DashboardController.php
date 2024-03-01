@@ -7,8 +7,10 @@ use App\Models\Announcement;
 use App\Models\Attendance;
 use App\Models\AttendanceLog;
 use App\Models\Community\Member;
+use App\Models\Community\Parking;
 use App\Models\Community\Room;
 use App\Models\Community\Tanent;
+use App\Models\Community\Vehicle;
 use App\Models\Department;
 use App\Models\Device;
 use App\Models\Employee;
@@ -236,28 +238,17 @@ class DashboardController extends Controller
     {
 
 
-        $kids_count = Member::where('company_id', $request->company_id)
+        $kids_count = Tanent::where('company_id', $request->company_id)
             ->where('age', "<", 18)
-            ->whereIn('tanent_id', function ($query) use ($request) {
-                $query->select('tanent_id')
-                    ->where('company_id', $request->company_id)
-
-                    ->from('rooms');
-            })->get()->count();
+            ->get()->count();
 
 
-        $members = Member::where('company_id', $request->company_id)
-            ->where('age', ">=", 18)
-            ->whereIn('tanent_id', function ($query) use ($request) {
-                $query->select('tanent_id')
-                    ->where('company_id', $request->company_id)
-
-                    ->from('rooms');
-            });
+        $Tanents = Tanent::where('company_id', $request->company_id)
+            ->where('age', ">=", 18);
 
 
-        $male_count = $members->clone()->where("geneder", "Male")->get()->count();
-        $female_count = $members->clone()->where("geneder", "FeMale")->get()->count();
+        $male_count = $Tanents->clone()->where("gender", "Male")->get()->count();
+        $female_count = $Tanents->clone()->where("gender", "Female")->get()->count();
 
 
 
@@ -286,17 +277,26 @@ class DashboardController extends Controller
         //     ->where("checkout_date", "!=", null)
         //     ->get()->count();
 
-        $occupied_count =  Room::where('company_id', $request->company_id)->where("tenant_id", "!=", 0)->get()->count();
+        $occupied_count =  Room::where('company_id', $request->company_id)->where("tenant_id", ">", 0)->get()->count();
 
 
         $offline_devices = Device::where('company_id', $request->company_id)->where('status_id', 2)->get()->count();
 
 
+        $car_parking_count = Parking::get()->count();
+        $allocated_count = Vehicle::with(["tanent"])
+
+            ->whereHas("tanent", function ($q) use ($request) {
+                $q->where('company_id', $request->company_id);
+            })
+            ->get()->count();
+
+
         $finalarray  = [
             "flats_count" => $flats_count,
             "occupied_count" => $occupied_count,
-            "car_parking_count" => 0,
-            "allocated_count" => 0,
+            "car_parking_count" => $car_parking_count,
+            "allocated_count" => $allocated_count,
             "offline_devices" =>  $offline_devices,
             "contract_expiring_count" => $contract_expiring_count,
 
@@ -333,6 +333,7 @@ class DashboardController extends Controller
                 ->whereDate("LogTime",  $date)->distinct("UserID");
 
             $EmployeesCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
@@ -345,6 +346,7 @@ class DashboardController extends Controller
                 ->get()->count();
 
             $VisitorsCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
@@ -354,6 +356,7 @@ class DashboardController extends Controller
 
 
             $TenantsCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
@@ -362,6 +365,7 @@ class DashboardController extends Controller
                 ->get()->count();
 
             $DeniedCount = $AttendanceLogModel->clone()
+
                 ->where("status", "Access Denied")
                 ->get()->count();
 
@@ -415,6 +419,7 @@ class DashboardController extends Controller
             });
 
             $EmployeesCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
@@ -424,6 +429,7 @@ class DashboardController extends Controller
                 ->get()->count();
 
             $VisitorsCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
@@ -433,6 +439,7 @@ class DashboardController extends Controller
 
 
             $TenantsCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
@@ -508,7 +515,7 @@ class DashboardController extends Controller
     public function dashboardAnnouncementList(Request $request)
     {
 
-        return (new Announcement())->with(['category', 'user', 'branch'])->withOut("employees")
+        return (new Announcement())->with(['category', 'user.company', 'branch'])->withOut("employees")
             // ->where('start_date', '<=', date("Y-m-d"))
             // ->where('end_date', '>=', date("Y-m-d"))
             ->when($request->filled("branch_id"), function ($q) use ($request) {

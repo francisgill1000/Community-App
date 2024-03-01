@@ -98,12 +98,12 @@ export default {
   }),
   watch: {
     branch_id() {
-      this.$store.commit("dashboard/community_male_female", null);
+      this.$store.commit("CommDashboard/community_male_female", null);
       this.getDataFromApi();
     },
   },
   mounted() {
-    this.$store.commit("dashboard/community_male_female", null);
+    this.$store.commit("CommDashboard/community_male_female", null);
     this.getDataFromApi();
   },
   created() {
