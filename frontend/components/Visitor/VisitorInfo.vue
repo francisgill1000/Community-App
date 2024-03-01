@@ -56,7 +56,7 @@
                 <v-icon title="Purpose" size="20" class="icon-blue"
                   >mdi-briefcase-account-outline</v-icon
                 >
-                {{ item.purpose.name || "---" }}
+                {{ item.purpose?.name || "---" }}
               </div>
               <div>
                 <v-icon size="20" class="icon-blue" title="Contact Number"

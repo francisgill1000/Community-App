@@ -42,9 +42,7 @@
                   ></v-checkbox>
                 </v-col>
 
-                <v-col md="1" style="padding: 0px">
-                 
-                </v-col>
+                <v-col md="1" style="padding: 0px"> </v-col>
                 <v-col md="3" style="padding: 0px; padding-top: 5px">
                   {{ user.name }}
                 </v-col>
@@ -406,7 +404,7 @@
 // import Back from "../components/Snippets/Back.vue";
 
 export default {
-  props:["label","endpoint"],
+  props: ["label", "endpoint"],
   data() {
     return {
       isCompany: true,
@@ -476,7 +474,6 @@ export default {
       return this.$pagePermission.can(per, this);
     },
     loadData() {
-
       this.$axios.get(this.endpoint).then(({ data }) => {
         this.leftEmployees = [];
         this.leftEmployees = data;
@@ -873,7 +870,7 @@ export default {
       this.leftSelectedDevices.pop(id);
       this.verifySubmitButton();
     },
-     async onSubmit() {
+    async onSubmit() {
       this.displaybutton = false;
       this.loading = true;
       if (this.rightEmployees.length == 0) {
@@ -891,9 +888,9 @@ export default {
         let person = {
           name: item.name,
           userCode: parseInt(item.system_number),
-
+          cardData: parseInt(item.system_number),
         };
-       
+
         personListArray.push(person);
       });
 
@@ -914,10 +911,7 @@ export default {
       });
 
       //try {
-      const { data } = await this.$axios.post(
-        `/Person/AddRange/Photos`,
-        payload
-      );
+      const { data } = await this.$axios.post(`/Person/UploadCards`, payload);
 
       if (data.deviceResponse.status == 200) {
         this.loading_dialog = false;

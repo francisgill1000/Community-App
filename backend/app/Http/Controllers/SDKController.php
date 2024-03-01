@@ -103,6 +103,19 @@ class SDKController extends Controller
         }
         return $arr;
     }
+    public function UploadCards(Request $request)
+    {
+
+
+
+        $url = env('SDK_URL'); //. "/Person/AddRange";
+
+        $deviceResponse = $this->processSDKRequestCardsJob($url, $request->all());
+
+        Log::channel("camerasdk")->error(json_encode(["deviceResponse" => $deviceResponse]));
+
+        return ["deviceResponse" => $deviceResponse];
+    }
     public function PersonAddRangePhotos(Request $request)
     {
 
@@ -114,7 +127,7 @@ class SDKController extends Controller
             $cameraResponse2 = $this->filterCameraModel2Devices($request);
         } catch (\Exception $e) {
         }
-        $deviceResponse = $this->processSDKRequestJob($url, $request->all());
+        return   $deviceResponse = $this->processSDKRequestJob($url, $request->all());
 
         Log::channel("camerasdk")->error(json_encode(["cameraResponse2" => $cameraResponse2, "cameraResponse1" => $cameraResponse1, "deviceResponse" => $deviceResponse]));
 
@@ -208,7 +221,13 @@ class SDKController extends Controller
         $url = env('SDK_URL') . "/Person/AddRange";
         $return = TimezonePhotoUploadJob::dispatch($json, $url);
     }
+    public function processSDKRequestPersonAddPersonCardsJobJson($url, $json)
+    {
+        //$url = env('SDK_URL') . "/Person/AddRange";
+        $return = TimezonePhotoUploadJob::dispatch($json, $url);
+    }
     public function processSDKRequestJobDeletePersonJson($device_id, $json)
+
     {
         $url = env('SDK_URL') . "/" . $device_id . "/DeletePerson";
         $return = TimezonePhotoUploadJob::dispatch($json, $url);
@@ -238,7 +257,58 @@ class SDKController extends Controller
         $return = TimezonePhotoUploadJob::dispatch($data, $url);
         return $data;
     }
+    public function processSDKRequestCardsJob($url, $data)
+    {
 
+        $personList = $data['personList'];
+        $snList = $data['snList'];
+        $returnFinalMessage = [];
+        $devicePersonsArray = [];
+
+        $sdk_url = env("SDK_URL");
+        // if (env("APP_ENV") == "production") {
+        //     $sdk_url = env("SDK_PRODUCTION_COMM_URL");
+        // } else {
+        //     $sdk_url = env("SDK_STAGING_COMM_URL");
+        // }
+
+        if ($sdk_url == '') {
+            return false;
+        }
+        // $sdk_url = $sdk_url . '/Person/AddRange';
+        foreach ($snList as $key => $device) {
+
+            $returnMsg = '';
+
+            foreach ($personList as $keyPerson => $valuePerson) {
+                # code...
+
+
+
+                $newArray = [
+                    "personList" => [$valuePerson],
+                    "snList" => [$device],
+                ];
+                // // $newArray[] = $newArray;
+                // $return = TimezonePhotoUploadJob::dispatch($newArray, $sdk_url);
+
+                // $url = env('SDK_URL') . "/Person/AddRange";
+                // $return = TimezonePhotoUploadJob::dispatch($json, $url);
+
+                // $returnContent[] = $newArray;
+                //$return = (new SDKController)->processSDKRequestPersonAddJobJson('', $newArray);
+                $url = $sdk_url . '/' . $device . '/AddPerson';
+                $return = (new SDKController)->processSDKRequestPersonAddPersonCardsJobJson($url, $valuePerson);
+            }
+        }
+        $returnFinalMessage = $this->mergeDevicePersonslist($returnFinalMessage);
+        $returnContent = [
+            "data" => $returnFinalMessage, "status" => 200,
+            "message" => "",
+            "transactionType" => 0
+        ];
+        return $returnContent;
+    }
     public function processSDKRequestJobAll($json, $url)
     {
         $return = TimezonePhotoUploadJob::dispatch($json, $url);
@@ -268,6 +338,9 @@ class SDKController extends Controller
 
             foreach ($personList as $keyPerson => $valuePerson) {
                 # code...
+
+
+
                 $newArray = [
                     "personList" => [$valuePerson],
                     "snList" => [$device],

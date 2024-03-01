@@ -262,13 +262,13 @@ export default {
     errors: [],
     report_template: "Template1",
     headers: [
-      {
-        text: "S.NO",
-        align: "left",
-        sortable: true,
-        key: "id",
-        value: "id",
-      },
+      // {
+      //   text: "S.NO",
+      //   align: "left",
+      //   sortable: true,
+      //   key: "id",
+      //   value: "id",
+      // },
       {
         text: "Name",
         align: "left",

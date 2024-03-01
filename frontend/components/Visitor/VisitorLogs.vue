@@ -318,7 +318,7 @@
                     {{ item.visitor ? item.visitor.last_name : "---" }}</strong
                   >
                   <div>
-                    {{ item.visitor ? caps(item?.visitor?.zone.name) : "---" }}
+                    {{ item.visitor ? caps(item?.visitor?.zone?.name) : "---" }}
                   </div>
                 </v-col>
               </v-row>
@@ -337,7 +337,7 @@
               </div>
             </template>
             <template v-slot:item.purpose_id="{ item }">
-              {{ item.visitor?.purpose.name || "---" }}
+              {{ item.visitor?.purpose?.name || "---" }}
             </template>
 
             <template v-slot:item.LogTime="{ item }">

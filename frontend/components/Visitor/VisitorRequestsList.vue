@@ -241,7 +241,7 @@
           </div>
         </template>
         <template v-slot:item.purpose_id="{ item }">
-          {{ item.purpose.name }}
+          {{ item.purpose?.name }}
         </template>
         <template v-slot:item.visit_from="{ item }">
           {{ $dateFormat.format1(item.from_date_display) }}
