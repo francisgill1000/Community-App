@@ -11,7 +11,6 @@
       item-text="name"
       item-value="id"
       :items="[{ id: ``, name: `All` }, ...items]"
-      :placeholder="header.text"
       solo
       flat
       :disabled="disabled"

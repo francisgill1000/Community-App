@@ -101,7 +101,7 @@
       </v-row>
       <v-row no-gutters class="px-3">
         <v-col cols="12">
-          <ComonPreloader icon="face-scan" v-if="!logs_data.length" />
+          <ComonPreloader icon="face-scan" v-if="loading" />
           <table v-else class="mt-4" style="width: 100%">
             <tr>
               <td style="font-size: 12px">
@@ -158,7 +158,8 @@
 export default {
   props: ["item"],
   data: () => ({
-    logs_data: [],
+    logs_data: null,
+    loading: false,
     log_endpoint: "attendance_logs",
     log_headers: [
       {
@@ -229,6 +230,7 @@ export default {
         });
     },
     async getTodayAttendance() {
+      this.loading = true;
       this.$axios
         .get(`report`, {
           params: {
@@ -261,6 +263,7 @@ export default {
             this.timeHandler(total_hrs),
             this.timeHandler(shift.working_hours)
           );
+          this.loading = false;
         });
     },
     timeHandler(value) {

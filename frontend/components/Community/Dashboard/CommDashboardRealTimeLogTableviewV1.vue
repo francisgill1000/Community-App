@@ -14,8 +14,15 @@
           <EmployeeShortView
             v-if="selectedItem.employee != null"
             :item="selectedItem"
+            :key="key"
           />
-          <AttendanceShortView v-else :key="key" :item="selectedItem" />
+
+          <AttendanceLogsPopup
+            v-else
+            :key="key"
+            :UserID="UserID"
+            :visitor_type="visitor_type"
+          />
         </v-container>
       </v-card>
     </v-dialog>
@@ -195,10 +202,10 @@
   <NoAccess v-else />
 </template>
 <script>
-import AttendanceShortView from "../../../components/employee/AttendanceShortView.vue";
+import AttendanceLogsPopup from "../../../components/Community/AttendanceLogsPopup.vue";
 export default {
   components: {
-    AttendanceShortView,
+    AttendanceLogsPopup,
   },
   props: ["user_type", "dropdown"],
 
@@ -345,6 +352,8 @@ export default {
 
     isCompany: true,
     branches: [],
+    UserID: null,
+    visitor_type: null,
   }),
 
   watch: {
@@ -398,6 +407,9 @@ export default {
       this.key++;
       this.selectedItem = item;
       this.dialog = true;
+      this.UserID = item.UserID;
+
+      this.visitor_type = this.getUserType(item);
     },
     getUserType(item) {
       const relationships = {

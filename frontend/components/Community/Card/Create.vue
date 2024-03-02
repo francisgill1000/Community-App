@@ -34,6 +34,7 @@
           </v-col>
           <v-col cols="4">
             <v-text-field
+              append-icon="mdi-credit-card-scan-outline"
               label="Card Number"
               v-model="payload.number"
               dense
@@ -58,7 +59,7 @@
               "
             ></v-text-field>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="4">
             <v-menu
               v-model="issue_date"
               :close-on-content-click="false"
@@ -91,7 +92,7 @@
               ></v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="4">
             <v-menu
               v-model="expire_date"
               :close-on-content-click="false"
@@ -125,12 +126,12 @@
             </v-menu>
           </v-col>
         </v-row>
+        <br /><br />
       </v-container>
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
         <div class="text-right">
-
           <v-btn small color="grey white--text" @click="DialogBox = false">
             Close
           </v-btn>
@@ -155,8 +156,8 @@ export default {
     response: null,
     DialogBox: false,
 
-    issue_date:false,
-    expire_date:false
+    issue_date: false,
+    expire_date: false,
   }),
   mounted() {
     this.payload.type = this.type;

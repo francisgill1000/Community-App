@@ -2,12 +2,15 @@
   <v-dialog persistent v-model="dialog" width="900">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-icon v-if="button_type == 'icon'" color="black" title="Create Visitor"
+        <v-icon
+          v-if="button_type == 'icon'"
+          color="black"
+          title="Create Visitor"
           >mdi-plus-circle-outline</v-icon
         >
         <v-btn v-else dense small class="primary" text title="Create Visitor">
           Create Visitor
-          <v-icon  right dark>mdi-plus-circle-outline</v-icon>
+          <v-icon right dark>mdi-plus-circle-outline</v-icon>
         </v-btn>
       </span>
     </template>
@@ -268,7 +271,7 @@
                 />
               </v-col>
 
-              <v-col cols="12"> <b>Enter Tanent Details</b></v-col>
+              <v-col cols="12"> <b>Enter Tanent/Host Details</b></v-col>
               <v-col cols="6">
                 <v-text-field
                   @input="getDetailsByRoomNumber(payload.tanent_room_number)"
@@ -610,16 +613,16 @@ export default {
   },
 };
 </script>
- <style>
-    /* Hide the up and down arrows */
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+<style>
+/* Hide the up and down arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-    /* Firefox */
-    input[type=number] {
-      -moz-appearance: textfield;
-    }
-  </style>
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>

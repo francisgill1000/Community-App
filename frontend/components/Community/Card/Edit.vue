@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="DialogBox" width="500">
+  <v-dialog persistent v-model="DialogBox" width="800">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
         <v-icon color="black" small>mdi-pencil</v-icon>
@@ -33,6 +33,7 @@
           </v-col>
           <v-col cols="4">
             <v-text-field
+              append-icon="mdi-credit-card-scan-outline"
               label="Card Number"
               v-model="payload.number"
               dense
@@ -57,7 +58,7 @@
               "
             ></v-text-field>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="4">
             <v-menu
               v-model="issue_date"
               :close-on-content-click="false"
@@ -90,7 +91,7 @@
               ></v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="6">
+          <v-col cols="4">
             <v-menu
               v-model="expire_date"
               :close-on-content-click="false"
@@ -124,6 +125,7 @@
             </v-menu>
           </v-col>
         </v-row>
+        <br /><br />
       </v-container>
       <v-divider></v-divider>
       <v-card-actions>
@@ -144,12 +146,12 @@
 
 <script>
 export default {
-  props: ["label","item"],
+  props: ["label", "item"],
   data: () => ({
     payload: {},
     endpoint: "card",
     DialogBox: false,
-    loading:false,
+    loading: false,
     errors: [],
   }),
   created() {

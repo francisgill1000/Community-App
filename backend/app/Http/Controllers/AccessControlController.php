@@ -26,12 +26,29 @@ class AccessControlController extends Controller
     {
         $userType = request("user_type") ?? "visitor";
 
-        if ($userType === "visitor") {
-            return  Visitor::with(["attendance_logs","purpose"])->where("system_user_id", request("UserID"))->first(); // Or use your specific query logic
+
+
+        if (strtolower($userType) === "visitor") {
+            return  Visitor::with(["attendance_logs", "purpose"])
+                ->where("system_user_id", request("UserID"))
+                ->where("visitor_type", "visitor")
+                ->first();
+        } else    if (strtolower($userType) === "delivery") {
+            return  Visitor::with(["attendance_logs", "purpose"])
+                ->where("system_user_id", request("UserID"))
+                ->where("visitor_type", "delivery")
+                ->first();
+        } else    if (strtolower($userType) === "contractor") {
+            return  Visitor::with(["attendance_logs", "purpose"])
+                ->where("system_user_id", request("UserID"))
+                ->where("visitor_type", "contractor")
+                ->first();
         } else {
             return false;
         }
     }
+
+
 
     public function processFilter()
     {

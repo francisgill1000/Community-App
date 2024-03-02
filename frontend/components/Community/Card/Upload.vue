@@ -888,7 +888,7 @@ export default {
         let person = {
           name: item.name,
           userCode: parseInt(item.system_number),
-          cardData: parseInt(item.system_number),
+          cardData: parseInt(item.number),
         };
 
         personListArray.push(person);
