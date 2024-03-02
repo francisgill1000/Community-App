@@ -2,7 +2,7 @@
   <div class="bordertop">
     <v-row>
       <v-col md="10" sm="10" xs="10">
-        <h4>Statistics</h4>
+        <h4>Today Statistics</h4>
       </v-col>
 
       <v-col md="2" sm="2" xs="2" class="text-end">
@@ -22,9 +22,9 @@
         </v-menu> -->
       </v-col>
     </v-row>
-    <v-row align-self="center">
-      <v-col lg="2" md="2" sm="2" xs="2" align-self="center">
-        <v-avatar color="#14B012">
+    <v-row align-self="center" class="mt-2">
+      <v-col lg="2" md="2" sm="2" xs="2" align-self="center" class="pt-0">
+        <v-avatar color="#14B012" size="40">
           <v-icon color="#FFF">mdi mdi-home-silo-outline</v-icon>
         </v-avatar>
       </v-col>
@@ -34,17 +34,38 @@
         md="4"
         sm="4"
         xs="4"
-        class="text-red bold text-h3 red--text text-center laptop-padding"
+        class="text-red bold text-h3 red--text text-center laptop-padding pt-0"
         align-self="center"
+        style="font-size: 40px"
         >{{ data && data.TenantCount }}</v-col
       >
-      <v-col lg="6" md="6" sm="6" xs="6" class=" " align-self="center"
+      <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
         >Tenants</v-col
       >
     </v-row>
-    <v-row>
-      <v-col lg="2" md="2" sm="2" xs="2" class="pt-md-5">
-        <v-avatar color="#FFB600">
+    <v-row class="mt-2">
+      <v-col lg="2" md="2" sm="2" xs="2" class="pt-0">
+        <v-avatar color="#2196F3" size="40">
+          <v-icon color="#FFF">mdi mdi-account-tie</v-icon>
+        </v-avatar>
+      </v-col>
+      <v-col
+        lg="4"
+        md="4"
+        sm="4"
+        xs="4"
+        class="text-red bold text-h3 orange--text text-center laptop-padding pt-0"
+        align-self="center"
+        style="font-size: 40px"
+        >{{ data && data.EmployeeCount }}</v-col
+      >
+      <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
+        >Employees</v-col
+      >
+    </v-row>
+    <v-row class="mt-2">
+      <v-col lg="2" md="2" sm="2" xs="2" class="pt-0">
+        <v-avatar color="#FFB600" size="40">
           <v-icon color="#FFF">mdi mdi-account-details</v-icon>
         </v-avatar>
       </v-col>
@@ -54,18 +75,20 @@
         md="4"
         sm="4"
         xs="4"
-        class="text-red bold text-h3 blue--text text-center laptop-padding"
+        class="text-red bold text-h3 blue--text text-center laptop-padding pt-0"
         align-self="center"
+        style="font-size: 40px"
         >{{ data && data.VisitorCount }}</v-col
       >
-      <v-col lg="6" md="6" sm="6" xs="6" class=" " align-self="center"
+      <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
         >Visitors</v-col
       >
     </v-row>
-    <v-row>
-      <v-col lg="2" md="2" sm="2" xs="2" class="pt-md-5">
-        <v-avatar color="#2196F3">
-          <v-icon color="#FFF">mdi mdi-account-tie</v-icon>
+
+    <v-row class="mt-2">
+      <v-col lg="2" md="2" sm="2" xs="2" class="pt-0">
+        <v-avatar color="#C8B053" size="40">
+          <v-icon color="#FFF">mdi mdi-moped</v-icon>
         </v-avatar>
       </v-col>
       <v-col
@@ -73,17 +96,38 @@
         md="4"
         sm="4"
         xs="4"
-        class="text-red bold text-h3 orange--text text-center laptop-padding"
+        class="text-red bold text-h3 orange--text text-center laptop-padding pt-0"
         align-self="center"
-        >{{ data && data.EmployeeCount }}</v-col
+        style="font-size: 40px"
+        >{{ data && data.DeliverysCount }}</v-col
       >
-      <v-col lg="6" md="6" sm="6" xs="6" class=" " align-self="center"
-        >Employees</v-col
+      <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
+        >Delivery Boys</v-col
       >
     </v-row>
-    <v-row>
-      <v-col lg="2" md="2" sm="2" xs="2" class="pt-md-5">
-        <v-avatar color="#FF0000">
+    <v-row class="mt-2">
+      <v-col lg="2" md="2" sm="2" xs="2" class="pt-0">
+        <v-avatar color="#F1C40F" size="40">
+          <v-icon color="#FFF">mdi mdi-handshake-outline</v-icon>
+        </v-avatar>
+      </v-col>
+      <v-col
+        lg="4"
+        md="4"
+        sm="4"
+        xs="4"
+        class="text-red bold text-h3 orange--text text-center laptop-padding pt-0"
+        align-self="center"
+        style="font-size: 40px"
+        >{{ data && data.ContractorsCount }}</v-col
+      >
+      <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
+        >Contractors</v-col
+      >
+    </v-row>
+    <v-row class="mt-2">
+      <v-col lg="2" md="2" sm="2" xs="2" class="pt-0">
+        <v-avatar color="#FF0000" size="40">
           <v-icon color="#FFF">mdi mdi-account-remove</v-icon>
         </v-avatar>
       </v-col>
@@ -92,11 +136,12 @@
         md="4"
         sm="4"
         xs="4"
-        class="text-red bold text-h3 orange--text text-center laptop-padding"
+        class="text-red bold text-h3 orange--text text-center laptop-padding pt-0"
+        style="font-size: 40px"
         align-self="center"
         >{{ data && data.DeniedCount }}</v-col
       >
-      <v-col lg="6" md="6" sm="6" xs="6" class=" " align-self="center"
+      <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
         >Access Denied</v-col
       >
     </v-row>
@@ -106,7 +151,7 @@
         <v-btn
           @click="goToReports()"
           size="small"
-          class="btn btn-block fa-lg mt-1 mb-3"
+          class="btn btn-block fa-lg mt-2 mb-3"
           style="background-color: #6946dd; color: #fff"
         >
           View All reports
@@ -130,6 +175,8 @@ export default {
       VisitorCount: 0,
       TenantCount: 0,
       DeniedCount: 0,
+      DeliverysCount: 0,
+      ContractorsCount: 0,
     },
   }),
   watch: {

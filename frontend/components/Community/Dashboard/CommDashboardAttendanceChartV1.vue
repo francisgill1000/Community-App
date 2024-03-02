@@ -52,12 +52,21 @@ export default {
           name: "Tenants",
           data: [],
         },
+
+        {
+          name: "Employees",
+          data: [],
+        },
         {
           name: "Visitors",
           data: [],
         },
         {
-          name: "Employees",
+          name: "Delivery",
+          data: [],
+        },
+        {
+          name: "Contractors",
           data: [],
         },
         {
@@ -71,12 +80,21 @@ export default {
             name: "Tenants",
             data: [],
           },
+
+          {
+            name: "Employees",
+            data: [],
+          },
           {
             name: "Visitors",
             data: [],
           },
           {
-            name: "Employees",
+            name: "Delivery",
+            data: [],
+          },
+          {
+            name: "Contractors",
             data: [],
           },
           {
@@ -84,7 +102,15 @@ export default {
             data: [],
           },
         ],
-        colors: ["#14B012", "#FFB600", "#2196f3", "#FF0000"],
+        colors: [
+          "#14B012",
+
+          "#2196f3",
+          "#FFB600",
+          "#C8B053",
+          "#F1C40F",
+          "#FF0000",
+        ],
         chart: {
           toolbar: {
             show: false,
@@ -132,12 +158,21 @@ export default {
             name: "Tenants",
             data: [],
           },
+
+          {
+            name: "Employees",
+            data: [],
+          },
           {
             name: "Visitors",
             data: [],
           },
           {
-            name: "Employees",
+            name: "Delivery",
+            data: [],
+          },
+          {
+            name: "Contractors",
             data: [],
           },
           {
@@ -145,7 +180,15 @@ export default {
             data: [],
           },
         ],
-        colors: ["#14B012", "#FFB600", "#2196F3", "#FF0000"],
+        colors: [
+          "#14B012",
+
+          "#2196f3",
+          "#FFB600",
+          "#C8B053",
+          "#F1C40F",
+          "#FF0000",
+        ],
         chart: {
           type: "bar",
           width: "98%",
@@ -284,13 +327,19 @@ export default {
         );
 
         this.chartOptions1.series[1]["data"][counter] = parseInt(
-          item.VisitorCount
-        );
-        this.chartOptions1.series[2]["data"][counter] = parseInt(
           item.EmployeeCount
         );
+        this.chartOptions1.series[2]["data"][counter] = parseInt(
+          item.VisitorCount
+        );
         this.chartOptions1.series[3]["data"][counter] = parseInt(
-          item.DeniedCount
+          item.DeliveryCount
+        );
+        this.chartOptions1.series[4]["data"][counter] = parseInt(
+          item.VisitorCount
+        );
+        this.chartOptions1.series[5]["data"][counter] = parseInt(
+          item.ContractorsCount
         );
 
         this.chartOptions1.xaxis.categories[counter] = item.hour;
@@ -316,12 +365,21 @@ export default {
             name: "Tenants",
             data: [],
           },
+
+          {
+            name: "Employees",
+            data: [],
+          },
           {
             name: "Visitors",
             data: [],
           },
           {
-            name: "Employees",
+            name: "Delivery",
+            data: [],
+          },
+          {
+            name: "Contractors",
             data: [],
           },
           {
@@ -339,12 +397,18 @@ export default {
           );
 
           this.chartOptions2.series[1]["data"][counter] = parseInt(
-            item.VisitorCount
-          );
-          this.chartOptions2.series[2]["data"][counter] = parseInt(
             item.EmployeeCount
           );
+          this.chartOptions2.series[2]["data"][counter] = parseInt(
+            item.VisitorCount
+          );
           this.chartOptions2.series[3]["data"][counter] = parseInt(
+            item.DeliveryCount
+          );
+          this.chartOptions2.series[4]["data"][counter] = parseInt(
+            item.ContractorsCount
+          );
+          this.chartOptions2.series[5]["data"][counter] = parseInt(
             item.DeniedCount
           );
           this.chartOptions2.xaxis.categories[counter] =
