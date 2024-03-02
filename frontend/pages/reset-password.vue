@@ -322,7 +322,7 @@ export default {
   /* background-image: url(../static/login2.jpg) no-repeat center center fixed;
   ; */
 
-  background-image: url("../static/login2.jpg");
+  /* background-image: url("../static/login2.jpg"); */
   background-size: cover;
 
   min-height: 600px;

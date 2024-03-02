@@ -17,7 +17,7 @@
         v-on="on"
         v-model="datesLabel"
         readonly
-        placeholder="Select Date Range"
+        :placeholder="header.text"
       ></v-text-field>
     </template>
 

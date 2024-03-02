@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="dialog" width="900">
+  <v-dialog persistent v-model="dialog" width="500">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
         <v-icon color="secondary" small> mdi-card-outline </v-icon>
@@ -7,10 +7,12 @@
       </span>
     </template>
     <v-card>
-      <v-card-title>Add Card</v-card-title>
       <v-container>
         <v-row>
-          <v-col cols="6">
+          <v-col cols="12">
+            <div class="mb-2">
+              <b>Add Card</b>
+            </div>
             <v-text-field
               label="RFID"
               :readonly="disabled"
@@ -20,18 +22,6 @@
               outlined
               :hide-details="!errors.rfid"
               :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="6">
-            <v-text-field
-              label="Device User Id"
-              :readonly="disabled"
-              v-model="payload.system_user_id"
-              dense
-              class="text-center"
-              outlined
-              :hide-details="!errors.system_user_id"
-              :error-messages="errors && errors.system_user_id ? errors.system_user_id[0] : ''"
             ></v-text-field>
           </v-col>
         </v-row>

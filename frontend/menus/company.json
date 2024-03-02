@@ -487,15 +487,7 @@
   {
     "icon": "mdi-account",
     "title": "Visitors",
-    "to": "/visitor/visitors_report",
-    "menu": "visitors_access",
-    "module": "reports"
-  },
-
-  {
-    "icon": "mdi-chart-box-outline",
-    "title": "Visitor Logs",
-    "to": "/visitor/visitor_logs",
+    "to": "/community/visitor/reports",
     "menu": "visitors_access",
     "module": "reports"
   },
@@ -504,13 +496,6 @@
     "title": "Web Logs",
     "open_menu": false,
     "to": "/web_login_logs",
-    "module": "reports"
-  },
-  {
-    "icon": "mdi-file-remove-outline",
-    "title": "Document Expiry",
-    "to": "/document_expiry",
-    "menu": "reports",
     "module": "reports"
   }
 ]

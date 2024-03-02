@@ -69,11 +69,18 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
+          <template v-slot:item.cards="{ item }">
+            <!-- <v-icon color="primary" class="mx-1" @click="viewMember(item)">
+              mdi-card-outline
+            </v-icon> -->
+            {{ item.members.filter((e) => e.member_type == "card").length }}
+          </template>
+
           <template v-slot:item.members="{ item }">
-            <v-icon color="primary" class="mx-1" @click="viewMember(item)">
+            <!-- <v-icon color="primary" class="mx-1" @click="viewMember(item)">
               mdi-eye
-            </v-icon>
-            {{ item.members_count }}
+            </v-icon> -->
+            {{ item.members.filter((e) => e.member_type !== "card").length }}
           </template>
 
           <template
@@ -298,6 +305,15 @@ export default {
         sortable: false,
         key: "members",
         value: "members",
+        filterable: false,
+        filterSpecial: false,
+      },
+      {
+        text: "Cards",
+        align: "left",
+        sortable: false,
+        key: "cards",
+        value: "cards",
         filterable: false,
         filterSpecial: false,
       },

@@ -307,10 +307,11 @@ class AttendanceLog extends Model
             ->where("LogTime", "<=", date("Y-m-d", strtotime($params["date"] . " +1 day"))) // Check for logs on or before the next date
             ->whereNotIn('UserID', function ($query) {
                 $query->select('system_user_id')
-                    ->where('visit_from', "<=", date('Y-m-d'))
-                    ->where('visit_to', ">=", date('Y-m-d'))
-
                     ->from('visitors');
+            })
+            ->whereNotIn('UserID', function ($query) {
+                $query->select('system_user_id')
+                    ->from('tanents');
             })
             ->whereHas("schedule", fn ($q) => $q->where("isAutoShift", false))
             ->distinct("UserID", "company_id")
