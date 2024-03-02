@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceLog;
+use App\Models\Community\Tanent;
 use App\Models\Visitor;
 use Illuminate\Support\Facades\DB;
 
@@ -40,6 +41,11 @@ class AccessControlController extends Controller
                 ->first();
         } else    if (strtolower($userType) === "contractor") {
             return  Visitor::with(["attendance_logs", "purpose"])
+                ->where("system_user_id", request("UserID"))
+                ->where("visitor_type", "contractor")
+                ->first();
+        } else    if (strtolower($userType) === "tanent") {
+            return  Tanent::with(["attendance_logs", "purpose"])
                 ->where("system_user_id", request("UserID"))
                 ->where("visitor_type", "contractor")
                 ->first();

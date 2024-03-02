@@ -200,7 +200,7 @@ export default {
   }),
 
   async created() {
-    this.company_id = this.item.employee.company_id;
+    this.company_id = this.$auth.user.company_id; //,this.item.employee.company_id;
 
     await this.getEmployeeStats();
     await this.getTodayAttendance();
@@ -241,6 +241,7 @@ export default {
           },
         })
         .then(({ data }) => {
+          this.loading = false;
           if (!data.data.length) {
             this.getRemainingTime("00:00", "00:00");
             this.todayAttendance = { total_hrs: "00:00", ot: "00:00" };
@@ -263,7 +264,6 @@ export default {
             this.timeHandler(total_hrs),
             this.timeHandler(shift.working_hours)
           );
-          this.loading = false;
         });
     },
     timeHandler(value) {
