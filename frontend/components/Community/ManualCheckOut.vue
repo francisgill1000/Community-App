@@ -99,11 +99,11 @@ export default {
       this.loading = true;
       this.response = null;
       this.$axios
-        .get("get_logs_by_user_id", {
+        .get("get_logs_by_visitor_id", {
           params: {
             per_page: 100,
             company_id: this.$auth.user.company_id,
-            UserID: this.UserID,
+            id: this.UserID,
             user_type: this.visitor_type,
           },
         })

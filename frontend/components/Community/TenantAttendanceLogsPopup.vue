@@ -167,7 +167,7 @@ export default {
       this.loading = true;
       this.response = null;
       this.$axios
-        .get("get_logs_by_user_id", {
+        .get("get_logs_by_tanent_id", {
           params: {
             per_page: 100,
             company_id: this.$auth.user.company_id,

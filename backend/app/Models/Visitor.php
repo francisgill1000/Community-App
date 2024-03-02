@@ -121,7 +121,7 @@ class Visitor extends Model
 
     public function attendance_logs()
     {
-        return $this->hasMany(AttendanceLog::class,"UserID","system_user_id")->orderBy("LogTime","asc")->with("device")->take(10);
+        return $this->hasMany(AttendanceLog::class)->orderBy("LogTime", "desc")->with("device")->take(10);
     }
     public function purpose()
     {

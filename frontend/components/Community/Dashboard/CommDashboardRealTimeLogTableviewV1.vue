@@ -25,7 +25,6 @@
             "
             :key="key + 2"
             :UserID="UserID"
-            :visitor_type="visitor_type"
           />
           <TenantAttendanceLogsPopup
             v-else
@@ -420,7 +419,13 @@ export default {
       this.key++;
       this.selectedItem = item;
       this.dialog = true;
-      this.UserID = item.UserID;
+
+      if (item.visitor) {
+        this.UserID = item.visitor.id;
+      }
+      if (item.tanent) {
+        this.UserID = item.tanent.id;
+      }
 
       this.visitor_type = this.getUserType(item);
     },

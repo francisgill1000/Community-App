@@ -181,7 +181,7 @@
 
 <script>
 export default {
-  props: ["visitor_type", "UserID"],
+  props: ["UserID"],
   data: () => ({
     loading: false,
     dialog: false,
@@ -207,10 +207,11 @@ export default {
       this.dialog = false;
     },
     search() {
+      console.log(this.UserID);
       this.loading = true;
       this.response = null;
       this.$axios
-        .get("get_logs_by_user_id", {
+        .get("get_logs_by_visitor_id", {
           params: {
             per_page: 100,
             company_id: this.$auth.user.company_id,

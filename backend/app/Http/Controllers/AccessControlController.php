@@ -23,32 +23,18 @@ class AccessControlController extends Controller
         return $this->processFilter()->paginate(request("per_page") ?? 10);
     }
 
-    public function get_logs_by_user_id()
+    public function get_logs_by_visitor_id()
     {
-        $userType = request("user_type") ?? "visitor";
+        return  Visitor::with(["attendance_logs", "purpose"])
+            ->where("id", request("UserID"))
+            ->first();
+    }
 
-        if (strtolower($userType) === "visitor") {
-            return  Visitor::with(["attendance_logs", "purpose"])
-                ->where("id", request("id"))
-                ->where("visitor_type", "visitor")
-                ->first();
-        } else    if (strtolower($userType) === "delivery") {
-            return  Visitor::with(["attendance_logs", "purpose"])
-                ->where("id", request("id"))
-                ->where("visitor_type", "delivery")
-                ->first();
-        } else    if (strtolower($userType) === "contractor") {
-            return  Visitor::with(["attendance_logs", "purpose"])
-                ->where("id", request("id"))
-                ->where("visitor_type", "contractor")
-                ->first();
-        } else    if (strtolower($userType) === "tanent") {
-            return  Tanent::with(["attendance_logs"])
-                ->where("id", request("id"))
-                ->first();
-        } else {
-            return false;
-        }
+    public function get_logs_by_tanent_id()
+    {
+        return  Tanent::with(["attendance_logs"])
+            ->where("id", request("UserID"))
+            ->first();
     }
 
 
