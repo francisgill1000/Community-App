@@ -27,27 +27,24 @@ class AccessControlController extends Controller
     {
         $userType = request("user_type") ?? "visitor";
 
-
-
         if (strtolower($userType) === "visitor") {
             return  Visitor::with(["attendance_logs", "purpose"])
-                ->where("system_user_id", request("UserID"))
+                ->where("id", request("id"))
                 ->where("visitor_type", "visitor")
                 ->first();
         } else    if (strtolower($userType) === "delivery") {
             return  Visitor::with(["attendance_logs", "purpose"])
-                ->where("system_user_id", request("UserID"))
+                ->where("id", request("id"))
                 ->where("visitor_type", "delivery")
                 ->first();
         } else    if (strtolower($userType) === "contractor") {
             return  Visitor::with(["attendance_logs", "purpose"])
-                ->where("system_user_id", request("UserID"))
+                ->where("id", request("id"))
                 ->where("visitor_type", "contractor")
                 ->first();
         } else    if (strtolower($userType) === "tanent") {
-            return  Tanent::with(["attendance_logs", "purpose"])
-                ->where("system_user_id", request("UserID"))
-                ->where("visitor_type", "contractor")
+            return  Tanent::with(["attendance_logs"])
+                ->where("id", request("id"))
                 ->first();
         } else {
             return false;

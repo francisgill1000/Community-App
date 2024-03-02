@@ -563,7 +563,7 @@ class AttendanceLogController extends Controller
                 'LogTime' => $logTime,
                 'DeviceID' => Arr::random($deviceIds),
                 'company_id' => $company_id,
-                'visitor_id' => Visitor::where("system_user_id",$user_id)->orderBy("id","desc")->value("id"),
+                'visitor_id' => Visitor::where("system_user_id", $user_id)->orderBy("id", "desc")->value("id"),
             ];
         }
         AttendanceLog::insert($data);
