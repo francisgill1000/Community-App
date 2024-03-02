@@ -45,9 +45,9 @@ class AccessControlController extends Controller
                 ->where("visitor_type", "contractor")
                 ->first();
         } else    if (strtolower($userType) === "tanent") {
-            return  Tanent::with(["attendance_logs", "purpose"])
+            return  Tanent::with(["attendance_logs"])
                 ->where("system_user_id", request("UserID"))
-                ->where("visitor_type", "contractor")
+
                 ->first();
         } else {
             return false;

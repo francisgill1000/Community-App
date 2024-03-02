@@ -14,10 +14,20 @@
           <EmployeeShortView
             v-if="selectedItem.employee != null"
             :item="selectedItem"
-            :key="key"
+            :key="key + 1"
           />
 
-          <AttendanceLogsPopup
+          <VisitorAttendanceLogsPopup
+            v-else-if="
+              visitor_type == 'Visitor' ||
+              visitor_type == 'Contractor' ||
+              visitor_type == 'Delivery'
+            "
+            :key="key + 2"
+            :UserID="UserID"
+            :visitor_type="visitor_type"
+          />
+          <TenantAttendanceLogsPopup
             v-else
             :key="key"
             :UserID="UserID"
@@ -202,10 +212,13 @@
   <NoAccess v-else />
 </template>
 <script>
-import AttendanceLogsPopup from "../../../components/Community/AttendanceLogsPopup.vue";
+import VisitorAttendanceLogsPopup from "../../../components/Community/VisitorAttendanceLogsPopup.vue";
+import TenantAttendanceLogsPopup from "../../../components/Community/TenantAttendanceLogsPopup.vue";
+
 export default {
   components: {
-    AttendanceLogsPopup,
+    VisitorAttendanceLogsPopup,
+    TenantAttendanceLogsPopup,
   },
   props: ["user_type", "dropdown"],
 
