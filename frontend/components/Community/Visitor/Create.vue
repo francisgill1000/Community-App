@@ -79,6 +79,7 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
+                  append-icon="mdi-credit-card-scan-outline"
                   v-model="payload.system_user_id"
                   dense
                   outlined

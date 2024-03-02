@@ -347,6 +347,26 @@ class DashboardController extends Controller
 
             $VisitorsCount = $AttendanceLogModel->clone()
                 ->where("status", "Allowed")
+                ->where("visitor_type", "visitor")
+                ->whereIn('UserID', function ($query) use ($request) {
+                    $query->select('system_user_id')
+                        ->where('company_id', $request->company_id)
+                        ->from('visitors');
+                })
+                ->get()->count();
+
+            $ContractorsCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
+                ->where("visitor_type", "contractor")
+                ->whereIn('UserID', function ($query) use ($request) {
+                    $query->select('system_user_id')
+                        ->where('company_id', $request->company_id)
+                        ->from('visitors');
+                })
+                ->get()->count();
+            $DeliverysCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
+                ->where("visitor_type", "delivery")
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
@@ -374,7 +394,9 @@ class DashboardController extends Controller
                 "EmployeeCount" => $EmployeesCount,
                 "VisitorCount" => $VisitorsCount,
                 "TenantCount" =>  $TenantsCount,
-                "DeniedCount" =>  $DeniedCount
+                "DeniedCount" =>  $DeniedCount,
+                "DeliverysCount" =>  $DeliverysCount,
+                "ContractorsCount" =>  $ContractorsCount
             ];
         }
 

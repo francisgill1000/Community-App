@@ -2,6 +2,7 @@
 
 namespace App\Models\Community;
 
+use App\Models\AttendanceLog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,7 +46,10 @@ class Tanent extends Model
     {
         return $this->belongsTo(Tanent::class, "parent_id");
     }
-
+    public function attendance_logs()
+    {
+        return $this->hasMany(AttendanceLog::class, "UserID", "system_user_id")->orderBy("LogTime", "asc")->with("device")->take(10);
+    }
     public function tanent_for_maid()
     {
         return $this->hasOne(MaidRelationTenant::class, "maid_id")->orderBy("id", "desc")->with("tanent");

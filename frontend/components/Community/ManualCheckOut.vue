@@ -46,7 +46,7 @@
           </v-col>
 
           <v-col cols="12">
-            <AttendanceLogsPopup
+            <VisitorAttendanceLogsPopup
               :UserID="UserID"
               :visitor_type="visitor_type"
             />
@@ -67,11 +67,11 @@
 </template>
 
 <script>
-import AttendanceLogsPopup from "./AttendanceLogsPopup.vue";
+import VisitorAttendanceLogsPopup from "./VisitorAttendanceLogsPopup.vue";
 
 export default {
   props: ["visitor_type"],
-  components: { AttendanceLogsPopup },
+  components: { VisitorAttendanceLogsPopup },
   data: () => ({
     loading: false,
     dialog: false,
