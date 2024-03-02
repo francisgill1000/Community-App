@@ -1,3 +1,3 @@
 <template>
-  <CommunityReport :user_type="`delivery`" />
+  <CommunityReport label="Delivery Men Report" :user_type="`delivery`" />
 </template>

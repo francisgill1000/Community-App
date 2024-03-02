@@ -457,6 +457,48 @@
     "module": "tanents"
   },
   {
+    "icon": "mdi-chart-box-outline",
+    "title": "Tanents",
+    "to": "/community/tanent/reports",
+    "menu": "tanents_access",
+    "module": "reports"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Visitors",
+    "to": "/community/visitor/reports",
+    "menu": "visitors_access",
+    "module": "reports"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Delivery Men",
+    "to": "/community/delivery_man/reports",
+    "menu": "visitors_access",
+    "module": "reports"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Contractors",
+    "to": "/community/contractor/reports",
+    "menu": "visitors_access",
+    "module": "reports"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Maid",
+    "to": "/community/house_maids/reports",
+    "menu": "visitors_access",
+    "module": "reports"
+  },
+  {
+    "icon": "mdi-account",
+    "title": "Employees",
+    "to": "/employees/reports",
+    "menu": "employee_access",
+    "module": "reports"
+  },
+  {
     "icon": "mdi-car",
     "title": "Parking",
     "to": "/community/report/parking",
@@ -484,13 +526,7 @@
     "menu": "logs_access",
     "module": "reports"
   },
-  {
-    "icon": "mdi-account",
-    "title": "Visitors",
-    "to": "/community/visitor/reports",
-    "menu": "visitors_access",
-    "module": "reports"
-  },
+
   {
     "icon": "mdi-web-box",
     "title": "Web Logs",

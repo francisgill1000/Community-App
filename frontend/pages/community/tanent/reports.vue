@@ -1,3 +1,7 @@
 <template>
-  <CommunityReport :user_type="`tanent`" :dropdown="true" />
+  <CommunityReport
+    label="Tanent Reports"
+    :user_type="`tanent`"
+    :dropdown="true"
+  />
 </template>

@@ -351,14 +351,6 @@ export default {
         width: "300px",
       },
       {
-        text: "UserID",
-        align: "left",
-        sortable: true,
-        key: "UserID",
-        value: "UserID",
-        width: "300px",
-      },
-      {
         text: "Phone",
         align: "left",
         sortable: true,

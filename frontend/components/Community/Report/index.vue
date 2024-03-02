@@ -2,7 +2,7 @@
   <div v-if="can(`attendance_report_view`)">
     <v-card elevation="0" class="mt-2">
       <v-toolbar dense flat>
-        <span class="headline black--text"> Access Control Reports </span>
+        <span class="headline black--text"> {{ label }}  </span>
       </v-toolbar>
 
       <v-card-text class="py-3">
@@ -514,7 +514,7 @@
 </template>
 <script>
 export default {
-  props: ["user_type", "dropdown"],
+  props: ["user_type", "dropdown", "label"],
 
   data: () => ({
     tableHeight: 750,
