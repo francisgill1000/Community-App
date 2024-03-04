@@ -38,7 +38,7 @@ export default {
           offsetY: 0,
         },
         title: {
-          text: "Visitors",
+          text: "Delivery Boys",
           align: "left",
           margin: 0,
         },

@@ -519,6 +519,7 @@ export default {
   }),
 
   async created() {
+    this.company_id = this.$auth.user.company_id;
     this.loading = false;
     await this.getPurposes();
   },

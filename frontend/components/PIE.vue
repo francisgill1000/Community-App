@@ -75,11 +75,13 @@ export default {
     };
   },
   mounted() {
-    this.options.labels = this.items.map((e) => e.title);
-    this.options.series = this.items.map((e) => e.value);
-    try {
-      new ApexCharts(document.querySelector("#pie"), this.options).render();
-    } catch (error) {}
+    setTimeout(() => {
+      this.options.labels = this.items.map((e) => e.title);
+      this.options.series = this.items.map((e) => e.value);
+      try {
+        new ApexCharts(document.querySelector("#pie"), this.options).render();
+      } catch (error) {}
+    }, 5000);
   },
   methods: {},
 };

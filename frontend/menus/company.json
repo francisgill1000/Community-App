@@ -354,7 +354,7 @@
   {
     "icon": "mdi-home",
     "title": "Dashboard",
-    "to": "/community/contractor/dashboard",
+    "to": "/community/contractors/dashboard",
     "menu": "contractor_access",
     "module": "contractor"
   },
@@ -393,13 +393,7 @@
     "menu": "contractor_access",
     "module": "contractor"
   },
-  {
-    "icon": "mdi-home",
-    "title": "Dashboard",
-    "to": "/community/house_maids/dashboard",
-    "menu": "contractor_access",
-    "module": "house_maids"
-  },
+
   {
     "icon": "mdi-account",
     "title": "House Maids",
@@ -431,7 +425,7 @@
   {
     "icon": "mdi-home",
     "title": "Dashboard",
-    "to": "/community/tanent/dashboard",
+    "to": "community/dashboard",
     "menu": "tanent",
     "module": "tanents"
   },
