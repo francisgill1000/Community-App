@@ -54,74 +54,137 @@
                 class="d-xs-flex pa-2 pt-5"
                 style="border-left: 1px solid #ddd"
               >
-                <v-row class="pa-10">
+                <v-row class="pa-10 pb-5">
                   <v-col cols="6" class="card1 rounded-5">
                     <v-row>
-                      <v-col cols="4" class="text-end">
-                        <v-avatar size="60" color="#033F9B">
-                          <v-icon size="40" class="pa-2" style="color: #fff"
-                            >mdi-account-supervisor</v-icon
+                      <v-col cols="12" class="text-end">
+                        <v-avatar size="40" color="#02B64B">
+                          <v-icon size="30" class="pa-2" style="color: #fff"
+                            >mdi-account-arrow-left</v-icon
                           >
                         </v-avatar>
+                        Checked In
                       </v-col>
-                      <v-col cols="8" class="text-center pa-0">
-                        <div class="bold" style="font-size: 60px">
-                          {{ items.ExpectingCount }}
+                      <v-col class="text-center pa-0" cols="12">
+                        <div
+                          class="bold"
+                          style="font-size: 60px; color: #02b64b"
+                        >
+                          {{ items.CheckedInCount }}
                         </div>
                       </v-col>
                     </v-row>
-                    Expecting
                   </v-col>
+                  <v-divider vertical></v-divider>
                   <v-col cols="6" class="card1 rounded-5">
                     <v-row>
+                      <v-col cols="12" class="text-end">
+                        <v-avatar size="40" color="#ffb600">
+                          <v-icon size="30" class="pa-2" style="color: #fff"
+                            >mdi-account-arrow-right</v-icon
+                          >
+                        </v-avatar>
+                        Checked Out
+                      </v-col>
+                      <v-col class="text-center pa-0" cols="12">
+                        <div
+                          class="bold"
+                          style="font-size: 60px; color: #ffb600"
+                        >
+                          {{ items.CheckedOutCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <!-- <v-col cols="6" class="card1 rounded-5">
+                    <v-row>
                       <v-col cols="4" class="text-end">
-                        <v-avatar size="60" color="#02B64B">
-                          <v-icon size="40" class="pa-2" style="color: #fff"
+                        <v-avatar size="40" color="#02B64B">
+                          <v-icon size="30" class="pa-2" style="color: #fff"
                             >mdi-account-arrow-left</v-icon
                           >
                         </v-avatar>
                       </v-col>
                       <v-col class="text-center pa-0">
-                        <div class="bold" style="font-size: 60px">
+                        <div class="bold" style="font-size: 40px">
                           {{ items.CheckedInCount }}
                         </div>
                       </v-col>
                     </v-row>
                     Checked In
                   </v-col>
-                  <v-col cols="6" class="card1 rounded-5 pt-10">
+                  <v-col cols="6" class="card1 rounded-5">
                     <v-row>
                       <v-col cols="4" class="text-end">
-                        <v-avatar size="60" color="#ffb600">
-                          <v-icon size="40" class="pa-2" style="color: #fff"
+                        <v-avatar size="40" color="#ffb600">
+                          <v-icon size="30" class="pa-2" style="color: #fff"
                             >mdi-account-arrow-right</v-icon
                           >
                         </v-avatar>
                       </v-col>
-                      <v-col class="text-center pa-0">
-                        <div class="bold" style="font-size: 60px">
+                      <v-col cols="7" class="text-center pa-0">
+                        <div class="bold" style="font-size: 40px">
                           {{ items.CheckedOutCount }}
                         </div>
                       </v-col>
                     </v-row>
                     Checked Out
-                  </v-col>
-                  <v-col cols="6" class="card1 rounded-5 pt-10">
+                  </v-col> -->
+                </v-row>
+                <v-divider></v-divider>
+                <v-row class="pt-8">
+                  <v-col cols="4" class="card1 rounded-5 text-left">
                     <v-row>
-                      <v-col cols="4" class="text-end">
-                        <v-avatar size="60" color="#ff0000">
-                          <v-icon size="40" class="pa-2" style="color: #fff"
+                      <v-col cols="5" class="text-center">
+                        <v-avatar size="30" color="#ff0000" class="text-center">
+                          <v-icon size="20" class="pa-2" style="color: #fff"
                             >mdi mdi-timer-sand-full</v-icon
                           >
                         </v-avatar>
                       </v-col>
-                      <v-col class="text-center pa-0">
-                        <div class="bold" style="font-size: 60px">
+                      <v-col class="text-center pa-0" cols="7">
+                        <div class="bold" style="font-size: 30px">
                           {{ items.overStayCount }}
                         </div>
                       </v-col>
                     </v-row>
                     Over Stay
+                  </v-col>
+                  <v-divider vertical></v-divider>
+                  <v-col cols="4" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="5" class="text-end">
+                        <v-avatar size="30" color="#033F9B">
+                          <v-icon size="20" class="pa-2" style="color: #fff"
+                            >mdi-account-supervisor</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col cols="7" class="text-center pa-0">
+                        <div class="bold" style="font-size: 30px">
+                          {{ items.ExpectingCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Expecting
+                  </v-col>
+                  <v-divider vertical></v-divider>
+                  <v-col cols="4" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="5" class="text-end">
+                        <v-avatar size="30" color="black">
+                          <v-icon size="20" class="pa-2" style="color: #fff"
+                            >mdi-account-details</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col cols="7" class="text-center pa-0">
+                        <div class="bold" style="font-size: 30px">
+                          {{ items.Total }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Total
                   </v-col>
                 </v-row>
 
@@ -206,6 +269,9 @@ export default {
   },
   created() {
     this.initialize();
+    setInterval(() => {
+      this.initialize();
+    }, 1000 * 60);
   },
   mounted() {},
   computed: {

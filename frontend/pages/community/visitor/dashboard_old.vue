@@ -33,102 +33,96 @@
         ></iframe>
       </v-dialog>
       <v-row>
-          <v-col md="12">
-            <v-card class="pa-2" style="height: 354px; overflow: hidden">
-              <v-row background fill>
-                <v-col
-                  lg="3"
-                  md="3"
-                  sm="3"
-                  xs="3"
-                  class="d-xs-flex"
-                  style="flex: auto"
-                >
-                  <VisitorPieChart :items="items"></VisitorPieChart>
-                </v-col>
-                <v-col
-                  lg="6"
-                  md="6"
-                  sm="6"
-                  xs="6"
-                  class="d-xs-flex pa-2 pt-5"
-                  style="border-left: 1px solid #ddd"
-                >
-                  <v-row class="pa-10">
-                    <v-col
-                      cols="3"
-                      class="card1 rounded-5"
-                      v-for="(i, index) in items.visitorCounts"
-                      :key="'v' + index"
-                    >
-                      <v-row @click="viewPopupInfo(i.title)">
-                        <v-col cols="4" class="text-end">
-                          <v-avatar size="30" :color="i.color">
-                            <v-icon
-                              size="20"
-                              class="pa-2"
-                              style="color: #fff"
-                              >{{ i.icon }}</v-icon
-                            >
-                          </v-avatar>
-                        </v-col>
-                        <v-col class="text-left pa-0">
-                          <div class="bold" style="font-size: 40px">
-                            {{ i.value }}
-                          </div>
-                          {{ i.title }}
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
+        <v-col md="12">
+          <v-card class="pa-2" style="height: 354px; overflow: hidden">
+            <v-row background fill>
+              <v-col
+                lg="3"
+                md="3"
+                sm="3"
+                xs="3"
+                class="d-xs-flex"
+                style="flex: auto"
+              >
+                <VisitorPieChart :items="items"></VisitorPieChart>
+              </v-col>
+              <v-col
+                lg="6"
+                md="6"
+                sm="6"
+                xs="6"
+                class="d-xs-flex pa-2 pt-5"
+                style="border-left: 1px solid #ddd"
+              >
+                <v-row class="pa-10">
+                  <v-col
+                    cols="3"
+                    class="card1 rounded-5"
+                    v-for="(i, index) in items.visitorCounts"
+                    :key="'v' + index"
+                  >
+                    <v-row @click="viewPopupInfo(i.title)">
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="30" :color="i.color">
+                          <v-icon size="20" class="pa-2" style="color: #fff">{{
+                            i.icon
+                          }}</v-icon>
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-left pa-0">
+                        <div class="bold" style="font-size: 40px">
+                          {{ i.value }}
+                        </div>
+                        {{ i.title }}
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
 
-                  <v-row class="pa-10 pt-5">
-                    <v-col
-                      cols="3"
-                      class="card1 rounded-5"
-                      v-for="(i, index) in items.statusCounts"
-                      :key="'v' + index"
-                    >
-                      <v-row @click="viewPopupInfo(i.title)">
-                        <v-col cols="4" class="text-end">
-                          <v-avatar size="30" :color="i.color">
-                            <v-icon
-                              size="20"
-                              class="pa-1"
-                              style="color: #fff"
-                              >{{ i.icon }}</v-icon
-                            >
-                          </v-avatar>
-                        </v-col>
-                        <v-col class="text-left pa-0">
-                          <div class="bold" style="font-size: 40px">
-                            {{ i.value }}
-                          </div>
-                          {{ i.title }}
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-col>
+                <v-row class="pa-10 pt-5">
+                  <v-col
+                    cols="3"
+                    class="card1 rounded-5"
+                    v-for="(i, index) in items.statusCounts"
+                    :key="'v' + index"
+                  >
+                    <v-row @click="viewPopupInfo(i.title)">
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="30" :color="i.color">
+                          <v-icon size="20" class="pa-1" style="color: #fff">{{
+                            i.icon
+                          }}</v-icon>
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-left pa-0">
+                        <div class="bold" style="font-size: 40px">
+                          {{ i.value }}
+                        </div>
+                        {{ i.title }}
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-col>
 
-                <v-col
-                  lg="3"
-                  md="3"
-                  sm="3"
-                  xs="3"
-                  class="d-xs-flex"
-                  style="border-left: 1px solid #ddd"
-                >
-                  <VisitorHourChart
-                    :name="'visitor'"
-                    :branch_id="null"
-                    :height="300"
-                  ></VisitorHourChart>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>
-        </v-row>
+              <v-col
+                lg="3"
+                md="3"
+                sm="3"
+                xs="3"
+                class="d-xs-flex"
+                style="border-left: 1px solid #ddd"
+              >
+                <VisitorHourChart
+                  :name="'visitor'"
+                  :branch_id="null"
+                  :height="300"
+                ></VisitorHourChart>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
       <CommunityVisitorDashboardDeviceLogs />
     </div>
     <Preloader v-else />
@@ -170,6 +164,9 @@ export default {
   },
   created() {
     this.initialize();
+    setInterval(() => {
+      this.initialize();
+    }, 1000 * 60);
   },
   mounted() {},
   computed: {

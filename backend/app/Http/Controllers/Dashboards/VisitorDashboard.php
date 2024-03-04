@@ -87,12 +87,13 @@ class VisitorDashboard extends Controller
             ->groupBy('visitor_id')->get()->count();
 
 
-
+        $total = $ExpectingCount;
+        $ExpectingCount = $total - $CheckedInCount;
 
         return [
             "ExpectingCount" => $ExpectingCount, "CheckedInCount" => $CheckedInCount, "CheckedOutCount" => $CheckedOutCount, "overStayCount" => $overStayCount,
 
-
+            "Total" => $total
         ];
     }
 }
