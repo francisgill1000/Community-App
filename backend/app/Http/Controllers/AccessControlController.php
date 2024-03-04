@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
 use App\Models\AttendanceLog;
 use App\Models\Community\Tanent;
 use App\Models\Visitor;
@@ -20,14 +19,12 @@ class AccessControlController extends Controller
     }
     public function index()
     {
-        return $this->processFilter()->paginate(request("per_page") ?? 10);
+        return $this->processFilter()->paginate(request("per_page") ?? 100);
     }
 
     public function search_visitor_by_user_id()
     {
-        return AttendanceLog::with(["visitor", "delivery", "contractor"])
-            ->where("UserID", request("UserID"))
-            ->first();
+        return  Visitor::orderBy("id", "desc")->with(["attendance_logs", "purpose"])->where("system_user_id", request("UserID"))->first();
     }
 
     public function get_logs_by_visitor_id()

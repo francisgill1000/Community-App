@@ -302,7 +302,7 @@
 </template>
 <script>
 export default {
-  props: ["user_type", "dropdown", "label"],
+  props: ["user_type", "dropdown", "label","showFilters"],
 
   data: () => ({
     tableHeight: 750,

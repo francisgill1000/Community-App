@@ -47,7 +47,7 @@
 
           <v-col cols="12">
             <VisitorAttendanceLogsPopup
-              :UserID="UserID"
+              :UserID="item.id"
               :visitor_type="visitor_type"
             />
 
@@ -57,7 +57,7 @@
               color="primary"
               class="mt-2"
               block
-              >Checkout</v-btn
+              >Checkout {{ item.id }}</v-btn
             >
           </v-col>
         </v-row>
@@ -101,13 +101,10 @@ export default {
       this.$axios
         .get("search_visitor_by_user_id", {
           params: {
-            per_page: 100,
-            company_id: this.$auth.user.company_id,
             UserID: this.UserID,
           },
         })
         .then(({ data }) => {
-          console.log(data);
           if (!data) {
             this.response = "No record found";
             this.loading = false;
@@ -131,7 +128,6 @@ export default {
           this.infoCard = true;
           this.data = [];
           this.loading = false;
-
           console.log("error:", response);
         });
     },

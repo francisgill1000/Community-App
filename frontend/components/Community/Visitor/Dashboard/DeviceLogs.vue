@@ -57,13 +57,13 @@
             /></span> -->
             <CommunityManualCheckOut
               button_type="icon"
-              :visitor_type="`visitor`"
+              visitor_type="visitor"
               v-if="can(`visitor_view`)"
               @success="handleSuccessResponse"
             />
             <CommunityVisitorCreate
               button_type="icon"
-              :visitor_type="`visitor`"
+              visitor_type="visitor"
               v-if="can(`visitor_create`)"
               @success="handleSuccessResponse"
             />
