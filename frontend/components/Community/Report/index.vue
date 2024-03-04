@@ -206,36 +206,30 @@
             <template v-slot:item.id="{ item, index }">
               {{ index + 1 }}
             </template>
-
+            <template v-slot:item.status="{ item, index }">
+             Allowed
+            </template>
+            <template v-slot:item.in="{ item, index }">
+              {{ item?.in_log.LogTime ?? "---" }}
+              <br />
+              {{ item?.in_log?.device?.short_name ?? "---" }}
+            </template>
+            <template v-slot:item.out="{ item, index }">
+              {{ item?.out_log.LogTime ?? "---" }}
+              <br />
+              {{ item?.out_log?.device?.short_name ?? "---" }}
+            </template>
             <template v-slot:item.flat="{ item, index }">
               {{ item?.tanent?.room?.room_number ?? "---" }}
             </template>
 
             <template v-slot:item.host="{ item }" style="padding: 0px">
-              <v-row v-if="item.visitor" no-gutters>
+              <v-row v-if="item.visitor.tanent" no-gutters>
                 <v-col md="8">
                   <div>
-                    {{ item.visitor.full_name ?? "---" }}
+                    {{ item?.visitor?.tanent?.full_name ?? "---" }}
                     <br />
-                    {{ item.visitor.phone_number ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-              <v-row v-else-if="item.delivery" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.delivery.full_name ?? "---" }}
-                    <br />
-                    {{ item.delivery.phone_number ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-              <v-row v-else-if="item.contractor" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.contractor.full_name ?? "---" }}
-                    <br />
-                    {{ item.contractor.phone_number ?? "---" }}
+                    {{ item?.visitor?.tanent?.room?.room_number ?? "---" }}
                   </div>
                 </v-col>
               </v-row>
@@ -436,39 +430,25 @@ export default {
         value: "host",
       },
       {
-        text: "Flat",
-        align: "left",
-        sortable: true,
-        key: "flat",
-        value: "flat",
-      },
-      {
         text: "In",
         align: "left",
         sortable: false,
-        key: "in_log.LogTime",
-        value: "in_log.LogTime",
+        key: "in",
+        value: "in",
       },
       {
         text: "Out",
         align: "left",
         sortable: false,
-        key: "out_log.LogTime",
-        value: "out_log.LogTime",
+        key: "in",
+        value: "in",
       },
       {
-        text: "D.In",
+        text: "Status",
         align: "left",
         sortable: false,
-        key: "in_log.device.short_name",
-        value: "in_log.device.short_name",
-      },
-      {
-        text: "D.Out",
-        align: "left",
-        sortable: false,
-        key: "out_log.device.short_name",
-        value: "out_log.device.short_name",
+        key: "status",
+        value: "status",
       },
       {
         text: "User Type",
