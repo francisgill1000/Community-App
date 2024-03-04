@@ -187,7 +187,7 @@
                     <td class="text-left border-none col-4">
                         <div class="logo pt">
                             @if (env('APP_ENV') == 'local')
-                                <img style="width: 100%" src="{{ getcwd() . '/upload/app-logo.jpeg' }}" alt="Company Logo" />
+                                <img style="width: 100%" src="{{ getcwd() . '/upload/logo22.png' }}" alt="Company Logo" />
                             @else
                                 <img style="width: 100%" src="{{ $company->logo }}" alt="Company Logo" />
                             @endif
@@ -258,10 +258,6 @@
 
 
                                         </b>
-                                        <br>
-                                        <small>
-                                            {{ $data['UserID'] ?? '---' }}
-                                        </small>
                                     </td>
                                 </tr>
                             </table>

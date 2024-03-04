@@ -152,6 +152,34 @@ export default {
           if (!data.status) {
             this.errors = data.errors;
           } else {
+            this.render_report();
+          }
+        })
+        .catch(({ message }) => {
+          this.$emit("response", "Checkout cannot be done");
+        });
+    },
+
+    async render_report() {
+      let log_payload = {
+        UserIds: [this.UserID],
+        LogTime: this.getCurrentDateTime(),
+        DeviceID: "Manual",
+        company_id: this.$auth.user.company_id,
+        log_type: "out",
+        id: this.item.id,
+      };
+
+      this.loading = true;
+
+      this.$axios
+        .post(`community_common_report`, log_payload)
+        .then(({ data }) => {
+          this.loading = false;
+
+          if (!data.status) {
+            this.errors = data.errors;
+          } else {
             this.$emit("success", "Checkout has been recorded");
             this.dialog = false;
           }

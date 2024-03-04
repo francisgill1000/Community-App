@@ -302,7 +302,7 @@
 </template>
 <script>
 export default {
-  props: ["user_type", "dropdown", "label","showFilters"],
+  props: ["user_type", "dropdown", "label", "showFilters"],
 
   data: () => ({
     tableHeight: 750,
@@ -346,8 +346,8 @@ export default {
       DeviceID: ``,
       report_type: ``,
       user_type: ``,
-      from_date: ``,
-      to_date: ``,
+      from_date: new Date().toISOString().split("T")[0], // Current date as from_date
+      to_date: new Date().toISOString().split("T")[0], // Current date as to_date
       UserID: ``,
     },
 
@@ -457,25 +457,6 @@ export default {
       this.payload.UserID =
         this.users.find((e) => e.id == id).system_user_id ?? 0;
     },
-    getUserType(item) {
-      const relationships = {
-        Tanent: item.tanent,
-        "Family Member": item.family_member,
-        Relative: item.relative,
-        Visitor: item.visitor,
-        Delivery: item.delivery,
-        Contractor: item.contractor,
-        Maid: item.maid,
-      };
-
-      for (const [type, value] of Object.entries(relationships)) {
-        if (value) {
-          return type;
-        }
-      }
-
-      return "Employee";
-    },
 
     getUserPhone(item) {
       const relationships = {
@@ -497,29 +478,6 @@ export default {
       return "---";
     },
 
-    getUserInfo(item) {
-      const relationships = {
-        Tanent: item.tanent,
-        "Family Member": item.family_member,
-        Relative: item.relative,
-        Visitor: item.visitor,
-        Delivery: item.delivery,
-        Contractor: item.contractor,
-        Maid: item.maid,
-        Employee: item.employee,
-      };
-
-      for (const [type, value] of Object.entries(relationships)) {
-        if (value) {
-          this.userObject = value;
-          return value;
-        }
-      }
-
-      this.userObject = false;
-
-      return false;
-    },
     filterAttr(data) {
       this.payload.from_date = data.from;
       this.payload.to_date = data.to;
@@ -551,52 +509,6 @@ export default {
         .then(({ data }) => {
           this.devices = data.filter((e) => !e.name.includes("Mobile"));
         });
-    },
-
-    setFromDate() {
-      if (this.payload.from_date == null) {
-        const dt = new Date();
-        const y = dt.getFullYear();
-        const m = dt.getMonth() + 1;
-        const formattedMonth = m < 10 ? "0" + m : m;
-        this.payload.from_date = `${y}-${formattedMonth}-01`;
-      }
-    },
-
-    setThirtyDays(selected_date) {
-      const date = new Date(selected_date);
-
-      date.setDate(date.getDate() + 29);
-
-      let datetime = new Date(date);
-
-      let d = datetime.getDate();
-      d = d < "10" ? "0" + d : d;
-      let m = datetime.getMonth() + 1;
-      m = m < 10 ? "0" + m : m;
-      let y = datetime.getFullYear();
-
-      this.max_date = `${y}-${m}-${d}`;
-      this.payload.to_date = `${y}-${m}-${d}`;
-    },
-
-    getFirstAndLastDay() {
-      const currentDate = new Date();
-      const day = currentDate.getDate();
-      const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
-      const year = currentDate.getFullYear();
-      const last = new Date(year, month, 0)
-        .getDate()
-        .toString()
-        .padStart(2, "0");
-
-      let firstDay = `${year}-${month}-0${1}`;
-
-      let lastDayFirst = last > 9 ? `${last}` : `0${last}`;
-
-      let lastDay = `${year}-${month}-${lastDayFirst}`;
-
-      return [firstDay, lastDay];
     },
 
     caps(str) {

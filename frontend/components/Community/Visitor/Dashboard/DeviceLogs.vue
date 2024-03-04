@@ -246,25 +246,6 @@ export default {
       this.response = message;
       this.getDataFromApi();
     },
-    getUserType(item) {
-      const relationships = {
-        Tanent: item.tanent,
-        "Family Member": item.family_member,
-        Relative: item.relative,
-        Visitor: item.visitor,
-        Delivery: item.delivery,
-        Contractor: item.contractor,
-        Maid: item.maid,
-      };
-
-      for (const [type, value] of Object.entries(relationships)) {
-        if (value) {
-          return type;
-        }
-      }
-
-      return "Employee";
-    },
 
     getUserPhone(item) {
       const relationships = {
