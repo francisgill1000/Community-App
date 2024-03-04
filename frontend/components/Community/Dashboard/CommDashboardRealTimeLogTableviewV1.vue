@@ -346,13 +346,6 @@ export default {
         value: "mode",
       },
       {
-        text: "Status",
-        align: "left",
-        sortable: false,
-        key: "status",
-        value: "status",
-      },
-      {
         text: "User Type",
         align: "left",
         sortable: false,

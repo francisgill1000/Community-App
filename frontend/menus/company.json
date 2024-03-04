@@ -8,31 +8,17 @@
     "module": "dashboard"
   },
   {
-    "icon": "mdi-account-tie",
-    "title": "Employees",
-    "to": "/employees",
-    "menu": "employee_access",
-    "submenu": "employees",
-    "module": "dashboard"
-  },
-  {
-    "icon": "mdi-clock-time-five-outline",
-    "title": "Attendance",
-    "to": "/shift",
-    "menu": "employee_schedule_access",
-    "submenu": "attendance",
-    "module": "dashboard"
-  },
-  {
-    "icon": "mdi-security",
-    "title": "Access Control",
-    "to": "/timezone",
-    "menu": "timezone",
-    "submenu": "access_control",
+    "icon": "mdi-account",
+    "image": "/tenet-3.png",
+    "title": "Tanent",
+    "to": "/community/tanent/dashboard",
+    "menu": "true",
+    "submenu": "tanents",
     "module": "dashboard"
   },
   {
     "icon": "mdi-transit-transfer",
+    "image": "/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor/dashboard",
     "menu": "true",
@@ -41,18 +27,50 @@
   },
   {
     "icon": "mdi-account",
-    "title": "Tanent",
-    "to": "/community/tanent/dashboard",
-    "menu": "true",
-    "submenu": "tanents",
+    "image": "/delivery-man-black-2.png",
+    "title": "Delivery",
+    "to": "/community/delivery_man",
+    "menu": "delivery_access",
+    "submenu": "delivery_man",
+    "module": "dashboard"
+  },
+  {
+    "icon": "mdi-account",
+    "image": "/work_man.png",
+    "title": "Contractors",
+    "to": "/community/contractor",
+    "submenu": "contractor",
+    "module": "dashboard"
+  },
+  {
+    "icon": "mdi-account",
+    "image":"/maid.png",
+    "title": "House Maids",
+    "to": "/community/house_maids",
+    "submenu": "house_maids",
+    "module": "dashboard"
+  },
+  {
+    "icon": "mdi-account-tie",
+    "image": "/employee.png",
+    "title": "Employees",
+    "to": "/employees",
+    "menu": "employee_access",
+    "submenu": "employees",
+    "module": "dashboard"
+  },
+  {
+    "icon": "mdi-car",
+    "title": "Parking",
+    "to": "/community/parking",
+    "submenu": "parking",
     "module": "dashboard"
   },
   {
     "icon": "mdi-chart-box-outline",
     "title": "Reports",
-    "to": "/dashboard",
-    "menu": "true",
-    "submenu": "visitors",
+    "to": "/attendance_report",
+    "submenu": "reports",
     "module": "dashboard"
   },
   {
@@ -65,6 +83,7 @@
   },
   {
     "icon": "mdi-account",
+    "image":"/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor",
     "submenu": "dashboard",
@@ -74,6 +93,7 @@
 
   {
     "icon": "mdi-account",
+    "image":"/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor",
     "submenu": "dashboard",
@@ -89,6 +109,7 @@
   },
   {
     "icon": "mdi-filmstrip-box-multiple",
+    "image": "/work_man.png",
     "title": "Contractor",
     "to": "/community/contractors",
     "menu": "branch_access",
@@ -290,6 +311,7 @@
   },
   {
     "icon": "mdi-account",
+    "image":"/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor",
     "menu": "visitors_access",
@@ -325,7 +347,7 @@
   },
   {
     "icon": "mdi-account",
-    "title": "Delivery Man",
+    "title": "Delivery",
     "to": "/community/delivery_man",
     "menu": "delivery_access",
     "module": "delivery_man"
@@ -360,6 +382,7 @@
   },
   {
     "icon": "mdi-account",
+    "image": "/work_man.png",
     "title": "Contractors",
     "to": "/community/contractor",
     "menu": "contractor_access",
@@ -402,6 +425,7 @@
   },
   {
     "icon": "mdi-account",
+    "image":"/maid.png",
     "title": "House Maids",
     "to": "/community/house_maids",
     "menu": "contractor_access",
@@ -437,6 +461,7 @@
   },
   {
     "icon": "mdi-account-card-details",
+    "image":"/tenet-3.png",
     "title": "Tanent",
     "to": "/community/tanent",
     "menu": "tanent",
@@ -458,6 +483,7 @@
   },
   {
     "icon": "mdi-chart-box-outline",
+    "image": "/tenet-3.png",
     "title": "Tanents",
     "to": "/community/tanent/reports",
     "menu": "tanents_access",
@@ -465,6 +491,7 @@
   },
   {
     "icon": "mdi-account",
+    "image": "/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor/reports",
     "menu": "visitors_access",
@@ -472,13 +499,15 @@
   },
   {
     "icon": "mdi-account",
-    "title": "Delivery Men",
+    "image": "/delivery-man-black-2.png",
+    "title": "Delivery",
     "to": "/community/delivery_man/reports",
     "menu": "visitors_access",
     "module": "reports"
   },
   {
     "icon": "mdi-account",
+    "image": "/work_man.png",
     "title": "Contractors",
     "to": "/community/contractor/reports",
     "menu": "visitors_access",
@@ -486,6 +515,7 @@
   },
   {
     "icon": "mdi-account",
+    "image": "/maid.png",
     "title": "Maid",
     "to": "/community/house_maids/reports",
     "menu": "visitors_access",
@@ -493,6 +523,7 @@
   },
   {
     "icon": "mdi-account",
+    "image": "/employee.png",
     "title": "Employees",
     "to": "/employees/reports",
     "menu": "employee_access",
