@@ -232,7 +232,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <CommunityVisitorDashboardDeviceLogs />
+      <CommunityVisitorDashboardDeviceLogs user_type="contractor" />
     </div>
     <Preloader v-else />
   </div>

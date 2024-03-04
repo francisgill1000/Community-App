@@ -40,6 +40,11 @@
             @success="handleSuccessResponse"
           />
         </v-toolbar>
+        <SnippetsFiltersRenderFields
+          :fields="headers.map((e) => e.key)"
+          @filtered="handleFilter"
+          :headers="headers"
+        />
         <v-data-table
           dense
           :headers="headers"
@@ -55,13 +60,6 @@
         >
           <template v-slot:item.category="{ item }">
             {{ item?.room?.room_category?.name }}
-          </template>
-          <template v-slot:header="{ props: { headers } }">
-            <SnippetsFiltersRenderFields
-              :fields="headers.map((e) => e.key)"
-              @filtered="handleFilter"
-              :headers="headers"
-            />
           </template>
 
           <template

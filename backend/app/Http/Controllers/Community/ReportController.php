@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Community;
 
-use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Models\AttendanceLog;
 use App\Http\Controllers\Controller;
-use App\Models\Employee;
+use App\Models\Community\CommunityReport;
 
 class ReportController extends Controller
 {
+    public function index()
+    {
+        return $this->processFilter()->paginate(request("per_page") ?? 10);
+    }
     public function renderData(Request $request)
     {
         // Extract start and end dates from the JSON data
@@ -43,10 +46,37 @@ class ReportController extends Controller
 
     public function renderRequest(Request $request)
     {
-        return $this->render($request->company_id ?? 0, $request->date ?? date("Y-m-d"), $request->UserIds, true);
+        return $this->render($request->company_id ?? 0, $request->id, $request->date ?? date("Y-m-d"), $request->UserIds, true);
     }
 
-    public function render($companyId, $date, $userIds = [], $customRender = false)
+    public function getUserDetails($system_user_id)
+    {
+        $userTypes = ['\\App\\Models\\Employee', '\\App\\Models\\Community\\Tanent', '\\App\\Models\\Visitor'];
+
+        foreach ($userTypes as $userType) {
+
+            $user = $userType::where('system_user_id', $system_user_id)->orderBy('id', 'desc')->first();
+
+            $user_type = "employee";
+
+
+            if ($user) {
+                if ($user->member_type) {
+                    $user_type = $user->member_type;
+                }
+                if ($user->visitor_type) {
+                    $user_type = $user->visitor_type;
+                }
+                return [
+                    $user_type => $user,
+                ];
+            }
+        }
+
+        return [];
+    }
+
+    public function render($companyId, $id, $date, $userIds = [], $customRender = false)
     {
         $params = [
             "company_id" => $companyId,
@@ -58,24 +88,21 @@ class ReportController extends Controller
         if (!$customRender) {
             $userIds = AttendanceLog::where("company_id", $companyId)
                 ->where("checked", false)
+                ->where("visitor_id", $id)
                 ->whereDate("LogTime", '=', $date) // Only today's records
-                ->distinct("UserID", "company_id")
+                ->distinct("UserID", "visitor_id", "company_id")
                 ->pluck('UserID');
-
-            return $userIds;
         }
 
         $userLogs = AttendanceLog::whereDate("LogTime", '=', $date) // Only today's records
             ->whereIn("UserID", $userIds)
             ->where("company_id", $companyId)
-            ->distinct("LogTime", "UserID", "company_id")
-            ->with(["device", "tenant", "family_member", "relative", "visitor", "delivery", "contractor", "maid"])
+            ->where("visitor_id", $id)
+            ->distinct("LogTime", "UserID", "visitor_id", "company_id")
+            ->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid"])
             ->get()
             ->groupBy('UserID');
 
-        return $userLogs;
-
-        $userLogs =  (new AttendanceLog)->getLogsForRender($params);
 
         //update atendance table with shift ID if shift with employee not found 
         if (count($userLogs) == 0) {
@@ -88,10 +115,6 @@ class ReportController extends Controller
 
             $logs = $logs->toArray() ?? [];
 
-            // $firstLog = collect($logs)->filter(fn ($record) => $record['log_type'] !== "out")->first();
-            // $lastLog = collect($logs)->filter(fn ($record) => $record['log_type'] !== "in")->last();
-
-
             $firstLog = collect($logs)->filter(function ($record) {
                 return isset($record["device"]["function"]) && ($record["device"]["function"] !== "Out");
             })->first();
@@ -100,47 +123,39 @@ class ReportController extends Controller
                 return isset($record["device"]["function"]) && ($record["device"]["function"] !== "In");
             })->last();
 
-            $schedule = $firstLog["schedule"] ?? false;
-            $shift = $schedule["shift"] ?? false;
+            $firstLog = $logs[0];
+            $lastLog = $logs[count($logs) - 1];
 
-            if (!$schedule) {
-                $message .= ".  No schedule is mapped with combination  System User Id: $key   and Date : " . $params["date"] . " ";
-                continue;
-            }
-            if (!$firstLog["schedule"]["shift_type_id"]) {
-                $message .= "$key : None f=of the  Master shift configured on  date:" . $params["date"];
-                continue;
-            }
+            $userDetails = $this->getUserDetails($key);
 
+            $userKey = array_key_first($userDetails);
 
             $item = [
-                "in" => $firstLog["time"] ?? "---",
-                "out" =>  "---",
-                "device_id_in" =>  $firstLog["DeviceID"] ?? "---",
-                "device_id_out" => "---",
-                "date" => $params["date"],
-                "company_id" => $params["company_id"],
-                "user_id" => $key,
+                "user_id" =>   $userDetails[$userKey]["id"],
+                "user_type" =>  $userKey,
+                "total_hrs" => '00:00',
+                "in_id" => $firstLog["id"],
+                "status" => "in",
             ];
 
-            if ($shift && $lastLog && count($logs) > 1) {
-                $item["device_id_out"] = $lastLog["DeviceID"] ?? "---";
-                $item["out"] = $lastLog["time"] ?? "---";
+            if ($lastLog && count($logs) > 1) {
+                $item["out_id"] = $lastLog["id"] ?? 0;
+                $item["status"] = "out";
+                $item["total_hrs"] = $this->getTotalHrsMins($firstLog["time"] ?? 0, $lastLog["time"] ?? 0);
             }
+
+            $item["date"] = $params["date"];
             $items[] = $item;
         }
 
         if (!count($items)) {
-            $message = '[' . $date . " " . date("H:i:s") . '] Filo Shift: No data found' . $message;
-            $this->devLog("render-manual-log", $message);
-            return $message;
+            return '[' . $date . " " . date("H:i:s") . '] No data found' . $message;
         }
 
         try {
-            $UserIds = array_column($items, "employee_id");
-            $model = Attendance::query();
-            $model->where("company_id", $companyId);
-            $model->whereIn("employee_id", $UserIds);
+            $UserIds = array_column($items, "user_id");
+            $model = CommunityReport::query();
+            $model->whereIn("user_id", $UserIds);
             $model->where("date", $date);
             $model->delete();
             // $chunks = array_chunk($items, 100);
@@ -153,12 +168,75 @@ class ReportController extends Controller
             if (!$customRender) {
                 AttendanceLog::where("company_id", $companyId)->whereIn("UserID", $UserIds)->update(["checked" => true, "checked_datetime" => date('Y-m-d H:i:s')]);
             }
-            $message = "[" . $date . " " . date("H:i:s") .  "] Filo Shift.  Affected Ids: " . json_encode($UserIds) . " " . $message;
+            $message = "[" . $date . " " . date("H:i:s") .  "].  Affected Ids: " . json_encode($UserIds) . " " . $message;
         } catch (\Throwable $e) {
-            $message = "[" . $date . " " . date("H:i:s") .  "] Filo Shift. " . $e->getMessage();
+            $message = "[" . $date . " " . date("H:i:s") .  "]. " . $e->getMessage();
         }
 
         $this->devLog("render-manual-log", $message);
         return ($message);
+    }
+
+    public function processFilter()
+    {
+
+        $query = CommunityReport::query();
+
+        $query->when(request()->filled("user_type"), fn ($q) => $q->whereHas(request("user_type")));
+
+        $query->when(request()->filled("UserID"), function ($q) {
+            $q->whereHas("in_log", function ($qu) {
+                $qu->where('UserID', request("UserID"));
+            });
+        });
+
+        // Filter by DeviceID
+        $query->when(request()->filled("DeviceID"), function ($query) {
+            $query->where(function ($q) {
+                $q->whereHas("in_log", function ($qu) {
+                    $qu->where('DeviceID', request("DeviceID"));
+                });
+                $q->orWhereHas("out_log", function ($qu) {
+                    $qu->where('DeviceID', request("DeviceID"));
+                });
+            });
+        });
+
+        $query->when(request()->filled("from_date"), function ($query) {
+            $query->where(function ($q) {
+                $q->whereHas("in_log", function ($qu) {
+                    $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
+                });
+                $q->orWhereHas("out_log", function ($qu) {
+                    $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
+                });
+            });
+        });
+
+        $query->when(request()->filled("to_date"), function ($query) {
+            $query->where(function ($q) {
+                $q->whereHas("in_log", function ($qu) {
+                    $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
+                });
+                $q->orWhereHas("out_log", function ($qu) {
+                    $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
+                });
+            });
+        });
+
+        $query->with([
+            "in_log",
+            "out_log",
+            "visitor",
+            "delivery",
+            "contractor",
+            "tanent",
+            "family_member",
+            "owner",
+            "maid",
+            'employee:first_named,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
+        ]);
+
+        return $query;
     }
 }

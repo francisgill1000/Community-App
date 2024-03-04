@@ -29,7 +29,14 @@
           :title="i.title"
         >
           <v-list-item-icon class="ma-2" :title="i.title">
-            <v-icon>{{ i.icon }}</v-icon>
+            <v-img
+              class="mx-auto"
+              v-if="i.image"
+              width="24px"
+              height="24px"
+              :src="i.image"
+            ></v-img>
+            <v-icon v-else>{{ i.icon }}</v-icon>
           </v-list-item-icon>
 
           <v-list-item-title class="text-center p-2">
@@ -72,16 +79,18 @@
                   <v-list-item-title class="my-2">
                     {{ j.title }}
                   </v-list-item-title>
+                  <div>ddddd{{ j.image }}</div>
 
                   <v-list-item-icon
                     :style="miniVariant ? 'margin-left: -54px;' : ''"
                   >
-                    <v-icon
+                    <!-- <v-icon
+                      v-else
                       :to="j.to"
                       :style="miniVariant ? 'margin-left: 12px;' : ''"
                     >
                       {{ j.icon }}
-                    </v-icon>
+                    </v-icon> -->
                   </v-list-item-icon>
                 </v-list-item>
               </template>

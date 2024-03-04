@@ -10,5 +10,5 @@ Route::get('community_report', [AccessControlController::class, 'index']);
 Route::get('/community_report_print_pdf', [AccessControlController::class, 'ReportPrint']);
 Route::get('/community_report_download_pdf', [AccessControlController::class, 'ReportDownload']);
 
+Route::get('community_common_report', [ReportController::class, 'index']);
 Route::post('community_common_report', [ReportController::class, 'renderRequest']);
-

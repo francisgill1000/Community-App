@@ -11,30 +11,30 @@ class AccessControlController extends Controller
 {
     public function getUniqueUsers()
     {
-
-        $tanents = DB::table('tanents')->where("company_id", 1)->get(["full_name", "system_user_id"])->toArray();
-        $visitors = DB::table('visitors')->get(["first_name as full_name", "system_user_id"])->toArray();
-        $employees = DB::table('employees')->where("company_id", 1)->get(["full_name", "system_user_id"])->toArray();
+        $tanents = DB::table('tanents')->get(["id", "full_name", "system_user_id"])->toArray();
+        $visitors = DB::table('visitors')->get(["id", "first_name as full_name", "system_user_id"])->toArray();
+        $employees = DB::table('employees')->get(["id", "full_name", "system_user_id"])->toArray();
 
         return array_merge($tanents, $visitors, $employees);
     }
     public function index()
     {
-        return $this->processFilter()->paginate(request("per_page") ?? 10);
+        return $this->processFilter()->paginate(request("per_page") ?? 100);
+    }
+
+    public function search_visitor_by_user_id()
+    {
+        return  Visitor::orderBy("id", "desc")->with(["attendance_logs", "purpose"])->where("system_user_id", request("UserID"))->first();
     }
 
     public function get_logs_by_visitor_id()
     {
-        return  Visitor::with(["attendance_logs", "purpose"])
-            ->where("id", request("UserID"))
-            ->first();
+        return  Visitor::with(["attendance_logs", "purpose"])->where("id", request("UserID"))->first();
     }
 
     public function get_logs_by_tanent_id()
     {
-        return  Tanent::with(["attendance_logs"])
-            ->where("id", request("UserID"))
-            ->first();
+        return  Tanent::with(["attendance_logs"])->where("id", request("UserID"))->first();
     }
 
 
@@ -59,7 +59,7 @@ class AccessControlController extends Controller
 
         $model->when(request()->filled("DeviceID"), fn ($q) => $q->where('DeviceID', request("DeviceID")));
 
-        $model->with(["device", "tanent", "family_member", "relative", "visitor", "delivery", "contractor", "maid"]);
+        $model->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid"]);
 
         $model->with('employee', function ($q) {
             $q->where('company_id', request("company_id"));
