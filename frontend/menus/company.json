@@ -87,6 +87,7 @@
     "menu": "visitors_access",
     "module": "visitors"
   },
+
   {
     "icon": "mdi-filmstrip-box-multiple",
     "title": "Contractor",
@@ -291,7 +292,7 @@
   {
     "icon": "mdi-account",
     "title": "Visitors",
-    "to": "/community/visitor",
+    "to": "/community/visitor?1",
     "menu": "visitors_access",
     "module": "visitors"
   },
@@ -326,7 +327,7 @@
   {
     "icon": "mdi-account",
     "title": "Delivery Man",
-    "to": "/community/delivery_man",
+    "to": "/community/delivery_man?1",
     "menu": "delivery_access",
     "module": "delivery_man"
   },
@@ -368,7 +369,7 @@
   {
     "icon": "mdi-filmstrip-box-multiple",
     "title": "Companies",
-    "to": "/community/contractors",
+    "to": "/community/contractors?1",
     "menu": "contractor_access",
     "module": "contractor"
   },
@@ -425,7 +426,7 @@
   {
     "icon": "mdi-home",
     "title": "Dashboard",
-    "to": "community/dashboard",
+    "to": "/community/dashboard",
     "menu": "tanent",
     "module": "tanents"
   },
