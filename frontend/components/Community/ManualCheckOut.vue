@@ -57,7 +57,7 @@
               color="primary"
               class="mt-2"
               block
-              >Checkout {{ item.id }}</v-btn
+              >Checkout</v-btn
             >
           </v-col>
         </v-row>
@@ -162,18 +162,16 @@ export default {
 
     async render_report() {
       let log_payload = {
-        UserIds: [this.UserID],
         LogTime: this.getCurrentDateTime(),
-        DeviceID: "Manual",
         company_id: this.$auth.user.company_id,
-        log_type: "out",
         id: this.item.id,
+        UserIds: [this.UserID],
       };
 
       this.loading = true;
 
       this.$axios
-        .post(`community_common_report`, log_payload)
+        .post(`/community_common_report`, log_payload)
         .then(({ data }) => {
           this.loading = false;
 

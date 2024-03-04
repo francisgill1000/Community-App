@@ -155,6 +155,39 @@
             /></span>
           </v-toolbar>
 
+          <v-toolbar class="backgrounds" flat>
+            <v-toolbar-title>
+              <span class="headline black--text"> Device Logs</span>
+            </v-toolbar-title>
+            <span>
+              <v-btn
+                dense
+                class="ma-0 px-0"
+                x-small
+                :ripple="false"
+                text
+                title="Reload"
+              >
+                <v-icon class="ml-2" @click="getDataFromApi" dark
+                  >mdi-reload</v-icon
+                >
+              </v-btn>
+            </span>
+            <v-spacer></v-spacer>
+            <CommunityManualCheckOut
+              button_type="icon"
+              visitor_type="visitor"
+              v-if="can(`visitor_view`)"
+              @success="handleSuccessResponse"
+            />
+            <CommunityVisitorCreate
+              button_type="icon"
+              visitor_type="visitor"
+              v-if="can(`visitor_create`)"
+              @success="handleSuccessResponse"
+            />
+          </v-toolbar>
+
           <v-data-table
             dense
             :headers="headers"
@@ -178,10 +211,34 @@
               {{ item?.tanent?.room?.room_number ?? "---" }}
             </template>
 
-            <template v-slot:item.phone_number="{ item, index }">
-              {{ getUserPhone(item).phone_number }}
-              <br />
-              <small>{{ item.reason ?? "" }}</small>
+            <template v-slot:item.host="{ item }" style="padding: 0px">
+              <v-row v-if="item.visitor" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.visitor.full_name ?? "---" }}
+                    <br />
+                    {{ item.visitor.phone_number ?? "---" }}
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.delivery" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.delivery.full_name ?? "---" }}
+                    <br />
+                    {{ item.delivery.phone_number ?? "---" }}
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.contractor" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.contractor.full_name ?? "---" }}
+                    <br />
+                    {{ item.contractor.phone_number ?? "---" }}
+                  </div>
+                </v-col>
+              </v-row>
             </template>
 
             <template v-slot:item.user="{ item }" style="padding: 0px">
@@ -253,8 +310,9 @@
                   </v-col> -->
                 <v-col md="8">
                   <div>
-                    {{ item.visitor.first_name ?? "---" }}
-                    {{ item.visitor.last_name ?? "---" }}
+                    {{ item.visitor.full_name ?? "---" }}
+                    <br />
+                    {{ item.visitor.phone_number ?? "---" }}
                   </div>
                 </v-col>
               </v-row>
@@ -371,11 +429,11 @@ export default {
         value: "user",
       },
       {
-        text: "UserID",
+        text: "Host",
         align: "left",
         sortable: true,
-        key: "in_log.UserID",
-        value: "in_log.UserID",
+        key: "host",
+        value: "host",
       },
       {
         text: "Flat",
@@ -383,13 +441,6 @@ export default {
         sortable: true,
         key: "flat",
         value: "flat",
-      },
-      {
-        text: "Phone",
-        align: "left",
-        sortable: true,
-        key: "phone_number",
-        value: "phone_number",
       },
       {
         text: "In",
