@@ -1,8 +1,8 @@
 <template>
   <div v-if="can(`attendance_report_view`)">
-    <v-card elevation="0" class="mt-2">
+    <v-card v-if="showFilters" elevation="0" class="mt-2">
       <v-toolbar dense flat>
-        <span class="headline black--text"> {{ label }}  </span>
+        <span class="headline black--text"> {{ label }}</span>
       </v-toolbar>
 
       <v-card-text class="py-3">
@@ -41,21 +41,6 @@
               :hide-details="true"
             ></v-select>
           </v-col>
-          <!-- <v-col md="2" sm="2" v-if="isCompany">
-              Branch
-              <v-select
-                placeholder="Branch"
-                class="mt-2"
-                outlined
-                dense
-                v-model="payload.branch_id"
-                x-small
-                :items="[{ id: ``, branch_name: `Select All` }, ...branches]"
-                item-value="id"
-                item-text="branch_name"
-                :hide-details="true"
-              ></v-select>
-            </v-col> -->
           <v-col md="2" sm="2" v-if="dropdown">
             <v-select
               label="User Type"
@@ -97,17 +82,18 @@
           </v-col>
           <v-col md="2" sm="4">
             <v-autocomplete
+              @change="setUserID(UserID)"
               density="comfortable"
               label="User ID"
               outlined
               dense
-              v-model="payload.UserID"
+              v-model="UserID"
               x-small
               :items="[
                 { system_user_id: ``, full_name: `Select All` },
                 ...users,
               ]"
-              item-value="system_user_id"
+              item-value="id"
               item-text="full_name"
               :hide-details="true"
             ></v-autocomplete>
@@ -147,7 +133,7 @@
           </v-snackbar>
         </div>
         <v-card class="mb-5" elevation="0">
-          <v-toolbar class="backgrounds" dense flat>
+          <v-toolbar v-if="showFilters" class="backgrounds" dense flat>
             <v-toolbar-title> </v-toolbar-title>
 
             <v-spacer></v-spacer>
@@ -188,45 +174,8 @@
               {{ index + 1 }}
             </template>
 
-            <template v-slot:item.dateTime="{ item, index }">
-              {{ item.date }} {{ item.time }}
-            </template>
-
             <template v-slot:item.flat="{ item, index }">
               {{ item?.tanent?.room?.room_number ?? "---" }}
-            </template>
-
-            <template v-slot:item.branch="{ item, index }">
-              <span>
-                <b>{{
-                  item.employee ? item.employee?.branch?.branch_name : "---"
-                }}</b
-                ><br />
-                {{ item.employee ? item.employee?.department?.name : "---" }}
-              </span>
-            </template>
-            <template v-slot:item.in="{ item, index }">
-              {{
-                item.device.function !== "out" || item.device.function !== "Out"
-                  ? "In"
-                  : "---"
-              }}
-            </template>
-            <template v-slot:item.out="{ item, index }">
-              {{
-                item.device.function == "out" || item.device.function == "Out"
-                  ? "Out"
-                  : "---"
-              }}
-            </template>
-            <template v-slot:item.user_type="{ item, index }">
-              {{ getUserType(item) }}
-            </template>
-
-            <template v-slot:item.status="{ item, index }">
-              {{ item.status }}
-              <br />
-              <small>{{ item.reason ?? "" }}</small>
             </template>
 
             <template v-slot:item.phone_number="{ item, index }">
@@ -235,12 +184,13 @@
               <small>{{ item.reason ?? "" }}</small>
             </template>
 
-            <template v-slot:item.door="{ item, index }">
-              {{ item.device.short_name ?? "---" }}
-            </template>
-
             <template v-slot:item.user="{ item }" style="padding: 0px">
-              <v-row v-if="item.tanent" no-gutters>
+              <v-row
+                v-if="
+                  item.tanent || item.family_member || item.owner || item.maid
+                "
+                no-gutters
+              >
                 <!-- <v-col
                     md="2"
                     style="
@@ -273,79 +223,16 @@
                 </v-col>
               </v-row>
 
-              <v-row v-else-if="item.family_member" no-gutters>
+              <v-row
+                v-else-if="item.visitor || item.delivery || item.contractor"
+                no-gutters
+              >
                 <!-- <v-col
                     md="2"
                     style="
                       padding: 3px;
                       padding-left: 0px;
-                      width: 30px;
-                      max-width: 30px;
-                    "
-                  >
-                    <v-img
-                      style="
-                        border-radius: 50%;
-                        height: auto;
-                        width: 30px;
-                        max-width: 30px;
-                      "
-                      :src="
-                        item.family_member.profile_picture
-                          ? item.family_member.profile_picture
-                          : '/no-profile-image.jpg'
-                      "
-                    >
-                    </v-img>
-                  </v-col> -->
-                <v-col md="8">
-                  <div>
-                    {{ item.family_member.first_name ?? "---" }}
-                    {{ item.family_member.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.relative" no-gutters>
-                <!-- <v-col
-                    md="2"
-                    style="
-                      padding: 3px;
-                      padding-left: 0px;
-                      width: 30px;
-                      max-width: 30px;
-                    "
-                  >
-                    <v-img
-                      style="
-                        border-radius: 50%;
-                        height: auto;
-                        width: 30px;
-                        max-width: 30px;
-                      "
-                      :src="
-                        item.relative.profile_picture
-                          ? item.relative.profile_picture
-                          : '/no-profile-image.jpg'
-                      "
-                    >
-                    </v-img>
-                  </v-col> -->
-                <v-col md="8">
-                  <div>
-                    {{ item.relative.first_name ?? "---" }}
-                    {{ item.relative.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.visitor" no-gutters>
-                <!-- <v-col
-                    md="2"
-                    style="
-                      padding: 3px;
-                      padding-left: 0px;
-                      width: 30px;
+                      width: 30px;  
                       max-width: 30px;
                     "
                   >
@@ -368,105 +255,6 @@
                   <div>
                     {{ item.visitor.first_name ?? "---" }}
                     {{ item.visitor.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.delivery" no-gutters>
-                <!-- <v-col
-                    md="2"
-                    style="
-                      padding: 3px;
-                      padding-left: 0px;
-                      width: 30px;
-                      max-width: 30px;
-                    "
-                  >
-                    <v-img
-                      style="
-                        border-radius: 50%;
-                        height: auto;
-                        width: 30px;
-                        max-width: 30px;
-                      "
-                      :src="
-                        item.delivery.profile_picture
-                          ? item.delivery.profile_picture
-                          : '/no-profile-image.jpg'
-                      "
-                    >
-                    </v-img>
-                  </v-col> -->
-                <v-col md="8">
-                  <div>
-                    {{ item.delivery.first_name ?? "---" }}
-                    {{ item.delivery.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.contractor" no-gutters>
-                <!-- <v-col
-                    md="2"
-                    style="
-                      padding: 3px;
-                      padding-left: 0px;
-                      width: 30px;
-                      max-width: 30px;
-                    "
-                  >
-                    <v-img
-                      style="
-                        border-radius: 50%;
-                        height: auto;
-                        width: 30px;
-                        max-width: 30px;
-                      "
-                      :src="
-                        item.contractor.profile_picture
-                          ? item.contractor.profile_picture
-                          : '/no-profile-image.jpg'
-                      "
-                    >
-                    </v-img>
-                  </v-col> -->
-                <v-col md="8">
-                  <div>
-                    {{ item.contractor.first_name ?? "---" }}
-                    {{ item.contractor.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.maid" no-gutters>
-                <!-- <v-col
-                    md="2"
-                    style="
-                      padding: 3px;
-                      padding-left: 0px;
-                      width: 30px;
-                      max-width: 30px;
-                    "
-                  >
-                    <v-img
-                      style="
-                        border-radius: 50%;
-                        height: auto;
-                        width: 30px;
-                        max-width: 30px;
-                      "
-                      :src="
-                        item.maid.profile_picture
-                          ? item.maid.profile_picture
-                          : '/no-profile-image.jpg'
-                      "
-                    >
-                    </v-img>
-                  </v-col> -->
-                <v-col md="8">
-                  <div>
-                    {{ item.maid.first_name ?? "---" }}
-                    {{ item.maid.last_name ?? "---" }}
                   </div>
                 </v-col>
               </v-row>
@@ -536,8 +324,7 @@ export default {
     menu: false,
     loading: false,
     time_menu: false,
-    Model: "Attendance Reports",
-    endpoint: "access_control_report",
+    endpoint: "community_common_report",
     search: "",
     snackbar: false,
     add_manual_log: false,
@@ -554,7 +341,7 @@ export default {
 
     loading: false,
     total: 0,
-
+    UserID: ``,
     payload: {
       DeviceID: ``,
       report_type: ``,
@@ -562,10 +349,6 @@ export default {
       from_date: ``,
       to_date: ``,
       UserID: ``,
-      department_ids: [],
-      status: "-1",
-      branch_id: ``,
-      include_device_types: ["all", "Access Control"],
     },
 
     response: "",
@@ -591,8 +374,8 @@ export default {
         text: "UserID",
         align: "left",
         sortable: true,
-        key: "UserID",
-        value: "UserID",
+        key: "in_log.UserID",
+        value: "in_log.UserID",
       },
       {
         text: "Flat",
@@ -609,47 +392,32 @@ export default {
         value: "phone_number",
       },
       {
-        text: "Door",
-        align: "left",
-        sortable: true,
-        key: "door",
-        value: "door",
-      },
-      {
-        text: "DateTime",
-        align: "left",
-        sortable: false,
-        key: "dateTime",
-        value: "dateTime",
-        fieldType: "date_range_picker",
-      },
-      {
         text: "In",
         align: "left",
         sortable: false,
-        key: "in",
-        value: "in",
+        key: "in_log.LogTime",
+        value: "in_log.LogTime",
       },
       {
         text: "Out",
         align: "left",
         sortable: false,
-        key: "out",
-        value: "out",
+        key: "out_log.LogTime",
+        value: "out_log.LogTime",
       },
       {
-        text: "Mode",
+        text: "D.In",
         align: "left",
         sortable: false,
-        key: "mode",
-        value: "mode",
+        key: "in_log.device.short_name",
+        value: "in_log.device.short_name",
       },
       {
-        text: "Status",
+        text: "D.Out",
         align: "left",
         sortable: false,
-        key: "status",
-        value: "status",
+        key: "out_log.device.short_name",
+        value: "out_log.device.short_name",
       },
       {
         text: "User Type",
@@ -662,7 +430,6 @@ export default {
     max_date: null,
 
     isCompany: true,
-    branches: [],
   }),
 
   watch: {
@@ -680,27 +447,16 @@ export default {
     });
   },
   created() {
-    // let branch_header = [
-    //   {
-    //     text: "Branch/Department",
-    //     align: "left",
-    //     sortable: true,
-    //     key: "branch_id", //sorting
-    //     value: "branch", //edit purpose
-
-    //     filterable: true,
-    //     filterSpecial: true,
-    //   },
-    // ];
-    // this.headers.splice(2, 0, ...branch_header);
-    this.setFromDate();
-    // this.getBranches();
     this.getUsers();
     this.getDeviceList();
 
     this.payload.user_type = this.user_type;
   },
   methods: {
+    setUserID(id) {
+      this.payload.UserID =
+        this.users.find((e) => e.id == id).system_user_id ?? 0;
+    },
     getUserType(item) {
       const relationships = {
         Tanent: item.tanent,
@@ -769,24 +525,6 @@ export default {
       this.payload.to_date = data.to;
       this.getDataFromApi();
     },
-    getBranches() {
-      if (this.$auth.user.branch_id) {
-        this.payload.branch_id = this.$auth.user.branch_id;
-        this.isCompany = false;
-        return;
-      }
-
-      this.$axios
-        .get("branch", {
-          params: {
-            per_page: 1000,
-            company_id: this.$auth.user.company_id,
-          },
-        })
-        .then(({ data }) => {
-          this.branches = data.data;
-        });
-    },
 
     getUsers() {
       let options = {
@@ -797,6 +535,7 @@ export default {
       };
 
       this.$axios.get(`/get_users`, options).then(({ data }) => {
+        console.log(data);
         this.users = data;
       });
     },
@@ -884,6 +623,7 @@ export default {
         refresh: true,
         endpoint: this.endpoint,
         filters: this.payload,
+        user_type: this.user_type,
       });
       this.data = data;
       this.totalRowsCount = total;
@@ -934,7 +674,7 @@ export default {
           )
           .join("&");
 
-        const reportUrl = `${backendUrl}/accessControlReport_${type.toLowerCase()}?${queryString}&include_device_types[]=all&include_device_types[]=Access Control`;
+        const reportUrl = `${backendUrl}/accessControlReport_${type.toLowerCase()}?${queryString}`;
 
         const report = document.createElement("a");
         report.setAttribute("href", reportUrl);

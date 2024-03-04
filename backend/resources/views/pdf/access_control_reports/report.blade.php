@@ -318,7 +318,6 @@
                 'Employee' => $item['employee'],
                 'Tanent' => $item['tanent'],
                 'Family Member' => $item['family_member'],
-                'Relative' => $item['relative'],
                 'Visitor' => $item['visitor'],
                 'Delivery' => $item['delivery'],
                 'Contractor' => $item['contractor'],

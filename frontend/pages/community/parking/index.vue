@@ -85,6 +85,11 @@
               <span>CSV</span>
             </v-tooltip> -->
           </v-toolbar>
+          <SnippetsFiltersRenderFields
+            :fields="headers.map((e) => e.key)"
+            @filtered="handleFilter"
+            :headers="headers"
+          />
           <v-data-table
             dense
             :headers="headers"
@@ -98,13 +103,6 @@
             class="elevation-1"
             :server-items-length="totalRowsCount"
           >
-            <template v-slot:header="{ props: { headers } }">
-              <SnippetsFiltersRenderFields
-                :fields="headers.map((e) => e.key)"
-                @filtered="handleFilter"
-                :headers="headers"
-              />
-            </template>
             <template v-slot:item.options="{ item }">
               <v-menu bottom left>
                 <template v-slot:activator="{ on, attrs }">
@@ -384,10 +382,7 @@ export default {
   },
   methods: {
     exportData() {
-      let cols = [
-        "category",
-        "parking_number",
-      ];
+      let cols = ["category", "parking_number"];
 
       return this.data.map((item) => {
         let filteredItem = {};
@@ -397,7 +392,8 @@ export default {
             filteredItem["floor_number"] = item?.floor?.floor_number ?? "---";
             filteredItem["car_number"] = item?.vehicle?.car_number ?? "---";
             filteredItem["car_brand"] = item?.vehicle?.car_brand ?? "---";
-            filteredItem["room_number"] = item?.vehicle?.tanent?.room?.room_number ?? "---";
+            filteredItem["room_number"] =
+              item?.vehicle?.tanent?.room?.room_number ?? "---";
             filteredItem["tanent_full_name"] =
               item?.vehicle?.tanent?.full_name ?? "---";
             filteredItem["tanent_phone_number"] =

@@ -69,141 +69,11 @@
             />
           </v-toolbar>
 
-          <v-data-table
-            dense
-            :headers="headers"
-            :items="data"
-            :loading="loading"
-            :options.sync="options"
-            :footer-props="{
-              itemsPerPageOptions: [10, 50, 100, 500, 1000],
-            }"
-            class="elevation-1"
-            model-value="data.id"
-            :server-items-length="totalRowsCount"
-            fixed-header
-            :height="tableHeight"
-          >
-            <template v-slot:item.id="{ item, index }">
-              {{ index + 1 }}
-            </template>
-
-            <template v-slot:item.dateTime="{ item, index }">
-              {{ item.date }} {{ item.time }}
-            </template>
-
-            <template v-slot:item.flat="{ item, index }">
-              {{ item?.tanent?.room?.room_number ?? "---" }}
-            </template>
-
-            <template v-slot:item.in="{ item, index }">
-              {{
-                item.device.function !== "out" || item.device.function !== "Out"
-                  ? "In"
-                  : "---"
-              }}
-            </template>
-            <template v-slot:item.out="{ item, index }">
-              {{
-                item.device.function == "out" || item.device.function == "Out"
-                  ? "Out"
-                  : "---"
-              }}
-            </template>
-            <template v-slot:item.user_type="{ item, index }">
-              {{ getUserType(item) }}
-            </template>
-
-            <template v-slot:item.status="{ item, index }">
-              {{ item.status }}
-              <br />
-              <small>{{ item.reason ?? "" }}</small>
-            </template>
-
-            <template v-slot:item.phone_number="{ item, index }">
-              {{ getUserPhone(item).phone_number }}
-              <br />
-              <small>{{ item.reason ?? "" }}</small>
-            </template>
-
-            <template v-slot:item.door="{ item, index }">
-              {{ item.device.short_name ?? "Manual" }}
-            </template>
-
-            <template v-slot:item.user="{ item }" style="padding: 0px">
-              <v-row v-if="item.tanent" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.tanent.first_name ?? "---" }}
-                    {{ item.tanent.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.family_member" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.family_member.first_name ?? "---" }}
-                    {{ item.family_member.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.relative" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.relative.first_name ?? "---" }}
-                    {{ item.relative.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.visitor" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.visitor.first_name ?? "---" }}
-                    {{ item.visitor.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.delivery" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.delivery.first_name ?? "---" }}
-                    {{ item.delivery.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.contractor" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.contractor.first_name ?? "---" }}
-                    {{ item.contractor.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.maid" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.maid.first_name ?? "---" }}
-                    {{ item.maid.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row v-else-if="item.employee" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item.employee.first_name ?? "---" }}
-                    {{ item.employee.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-            </template>
-          </v-data-table>
+          <CommunityReport
+            label="Visitor"
+            :user_type="user_type"
+            :showFilters="false"
+          />
         </v-card>
       </div>
     </v-card>
@@ -213,7 +83,7 @@
 </template>
 <script>
 export default {
-  props: [],
+  props: ["user_type"],
 
   data: () => ({
     tableHeight: 750,
