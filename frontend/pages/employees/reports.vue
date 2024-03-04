@@ -1,3 +1,3 @@
 <template>
-  <CommunityReport :user_type="`employee`" />
+  <CommunityReport label="Employee Report" :user_type="`employee`" />
 </template>
