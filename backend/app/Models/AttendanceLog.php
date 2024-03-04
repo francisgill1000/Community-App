@@ -100,12 +100,12 @@ class AttendanceLog extends Model
 
     public function delivery()
     {
-        return $this->belongsTo(Visitor::class,  "UserID", "system_user_id")->where("visitor_type", "delivery");
+        return $this->belongsTo(Visitor::class, "visitor_id", "id")->where("visitor_type", "delivery");
     }
 
     public function contractor()
     {
-        return $this->belongsTo(Visitor::class,  "UserID", "system_user_id")->where("visitor_type", "contractor");
+        return $this->belongsTo(Visitor::class, "visitor_id", "id")->where("visitor_type", "contractor");
     }
 
     public function maid()

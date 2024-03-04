@@ -23,14 +23,14 @@
   {
     "icon": "mdi-clipboard-text-clock",
     "title": "Delivery",
-    "to": "/community/delivery_man",
+    "to": "/community/delivery_man/dashboard",
     "menu": "delivery_man",
     "module": "topmenu"
   },
   {
     "icon": "mdi-clock-outline",
     "title": "Contractor",
-    "to": "/community/contractor",
+    "to": "/community/contractors/dashboard",
     "menu": "contractor",
     "module": "topmenu"
   },

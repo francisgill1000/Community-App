@@ -1,6 +1,6 @@
 <template>
   <div v-if="can(`visitor_access`)">
-    <v-dialog v-model="dialogInformation" max-width="1300px">
+    <!-- <v-dialog v-model="dialogInformation" max-width="1300px">
       <v-card>
         <v-card-title class="popup_background">
           <span dense> Visitors Requests - {{ statisticsFilter }} </span>
@@ -17,7 +17,7 @@
           />
         </v-card-text>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
     <div v-if="!loading">
       <v-dialog
         persistent
@@ -32,148 +32,161 @@
           style="width: 100%; height: 600px"
         ></iframe>
       </v-dialog>
-      <v-col lg="12" md="12" sm="12" xs="12">
-        <v-row>
-          <v-col md="12">
-            <v-card class="pa-2" style="height: 354px; overflow: hidden">
-              <v-row background fill>
-                <v-col
-                  lg="3"
-                  md="3"
-                  sm="3"
-                  xs="3"
-                  class="d-xs-flex"
-                  style="flex: auto"
-                >
-                  <VisitorPieChart :items="items"></VisitorPieChart>
-                </v-col>
-                <v-col
-                  lg="6"
-                  md="6"
-                  sm="6"
-                  xs="6"
-                  class="d-xs-flex pa-2 pt-5"
-                  style="border-left: 1px solid #ddd"
-                >
-                  <v-row class="pa-10">
-                    <v-col
-                      cols="3"
-                      class="card1 rounded-5"
-                      v-for="(i, index) in items.visitorCounts"
-                      :key="'v' + index"
-                    >
-                      <v-row @click="viewPopupInfo(i.title)">
-                        <v-col cols="4" class="text-end">
-                          <v-avatar size="30" :color="i.color">
-                            <v-icon
-                              size="20"
-                              class="pa-2"
-                              style="color: #fff"
-                              >{{ i.icon }}</v-icon
-                            >
-                          </v-avatar>
-                        </v-col>
-                        <v-col class="text-left pa-0">
-                          <div class="bold" style="font-size: 40px">
-                            {{ i.value }}
-                          </div>
-                          {{ i.title }}
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
+      <v-row>
+        <v-col md="12">
+          <v-card class="pa-2" style="height: 354px; overflow: hidden">
+            <v-row background fill>
+              <v-col
+                lg="3"
+                md="3"
+                sm="3"
+                xs="3"
+                class="d-xs-flex"
+                style="flex: auto"
+              >
+                <VisitorPieChart :items="items"></VisitorPieChart>
+              </v-col>
+              <v-col
+                lg="3"
+                md="3"
+                sm="3"
+                xs="3"
+                class="d-xs-flex pa-2 pt-5"
+                style="border-left: 1px solid #ddd"
+              >
+                <v-row class="pa-10">
+                  <v-col cols="6" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="60" color="#033F9B">
+                          <v-icon size="40" class="pa-2" style="color: #fff"
+                            >mdi-account-supervisor</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col cols="8" class="text-center pa-0">
+                        <div class="bold" style="font-size: 60px">
+                          {{ items.ExpectingCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Expecting
+                  </v-col>
+                  <v-col cols="6" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="60" color="#02B64B">
+                          <v-icon size="40" class="pa-2" style="color: #fff"
+                            >mdi-account-arrow-left</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-center pa-0">
+                        <div class="bold" style="font-size: 60px">
+                          {{ items.CheckedInCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Checked In
+                  </v-col>
+                  <v-col cols="6" class="card1 rounded-5 pt-10">
+                    <v-row>
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="60" color="#ffb600">
+                          <v-icon size="40" class="pa-2" style="color: #fff"
+                            >mdi-account-arrow-right</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-center pa-0">
+                        <div class="bold" style="font-size: 60px">
+                          {{ items.CheckedOutCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Checked Out
+                  </v-col>
+                  <v-col cols="6" class="card1 rounded-5 pt-10">
+                    <v-row>
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="60" color="#ff0000">
+                          <v-icon size="40" class="pa-2" style="color: #fff"
+                            >mdi mdi-timer-sand-full</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-center pa-0">
+                        <div class="bold" style="font-size: 60px">
+                          {{ items.overStayCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Over Stay
+                  </v-col>
+                </v-row>
 
-                  <v-row class="pa-10 pt-5">
-                    <v-col
-                      cols="3"
-                      class="card1 rounded-5"
-                      v-for="(i, index) in items.statusCounts"
-                      :key="'v' + index"
-                    >
-                      <v-row @click="viewPopupInfo(i.title)">
-                        <v-col cols="4" class="text-end">
-                          <v-avatar size="30" :color="i.color">
-                            <v-icon
-                              size="20"
-                              class="pa-1"
-                              style="color: #fff"
-                              >{{ i.icon }}</v-icon
-                            >
-                          </v-avatar>
-                        </v-col>
-                        <v-col class="text-left pa-0">
-                          <div class="bold" style="font-size: 40px">
-                            {{ i.value }}
-                          </div>
-                          {{ i.title }}
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-col>
+                <!-- <v-row class="pa-10 pt-5">
+                  <v-col
+                    cols="3"
+                    class="card1 rounded-5"
+                    v-for="(i, index) in items.statusCounts"
+                    :key="'v' + index"
+                  >
+                    <v-row @click="viewPopupInfo(i.title)">
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="30" :color="i.color">
+                          <v-icon size="20" class="pa-1" style="color: #fff">{{
+                            i.icon
+                          }}</v-icon>
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-left pa-0">
+                        <div class="bold" style="font-size: 40px">
+                          {{ i.value }}
+                        </div>
+                        {{ i.title }}
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row> -->
+              </v-col>
 
-                <v-col
-                  lg="3"
-                  md="3"
-                  sm="3"
-                  xs="3"
-                  class="d-xs-flex"
-                  style="border-left: 1px solid #ddd"
-                >
-                  <VisitorHourChart
-                    :name="'visitor'"
-                    :branch_id="null"
-                    :height="300"
-                  ></VisitorHourChart>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col lg="12" md="12" sm="12" xs="12">
-            <v-card
-              class="py-2"
-              style="height: 600px; overflow-x: hidden; overflow-y: scroll"
-            >
-              <VisitorLogs />
-              <!-- <VisitorReport></VisitorReport> -->
-            </v-card>
-          </v-col>
-        </v-row>
-        <!-- <v-row>
-          <v-col lg="12" md="12" sm="12" xs="12">
-            <v-card class="py-2" style="overflow: hidden">
-              <VisitorHourChart
-                :name="'visitor'"
-                :branch_id="null"
-                :height="300"
-              ></VisitorHourChart>
-            </v-card>
-          </v-col>
-        </v-row> -->
-      </v-col>
+              <v-col
+                lg="6"
+                md="6"
+                sm="6"
+                xs="6"
+                class="d-xs-flex"
+                style="border-left: 1px solid #ddd"
+              >
+                <VisitorHourChart
+                  :name="'visitor'"
+                  :branch_id="null"
+                  :height="300"
+                ></VisitorHourChart>
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+      <CommunityVisitorDashboardDeviceLogs />
     </div>
     <Preloader v-else />
   </div>
   <NoAccess v-else />
 </template>
 <script>
-import VisitorList from "@/components/Visitor/VisitorRequestsList.vue";
-import VisitorReport from "@/components/Visitor/VisitorReport.vue";
-import VisitorLogs from "@/components/Visitor/VisitorLogs.vue";
-import VisitorHourChart from "@/components/Visitor/DashboardVisitorHourChart.vue";
-import VisitorPieChart from "@/components/Visitor/DashboardVisitorPieChart.vue";
-import VisitorRequestsList from "@/components/Visitor/VisitorRequestsList.vue";
+import VisitorReport from "@/components/Delivery/DeliveryBoyReport.vue";
+import VisitorLogs from "@/components/Delivery/DeliveryBoyLogs.vue";
+import VisitorHourChart from "@/components/Delivery/DashboardDeliveryBoyHourChart.vue";
+import VisitorPieChart from "@/components/Delivery/DashboardDeliveryBoyPieChart.vue";
 
 export default {
   components: {
-    VisitorList,
     VisitorPieChart,
     VisitorHourChart,
     VisitorReport,
     VisitorLogs,
-    VisitorRequestsList,
   },
 
   data() {
@@ -275,6 +288,7 @@ export default {
       let options = {
         company_id: this.$auth.user.company_id,
         branch_id: this.branch_id > 0 ? this.branch_id : null,
+        visitor_type: "delivery",
       };
 
       this.$axios.get(`visitor-count`, { params: options }).then(({ data }) => {

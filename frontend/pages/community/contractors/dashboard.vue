@@ -1,6 +1,6 @@
 <template>
   <div v-if="can(`visitor_access`)">
-    <v-dialog v-model="dialogInformation" max-width="1300px">
+    <!-- <v-dialog v-model="dialogInformation" max-width="1300px">
       <v-card>
         <v-card-title class="popup_background">
           <span dense> Visitors Requests - {{ statisticsFilter }} </span>
@@ -17,7 +17,7 @@
           />
         </v-card-text>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
     <div v-if="!loading">
       <v-dialog
         persistent
@@ -176,11 +176,10 @@
   <NoAccess v-else />
 </template>
 <script>
-import VisitorReport from "@/components/Visitor/VisitorReport.vue";
-import VisitorLogs from "@/components/Visitor/VisitorLogs.vue";
-import VisitorHourChart from "@/components/Visitor/DashboardVisitorHourChart.vue";
-import VisitorPieChart from "@/components/Visitor/DashboardVisitorPieChart.vue";
-import VisitorRequestsList from "@/components/Visitor/VisitorRequestsList.vue";
+import VisitorReport from "@/components/Contractors/ContractorReport.vue";
+import VisitorLogs from "@/components/Contractors/ContractorLogs.vue";
+import VisitorHourChart from "@/components/Contractors/DashboardContractorHourChart.vue";
+import VisitorPieChart from "@/components/Contractors/DashboardContractorPieChart.vue";
 
 export default {
   components: {
@@ -188,7 +187,6 @@ export default {
     VisitorHourChart,
     VisitorReport,
     VisitorLogs,
-    VisitorRequestsList,
   },
 
   data() {
@@ -290,7 +288,7 @@ export default {
       let options = {
         company_id: this.$auth.user.company_id,
         branch_id: this.branch_id > 0 ? this.branch_id : null,
-        visitor_type: "visitor",
+        visitor_type: "contractor",
       };
 
       this.$axios.get(`visitor-count`, { params: options }).then(({ data }) => {

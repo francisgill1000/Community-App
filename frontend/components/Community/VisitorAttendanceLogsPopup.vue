@@ -3,7 +3,8 @@
     <v-container>
       <v-row no-gutters>
         <v-col cols="4" style="border-right: 1px solid #dddddd">
-          <v-divider></v-divider>
+          <h3>{{ caps(item?.visitor_type) }}</h3>
+
           <v-row class="pa-0 ma-0">
             <v-col cols="12">
               <v-row no-gutters>
@@ -181,7 +182,7 @@
 
 <script>
 export default {
-  props: ["UserID"],
+  props: ["UserID", "visitor_type"],
   data: () => ({
     loading: false,
     dialog: false,
@@ -200,6 +201,9 @@ export default {
     this.search();
   },
   methods: {
+    caps(str) {
+      if (str) return str.replace(/\b\w/g, (c) => c.toUpperCase());
+    },
     close() {
       this.searchCard = true;
       this.infoCard = false;

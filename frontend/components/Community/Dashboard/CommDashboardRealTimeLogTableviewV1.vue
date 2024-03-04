@@ -409,9 +409,9 @@ export default {
   },
   methods: {
     showDialog(item) {
+      console.log("item", item);
       this.key++;
       this.selectedItem = item;
-      this.dialog = true;
 
       if (item.visitor) {
         this.UserID = item.visitor.id;
@@ -420,7 +420,10 @@ export default {
         this.UserID = item.tanent.id;
       }
 
+      console.log(this.UserID);
+
       this.visitor_type = this.getUserType(item);
+      this.dialog = true;
     },
     getUserType(item) {
       const relationships = {

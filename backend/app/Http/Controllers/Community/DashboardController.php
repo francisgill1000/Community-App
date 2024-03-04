@@ -347,29 +347,32 @@ class DashboardController extends Controller
 
             $VisitorsCount = $AttendanceLogModel->clone()
                 ->where("status", "Allowed")
-                ->where("visitor_type", "visitor")
+
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
+                        ->where("visitor_type", "visitor")
                         ->from('visitors');
                 })
                 ->get()->count();
 
             $ContractorsCount = $AttendanceLogModel->clone()
                 ->where("status", "Allowed")
-                ->where("visitor_type", "contractor")
+
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
+                        ->where("visitor_type", "contractor")
                         ->from('visitors');
                 })
                 ->get()->count();
             $DeliverysCount = $AttendanceLogModel->clone()
                 ->where("status", "Allowed")
-                ->where("visitor_type", "delivery")
+
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
+                        ->where("visitor_type", "delivery")
                         ->from('visitors');
                 })
                 ->get()->count();
@@ -452,12 +455,37 @@ class DashboardController extends Controller
 
             $VisitorsCount = $AttendanceLogModel->clone()
                 ->where("status", "Allowed")
+
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
                         ->where('company_id', $request->company_id)
+                        ->where("visitor_type", "visitor")
                         ->from('visitors');
                 })
                 ->get()->count();
+
+            $ContractorsCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
+
+                ->whereIn('UserID', function ($query) use ($request) {
+                    $query->select('system_user_id')
+                        ->where('company_id', $request->company_id)
+                        ->where("visitor_type", "contractor")
+                        ->from('visitors');
+                })
+                ->get()->count();
+            $DeliveryCount = $AttendanceLogModel->clone()
+                ->where("status", "Allowed")
+
+                ->whereIn('UserID', function ($query) use ($request) {
+                    $query->select('system_user_id')
+                        ->where('company_id', $request->company_id)
+                        ->where("visitor_type", "delivery")
+                        ->from('visitors');
+                })
+                ->get()->count();
+
+
 
 
             $TenantsCount = $AttendanceLogModel->clone()
@@ -468,6 +496,8 @@ class DashboardController extends Controller
                         ->from('tanents');
                 })
                 ->get()->count();
+
+
 
             $DeniedCount = $AttendanceLogModel->clone()
                 ->where("status", "Access Denied")
@@ -482,7 +512,9 @@ class DashboardController extends Controller
                 "EmployeeCount" => $EmployeesCount,
                 "VisitorCount" => $VisitorsCount,
                 "TenantCount" =>  $TenantsCount,
-                "DeniedCount" =>  $DeniedCount
+                "DeniedCount" =>  $DeniedCount,
+                "DeliveryCount" =>  $DeliveryCount,
+                "ContractorsCount" =>  $ContractorsCount
 
             ];
         }
@@ -504,20 +536,6 @@ class DashboardController extends Controller
 
             $date = date('Y-m-d'); //, strtotime(date('Y-m-d') . '-' . $i . ' days'));
             $model = AttendanceLog::with(["visitor"])->where('company_id', $request->company_id)
-
-                ->whereIn('UserID', function ($query) use ($request) {
-                    $query->select('system_user_id')
-                        ->where('visit_from', "<=", date('Y-m-d'))
-                        ->where('visit_to', ">=", date('Y-m-d'))
-                        ->when($request->filled("branch_id"), function ($query) use ($request) {
-                            return $query->where('branch_id', $request->branch_id);
-                        })
-                        ->from('visitors');
-                })
-                // ->when($request->filled("branch_id"), function ($q) use ($request) {
-                //     $q->whereHas("visitor", fn ($q) => $q->where("branch_id", $request->branch_id));
-                // })
-                // ->whereDate('LogTime', $date)
 
                 ->where('LogTime', '>=', $date . ' ' . $j . ':00:00')
                 ->where('LogTime', '<', $date  . ' ' . $j . ':59:59')

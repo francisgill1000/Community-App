@@ -3,7 +3,8 @@
     <v-container>
       <v-row no-gutters>
         <v-col cols="4" style="border-right: 1px solid #dddddd">
-          <v-divider></v-divider>
+          <h3>{{ caps(item.relation) }}</h3>
+
           <v-card elevation="0" outlined>
             <v-container>
               <v-row>
@@ -157,6 +158,9 @@ export default {
     this.search();
   },
   methods: {
+    caps(str) {
+      if (str) return str.replace(/\b\w/g, (c) => c.toUpperCase());
+    },
     close() {
       this.searchCard = true;
       this.infoCard = false;
