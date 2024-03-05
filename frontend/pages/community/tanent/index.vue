@@ -5,6 +5,49 @@
         {{ response }}
       </v-snackbar>
     </div>
+    <v-dialog v-model="viewDocumentsDialog" width="900">
+      <!-- <v-toolbar flat dense>
+        <b> Documents </b>
+        <v-spacer></v-spacer>
+        <v-icon color="primary" @click="viewDocumentsDialog = false"
+          >mdi-close-circle-outline</v-icon
+        >
+      </v-toolbar> -->
+      <v-card>
+        <v-card-title dark class="popup_background">
+          Tenant Documents
+          <v-spacer></v-spacer>
+          <v-icon @click="viewDocumentsDialog = false" outlined dark>
+            mdi mdi-close-circle
+          </v-icon>
+        </v-card-title>
+        <v-card-text>
+          <CommunityTenantDocumentsList
+            :tenant_id="tenant_id"
+            :key="generateRandomId()"
+          ></CommunityTenantDocumentsList>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialog" max-width="1000">
+      <v-card>
+        <v-container>
+          <v-row no-gutters class="pa-0 ma-0">
+            <v-col class="text-right">
+              <v-icon color="primary" @click="dialog = false">
+                mdi-close-circle-outline
+              </v-icon>
+            </v-col>
+          </v-row>
+
+          <TenantAttendanceLogsPopup
+            :key="generateRandomId()"
+            :UserID="UserID"
+            :visitor_type="'tenant'"
+          />
+        </v-container>
+      </v-card>
+    </v-dialog>
     <div v-if="!loading">
       <v-dialog persistent v-model="viewMemberDialogBox" width="700">
         <v-toolbar flat dense>
@@ -57,6 +100,8 @@
           :headers="headers"
         />
         <v-data-table
+          @dblclick:row="showDialog"
+          @click:row="showDialog"
           dense
           :headers="headers"
           :items="data"
@@ -147,6 +192,17 @@
                 </v-list-item>
                 <v-list-item>
                   <v-list-item-title style="cursor: pointer">
+                    <v-list-item-title
+                      style="cursor: pointer"
+                      @click="viewDocuments(item.id)"
+                    >
+                      <v-icon color="secondary" small> mdi-file </v-icon>
+                      Documents
+                    </v-list-item-title>
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
                     <TanentAddCard
                       :key="generateRandomId()"
                       @success="handleSuccessResponse"
@@ -191,8 +247,12 @@
 </template>
 
 <script>
+import TenantAttendanceLogsPopup from "../../../components/Community/TenantAttendanceLogsPopup.vue";
+
 export default {
+  components: { TenantAttendanceLogsPopup },
   data: () => ({
+    viewDocumentsDialog: false,
     disabled: false,
     step: 1,
 
@@ -400,6 +460,10 @@ export default {
       nationality: null,
       tanent_id: 0,
     },
+    selectedTenantItem: {},
+    UserID: null,
+    tenant_id: null,
+    component_data: null,
   }),
 
   async created() {
@@ -418,6 +482,20 @@ export default {
     },
   },
   methods: {
+    showDialog(item) {
+      console.log("item", item);
+      this.key++;
+
+      this.UserID = item.id;
+
+      this.dialog = true;
+      //this.component_data = item;
+    },
+    viewDocuments(tenant_id) {
+      this.key++;
+      this.tenant_id = tenant_id;
+      this.viewDocumentsDialog = true;
+    },
     exportData() {
       let cols = [
         "system_user_id",

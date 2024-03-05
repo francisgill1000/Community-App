@@ -409,7 +409,6 @@ export default {
   },
   methods: {
     showDialog(item) {
-      console.log("item", item);
       this.key++;
       this.selectedItem = item;
 
@@ -419,8 +418,6 @@ export default {
       if (item.tanent) {
         this.UserID = item.tanent.id;
       }
-
-      console.log(this.UserID);
 
       this.visitor_type = this.getUserType(item);
       this.dialog = true;

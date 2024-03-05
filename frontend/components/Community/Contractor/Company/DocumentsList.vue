@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8">
+  <div class="mt-0">
     <div class="text-center ma-2">
       <v-snackbar v-model="snackbar" top="top" color="secondary" elevation="24">
         {{ response }}
@@ -15,8 +15,6 @@
               style="border-radius: 5px 5px 0px 0px"
               dense
             >
-              <span> Documents List </span>
-
               <v-spacer></v-spacer>
               <v-toolbar-items>
                 <v-col class="toolbaritems-button-design">
@@ -43,51 +41,68 @@
               <template v-slot:item.title="{ item }">
                 {{ item.title }}
               </template>
+              <template v-slot:item.date_time="{ item }">
+                {{ $dateFormat.format4(item.date_time) }}
+              </template>
               <template v-slot:item.download="{ item }">
                 <a
                   title="Download Profile Picture"
-                  :href="getDonwloadLink(item.employee_id, item.attachment)"
+                  :href="getDonwloadLink(item.contractor_id, item.attachment)"
                   ><v-icon color="violet">mdi-arrow-down-bold-circle</v-icon></a
                 >
               </template>
-              <template v-slot:item.delete="{ item }">
-                <v-icon color="error" @click="delete_document(item.id)">
+              <!-- <template v-slot:item.delete="{ item }">
+                <v-icon
+                  color="error"
+                  @click="delete_document(item.id, item.attachment)"
+                >
                   mdi-delete
                 </v-icon>
+              </template> -->
+              <template v-slot:item.edit="{ item }">
+                <v-menu bottom left v-if="$auth.user.user_type == 'company'">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn dark-2 icon v-bind="attrs" v-on="on">
+                      <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list width="120" dense>
+                    <v-list-item
+                      v-if="can('branch_view')"
+                      @click="editDocuments(item)"
+                    >
+                      <v-list-item-title style="cursor: pointer">
+                        <v-icon color="secondary" small>mdi-pencil </v-icon>
+                        Edit
+                      </v-list-item-title>
+                    </v-list-item>
+
+                    <v-list-item
+                      v-if="can('branch_delete')"
+                      @click="
+                        delete_document(
+                          item.id,
+                          item.contractor_id,
+                          item.attachment
+                        )
+                      "
+                    >
+                      <v-list-item-title style="cursor: pointer">
+                        <v-icon color="error" small> mdi-delete </v-icon>
+                        Delete
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </template>
             </v-data-table>
-
-            <!-- <table class="employee-table" style="border: 1px solid #ddd">
-              <v-progress-linear v-if="loading" :active="loading" :indeterminate="loading" absolute
-                color="primary"></v-progress-linear>
-              <tr>
-                <th>Title</th>
-                <th class="text-center">Download</th>
-                <th class="text-center">Delete</th>
-              </tr>
-              <tr v-for="(d, index) in document_list" :key="index">
-                <td>
-                  <span>{{ d.title }}</span>
-                </td>
-                <td class="text-center">
-                  <a :href="d.attachment" download target="_blank">
-                    <v-icon color="primary"> mdi-download </v-icon>
-                  </a>
-                </td>
-                <td class="text-center">
-                  <v-icon color="error" @click="delete_document(d.id)">
-                    mdi-delete
-                  </v-icon>
-                </td>
-              </tr>
-            </table> -->
           </v-card>
         </v-col>
       </v-row>
       <v-dialog persistent v-model="dialogUploadDocuments" width="800px">
         <v-card>
           <v-card-title dense class="popup_background">
-            Documents
+            Upload Documents
             <v-spacer></v-spacer>
             <v-icon @click="dialogUploadDocuments = false" outlined dark fill>
               mdi mdi-close-circle
@@ -167,6 +182,7 @@
                             >mdi-plus-circle</v-icon
                           >
                           <v-btn
+                            v-else
                             dark
                             class="error mt-2"
                             fab
@@ -196,16 +212,123 @@
           </v-card-text>
         </v-card>
       </v-dialog>
+      <v-dialog persistent v-model="editDialogUploadDocuments" width="800px">
+        <v-card>
+          <v-card-title dense class="popup_background">
+            Edit Documents
+            <v-spacer></v-spacer>
+            <v-icon
+              @click="editDialogUploadDocuments = false"
+              outlined
+              dark
+              fill
+            >
+              mdi mdi-close-circle
+            </v-icon>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" class="text-right">
+                  <v-form
+                    class="mt-5"
+                    ref="form"
+                    method="post"
+                    v-model="valid"
+                    lazy-validation
+                  >
+                    <v-row
+                      v-for="(d, index) in EditDocument.items"
+                      :key="index"
+                    >
+                      <v-col cols="5">
+                        <!-- <label for="" class="py-2"
+                        >Title <span color="error"></span
+                      ></label> -->
+                        <v-text-field
+                          style="display: none"
+                          small
+                          type="text"
+                          class="form-control"
+                          label="Title"
+                          dense
+                          outlined
+                          v-model="d.document_id"
+                        ></v-text-field>
+                        <v-text-field
+                          small
+                          type="text"
+                          class="form-control"
+                          label="Title"
+                          dense
+                          outlined
+                          v-model="d.title"
+                          :rules="TitleRules"
+                        ></v-text-field>
+                        <span
+                          v-if="errors && errors.title"
+                          class="text-danger mt-2"
+                          >{{ errors.title[0] }}</span
+                        >
+                      </v-col>
+                      <v-col cols="5">
+                        <div class="form-group">
+                          <!-- <label for="" class="px-8 py-2"
+                          >Select File <span color="error"></span
+                        ></label> -->
+                          <v-file-input
+                            label="Attachment"
+                            dense
+                            outlined
+                            v-model="d.file"
+                            placeholder="Upload your file"
+                            :rules="FileRules"
+                          >
+                            <template v-slot:selection="{ text }">
+                              <v-chip v-if="text" small label color="primary">
+                                {{ text }}
+                              </v-chip>
+                            </template>
+                          </v-file-input>
+
+                          <span
+                            v-if="errors && errors.attachment"
+                            class="text-danger mt-2"
+                            >{{ errors.attachment[0] }}</span
+                          >
+                        </div>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12" class="text-right">
+                        <v-btn
+                          :disabled="!EditDocument.items.length"
+                          class="primary"
+                          small
+                          @click="update_document_info"
+                          >Save</v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-form>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-container>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["employeeId"],
+  props: ["contractor_id"],
   data() {
     return {
       dialogUploadDocuments: false,
+      editDialogUploadDocuments: false,
+      key: 0,
       loading: false,
       snackbar: false,
       valid: false,
@@ -223,6 +346,10 @@ export default {
       Document: {
         items: [{ title: "", file: "" }],
       },
+      EditDocument: {
+        items: [{ title: "", file: "", document_id: null }],
+      },
+
       document_list: [],
       headers_table: [
         {
@@ -247,26 +374,43 @@ export default {
           value: "download",
         },
         {
-          text: "Delete",
+          text: "Date",
           align: "left",
           sortable: false,
-          key: "time",
-          value: "delete",
+          key: "date_time",
+          value: "date_time",
+        },
+        {
+          text: "Options",
+          align: "left",
+          sortable: false,
+          key: "edit",
+          value: "edit",
         },
       ],
     };
   },
   created() {
-    this.getInfo(this.employeeId);
+    this.getInfo(this.contractor_id);
   },
   methods: {
+    editDocuments(item) {
+      this.EditDocument.items = [
+        { title: item.title, file: "", document_id: item.id },
+      ];
+      //this.EditDocument[0].title = item.title;
+
+      this.key++;
+      this.editDialogUploadDocuments = true;
+    },
     getInfo(id) {
       this.loading = true;
-      this.$axios.get(`documentinfo/${id}`).then(({ data }) => {
+      this.$axios.get(`contractor-documents-list/${id}`).then(({ data }) => {
         this.document_list = data;
         this.loading = false;
       });
     },
+
     can(item) {
       return true;
     },
@@ -296,7 +440,50 @@ export default {
         file: "",
       });
     },
+    update_document_info() {
+      if (!this.$refs.form.validate()) {
+        alert("Enter required fields!");
+        return;
+      }
+      this.loading = true;
+      let options = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      let payload = new FormData();
 
+      this.EditDocument.items.forEach((e) => {
+        payload.append(`items[][title]`, e.title);
+        payload.append(`items[][document_id]`, e.document_id);
+
+        payload.append(`items[][file]`, e.file || {});
+      });
+
+      payload.append(`company_id`, this.$auth?.user?.company?.id);
+      payload.append(`contractor_id`, this.contractor_id);
+
+      this.$axios
+        .post(`contractor-documents-update`, payload, options)
+        .then(({ data }) => {
+          this.editDialogUploadDocuments = false;
+          this.loading = false;
+
+          if (!data.status) {
+            this.errors = data.errors;
+          } else {
+            this.errors = [];
+            this.snackbar = true;
+            this.response = "Document saved successfully"; //data.message;
+            this.getDocumentInfo(this.contractor_id);
+
+            // this.close_document_info();
+            // this.displayForm = false;
+            this.loading = false;
+          }
+        })
+        .catch((e) => console.log(e));
+    },
     save_document_info() {
       if (!this.$refs.form.validate()) {
         alert("Enter required fields!");
@@ -316,10 +503,10 @@ export default {
       });
 
       payload.append(`company_id`, this.$auth?.user?.company?.id);
-      payload.append(`employee_id`, this.employeeId);
+      payload.append(`contractor_id`, this.contractor_id);
 
       this.$axios
-        .post(`documentinfo`, payload, options)
+        .post(`contractor-documents-store`, payload, options)
         .then(({ data }) => {
           this.dialogUploadDocuments = false;
           this.loading = false;
@@ -330,7 +517,7 @@ export default {
             this.errors = [];
             this.snackbar = true;
             this.response = "Document saved successfully"; //data.message;
-            this.getDocumentInfo(this.employeeId);
+            this.getDocumentInfo(this.contractor_id);
 
             // this.close_document_info();
             // this.displayForm = false;
@@ -342,7 +529,7 @@ export default {
     getDonwloadLink(pic, file_name) {
       return (
         process.env.BACKEND_URL +
-        "/download-emp-documents/" +
+        "/download-contractor-documents/" +
         pic +
         "/" +
         file_name
@@ -350,7 +537,7 @@ export default {
     },
     getDocumentInfo(id) {
       this.loading = true;
-      this.$axios.get(`documentinfo/${id}`).then(({ data }) => {
+      this.$axios.get(`contractor-documents-list/${id}`).then(({ data }) => {
         this.document_list = data;
         this.documents = false;
         this.loading = false;
@@ -368,12 +555,14 @@ export default {
       //this.displayForm = false;
     },
 
-    delete_document(id) {
+    delete_document(id, contractor_id, file_name) {
       confirm(
         "Are you sure you wish to delete , to mitigate any inconvenience in future."
       ) &&
         this.$axios
-          .delete(`documentinfo/${id}`)
+          .post(
+            `contractor-documents-delete/${id}/${contractor_id}/${file_name}`
+          )
           .then(({ data }) => {
             this.loading = false;
 
@@ -383,7 +572,7 @@ export default {
               this.errors = [];
               this.snackbar = true;
               this.response = data.message;
-              this.getDocumentInfo(this.employeeId);
+              this.getDocumentInfo(this.contractor_id);
               this.close_document_info();
             }
           })
