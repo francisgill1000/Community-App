@@ -95,7 +95,7 @@ class ReportController extends Controller
         $userLogs = AttendanceLog::whereDate("LogTime", '=', $date) // Only today's records
             ->whereIn("UserID", $userIds)
             ->where("company_id", $companyId)
-            ->distinct("LogTime", "UserID", "visitor_id", "company_id")
+            ->distinct("LogTime", "UserID", "company_id")
             ->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid"])
             ->get()
             ->groupBy('UserID');
