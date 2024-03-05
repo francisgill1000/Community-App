@@ -180,30 +180,6 @@
               class="elevation-1"
               :server-items-length="totalRowsCount"
             >
-              <template v-slot:header="{ props: { headers } }">
-                <tr v-if="isFilter">
-                  <td v-for="header in headers" :key="header.text">
-                    <v-container>
-                      <v-text-field
-                        clearable
-                        @click:clear="
-                          filters[header.value] = '';
-                          applyFilters();
-                        "
-                        :hide-details="true"
-                        v-if="header.filterable && !header.filterSpecial"
-                        v-model="filters[header.value]"
-                        :id="header.value"
-                        @input="applyFilters(header.key, $event)"
-                        outlined
-                        dense
-                        autocomplete="off"
-                      ></v-text-field>
-                    </v-container>
-                  </td>
-                </tr>
-              </template>
-
               <template v-slot:item.status_id="{ item }">
                   {{ item.status_id == 1 ? `Active` : `InActive` }}
                 </template>
