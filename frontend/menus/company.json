@@ -124,20 +124,6 @@
     "module": "settings"
   },
   {
-    "icon": "mdi-email",
-    "title": "Automation",
-    "to": "/automation",
-    "menu": "notifications_access",
-    "module": "settings"
-  },
-  {
-    "icon": "mdi-cellphone-text",
-    "title": "Device Notifications",
-    "to": "/device_notifications",
-    "menu": "notifications_access",
-    "module": "settings"
-  },
-  {
     "icon": "mdi-domain",
     "title": "Profile",
     "to": "/companies",
@@ -160,13 +146,6 @@
     "module": "settings"
   },
   {
-    "icon": "mdi mdi-calendar-star-four-points",
-    "title": "Holidays",
-    "to": "/holidays",
-    "menu": "holiday_access",
-    "module": "settings"
-  },
-  {
     "icon": "mdi-bell",
     "title": "Announ..Categories",
     "open_menu": false,
@@ -180,7 +159,6 @@
     "to": "/announcements",
     "module": "settings"
   },
-
   {
     "icon": "mdi-web-box",
     "title": "Web Logs",
@@ -193,13 +171,6 @@
     "title": "Community Setup",
     "open_menu": false,
     "to": "/community/setup",
-    "module": "settings"
-  },
-  {
-    "icon": "mdi-mail",
-    "title": "Mail",
-    "open_menu": false,
-    "to": "/automation_mail_content",
     "module": "settings"
   },
   {

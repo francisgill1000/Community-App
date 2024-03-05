@@ -130,15 +130,7 @@
       <v-spacer></v-spacer>
 
       <span style="100%">
-        <template
-          v-if="
-            getLoginType == 'company' ||
-            getLoginType == 'branch' ||
-            (getLoginType == 'employee' &&
-              $auth.user.role?.role_type.toLowerCase() != 'guard' &&
-              $auth.user.role?.role_type.toLowerCase() != 'host')
-          "
-        >
+        <template>
           <v-row align="center" justify="space-around" class="">
             <v-col v-for="(items, index) in company_top_menu" :key="index">
               <v-btn
@@ -551,24 +543,6 @@ export default {
       return "#ecf0f4"; //this.$store.state.color;
     },
 
-    getUser() {
-      const user = this.$auth.user;
-      const userType = user.user_type;
-
-      if (userType === "master") {
-        return user.name;
-      } else if (userType === "company") {
-        return user.company.name;
-      }
-
-      const employee = user.employee;
-      if (employee) {
-        return employee.display_name || employee.first_name;
-      }
-
-      return null; // Or some default value indicating no user found
-    },
-
     getLogo() {
       let logosrc = "/no-image.PNG";
 
@@ -599,52 +573,44 @@ export default {
       }
     },
     updateTopmenu() {
+      let { permissions, is_master } = this.$auth.user;
+
+      if (is_master) return;
+
+      let menus = this.company_top_menu;
+
+      this.company_top_menu = menus.filter((e) =>
+        permissions.includes(e.permission)
+      );
+
+      return;
       //update company Top menu
       //filter Display Modules From Company Settings
 
-      try {
-        if (this.$auth.user.user_type == "employee") {
-          let { permissions } = this.$auth.user;
-
-          let filteredArr = this.visitor_top_menu.filter((item) =>
-            permissions.includes(item.menu)
-          );
-
-          this.company_top_menu = filteredArr;
-
-          this.setSubLeftMenuItems(
-            "visitor_dashboard_access",
-            "/dashboard",
-            false
-          );
-          // this.items = this.visitor_menus;
-
-          return;
-        }
-
-        if (this.$auth.user.company.display_modules) {
-          let display_modules = JSON.parse(
-            this.$auth.user.company.display_modules
-          );
-          if (display_modules) {
-            if (display_modules.access_control == false) {
-              this.company_top_menu = this.company_top_menu.filter(
-                (item) => item.menu != "access_control"
-              );
-            }
-            if (display_modules.visitors == false) {
-              this.company_top_menu = this.company_top_menu.filter(
-                (item) => item.menu != "visitors"
-              );
-            }
-            if (display_modules.community == false) {
-              this.company_top_menu = this.company_top_menu.filter(
-                (item) => item.menu != "community"
-              );
-            }
-          }
-        }
-      } catch (e) {}
+      // try {
+      //   if (this.$auth.user.company.display_modules) {
+      //     let display_modules = JSON.parse(
+      //       this.$auth.user.company.display_modules
+      //     );
+      //     if (display_modules) {
+      //       if (display_modules.access_control == false) {
+      //         this.company_top_menu = this.company_top_menu.filter(
+      //           (item) => item.menu != "access_control"
+      //         );
+      //       }
+      //       if (display_modules.visitors == false) {
+      //         this.company_top_menu = this.company_top_menu.filter(
+      //           (item) => item.menu != "visitors"
+      //         );
+      //       }
+      //       if (display_modules.community == false) {
+      //         this.company_top_menu = this.company_top_menu.filter(
+      //           (item) => item.menu != "community"
+      //         );
+      //       }
+      //     }
+      //   }
+      // } catch (e) {}
     },
     handleActivity() {
       this.resetTimer();
@@ -754,41 +720,9 @@ export default {
     },
 
     setMenus() {
-      if (this.$auth.user.role.role_type == 0) {
-        {
-          alert("Invalid User Type");
-          this.logout();
-        }
-
-        return "";
-      }
-      let roleType = this.$auth.user.role.role_type.toLowerCase();
-
-      if (this.getLoginType === "company" || this.getLoginType === "branch") {
-        // this.items = this.company_menus;
-        this.items = this.company_menus.filter(
-          (item) => item.module === this.topMenu_Selected
-        );
-
-        // display_modules.forEach((element) => {
-        //   console.log("element", element);
-        // });
-
-        return;
-      } else if (this.getLoginType === "employee") {
-        if (/guard/.test(roleType)) {
-          this.items = this.guard_menus;
-          return;
-        } else if (/host/.test(roleType)) {
-          this.items = this.host_menus;
-          return;
-        } else {
-          this.items = this.company_menus.filter(
-            (item) => item.module === this.topMenu_Selected
-          );
-          return;
-        }
-      }
+      this.items = this.company_menus.filter(
+        (item) => item.module === this.topMenu_Selected
+      );
     },
     collapseSubItems() {
       this.company_menus.map((item) => (item.active = false));
@@ -796,10 +730,6 @@ export default {
     changeTopBarColor(color) {
       this.color = color;
       this.$store.commit("change_color", color);
-    },
-
-    changeSideBarColor(color) {
-      this.sideBarcolor = color;
     },
 
     caps(str) {

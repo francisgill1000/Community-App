@@ -76,7 +76,7 @@ class ReportController extends Controller
         return [];
     }
 
-    public function render($companyId, $id, $date, $userIds = [], $customRender = false)
+    public function render($companyId, $date, $userIds = [], $customRender = false)
     {
         $params = [
             "company_id" => $companyId,
@@ -87,17 +87,14 @@ class ReportController extends Controller
 
         if (!$customRender) {
             $userIds = AttendanceLog::where("company_id", $companyId)
-                ->where("checked", false)
-                ->where("visitor_id", $id)
                 ->whereDate("LogTime", '=', $date) // Only today's records
-                ->distinct("UserID", "visitor_id", "company_id")
+                ->distinct("UserID", "company_id")
                 ->pluck('UserID');
         }
 
         $userLogs = AttendanceLog::whereDate("LogTime", '=', $date) // Only today's records
             ->whereIn("UserID", $userIds)
             ->where("company_id", $companyId)
-            ->where("visitor_id", $id)
             ->distinct("LogTime", "UserID", "visitor_id", "company_id")
             ->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid"])
             ->get()

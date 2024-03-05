@@ -256,7 +256,6 @@
           </div>
           <h3 class="pt-10">Features</h3>
           <ul style="font-weight: 300">
-           
             <li>Tanent and Members management</li>
             <li>Visitor management</li>
             <li>Contractor management</li>
@@ -465,27 +464,6 @@ export default {
         this.$auth
           .loginWith("local", { data: this.credentials })
           .then(({ data }) => {
-            // console.log("$auth.user", data, this.$auth.user);
-
-            if (data.user.branch_id == 0 && data.user.is_master == false) {
-              this.snackbar = true;
-              this.snackbarMessage =
-                "You do not have Permission to access this page";
-              this.msg = "You do not have Permission to access this page";
-
-              // window.location.href = process.env.EMPLOYEE_APP_URL;
-              // this.$router.push("/login");
-              return false;
-            }
-
-            if (
-              this.$auth.user.role_id == 0 &&
-              this.$auth.user.user_type == "employee"
-            ) {
-              window.location.href = process.env.EMPLOYEE_APP_URL;
-              return "";
-            }
-
             setTimeout(() => (this.loading = false), 2000);
           })
           .catch(({ response }) => {
