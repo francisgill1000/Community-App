@@ -603,17 +603,17 @@
                   >
                     <v-list-item-title style="cursor: pointer">
                       <v-icon color="secondary" small>mdi-file </v-icon>
-                      Manage Docs
+                      Documents
                     </v-list-item-title>
                   </v-list-item>
-                  <v-list-item v-if="can('branch_edit')">
+                  <!-- <v-list-item v-if="can('branch_edit')">
                     <v-list-item-title style="cursor: pointer">
                       <CommunityContractorCompanyDocument
                         :id="item.id"
                         @success="handleSuccessResponse"
                       />
                     </v-list-item-title>
-                  </v-list-item>
+                  </v-list-item> -->
                   <v-list-item
                     v-if="can('branch_view')"
                     @click="viewItem(item)"
