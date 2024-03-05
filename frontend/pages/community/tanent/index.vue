@@ -280,16 +280,6 @@ export default {
         filterable: false,
       },
       {
-        text: "User Device Id",
-        align: "left",
-        sortable: false,
-        key: "system_user_id",
-        value: "system_user_id",
-        filterable: true,
-        type: "text",
-      },
-
-      {
         text: "Full Name",
         align: "left",
         sortable: false,
@@ -298,7 +288,6 @@ export default {
         filterable: true,
         type: "text",
       },
-
       {
         text: "Members",
         align: "left",
