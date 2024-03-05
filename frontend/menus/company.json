@@ -117,18 +117,18 @@
     "module": "settings"
   },
   {
-    "icon": "mdi-chair-rolling",
-    "title": "Departments",
-    "to": "/department",
-    "menu": "department_access",
-    "module": "settings"
-  },
-  {
     "icon": "mdi-domain",
     "title": "Profile",
     "to": "/companies",
     "menu": "setting_access",
     "class": "submenutitle",
+    "module": "settings"
+  },
+  {
+    "icon": "mdi-chair-rolling",
+    "title": "Departments",
+    "to": "/department",
+    "menu": "department_access",
     "module": "settings"
   },
   {

@@ -179,7 +179,7 @@ class ReportController extends Controller
 
         $query = CommunityReport::query();
 
-        $query->when(request()->filled("user_type"), fn ($q) => $q->whereHas(request("user_type")));
+        $query->when(request()->filled("user_type"), fn ($q) => $q->where("user_type", request("user_type")));
 
         $query->when(request()->filled("UserID"), function ($q) {
             $q->whereHas("in_log", function ($qu) {
