@@ -157,13 +157,6 @@ class RoomController extends Controller
     {
         try {
 
-
-            $start = $request->start_number;
-
-            $end = $request->end_number;
-
-            $data = [];
-
             // foreach (range($start, $end) as $value) {
             //     $data[] = [
             //         'room_number' => $value,
@@ -178,7 +171,7 @@ class RoomController extends Controller
             // $record = Room::insert($data);
 
             $record = Room::create([
-                'room_number' => $start,
+                'room_number' => $request->room_number,
                 'floor_id' => $request->floor_id,
                 'room_category_id' => $request->room_category_id,
                 "room_sub_category_id" => $request->room_sub_category_id,

@@ -1372,9 +1372,8 @@ export default {
         6: "Document",
         7: "Qualification",
         8: "Setting",
-        9: "Payroll",
-        10: "Login",
-        11: "Rfid",
+        9: "Login",
+        10: "Rfid",
       };
       return componentsList[value] || "div"; // default to a div if no component found
     },
