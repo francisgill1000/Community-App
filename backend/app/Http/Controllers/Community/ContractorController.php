@@ -231,4 +231,49 @@ class ContractorController extends Controller
         $file->move(public_path('contractor_documents/' . $id . "/"), $filename);
         return $filename;
     }
+    public function contractorDocumentsUpdate(Request $request)
+    {
+
+
+        $arr = [];
+
+        $document_id = $request->items[1]["document_id"];
+        if ($document_id > 0) {
+            if (isset($request->items[0]["file"])) {
+
+                $arr  = [
+                    "title" => $request->items[0]["title"],
+                    "attachment" => $this->saveFile($request->items[0]["file"], $request->contractor_id),
+
+                    "date_time" => date('Y-m-d H:i:s'),
+                    "branch_id" => 0,
+                ];
+            } else {
+
+                $arr  = [
+                    "title" => $request->items[0]["title"],
+                    "date_time" => date('Y-m-d H:i:s'),
+                    "branch_id" => 0,
+                ];
+            }
+
+
+            ContractorDocuments::where("id", $document_id)->update($arr);
+        }
+
+        try {
+
+            return response()->json([
+                "status" => true,
+                "message" => "Record has been successfully added",
+                "record" => [],
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "status" => true,
+                "message" => $th,
+                "record" => null,
+            ]);
+        }
+    }
 }
