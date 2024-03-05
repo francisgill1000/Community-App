@@ -47,7 +47,7 @@
               <template v-slot:item.download="{ item }">
                 <a
                   title="Download Profile Picture"
-                  :href="getDonwloadLink(item.contractor_id, item.attachment)"
+                  :href="getDonwloadLink(item.tenant_id, item.attachment)"
                   ><v-icon color="violet">mdi-arrow-down-bold-circle</v-icon></a
                 >
               </template>
@@ -79,7 +79,13 @@
 
                     <v-list-item
                       v-if="can('branch_delete')"
-                      @click="delete_document(item.id, item.attachment)"
+                      @click="
+                        delete_document(
+                          item.id,
+                          item.tenant_id,
+                          item.attachment
+                        )
+                      "
                     >
                       <v-list-item-title style="cursor: pointer">
                         <v-icon color="error" small> mdi-delete </v-icon>
@@ -300,7 +306,7 @@
                           class="primary"
                           small
                           @click="update_document_info"
-                          >Save</v-btn
+                          >Update Document</v-btn
                         >
                       </v-col>
                     </v-row>
@@ -317,7 +323,7 @@
 
 <script>
 export default {
-  props: ["contractor_id"],
+  props: ["tenant_id"],
   data() {
     return {
       dialogUploadDocuments: false,
@@ -385,7 +391,7 @@ export default {
     };
   },
   created() {
-    this.getInfo(this.contractor_id);
+    this.getInfo(this.tenant_id);
   },
   methods: {
     editDocuments(item) {
@@ -399,7 +405,7 @@ export default {
     },
     getInfo(id) {
       this.loading = true;
-      this.$axios.get(`contractor-documents-list/${id}`).then(({ data }) => {
+      this.$axios.get(`tenant-documents-list/${id}`).then(({ data }) => {
         this.document_list = data;
         this.loading = false;
       });
@@ -455,10 +461,10 @@ export default {
       });
 
       payload.append(`company_id`, this.$auth?.user?.company?.id);
-      payload.append(`contractor_id`, this.contractor_id);
+      payload.append(`tenant_id`, this.tenant_id);
 
       this.$axios
-        .post(`contractor-documents-update`, payload, options)
+        .post(`tenant-documents-update`, payload, options)
         .then(({ data }) => {
           this.editDialogUploadDocuments = false;
           this.loading = false;
@@ -468,8 +474,8 @@ export default {
           } else {
             this.errors = [];
             this.snackbar = true;
-            this.response = "Document saved successfully"; //data.message;
-            this.getDocumentInfo(this.contractor_id);
+            this.response = "Document Updated successfully"; //data.message;
+            this.getDocumentInfo(this.tenant_id);
 
             // this.close_document_info();
             // this.displayForm = false;
@@ -497,10 +503,10 @@ export default {
       });
 
       payload.append(`company_id`, this.$auth?.user?.company?.id);
-      payload.append(`contractor_id`, this.contractor_id);
+      payload.append(`tenant_id`, this.tenant_id);
 
       this.$axios
-        .post(`contractor-documents-store`, payload, options)
+        .post(`tenant-documents-store`, payload, options)
         .then(({ data }) => {
           this.dialogUploadDocuments = false;
           this.loading = false;
@@ -511,7 +517,7 @@ export default {
             this.errors = [];
             this.snackbar = true;
             this.response = "Document saved successfully"; //data.message;
-            this.getDocumentInfo(this.contractor_id);
+            this.getDocumentInfo(this.tenant_id);
 
             // this.close_document_info();
             // this.displayForm = false;
@@ -523,7 +529,7 @@ export default {
     getDonwloadLink(pic, file_name) {
       return (
         process.env.BACKEND_URL +
-        "/download-contractor-documents/" +
+        "/download-tenant-documents/" +
         pic +
         "/" +
         file_name
@@ -531,7 +537,7 @@ export default {
     },
     getDocumentInfo(id) {
       this.loading = true;
-      this.$axios.get(`contractor-documents-list/${id}`).then(({ data }) => {
+      this.$axios.get(`tenant-documents-list/${id}`).then(({ data }) => {
         this.document_list = data;
         this.documents = false;
         this.loading = false;
@@ -549,12 +555,12 @@ export default {
       //this.displayForm = false;
     },
 
-    delete_document(id, file_name) {
+    delete_document(id, tenant_id, file_name) {
       confirm(
         "Are you sure you wish to delete , to mitigate any inconvenience in future."
       ) &&
         this.$axios
-          .post(`contractor-documents-delete/${id}/${file_name}`)
+          .post(`tenant-documents-delete/${id}/${tenant_id}/${file_name}`)
           .then(({ data }) => {
             this.loading = false;
 
@@ -564,7 +570,7 @@ export default {
               this.errors = [];
               this.snackbar = true;
               this.response = data.message;
-              this.getDocumentInfo(this.contractor_id);
+              this.getDocumentInfo(this.tenant_id);
               this.close_document_info();
             }
           })

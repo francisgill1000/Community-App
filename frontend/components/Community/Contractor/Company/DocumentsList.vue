@@ -79,7 +79,13 @@
 
                     <v-list-item
                       v-if="can('branch_delete')"
-                      @click="delete_document(item.id, item.attachment)"
+                      @click="
+                        delete_document(
+                          item.id,
+                          item.contractor_id,
+                          item.attachment
+                        )
+                      "
                     >
                       <v-list-item-title style="cursor: pointer">
                         <v-icon color="error" small> mdi-delete </v-icon>
@@ -549,12 +555,14 @@ export default {
       //this.displayForm = false;
     },
 
-    delete_document(id, file_name) {
+    delete_document(id, contractor_id, file_name) {
       confirm(
         "Are you sure you wish to delete , to mitigate any inconvenience in future."
       ) &&
         this.$axios
-          .post(`contractor-documents-delete/${id}/${file_name}`)
+          .post(
+            `contractor-documents-delete/${id}/${contractor_id}/${file_name}`
+          )
           .then(({ data }) => {
             this.loading = false;
 

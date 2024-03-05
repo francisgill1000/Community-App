@@ -5,6 +5,31 @@
         {{ response }}
       </v-snackbar>
     </div>
+    <v-dialog v-model="viewDocumentsDialog" width="900">
+      <!-- <v-toolbar flat dense>
+        <b> Documents </b>
+        <v-spacer></v-spacer>
+        <v-icon color="primary" @click="viewDocumentsDialog = false"
+          >mdi-close-circle-outline</v-icon
+        >
+      </v-toolbar> -->
+      <v-card>
+        <v-card-title dark class="popup_background">
+          Tenant Documents
+          <v-spacer></v-spacer>
+          <v-icon @click="viewDocumentsDialog = false" outlined dark>
+            mdi mdi-close-circle
+          </v-icon>
+        </v-card-title>
+        <v-card-text>
+          <CommunityTenantDocumentsList
+            :tenant_id="tenant_id"
+            :key="generateRandomId()"
+          ></CommunityTenantDocumentsList>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <div v-if="!loading">
       <v-dialog persistent v-model="viewMemberDialogBox" width="700">
         <v-toolbar flat dense>
@@ -147,6 +172,17 @@
                 </v-list-item>
                 <v-list-item>
                   <v-list-item-title style="cursor: pointer">
+                    <v-list-item-title
+                      style="cursor: pointer"
+                      @click="viewDocuments(item.id)"
+                    >
+                      <v-icon color="secondary" small> mdi-file </v-icon>
+                      Documents
+                    </v-list-item-title>
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
                     <TanentAddCard
                       :key="generateRandomId()"
                       @success="handleSuccessResponse"
@@ -193,6 +229,7 @@
 <script>
 export default {
   data: () => ({
+    viewDocumentsDialog: false,
     disabled: false,
     step: 1,
 
@@ -429,6 +466,11 @@ export default {
     },
   },
   methods: {
+    viewDocuments(tenant_id) {
+      this.key++;
+      this.tenant_id = tenant_id;
+      this.viewDocumentsDialog = true;
+    },
     exportData() {
       let cols = [
         "system_user_id",

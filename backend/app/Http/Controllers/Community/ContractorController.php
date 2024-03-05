@@ -165,7 +165,7 @@ class ContractorController extends Controller
             abort(404);
         }
     }
-    public function deleteDocument($id, $file_name)
+    public function deleteDocument($id, $contractor_id, $file_name)
     {
 
 
@@ -174,11 +174,11 @@ class ContractorController extends Controller
         $record = ContractorDocuments::find($id);
 
         if ($record->delete()) {
-            if (file_exists(public_path('contractor_documents/' . $id . "/") . "" . $file_name)) {
+            if (file_exists(public_path('contractor_documents/' . $contractor_id . "/") . "" . $file_name)) {
                 try {
 
 
-                    unlink(public_path('contractor_documents/' . $id . "/") . "" . $file_name);
+                    unlink(public_path('contractor_documents/' . $contractor_id . "/") . "" . $file_name);
                 } catch (\Exception $e) {
                 }
             }
