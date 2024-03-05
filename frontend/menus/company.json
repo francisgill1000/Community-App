@@ -1,6 +1,6 @@
 [
   {
-    "icon": "mdi-view-dashboard",
+    "icon": "mdi-home",
     "title": "Dashboard",
     "to": "/dashboard",
     "submenu": "dashboard",
@@ -44,7 +44,7 @@
   },
   {
     "icon": "mdi-account",
-    "image":"/maid.png",
+    "image": "/maid.png",
     "title": "House Maids",
     "to": "/community/house_maids",
     "submenu": "house_maids",
@@ -83,7 +83,7 @@
   },
   {
     "icon": "mdi-account",
-    "image":"/visitors.png",
+    "image": "/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor",
     "submenu": "dashboard",
@@ -93,7 +93,7 @@
 
   {
     "icon": "mdi-account",
-    "image":"/visitors.png",
+    "image": "/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor",
     "submenu": "dashboard",
@@ -289,13 +289,7 @@
     "menu": "payroll_settings_access",
     "module": "payroll"
   },
-  {
-    "icon": "mdi-home",
-    "title": "Dashboard",
-    "to": "/dashboard",
-    "menu": "timezone",
-    "module": "access_control"
-  },
+
   {
     "icon": "mdi mdi-camera-account",
     "title": "Photo Upload",
@@ -312,7 +306,7 @@
   },
   {
     "icon": "mdi-account",
-    "image":"/visitors.png",
+    "image": "/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor?1",
     "menu": "visitors_access",
@@ -420,7 +414,7 @@
 
   {
     "icon": "mdi-account",
-    "image":"/maid.png",
+    "image": "/maid.png",
     "title": "House Maids",
     "to": "/community/house_maids",
     "menu": "contractor_access",
@@ -433,13 +427,7 @@
     "menu": "contractor_access",
     "module": "house_maids"
   },
-  {
-    "icon": "mdi-home",
-    "title": "Dashboard",
-    "to": "/dashboard",
-    "menu": "parking_access",
-    "module": "parking"
-  },
+
   {
     "icon": "mdi-account",
     "title": "Parking",
@@ -456,7 +444,7 @@
   },
   {
     "icon": "mdi-account-card-details",
-    "image":"/tenet-3.png",
+    "image": "/tenet-3.png",
     "title": "Tanent",
     "to": "/community/tanent",
     "menu": "tanent",
