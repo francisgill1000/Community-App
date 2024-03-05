@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8">
+  <div class="mt-0">
     <div class="text-center ma-2">
       <v-snackbar v-model="snackbar" top="top" color="secondary" elevation="24">
         {{ response }}
@@ -15,8 +15,6 @@
               style="border-radius: 5px 5px 0px 0px"
               dense
             >
-              <span> Documents List </span>
-
               <v-spacer></v-spacer>
               <v-toolbar-items>
                 <v-col class="toolbaritems-button-design">
@@ -43,15 +41,21 @@
               <template v-slot:item.title="{ item }">
                 {{ item.title }}
               </template>
+              <template v-slot:item.date_time="{ item }">
+                {{ $dateFormat.format4(item.date_time) }}
+              </template>
               <template v-slot:item.download="{ item }">
                 <a
                   title="Download Profile Picture"
-                  :href="getDonwloadLink(item.employee_id, item.attachment)"
+                  :href="getDonwloadLink(item.contractor_id, item.attachment)"
                   ><v-icon color="violet">mdi-arrow-down-bold-circle</v-icon></a
                 >
               </template>
               <template v-slot:item.delete="{ item }">
-                <v-icon color="error" @click="delete_document(item.id)">
+                <v-icon
+                  color="error"
+                  @click="delete_document(item.id, item.attachment)"
+                >
                   mdi-delete
                 </v-icon>
               </template>
@@ -167,6 +171,7 @@
                             >mdi-plus-circle</v-icon
                           >
                           <v-btn
+                            v-else
                             dark
                             class="error mt-2"
                             fab
@@ -202,7 +207,7 @@
 
 <script>
 export default {
-  props: ["employeeId"],
+  props: ["contractor_id"],
   data() {
     return {
       dialogUploadDocuments: false,
@@ -247,6 +252,13 @@ export default {
           value: "download",
         },
         {
+          text: "Date",
+          align: "left",
+          sortable: false,
+          key: "date_time",
+          value: "date_time",
+        },
+        {
           text: "Delete",
           align: "left",
           sortable: false,
@@ -257,12 +269,12 @@ export default {
     };
   },
   created() {
-    this.getInfo(this.employeeId);
+    this.getInfo(this.contractor_id);
   },
   methods: {
     getInfo(id) {
       this.loading = true;
-      this.$axios.get(`documentinfo/${id}`).then(({ data }) => {
+      this.$axios.get(`contractor-documents-list/${id}`).then(({ data }) => {
         this.document_list = data;
         this.loading = false;
       });
@@ -316,10 +328,10 @@ export default {
       });
 
       payload.append(`company_id`, this.$auth?.user?.company?.id);
-      payload.append(`employee_id`, this.employeeId);
+      payload.append(`contractor_id`, this.contractor_id);
 
       this.$axios
-        .post(`documentinfo`, payload, options)
+        .post(`contractor-documents-store`, payload, options)
         .then(({ data }) => {
           this.dialogUploadDocuments = false;
           this.loading = false;
@@ -330,7 +342,7 @@ export default {
             this.errors = [];
             this.snackbar = true;
             this.response = "Document saved successfully"; //data.message;
-            this.getDocumentInfo(this.employeeId);
+            this.getDocumentInfo(this.contractor_id);
 
             // this.close_document_info();
             // this.displayForm = false;
@@ -342,7 +354,7 @@ export default {
     getDonwloadLink(pic, file_name) {
       return (
         process.env.BACKEND_URL +
-        "/download-emp-documents/" +
+        "/download-contractor-documents/" +
         pic +
         "/" +
         file_name
@@ -350,7 +362,7 @@ export default {
     },
     getDocumentInfo(id) {
       this.loading = true;
-      this.$axios.get(`documentinfo/${id}`).then(({ data }) => {
+      this.$axios.get(`contractor-documents-list/${id}`).then(({ data }) => {
         this.document_list = data;
         this.documents = false;
         this.loading = false;
@@ -368,12 +380,12 @@ export default {
       //this.displayForm = false;
     },
 
-    delete_document(id) {
+    delete_document(id, file_name) {
       confirm(
         "Are you sure you wish to delete , to mitigate any inconvenience in future."
       ) &&
         this.$axios
-          .delete(`documentinfo/${id}`)
+          .post(`contractor-documents-delete/${id}/${file_name}`)
           .then(({ data }) => {
             this.loading = false;
 
@@ -383,7 +395,7 @@ export default {
               this.errors = [];
               this.snackbar = true;
               this.response = data.message;
-              this.getDocumentInfo(this.employeeId);
+              this.getDocumentInfo(this.contractor_id);
               this.close_document_info();
             }
           })
