@@ -14,19 +14,9 @@ class FloorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function dropDown()
-    {
-        return Floor::get();
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        return Floor::where("company_id", request("company_id") ?? 0)->paginate(request("per_page") ?? 2000);
+        return Floor::where("company_id",request("company_id") ?? 0)->paginate(request("per_page") ?? 10);
     }
 
     /**

@@ -10,11 +10,9 @@ use App\Http\Requests\Community\Tanent\MemberUpdateRequest;
 use App\Http\Requests\Community\Tanent\StoreRequest;
 use App\Http\Requests\Community\Tanent\UpdateRequest;
 use App\Http\Requests\Community\Tanent\VehicleRequest;
-
 use App\Models\Community\MaidRelationTenant;
 use App\Models\Community\Room;
 use App\Models\Community\Tanent;
-use App\Models\Community\TenantsDocuments;
 use App\Models\Community\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -569,134 +567,5 @@ class TanentController extends Controller
     {
         Tanent::truncate();
         return 0;
-    }
-
-    public function getDocumentsList(TenantsDocuments $DocumentInfo, $id)
-    {
-        return $DocumentInfo->where('tenant_id', $id)->get();
-    }
-    public function downloadDocuments(Request $request, $employee_id, $file_name)
-    {
-        // Define the path to the file in the public folder
-        $filePath = public_path("tenant_documents/" . $employee_id) .  '/' . $file_name;
-
-        // Check if the file exists
-        if (file_exists($filePath)) {
-            // Create a response to download the file
-            return response()->download($filePath, $file_name);
-        } else {
-            // Return a 404 Not Found response if the file doesn't exist
-            abort(404);
-        }
-    }
-    public function deleteDocument($id, $tenant_id, $file_name)
-    {
-
-
-
-        $record = TenantsDocuments::find($id);
-
-        if ($record->delete()) {
-            if (file_exists(public_path('tenant_documents/' . $tenant_id . "/") . "" . $file_name)) {
-                try {
-
-
-                    unlink(public_path('tenant_documents/' . $tenant_id . "/") . "" . $file_name);
-                } catch (\Exception $e) {
-                }
-            }
-            return response()->json([
-                "status" => true,
-                "message" => "Record has been successfully deleted",
-                "record" => null,
-            ]);
-        } else {
-            return response()->json([
-                "status" => false,
-                "message" => "Record cannot delete",
-                "record" => null,
-            ]);
-        }
-    }
-    public function TenantsDocumentsStore(Request $request)
-    {
-        // $this->cleanRecord($request->employee_id);
-        $arr = [];
-        foreach ($request->items as $item) {
-            $arr[] = [
-                "title" => $item["title"],
-                "attachment" => $this->saveFile($item["file"], $request->tenant_id),
-                "tenant_id" => $request->tenant_id,
-                "company_id" => $request->company_id,
-                "date_time" => date('Y-m-d H:i:s'),
-                "branch_id" => 0,
-            ];
-        }
-
-        try {
-
-            return response()->json([
-                "status" => true,
-                "message" => "Record has been successfully added",
-                "record" => TenantsDocuments::insert($arr),
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                "status" => true,
-                "message" => $th,
-                "record" => null,
-            ]);
-        }
-    }
-    public function saveFile($file, $id)
-    {
-        $filename = $file->getClientOriginalName();
-        $file->move(public_path('tenant_documents/' . $id . "/"), $filename);
-        return $filename;
-    }
-    public function TenantsDocumentsUpdate(Request $request)
-    {
-
-
-        $arr = [];
-
-        $document_id = $request->items[1]["document_id"];
-        if ($document_id > 0) {
-            if (isset($request->items[0]["file"])) {
-
-                $arr  = [
-                    "title" => $request->items[0]["title"],
-                    "attachment" => $this->saveFile($request->items[0]["file"], $request->tenant_id),
-
-                    "date_time" => date('Y-m-d H:i:s'),
-                    "branch_id" => 0,
-                ];
-            } else {
-
-                $arr  = [
-                    "title" => $request->items[0]["title"],
-                    "date_time" => date('Y-m-d H:i:s'),
-                    "branch_id" => 0,
-                ];
-            }
-
-
-            TenantsDocuments::where("id", $document_id)->update($arr);
-        }
-
-        try {
-
-            return response()->json([
-                "status" => true,
-                "message" => "Record has been successfully added",
-                "record" => [],
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                "status" => true,
-                "message" => $th,
-                "record" => null,
-            ]);
-        }
     }
 }

@@ -14,7 +14,7 @@
             style="border-radius: 5px 5px 0px 0px"
             dense
           >
-            <span> Documents List </span>
+            <span> Documents List</span>
 
             <v-spacer></v-spacer>
             <v-toolbar-items>

@@ -99,15 +99,29 @@
 
               <v-col cols="6">
                 <v-text-field
-                  label="Room Number"
+                  label="Start Number"
                   :disabled="disabled"
-                  v-model="payload.room_number"
+                  v-model="payload.start_number"
                   dense
                   class="text-center"
                   outlined
-                  :hide-details="!errors.room_number"
+                  :hide-details="!errors.start_number"
                   :error-messages="
-                    errors && errors.room_number ? errors.room_number[0] : ''
+                    errors && errors.start_number ? errors.start_number[0] : ''
+                  "
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  label="End Number"
+                  :disabled="disabled"
+                  v-model="payload.end_number"
+                  dense
+                  class="text-center"
+                  outlined
+                  :hide-details="!errors.end_number"
+                  :error-messages="
+                    errors && errors.end_number ? errors.end_number[0] : ''
                   "
                 ></v-text-field>
               </v-col>
@@ -197,6 +211,30 @@
             class="elevation-1"
             :server-items-length="totalRowsCount"
           >
+            <template v-slot:header="{ props: { headers } }">
+              <tr v-if="isFilter">
+                <td v-for="header in headers" :key="header.text">
+                  <v-container>
+                    <v-text-field
+                      clearable
+                      @click:clear="
+                        filters[header.value] = '';
+                        applyFilters();
+                      "
+                      :hide-details="true"
+                      v-if="header.filterable && !header.filterSpecial"
+                      v-model="filters[header.value]"
+                      :id="header.value"
+                      @input="applyFilters(header.key, $event)"
+                      outlined
+                      dense
+                      autocomplete="off"
+                    ></v-text-field>
+                  </v-container>
+                </td>
+              </tr>
+            </template>
+
             <template v-slot:item.status_id="{ item }">
               {{ item.status_id == 1 ? `Active` : `InActive` }}
             </template>
@@ -440,7 +478,7 @@ export default {
       this.room_sub_categories = room_sub_categories;
 
       let { data: floors } = await this.$axios.get(`floor`, {
-        params: { company_id: this.id },
+        params: { company_id: this.id, per_page: 1000 },
       });
       this.floors = floors.data;
     },

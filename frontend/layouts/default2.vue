@@ -542,7 +542,7 @@ export default {
       clipped: true,
 
       miniVariant: false,
-      title: "MyHome2Cloud",
+      title: "MyTime2Cloud",
       socket: null,
       logout_btn: {
         icon: "mdi-logout",

@@ -2,7 +2,7 @@
   <v-dialog persistent v-model="dialog" width="500">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-icon color="secondary" small> mdi-credit-card-scan-outline</v-icon>
+        <v-icon color="secondary" small> mdi-card-outline </v-icon>
         Add Card
       </span>
     </template>

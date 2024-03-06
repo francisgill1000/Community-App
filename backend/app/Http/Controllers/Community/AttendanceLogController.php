@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Community;
 
+use App\Http\Controllers\Controller;
 use App\Models\AttendanceLog;
 use App\Models\Device;
 use App\Models\Employee;
-use App\Models\Visitor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator as Paginator;
@@ -154,7 +154,7 @@ class AttendanceLogController extends Controller
 
         ];
     }
-    public function readLastAttendanceLogTime($employee_id)
+    public function qqfesc80rqna4ljmv0ga2m5m6f58twm7nqc27h0gx2($employee_id)
     {
 
 
@@ -196,19 +196,17 @@ class AttendanceLogController extends Controller
         foreach ($result["data"] as $row) {
             $columns = explode(',', $row);
 
-            $isDuplicateLogTime = $this->verifyDuplicateLog($columns);
+            // $isDuplicateLogTime = $this->verifyDuplicateLog($columns);
 
-            if (!$isDuplicateLogTime) {
-                $records[] = [
-                    "UserID" => $columns[0],
-                    "DeviceID" => $columns[1],
-                    "LogTime" => substr(str_replace("T", " ", $columns[2]), 0, 16),
-                    "SerialNumber" => $columns[3],
-                    "status" => $columns[4] ?? "Allowed",
-                    "mode" => $columns[5] ?? "Face",
-                    "reason" => $columns[6] ?? "---",
-                ];
-            }
+            $records[] = [
+                "UserID" => $columns[0],
+                "DeviceID" => $columns[1],
+                "LogTime" => substr(str_replace("T", " ", $columns[2]), 0, 16),
+                "SerialNumber" => $columns[3],
+                "status" => $columns[4] ?? "Allowed",
+                "mode" => $columns[5] ?? "Face",
+                "reason" => $columns[6] ?? "---",
+            ];
         }
 
         try {
@@ -238,7 +236,7 @@ class AttendanceLogController extends Controller
         }
         $isDuplicateLogTime = false;
         $currentLogTime =  (substr(str_replace("T", " ", $columns[2]), 0, 19));
-        $previousLogTime = $this->readLastAttendanceLogTime($columns[1] . '-' . $columns[0]);
+        $previousLogTime = $this->qqfesc80rqna4ljmv0ga2m5m6f58twm7nqc27h0gx2($columns[1] . '-' . $columns[0]);
         if ($previousLogTime != '') {
             strtotime($currentLogTime) - strtotime($previousLogTime);
             if (strtotime($currentLogTime) - strtotime($previousLogTime) <= $timeDiff) {
@@ -554,7 +552,7 @@ class AttendanceLogController extends Controller
 
         $data = [];
 
-        foreach (range(1, 1) as $_) {
+        foreach (range(1, 25) as $_) {
 
             $logTime = date("Y-m-d") . " " . Arr::random($logs) . ":" . Arr::random($logs);
 
@@ -563,7 +561,6 @@ class AttendanceLogController extends Controller
                 'LogTime' => $logTime,
                 'DeviceID' => Arr::random($deviceIds),
                 'company_id' => $company_id,
-                'visitor_id' => Visitor::where("system_user_id", $user_id)->orderBy("id", "desc")->value("id"),
             ];
         }
         AttendanceLog::insert($data);

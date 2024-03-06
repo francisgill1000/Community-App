@@ -1,6 +1,6 @@
 <template>
   <div v-if="can(`visitor_access`)">
-    <v-dialog v-model="dialogInformation" max-width="1300px">
+    <!-- <v-dialog v-model="dialogInformation" max-width="1300px">
       <v-card>
         <v-card-title class="popup_background">
           <span dense> Visitors Requests - {{ statisticsFilter }} </span>
@@ -17,7 +17,7 @@
           />
         </v-card-text>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
     <div v-if="!loading">
       <v-dialog
         persistent
@@ -33,120 +33,6 @@
         ></iframe>
       </v-dialog>
       <v-row>
-        <v-col cols="3">
-          <v-card class="pa-2" style="height: 150px; overflow: hidden">
-            <v-row>
-              <v-col cols="7">
-                <h2>Checked In</h2>
-
-                <v-col class="text-left pa-0" cols="12">
-                  <div class="bold" style="font-size: 60px; color: #33691e">
-                    {{ items.CheckedInCount }}
-                  </div>
-                </v-col>
-              </v-col>
-              <v-col cols="5" class="text-right">
-                <img
-                  src="../../../static/checked-in2.png"
-                  style="width: 100px; padding: 0%"
-                />
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col cols="3">
-          <v-card class="pa-2" style="height: 150px; overflow: hidden">
-            <v-row>
-              <v-col cols="7">
-                <h2>Checked Out</h2>
-
-                <v-col class="text-left pa-0" cols="12">
-                  <div class="bold" style="font-size: 60px; color: #b91e20">
-                    {{ items.CheckedOutCount }}
-                  </div>
-                </v-col>
-              </v-col>
-              <v-col cols="5" class="text-right">
-                <img
-                  src="../../../static/checked-out.png"
-                  style="width: 100px; padding: 0%"
-                />
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-        <v-col cols="6">
-          <v-card class="pa-2" style="height: 150px; overflow: hidden">
-            <h3>Statistics</h3>
-            <v-row class="pt-10">
-              <v-col cols="4" class="card1 rounded-5 text-left">
-                <v-row>
-                  <v-col cols="3" class="text-center">
-                    <v-avatar size="60" color="#033F9B" class="text-center">
-                      <v-icon size="50" class="pa-2" style="color: #fff"
-                        >mdi-account-supervisor</v-icon
-                      >
-                    </v-avatar>
-                  </v-col>
-                  <v-col class="text-left pa-2" cols="9">
-                    <h3>Expecting</h3>
-                    <div
-                      class="bold"
-                      style="font-size: 30px; margin-top: -5px; color: #033f9b"
-                    >
-                      {{ items.ExpectingCount }}
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-divider vertical></v-divider>
-              <v-col cols="4" class="card1 rounded-5 text-left">
-                <v-row>
-                  <v-col cols="3" class="text-center">
-                    <v-avatar size="60" color="#ff0000" class="text-center">
-                      <v-icon size="50" class="pa-2" style="color: #fff"
-                        >mdi mdi-timer-sand-full</v-icon
-                      >
-                    </v-avatar>
-                  </v-col>
-                  <v-col class="text-left pa-2" cols="9">
-                    <h3>Over Stay</h3>
-                    <div
-                      class="bold"
-                      style="font-size: 30px; margin-top: -5px; color: #ff0000"
-                    >
-                      {{ items.overStayCount }}
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-divider vertical></v-divider>
-              <v-col cols="4" class="card1 rounded-5 text-left">
-                <v-row>
-                  <v-col cols="3" class="text-center">
-                    <v-avatar size="60" color="black" class="text-center">
-                      <v-icon size="50" class="pa-2" style="color: #fff"
-                        >mdi-account-details</v-icon
-                      >
-                    </v-avatar>
-                  </v-col>
-                  <v-col class="text-left pa-2" cols="9">
-                    <h3>Total</h3>
-                    <div
-                      class="bold"
-                      style="font-size: 30px; margin-top: -5px; color: black"
-                    >
-                      {{ items.Total }}
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <v-row>
         <v-col md="12">
           <v-card class="pa-2" style="height: 354px; overflow: hidden">
             <v-row background fill>
@@ -160,12 +46,179 @@
               >
                 <VisitorPieChart :items="items"></VisitorPieChart>
               </v-col>
+              <v-col
+                lg="3"
+                md="3"
+                sm="3"
+                xs="3"
+                class="d-xs-flex pa-2 pt-5"
+                style="border-left: 1px solid #ddd"
+              >
+                <v-row class="pa-10 pb-5">
+                  <v-col cols="6" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="12" class="text-end">
+                        <v-avatar size="40" color="#02B64B">
+                          <v-icon size="30" class="pa-2" style="color: #fff"
+                            >mdi-account-arrow-left</v-icon
+                          >
+                        </v-avatar>
+                        Checked In
+                      </v-col>
+                      <v-col class="text-center pa-0" cols="12">
+                        <div
+                          class="bold"
+                          style="font-size: 60px; color: #02b64b"
+                        >
+                          {{ items.CheckedInCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-divider vertical></v-divider>
+                  <v-col cols="6" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="12" class="text-end">
+                        <v-avatar size="40" color="#ffb600">
+                          <v-icon size="30" class="pa-2" style="color: #fff"
+                            >mdi-account-arrow-right</v-icon
+                          >
+                        </v-avatar>
+                        Checked Out
+                      </v-col>
+                      <v-col class="text-center pa-0" cols="12">
+                        <div
+                          class="bold"
+                          style="font-size: 60px; color: #ffb600"
+                        >
+                          {{ items.CheckedOutCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <!-- <v-col cols="6" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="40" color="#02B64B">
+                          <v-icon size="30" class="pa-2" style="color: #fff"
+                            >mdi-account-arrow-left</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-center pa-0">
+                        <div class="bold" style="font-size: 40px">
+                          {{ items.CheckedInCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Checked In
+                  </v-col>
+                  <v-col cols="6" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="40" color="#ffb600">
+                          <v-icon size="30" class="pa-2" style="color: #fff"
+                            >mdi-account-arrow-right</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col cols="7" class="text-center pa-0">
+                        <div class="bold" style="font-size: 40px">
+                          {{ items.CheckedOutCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Checked Out
+                  </v-col> -->
+                </v-row>
+                <v-divider></v-divider>
+                <v-row class="pt-8">
+                  <v-col cols="4" class="card1 rounded-5 text-left">
+                    <v-row>
+                      <v-col cols="5" class="text-center">
+                        <v-avatar size="30" color="#ff0000" class="text-center">
+                          <v-icon size="20" class="pa-2" style="color: #fff"
+                            >mdi mdi-timer-sand-full</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-center pa-0" cols="7">
+                        <div class="bold" style="font-size: 30px">
+                          {{ items.overStayCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Over Stay
+                  </v-col>
+                  <v-divider vertical></v-divider>
+                  <v-col cols="4" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="5" class="text-end">
+                        <v-avatar size="30" color="#033F9B">
+                          <v-icon size="20" class="pa-2" style="color: #fff"
+                            >mdi-account-supervisor</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col cols="7" class="text-center pa-0">
+                        <div class="bold" style="font-size: 30px">
+                          {{ items.ExpectingCount }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Expecting
+                  </v-col>
+                  <v-divider vertical></v-divider>
+                  <v-col cols="4" class="card1 rounded-5">
+                    <v-row>
+                      <v-col cols="5" class="text-end">
+                        <v-avatar size="30" color="black">
+                          <v-icon size="20" class="pa-2" style="color: #fff"
+                            >mdi-account-details</v-icon
+                          >
+                        </v-avatar>
+                      </v-col>
+                      <v-col cols="7" class="text-center pa-0">
+                        <div class="bold" style="font-size: 30px">
+                          {{ items.Total }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                    Total
+                  </v-col>
+                </v-row>
+
+                <!-- <v-row class="pa-10 pt-5">
+                  <v-col
+                    cols="3"
+                    class="card1 rounded-5"
+                    v-for="(i, index) in items.statusCounts"
+                    :key="'v' + index"
+                  >
+                    <v-row @click="viewPopupInfo(i.title)">
+                      <v-col cols="4" class="text-end">
+                        <v-avatar size="30" :color="i.color">
+                          <v-icon size="20" class="pa-1" style="color: #fff">{{
+                            i.icon
+                          }}</v-icon>
+                        </v-avatar>
+                      </v-col>
+                      <v-col class="text-left pa-0">
+                        <div class="bold" style="font-size: 40px">
+                          {{ i.value }}
+                        </div>
+                        {{ i.title }}
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row> -->
+              </v-col>
 
               <v-col
-                lg="9"
-                md="9"
-                sm="9"
-                xs="9"
+                lg="6"
+                md="6"
+                sm="6"
+                xs="6"
                 class="d-xs-flex"
                 style="border-left: 1px solid #ddd"
               >

@@ -6,45 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\AttendanceLog;
 use App\Http\Controllers\Controller;
 use App\Models\Community\CommunityReport;
-use App\Models\Company;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
     public function index()
     {
         return $this->processFilter()->paginate(request("per_page") ?? 10);
-    }
-
-    public function print(Request $request)
-    {
-        $data = $this->processFilter()->get()->toArray();
-
-        if ($request->debug) return $data;
-
-        $chunks = array_chunk($data, 10);
-
-        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.community.report', [
-            "chunks" => $chunks,
-            "company" => Company::whereId(request("company_id") ?? 0)->first(),
-            "params" => $request->all(),
-
-        ])->stream();
-    }
-    public function download(Request $request)
-    {
-        $data = $this->processFilter()->get()->toArray();
-
-        if ($request->debug) return $data;
-
-        $chunks = array_chunk($data, 10);
-
-        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.community.report', [
-            "chunks" => $chunks,
-            "company" => Company::whereId(request("company_id") ?? 0)->first(),
-            "params" => $request->all(),
-
-        ])->download();
     }
     public function renderData(Request $request)
     {
@@ -109,7 +76,7 @@ class ReportController extends Controller
         return [];
     }
 
-    public function render($companyId, $date, $userIds = [], $customRender = false)
+    public function render($companyId, $id, $date, $userIds = [], $customRender = false)
     {
         $params = [
             "company_id" => $companyId,
@@ -120,15 +87,18 @@ class ReportController extends Controller
 
         if (!$customRender) {
             $userIds = AttendanceLog::where("company_id", $companyId)
+                ->where("checked", false)
+                ->where("visitor_id", $id)
                 ->whereDate("LogTime", '=', $date) // Only today's records
-                ->distinct("UserID", "company_id")
+                ->distinct("UserID", "visitor_id", "company_id")
                 ->pluck('UserID');
         }
 
         $userLogs = AttendanceLog::whereDate("LogTime", '=', $date) // Only today's records
             ->whereIn("UserID", $userIds)
             ->where("company_id", $companyId)
-            ->distinct("LogTime", "UserID", "company_id")
+            ->where("visitor_id", $id)
+            ->distinct("LogTime", "UserID", "visitor_id", "company_id")
             ->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid"])
             ->get()
             ->groupBy('UserID');
@@ -212,7 +182,7 @@ class ReportController extends Controller
 
         $query = CommunityReport::query();
 
-        $query->when(request()->filled("user_type"), fn ($q) => $q->where("user_type", request("user_type")));
+        $query->when(request()->filled("user_type"), fn ($q) => $q->whereHas(request("user_type")));
 
         $query->when(request()->filled("UserID"), function ($q) {
             $q->whereHas("in_log", function ($qu) {
@@ -220,6 +190,7 @@ class ReportController extends Controller
             });
         });
 
+        // Filter by DeviceID
         $query->when(request()->filled("DeviceID"), function ($query) {
             $query->where(function ($q) {
                 $q->whereHas("in_log", function ($qu) {

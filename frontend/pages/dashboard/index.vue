@@ -169,9 +169,41 @@ export default {
   //   },
   // },
   mounted() {
+    if (this.$auth.user.user_type == "employee") {
+      this.$router.push(`community/visitor/dashboard`);
+      return;
+    }
+
+    if (this.$auth.user.branch_id == 0 && this.$auth.user.is_master == false) {
+      alert("You do not have permission to access this branch");
+      //this.$router.push("/login");
+      this.$axios.get(`/logout`).then(({ res }) => {
+        this.$auth.logout();
+        this.$router.push(`/login`);
+      });
+
+      this.$router.push(`/login`);
+      return "";
+    }
   },
   async created() {
     this.$router.push(`community/dashboard`);
+
+    if (this.$auth.user.user_type == "employee") {
+      this.$router.push(`community/visitor/dashboard`);
+      return;
+    }
+    if (this.$auth.user.branch_id == 0 && this.$auth.user.is_master == false) {
+      alert("You do not have permission to access this branch");
+      //this.$router.push("/login");
+      this.$axios.get(`/logout`).then(({ res }) => {
+        this.$auth.logout();
+        this.$router.push(`/login`);
+      });
+
+      this.$router.push(`/login`);
+      return "";
+    }
 
     try {
       await this.$store.dispatch("fetchDropDowns", {

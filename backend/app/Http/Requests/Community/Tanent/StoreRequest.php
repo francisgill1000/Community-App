@@ -28,10 +28,10 @@ class StoreRequest extends FormRequest
 
             'room_id' => [
                 'required',
-                Rule::unique('tanents')->where(function ($query) {
-                    return $query->where('room_id', $this->room_id)
-                        ->where('company_id', $this->company_id);
-                }),
+                // Rule::unique('tanents')->where(function ($query) {
+                //     return $query->where('room_id', $this->room_id)
+                //         ->where('company_id', $this->company_id);
+                // }),
             ],
 
 
@@ -64,7 +64,7 @@ class StoreRequest extends FormRequest
             "ejari_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
             "license_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
             "others_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
-
+            
             "web_access" => "nullable",
 
             "gender" => "required",

@@ -137,9 +137,14 @@ export default {
           value: "#8",
         },
         {
+          text: "Payroll",
+          icon: "mdi-briefcase",
+          value: "#9",
+        },
+        {
           text: "Login",
           icon: "mdi-lock",
-          value: "#9",
+          value: "#10",
         },
       ],
       tab: "0",

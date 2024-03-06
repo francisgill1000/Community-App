@@ -19,7 +19,21 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'user_type',
+        'name',
+        'email',
+        'password',
+        'role_id',
+        'company_id',
+        'branch_id',
+        'is_master',
+        'first_login',
+        'reset_password_code',
+        'employee_role_id',
+        'email_verified_at',
+        'enable_whatsapp_otp',
+    ];
 
     protected $with = ['assigned_permissions'];
 

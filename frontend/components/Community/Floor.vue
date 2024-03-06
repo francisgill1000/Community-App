@@ -117,7 +117,7 @@
               :loading="loadinglinear"
               :options.sync="options"
               :footer-props="{
-                itemsPerPageOptions: [10, 50, 100,500,1000],
+                itemsPerPageOptions: [100, 500, 1000],
               }"
               class="elevation-1"
               :server-items-length="totalRowsCount"
@@ -322,6 +322,15 @@ export default {
     // "weekend": true,
     // "webaccess": true,
     headers: [
+      {
+        text: "Ref #",
+        align: "left",
+        sortable: true,
+        key: "id",
+        value: "id",
+        filterable: true,
+        filterSpecial: false,
+      },
       {
         text: "Floor No",
         align: "left",
