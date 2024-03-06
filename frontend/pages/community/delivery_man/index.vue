@@ -6,6 +6,6 @@
     edit="delivery_edit"
     delete="delivery_delete"
     visitor_type="delivery"
-    label="Delivery Men"
+    label="Delivery"
   />
 </template>

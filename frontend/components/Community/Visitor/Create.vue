@@ -5,18 +5,25 @@
         <v-icon
           v-if="button_type == 'icon'"
           color="black"
-          title="Create Visitor"
+          :title="`Create ${label}`"
           >mdi-plus-circle-outline</v-icon
         >
-        <v-btn v-else dense small class="primary" text title="Create Visitor">
-          Create Visitor
+        <v-btn
+          v-else
+          dense
+          small
+          class="primary"
+          text
+          :title="`Create ${label}`"
+        >
+          Create {{ label }}
           <v-icon right dark>mdi-plus-circle-outline</v-icon>
         </v-btn>
       </span>
     </template>
     <v-card>
       <v-toolbar dense flat>
-        <v-card-title>Create Visitor</v-card-title>
+        <v-card-title>Create {{ label }}</v-card-title>
         <v-spacer></v-spacer>
         <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
       </v-toolbar>
@@ -89,7 +96,7 @@
                       ? errors.system_user_id[0]
                       : ''
                   "
-                  label="Visitor Card ID"
+                  :label="`Create ${label} Card ID`"
                   type="number"
                 ></v-text-field>
               </v-col>
@@ -378,7 +385,7 @@ let hours = String(new Date().getHours()).padStart(2, "0");
 let minutes = String(new Date().getMinutes()).padStart(2, "0");
 let dynamicTime = hours + ":" + minutes;
 export default {
-  props: ["visitor_type", "button_type"],
+  props: ["visitor_type", "button_type", "label"],
 
   data: () => ({
     disabled: false,
@@ -566,6 +573,7 @@ export default {
         .get(`purpose_list`, {
           params: {
             company_id: this.$auth.user.company_id,
+            type: this.visitor_type,
           },
         })
         .then(({ data }) => {

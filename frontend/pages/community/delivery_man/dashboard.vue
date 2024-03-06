@@ -179,7 +179,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <CommunityVisitorDashboardDeviceLogs user_type="delivery" />
+      <CommunityVisitorDashboardDeviceLogs label="Delivery" user_type="delivery" />
     </div>
     <Preloader v-else />
   </div>

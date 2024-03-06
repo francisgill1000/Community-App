@@ -36,6 +36,7 @@
           <ExportData :data="exportData()" />
           <CommunityVisitorCreate
             :visitor_type="visitor_type"
+            :label="label"
             v-if="can(create)"
             @success="handleSuccessResponse"
           />
