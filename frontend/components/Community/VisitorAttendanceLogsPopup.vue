@@ -103,7 +103,7 @@
         </v-col>
         <v-col cols="8">
           <v-divider></v-divider>
-          <v-row no-gutters class="mx-2">
+          <!-- <v-row no-gutters class="mx-2">
             <v-col
               cols="6"
               class="text-center"
@@ -131,7 +131,7 @@
                 {{ (lastItem && lastItem.LogTime) || "---" }}
               </div>
             </v-col>
-          </v-row>
+          </v-row> -->
           <v-row no-gutters class="px-3">
             <v-col cols="12">
               <div class="mt-4">
@@ -143,13 +143,22 @@
                         <b>#</b>
                       </small>
                     </td>
+
                     <td style="font-size: 12px">
                       <small>
                         <b>Date Time</b>
                       </small>
                     </td>
                     <td style="font-size: 12px">
+                      <small>
+                        <b>Flat</b>
+                      </small>
+                    </td>
+                    <td style="font-size: 12px">
                       <small><b>Device</b></small>
+                    </td>
+                    <td style="font-size: 12px">
+                      <small><b>In/Out</b></small>
                     </td>
                   </tr>
                   <!-- Static rows for logs_data -->
@@ -159,15 +168,54 @@
                     >
                       <small>{{ index + 1 }}</small>
                     </td>
+
                     <td
                       style="font-size: 14px; border-bottom: 1px solid #dddddd"
                     >
                       <small>{{ log.date }}</small>
                     </td>
                     <td
+                      v-if="log.visitor"
+                      style="font-size: 14px; border-bottom: 1px solid #dddddd"
+                    >
+                      <small>{{ log.visitor.tanent?.room.room_number }}</small
+                      ><br />
+                      <small>{{ log.visitor.tanent?.full_name }}</small
+                      ><br />
+                      <small>{{ log.visitor.tanent?.phone_number }}</small>
+                    </td>
+                    <td
+                      v-else-if="log.contractor"
+                      style="font-size: 14px; border-bottom: 1px solid #dddddd"
+                    >
+                      <small>{{
+                        log.contractor.tanent?.room.room_number
+                      }}</small
+                      ><br />
+                      <small>{{ log.contractor.tanent?.full_name }}</small
+                      ><br />
+                      <small>{{ log.contractor.tanent?.phone_number }}</small>
+                    </td>
+                    <td
+                      v-else-if="log.delivery"
+                      style="font-size: 14px; border-bottom: 1px solid #dddddd"
+                    >
+                      <small>{{ log.delivery.tanent?.room.room_number }}</small
+                      ><br />
+                      <small>{{ log.delivery.tanent?.full_name }}</small
+                      ><br />
+                      <small>{{ log.delivery.tanent?.phone_number }}</small>
+                    </td>
+
+                    <td
                       style="font-size: 14px; border-bottom: 1px solid #dddddd"
                     >
                       <small>{{ log?.device?.short_name ?? "Manual" }}</small>
+                    </td>
+                    <td
+                      style="font-size: 14px; border-bottom: 1px solid #dddddd"
+                    >
+                      <small>{{ caps(log?.log_type) }}</small>
                     </td>
                   </tr>
                 </table>
@@ -220,6 +268,7 @@ export default {
             per_page: 100,
             company_id: this.$auth.user.company_id,
             UserID: this.UserID,
+            id: this.UserID,
             user_type: this.visitor_type,
           },
         })

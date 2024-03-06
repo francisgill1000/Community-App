@@ -520,6 +520,7 @@ export default {
 
   async created() {
     this.company_id = this.$auth.user.company_id;
+    this.payload.company_id = this.$auth.user.company_id;
     this.loading = false;
     await this.getPurposes();
   },

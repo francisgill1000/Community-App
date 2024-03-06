@@ -16,9 +16,9 @@
           Vehicle Info
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="step > 3" step="3" editable>
+        <!-- <v-stepper-step :complete="step > 3" step="3" editable>
           Documentation
-        </v-stepper-step>
+        </v-stepper-step> -->
       </v-stepper-header>
 
       <v-stepper-content step="1">
@@ -144,7 +144,7 @@
         </v-container>
       </v-stepper-content>
 
-      <v-stepper-content step="3">
+      <!-- <v-stepper-content step="3">
         <v-container>
           <v-row>
             <v-col cols="6">
@@ -167,7 +167,7 @@
             </v-col>
           </v-row>
         </v-container>
-      </v-stepper-content>
+      </v-stepper-content> -->
     </v-stepper>
   </v-dialog>
 </template>

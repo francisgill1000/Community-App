@@ -18,9 +18,9 @@
           Vehicle Info
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step :complete="step > 3" step="3" editable>
+        <!-- <v-stepper-step :complete="step > 3" step="3" editable>
           Documentation
-        </v-stepper-step>
+        </v-stepper-step> -->
       </v-stepper-header>
 
       <v-stepper-content step="1">
@@ -470,28 +470,36 @@
               </v-autocomplete>
             </v-col>
           </v-row>
-        
+
           <v-row no-gutters class="mt-1">
             <v-col cols="9" class="text-right">
-              <v-icon @click="addItem"
-                >mdi-plus-circle-outline</v-icon
-              >
-              <v-icon class=""  @click="deleteItem(index)"
-                >mdi-delete</v-icon
-              >
+              <v-icon @click="addItem">mdi-plus-circle-outline</v-icon>
+              <v-icon class="" @click="deleteItem(index)">mdi-delete</v-icon>
             </v-col>
           </v-row>
         </v-container>
-        <v-row>
+        <!-- <v-row>
           <v-col class="text-right my-1">
             <v-btn @click="dialog = false">close</v-btn>
             <v-btn class="primary" @click="vehicleValidate">Next</v-btn>
           </v-col>
-        </v-row>
+        </v-row> -->
+        <v-col cols="12" class="text-right my-1">
+          <v-btn @click="dialog = false">close</v-btn>
+          <v-btn v-if="formAction == 'Create'" class="primary" @click="submit"
+            >Submit</v-btn
+          >
+          <v-btn
+            v-else-if="formAction == 'Edit'"
+            class="primary"
+            @click="update_data"
+            >Update</v-btn
+          >
+        </v-col>
       </v-stepper-content>
 
-      <v-stepper-content step="3">
-        <!-- Step 2 Content -->
+      <!-- <v-stepper-content step="3">
+        
         <v-row>
           <v-col v-for="(document, index) in documents" :key="index" cols="6">
             <SnippetsUploadDocument
@@ -513,7 +521,7 @@
             >
           </v-col>
         </v-row>
-      </v-stepper-content>
+      </v-stepper-content> -->
     </v-stepper>
   </v-dialog>
 </template>
@@ -891,6 +899,8 @@ export default {
     },
 
     submit() {
+      this.vehicleValidate();
+
       this.$axios
         .post(this.endpoint, this.mapper(Object.assign(this.payload)))
         .then(({ data }) => {

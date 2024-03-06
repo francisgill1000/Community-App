@@ -2,7 +2,7 @@
   {
     "icon": "mdi-home",
     "title": "Dashboard",
-    "to": "/dashboard",
+    "to": "/community/dashboard",
     "submenu": "dashboard",
     "menu": "branch_access",
     "module": "dashboard"
@@ -10,8 +10,8 @@
   {
     "icon": "mdi-account",
     "image": "/tenet-3.png",
-    "title": "Tanent",
-    "to": "/community/tanent/dashboard",
+    "title": "Tenant",
+    "to": "/community/dashboard",
     "menu": "true",
     "submenu": "tanents",
     "module": "dashboard"
@@ -417,13 +417,13 @@
     "icon": "mdi-account-card-details",
     "image": "/tenet-3.png",
     "title": "Tanent",
-    "to": "/community/tanent",
+    "to": "/community/tanent?1",
     "menu": "tanent",
     "module": "tanents"
   },
   {
     "icon": "mdi-camera-account",
-    "title": "Tanent Upload",
+    "title": "Tenant Upload",
     "to": "/community/tanent/tanent_upload",
     "menu": "tanent",
     "module": "tanents"

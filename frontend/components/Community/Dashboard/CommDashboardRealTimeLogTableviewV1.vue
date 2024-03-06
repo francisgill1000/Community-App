@@ -27,7 +27,11 @@
             :UserID="UserID"
           />
           <TenantAttendanceLogsPopup
-            v-else
+            v-else-if="
+              visitor_type == 'tenant' ||
+              visitor_type == 'Tanent' ||
+              visitor_type == 'Owner'
+            "
             :key="key"
             :UserID="UserID"
             :visitor_type="visitor_type"
@@ -83,7 +87,37 @@
             </template>
 
             <template v-slot:item.flat="{ item, index }">
-              {{ item?.tanent?.room?.room_number ?? "---" }}
+              <div v-if="item.owner">
+                {{ item?.owner?.room?.room_number ?? "---" }}
+              </div>
+              <div v-else-if="item.tanent">
+                {{ item?.tanent?.room?.room_number ?? "---" }}
+              </div>
+              <div v-else-if="item.visitor">
+                {{ item?.visitor.tanent?.room?.room_number ?? "---" }}
+                <br />
+                <small>{{ item?.visitor.tanent?.full_name ?? "---" }}</small
+                ><br />
+                <small>{{ item?.visitor.tanent?.phone_number ?? "---" }}</small>
+              </div>
+              <div v-else-if="item.contractor">
+                {{ item?.contractor.tanent?.room?.room_number ?? "---" }}
+                <br />
+                <small>{{ item?.contractor.tanent?.full_name ?? "---" }}</small
+                ><br />
+                <small>{{
+                  item?.contractor.tanent?.phone_number ?? "---"
+                }}</small>
+              </div>
+              <div v-else-if="item.delivery">
+                {{ item?.delivery.tanent?.room?.room_number ?? "---" }}
+                <br />
+                <small>{{ item?.delivery.tanent?.full_name ?? "---" }}</small
+                ><br />
+                <small>{{
+                  item?.delivery.tanent?.phone_number ?? "---"
+                }}</small>
+              </div>
             </template>
 
             <template v-slot:item.branch="{ item, index }">
@@ -124,7 +158,12 @@
               <br />
               <small>{{ item.reason ?? "" }}</small>
             </template>
-
+            <template v-slot:item.mode="{ item, index }">
+              {{ item.mode ?? "---" }}
+            </template>
+            <template v-slot:item.in_out="{ item, index }">
+              {{ caps(item.log_type) ?? "---" }}
+            </template>
             <template v-slot:item.door="{ item, index }">
               {{ item.device.short_name ?? "---" }}
             </template>
@@ -163,6 +202,7 @@
                     {{ item.visitor.first_name ?? "---" }}
                     {{ item.visitor.last_name ?? "---" }}
                   </div>
+                  <small>{{ item.visitor.phone_number ?? "" }}</small>
                 </v-col>
               </v-row>
 
@@ -172,6 +212,7 @@
                     {{ item.delivery.first_name ?? "---" }}
                     {{ item.delivery.last_name ?? "---" }}
                   </div>
+                  <small>{{ item.delivery.phone_number ?? "" }}</small>
                 </v-col>
               </v-row>
 
@@ -181,15 +222,25 @@
                     {{ item.contractor.first_name ?? "---" }}
                     {{ item.contractor.last_name ?? "---" }}
                   </div>
+                  <small>{{ item.contractor.phone_number ?? "" }}</small>
                 </v-col>
               </v-row>
-
+              <v-row v-else-if="item.owner" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.owner.first_name ?? "---" }}
+                    {{ item.owner.last_name ?? "---" }}
+                  </div>
+                  <small>{{ item.owner.phone_number ?? "" }}</small>
+                </v-col>
+              </v-row>
               <v-row v-else-if="item.maid" no-gutters>
                 <v-col md="8">
                   <div>
                     {{ item.maid.first_name ?? "---" }}
                     {{ item.maid.last_name ?? "---" }}
                   </div>
+                  <small>{{ item.maid.phone_number ?? "" }}</small>
                 </v-col>
               </v-row>
 
@@ -199,6 +250,7 @@
                     {{ item.employee.first_name ?? "---" }}
                     {{ item.employee.last_name ?? "---" }}
                   </div>
+                  <small>{{ item.employee.phone_number ?? "" }}</small>
                 </v-col>
               </v-row>
             </template>
@@ -346,6 +398,14 @@ export default {
         value: "mode",
       },
       {
+        text: "In/Out",
+        align: "left",
+        sortable: false,
+        key: "in_out",
+        value: "in_out",
+      },
+
+      {
         text: "User Type",
         align: "left",
         sortable: false,
@@ -414,9 +474,14 @@ export default {
 
       if (item.visitor) {
         this.UserID = item.visitor.id;
-      }
-      if (item.tanent) {
+      } else if (item.tanent) {
         this.UserID = item.tanent.id;
+      } else if (item.owner) {
+        this.UserID = item.owner.id;
+      } else if (item.contractor) {
+        this.UserID = item.contractor.id;
+      } else if (item.delivery) {
+        this.UserID = item.delivery.id;
       }
 
       this.visitor_type = this.getUserType(item);
@@ -431,6 +496,8 @@ export default {
         Delivery: item.delivery,
         Contractor: item.contractor,
         Maid: item.maid,
+        Owner: item.owner,
+        Employee: item.employee,
       };
 
       for (const [type, value] of Object.entries(relationships)) {
@@ -439,7 +506,7 @@ export default {
         }
       }
 
-      return "Employee";
+      return "Unknown";
     },
 
     getUserPhone(item) {

@@ -99,9 +99,9 @@
           @filtered="handleFilter"
           :headers="headers"
         />
+        <!-- @dblclick:row="showDialog"
+          @click:row="showDialog" -->
         <v-data-table
-          @dblclick:row="showDialog"
-          @click:row="showDialog"
           dense
           :headers="headers"
           :items="data"

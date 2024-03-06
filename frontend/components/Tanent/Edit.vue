@@ -10,7 +10,7 @@
       <v-tab>Basic Info</v-tab>
       <v-tab>Members</v-tab>
       <v-tab>Vechicle Info</v-tab>
-      <v-tab>Documentation</v-tab>
+      <!-- <v-tab>Documentation</v-tab> -->
 
       <v-tab-item>
         <v-container>
@@ -673,7 +673,7 @@
         </v-container>
       </v-tab-item>
 
-      <v-tab-item>
+      <!-- <v-tab-item>
         <v-container>
           <v-row>
             <v-col v-for="(document, index) in documents" :key="index" cols="6">
@@ -693,7 +693,7 @@
             </v-col>
           </v-row>
         </v-container>
-      </v-tab-item>
+      </v-tab-item> -->
     </v-tabs>
   </v-dialog>
 </template>

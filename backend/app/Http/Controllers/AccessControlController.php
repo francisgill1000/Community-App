@@ -29,12 +29,12 @@ class AccessControlController extends Controller
 
     public function get_logs_by_visitor_id()
     {
-        return  Visitor::with(["attendance_logs", "purpose"])->where("id", request("UserID"))->first();
+        return  Visitor::with(["attendance_logs.visitor.tanent.room", "attendance_logs.contractor.tanent.room", "attendance_logs.delivery.tanent.room", "purpose"])->where("id", request("id"))->first();
     }
 
     public function get_logs_by_tanent_id()
     {
-        return  Tanent::with(["attendance_logs"])->where("id", request("UserID"))->first();
+        return  Tanent::with(["attendance_logs"])->where("id", request("id"))->first();
     }
 
 
@@ -59,7 +59,7 @@ class AccessControlController extends Controller
 
         $model->when(request()->filled("DeviceID"), fn ($q) => $q->where('DeviceID', request("DeviceID")));
 
-        $model->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid"]);
+        $model->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid", "owner"]);
 
         $model->with('employee', function ($q) {
             $q->where('company_id', request("company_id"));

@@ -4,6 +4,7 @@
       <v-divider></v-divider>
       <v-row class="pa-0 ma-0">
         <v-col cols="12">
+          <h3>Employee</h3>
           <v-row no-gutters>
             <v-col cols="12" class="text-center">
               {{ item.employee.profile_pictrue }}

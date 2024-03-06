@@ -3,7 +3,7 @@
     <v-container>
       <v-row no-gutters>
         <v-col cols="4" style="border-right: 1px solid #dddddd">
-          <h3>{{ caps(item.relation) }}</h3>
+          <h3>{{ caps(item.member_type) }}</h3>
 
           <v-card elevation="0" outlined>
             <v-container>
@@ -108,6 +108,9 @@
                     <td style="font-size: 12px">
                       <small><b>Device</b></small>
                     </td>
+                    <td style="font-size: 12px">
+                      <small><b>In/Out</b></small>
+                    </td>
                   </tr>
                   <!-- Static rows for logs_data -->
                   <tr v-for="(log, index) in item.attendance_logs" :key="index">
@@ -125,6 +128,11 @@
                       style="font-size: 14px; border-bottom: 1px solid #dddddd"
                     >
                       <small>{{ log?.device?.short_name ?? "Manual" }}</small>
+                    </td>
+                    <td
+                      style="font-size: 14px; border-bottom: 1px solid #dddddd"
+                    >
+                      <small>{{ caps(log?.log_type) }}</small>
                     </td>
                   </tr>
                 </table>
@@ -175,6 +183,7 @@ export default {
           params: {
             per_page: 100,
             company_id: this.$auth.user.company_id,
+            id: this.UserID,
             UserID: this.UserID,
             user_type: this.visitor_type,
           },

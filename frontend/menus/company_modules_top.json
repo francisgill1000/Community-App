@@ -2,14 +2,14 @@
   {
     "icon": "mdi-home",
     "title": "Dashboard",
-    "to": "/dashboard",
+    "to": "/community/dashboard",
     "menu": "dashboard",
     "module": "topmenu",
     "permission": "dashboard_access"
   },
   {
     "icon": "mdi-bell",
-    "title": "Tanent",
+    "title": "Tenant",
     "to": "/community/tanent",
     "menu": "tanents",
     "module": "topmenu",

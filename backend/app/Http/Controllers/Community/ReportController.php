@@ -96,10 +96,12 @@ class ReportController extends Controller
         }
 
         $userLogs = AttendanceLog::whereDate("LogTime", '=', $date) // Only today's records
+
             ->whereIn("UserID", $userIds)
             ->where("company_id", $companyId)
             ->distinct("LogTime", "UserID", "company_id")
             ->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid"])
+            ->orderBy("LogTime", "asc")
             ->get()
             ->groupBy('UserID');
 
@@ -111,6 +113,9 @@ class ReportController extends Controller
 
         $items = [];
         $message = "";
+
+        $in_ids = [];
+        $out_ids = [];
         foreach ($userLogs as $key => $logs) {
 
             $logs = $logs->toArray() ?? [];
@@ -136,12 +141,17 @@ class ReportController extends Controller
                 "total_hrs" => '00:00',
                 "in_id" => $firstLog["id"],
                 "status" => "in",
+
             ];
+            $in_ids[] = $firstLog["id"];
 
             if ($lastLog && count($logs) > 1) {
                 $item["out_id"] = $lastLog["id"] ?? 0;
                 $item["status"] = "out";
                 $item["total_hrs"] = $this->getTotalHrsMins($firstLog["time"] ?? 0, $lastLog["time"] ?? 0);
+
+                if ($lastLog["id"])
+                    $out_ids[] = $item["out_id"];
             }
 
             $item["date"] = $params["date"];
@@ -153,9 +163,9 @@ class ReportController extends Controller
         }
 
         //try {
-        $UserIds = array_column($items, "user_id");
+        $user_ids = array_column($items, "user_id");
         $model = CommunityReport::query();
-        $model->whereIn("user_id", $UserIds);
+        $model->whereIn("user_id", $user_ids);
         $model->where("date", $date);
         $model->delete();
         // $chunks = array_chunk($items, 100);
@@ -166,11 +176,14 @@ class ReportController extends Controller
         $model->insert($items);
 
 
+        AttendanceLog::where("company_id", $companyId)->whereIn("id", $in_ids)->update(["log_type" => 'in']);
+        AttendanceLog::where("company_id", $companyId)->whereIn("id", $out_ids)->update(["log_type" => 'out']);
+
 
         //if (!$customRender) {
-        AttendanceLog::where("company_id", $companyId)->whereIn("UserID", $UserIds)->update(["checked" => true, "checked_datetime" => date('Y-m-d H:i:s')]);
+        AttendanceLog::where("company_id", $companyId)->whereIn("UserID", $userIds)->update(["checked" => true, "checked_datetime" => date('Y-m-d H:i:s')]);
         //}
-        $message = "[" . $date . " " . date("H:i:s") .  "].  Affected Ids: " . json_encode($UserIds) . " " . $message;
+        $message = "[" . $date . " " . date("H:i:s") .  "].  Affected Ids: " . json_encode($userIds) . " " . $message;
         // } catch (\Throwable $e) {
         //     return  $message = "[" . $date . " " . date("H:i:s") .  "]. " . $e->getMessage();
         // }

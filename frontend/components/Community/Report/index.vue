@@ -1,5 +1,40 @@
 <template>
   <div v-if="can(`attendance_report_view`)">
+    <v-dialog v-model="dialog" max-width="1000">
+      <v-card>
+        <v-container>
+          <v-row no-gutters class="pa-0 ma-0">
+            <v-col class="text-right">
+              <v-icon color="primary" @click="dialog = false">
+                mdi-close-circle-outline
+              </v-icon>
+            </v-col>
+          </v-row>
+          {{ visitor_type }}
+          <EmployeeShortView
+            v-if="selectedItem.employee != null"
+            :item="selectedItem"
+            :key="key + 1"
+          />
+
+          <VisitorAttendanceLogsPopup
+            v-else-if="
+              visitor_type == 'Visitor' ||
+              visitor_type == 'Contractor' ||
+              visitor_type == 'Delivery'
+            "
+            :key="generateRandomId()"
+            :UserID="UserID"
+          />
+          <TenantAttendanceLogsPopup
+            v-else-if="visitor_type == 'tenant' || visitor_type == 'Tanent'"
+            :key="key"
+            :UserID="UserID"
+            :visitor_type="'tenant'"
+          />
+        </v-container>
+      </v-card>
+    </v-dialog>
     <v-card v-if="showFilters" elevation="0" class="mt-2">
       <v-toolbar dense flat>
         <span class="headline black--text"> {{ label }}</span>
@@ -187,8 +222,9 @@
               @success="handleSuccessResponse"
             />
           </v-toolbar>
-
+          {{ UserID }}
           <v-data-table
+            @click:row="showDialog"
             dense
             :headers="headers"
             :items="data"
@@ -206,9 +242,7 @@
             <template v-slot:item.id="{ item, index }">
               {{ index + 1 }}
             </template>
-            <template v-slot:item.status="{ item, index }">
-             Allowed
-            </template>
+            <template v-slot:item.status="{ item, index }"> Allowed </template>
             <template v-slot:item.in="{ item, index }">
               {{ item?.in_log.LogTime ?? "---" }}
               <br />
@@ -353,10 +387,18 @@
   <NoAccess v-else />
 </template>
 <script>
+import VisitorAttendanceLogsPopup from "../../../components/Community/VisitorAttendanceLogsPopup.vue";
+import TenantAttendanceLogsPopup from "../../../components/Community/TenantAttendanceLogsPopup.vue";
+
 export default {
   props: ["user_type", "dropdown", "label", "showFilters"],
-
+  components: {
+    VisitorAttendanceLogsPopup,
+    TenantAttendanceLogsPopup,
+  },
   data: () => ({
+    key: 1,
+    selectedItem: {},
     tableHeight: 750,
     status: "",
     department_ids: "",
@@ -484,11 +526,53 @@ export default {
     this.payload.user_type = this.user_type;
   },
   methods: {
+    showDialog(item) {
+      this.key++;
+      this.selectedItem = item;
+
+      console.log("item", item);
+
+      if (item.visitor) {
+        this.UserID = item.visitor.id;
+      } else if (item.tanent) {
+        this.UserID = item.tanent.id;
+      } else if (item.owner) {
+        this.UserID = item.owner.id;
+      } else if (item.contractor) {
+        this.UserID = item.contractor.id;
+      }
+
+      this.visitor_type = this.getUserType(item);
+      this.dialog = true;
+    },
     setUserID(id) {
       this.payload.UserID =
         this.users.find((e) => e.id == id).system_user_id ?? 0;
     },
+    getUserType(item) {
+      const relationships = {
+        Tanent: item.tanent,
+        "Family Member": item.family_member,
+        Relative: item.relative,
+        Visitor: item.visitor,
+        Delivery: item.delivery,
+        Contractor: item.contractor,
+        Maid: item.maid,
+      };
 
+      for (const [type, value] of Object.entries(relationships)) {
+        if (value) {
+          return type;
+        }
+      }
+
+      return "Employee";
+    },
+    generateRandomId() {
+      const length = 8; // Adjust the length of the ID as needed
+      const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number
+      return randomNumber.toString().padStart(length, "0"); // Convert to string and pad with leading zeros if necessary
+    },
     getUserPhone(item) {
       const relationships = {
         Tanent: item.tanent,
