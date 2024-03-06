@@ -73,7 +73,9 @@ class ReportController extends Controller
             }
         }
 
-        return [];
+        return [
+            $user_type => $user,
+        ];
     }
 
     public function render($companyId, $date, $userIds = [], $customRender = false)
@@ -87,6 +89,7 @@ class ReportController extends Controller
 
         if (!$customRender) {
             $userIds = AttendanceLog::where("company_id", $companyId)
+                ->where("checked", false) // Only today's records
                 ->whereDate("LogTime", '=', $date) // Only today's records
                 ->distinct("UserID", "company_id")
                 ->pluck('UserID');
@@ -149,26 +152,28 @@ class ReportController extends Controller
             return '[' . $date . " " . date("H:i:s") . '] No data found' . $message;
         }
 
-        try {
-            $UserIds = array_column($items, "user_id");
-            $model = CommunityReport::query();
-            $model->whereIn("user_id", $UserIds);
-            $model->where("date", $date);
-            $model->delete();
-            // $chunks = array_chunk($items, 100);
+        //try {
+        $UserIds = array_column($items, "user_id");
+        $model = CommunityReport::query();
+        $model->whereIn("user_id", $UserIds);
+        $model->where("date", $date);
+        $model->delete();
+        // $chunks = array_chunk($items, 100);
 
-            // foreach ($chunks as $chunk) {
-            //     $model->insert($chunk);
-            // }
-            $model->insert($items);
+        // foreach ($chunks as $chunk) {
+        //     $model->insert($chunk);
+        // }
+        $model->insert($items);
 
-            if (!$customRender) {
-                AttendanceLog::where("company_id", $companyId)->whereIn("UserID", $UserIds)->update(["checked" => true, "checked_datetime" => date('Y-m-d H:i:s')]);
-            }
-            $message = "[" . $date . " " . date("H:i:s") .  "].  Affected Ids: " . json_encode($UserIds) . " " . $message;
-        } catch (\Throwable $e) {
-            $message = "[" . $date . " " . date("H:i:s") .  "]. " . $e->getMessage();
-        }
+
+
+        //if (!$customRender) {
+        AttendanceLog::where("company_id", $companyId)->whereIn("UserID", $UserIds)->update(["checked" => true, "checked_datetime" => date('Y-m-d H:i:s')]);
+        //}
+        $message = "[" . $date . " " . date("H:i:s") .  "].  Affected Ids: " . json_encode($UserIds) . " " . $message;
+        // } catch (\Throwable $e) {
+        //     return  $message = "[" . $date . " " . date("H:i:s") .  "]. " . $e->getMessage();
+        // }
 
         $this->devLog("render-manual-log", $message);
         return ($message);
