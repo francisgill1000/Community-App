@@ -280,7 +280,7 @@ class ReportController extends Controller
                 $query->where("user_type", request("user_type"));
                 $query->with([
 
-                    'employee:first_name,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
+                    'employee:id,first_name,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
 
                 ]);
             }

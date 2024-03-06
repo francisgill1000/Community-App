@@ -48,9 +48,9 @@ class AccessControlController extends Controller
             }
             $visitors = $visitors->get(["id", DB::raw('first_name || \' \' || last_name as full_name'), "system_user_id"])->toArray();
         }
-        if ($user_type == 'employees') {
+        if ($user_type == 'employee') {
             $employees = DB::table('employees')
-                ->when($user_type != '', fn ($q) => $q->where('member_type',  $user_type))
+
                 ->get(["id", "full_name", "system_user_id"])->toArray();
         }
 
