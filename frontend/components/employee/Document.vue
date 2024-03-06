@@ -15,7 +15,7 @@
               style="border-radius: 5px 5px 0px 0px"
               dense
             >
-              <span> Documents List</span>
+              <span> Documents List </span>
 
               <v-spacer></v-spacer>
               <v-toolbar-items>
@@ -167,7 +167,6 @@
                             >mdi-plus-circle</v-icon
                           >
                           <v-btn
-                            v-else
                             dark
                             class="error mt-2"
                             fab

@@ -19,7 +19,7 @@
               <div class="card-body p-md-5 mx-md-4">
                 <v-row class="pb-5">
                   <v-col md="12" cols="12" class="text-center">
-                    <h2>MyTime2Cloud</h2>
+                    <h2>MyHome2Cloud</h2>
                   </v-col>
                 </v-row>
 
@@ -122,7 +122,7 @@
             </div>
             <h3 class="pb-7 pt-15">
               Welcome To
-              <span style="font-size: 20px"> Mytime2Cloud </span>
+              <span style="font-size: 20px"> MyHome2Cloud </span>
             </h3>
           </div>
           <div>
@@ -211,7 +211,7 @@
               For Technical Support :
               <a
                 target="_blank"
-                href="https://wa.me/971529048025?text=Hello MyTime2Cloud. I need your support."
+                href="https://wa.me/971529048025?text=Hello MyHome2Cloud. I need your support."
                 ><v-icon color="black">mdi-whatsapp</v-icon></a
               >
               <a
@@ -245,7 +245,7 @@
           <div style="font-weight: 300">
             Tenant management refers to the administration and oversight of
             tenants within a property or organizational context. In the case of
-            MyTime2Cloud, tenant management involves the systematic handling of
+            MyHome2Cloud, tenant management involves the systematic handling of
             users, which could include employees, contractors, or any
             individuals granted access to the platform's services.<br />
             Customization and Reporting: The platform offers customizable
@@ -256,7 +256,6 @@
           </div>
           <h3 class="pt-10">Features</h3>
           <ul style="font-weight: 300">
-           
             <li>Tanent and Members management</li>
             <li>Visitor management</li>
             <li>Contractor management</li>
@@ -275,7 +274,7 @@
               <a
                 style="font-weight: 300"
                 target="_blank"
-                href="https://wa.me/971529048025?text=Hello MyTime2Cloud. I need your support."
+                href="https://wa.me/971529048025?text=Hello MyHome2Cloud. I need your support."
                 ><v-icon color="white">mdi-whatsapp</v-icon></a
               >
 
@@ -465,27 +464,6 @@ export default {
         this.$auth
           .loginWith("local", { data: this.credentials })
           .then(({ data }) => {
-            // console.log("$auth.user", data, this.$auth.user);
-
-            if (data.user.branch_id == 0 && data.user.is_master == false) {
-              this.snackbar = true;
-              this.snackbarMessage =
-                "You do not have Permission to access this page";
-              this.msg = "You do not have Permission to access this page";
-
-              // window.location.href = process.env.EMPLOYEE_APP_URL;
-              // this.$router.push("/login");
-              return false;
-            }
-
-            if (
-              this.$auth.user.role_id == 0 &&
-              this.$auth.user.user_type == "employee"
-            ) {
-              window.location.href = process.env.EMPLOYEE_APP_URL;
-              return "";
-            }
-
             setTimeout(() => (this.loading = false), 2000);
           })
           .catch(({ response }) => {

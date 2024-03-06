@@ -561,7 +561,7 @@ class AttendanceLogController extends Controller
             $data[] = [
                 'UserID' => $user_id,
                 'LogTime' => $logTime,
-                'DeviceID' => Arr::random($deviceIds),
+                'DeviceID' => "5555",
                 'company_id' => $company_id,
                 'visitor_id' => Visitor::where("system_user_id", $user_id)->orderBy("id", "desc")->value("id"),
             ];

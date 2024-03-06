@@ -1,6 +1,6 @@
 [
   {
-    "icon": "mdi-view-dashboard",
+    "icon": "mdi-home",
     "title": "Dashboard",
     "to": "/dashboard",
     "submenu": "dashboard",
@@ -44,7 +44,7 @@
   },
   {
     "icon": "mdi-account",
-    "image":"/maid.png",
+    "image": "/maid.png",
     "title": "House Maids",
     "to": "/community/house_maids",
     "submenu": "house_maids",
@@ -83,7 +83,7 @@
   },
   {
     "icon": "mdi-account",
-    "image":"/visitors.png",
+    "image": "/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor",
     "submenu": "dashboard",
@@ -93,7 +93,7 @@
 
   {
     "icon": "mdi-account",
-    "image":"/visitors.png",
+    "image": "/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor",
     "submenu": "dashboard",
@@ -117,32 +117,18 @@
     "module": "settings"
   },
   {
-    "icon": "mdi-chair-rolling",
-    "title": "Departments",
-    "to": "/department",
-    "menu": "department_access",
-    "module": "settings"
-  },
-  {
-    "icon": "mdi-email",
-    "title": "Automation",
-    "to": "/automation",
-    "menu": "notifications_access",
-    "module": "settings"
-  },
-  {
-    "icon": "mdi-cellphone-text",
-    "title": "Device Notifications",
-    "to": "/device_notifications",
-    "menu": "notifications_access",
-    "module": "settings"
-  },
-  {
     "icon": "mdi-domain",
     "title": "Profile",
     "to": "/companies",
     "menu": "setting_access",
     "class": "submenutitle",
+    "module": "settings"
+  },
+  {
+    "icon": "mdi-chair-rolling",
+    "title": "Departments",
+    "to": "/department",
+    "menu": "department_access",
     "module": "settings"
   },
   {
@@ -160,13 +146,6 @@
     "module": "settings"
   },
   {
-    "icon": "mdi mdi-calendar-star-four-points",
-    "title": "Holidays",
-    "to": "/holidays",
-    "menu": "holiday_access",
-    "module": "settings"
-  },
-  {
     "icon": "mdi-bell",
     "title": "Announ..Categories",
     "open_menu": false,
@@ -180,7 +159,6 @@
     "to": "/announcements",
     "module": "settings"
   },
-
   {
     "icon": "mdi-web-box",
     "title": "Web Logs",
@@ -193,13 +171,6 @@
     "title": "Community Setup",
     "open_menu": false,
     "to": "/community/setup",
-    "module": "settings"
-  },
-  {
-    "icon": "mdi-mail",
-    "title": "Mail",
-    "open_menu": false,
-    "to": "/automation_mail_content",
     "module": "settings"
   },
   {
@@ -289,13 +260,7 @@
     "menu": "payroll_settings_access",
     "module": "payroll"
   },
-  {
-    "icon": "mdi-home",
-    "title": "Dashboard",
-    "to": "/dashboard",
-    "menu": "timezone",
-    "module": "access_control"
-  },
+
   {
     "icon": "mdi mdi-camera-account",
     "title": "Photo Upload",
@@ -312,7 +277,7 @@
   },
   {
     "icon": "mdi-account",
-    "image":"/visitors.png",
+    "image": "/visitors.png",
     "title": "Visitors",
     "to": "/community/visitor?1",
     "menu": "visitors_access",
@@ -420,7 +385,7 @@
 
   {
     "icon": "mdi-account",
-    "image":"/maid.png",
+    "image": "/maid.png",
     "title": "House Maids",
     "to": "/community/house_maids",
     "menu": "contractor_access",
@@ -433,13 +398,7 @@
     "menu": "contractor_access",
     "module": "house_maids"
   },
-  {
-    "icon": "mdi-home",
-    "title": "Dashboard",
-    "to": "/dashboard",
-    "menu": "parking_access",
-    "module": "parking"
-  },
+
   {
     "icon": "mdi-account",
     "title": "Parking",
@@ -456,7 +415,7 @@
   },
   {
     "icon": "mdi-account-card-details",
-    "image":"/tenet-3.png",
+    "image": "/tenet-3.png",
     "title": "Tanent",
     "to": "/community/tanent",
     "menu": "tanent",

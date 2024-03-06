@@ -31,8 +31,8 @@ class RegisterAdmin extends Command
     {
         User::create([
             "name" => "Master",
-            "email" => "master@community.com",
-            "password" => Hash::make("secret"),
+            "email" => "master@myhome2cloud.com",
+            "password" => Hash::make("password"),
             "is_master" => 1,
             "web_login_access" => 1
         ]);

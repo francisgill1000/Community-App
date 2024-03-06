@@ -263,6 +263,8 @@ class DashboardController extends Controller
     }
     public function dashboardGetAssetsStatistics(Request $request)
     {
+
+
         $expiryDate = date("Y-m-d", strtotime("+30 days"));
 
         $contract_expiring_count = Tanent::where('company_id', $request->company_id)
@@ -279,17 +281,10 @@ class DashboardController extends Controller
 
         $occupied_count =  Room::where('company_id', $request->company_id)->where("tenant_id", ">", 0)->get()->count();
 
-
         $offline_devices = Device::where('company_id', $request->company_id)->where('status_id', 2)->get()->count();
 
-
         $car_parking_count = Parking::get()->count();
-        $allocated_count = Vehicle::with(["tanent"])
-
-            ->whereHas("tanent", function ($q) use ($request) {
-                $q->where('company_id', $request->company_id);
-            })
-            ->get()->count();
+        $allocated_count = Parking::whereHas("vehicle.tanent")->count();
 
 
         $finalarray  = [

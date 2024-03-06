@@ -12,6 +12,24 @@
         </template>
       </v-snackbar>
     </div>
+    <v-dialog v-model="documentsDialog" width="900">
+      <v-card>
+        <v-card-title dark class="popup_background">
+          Contractor Documents
+          <v-spacer></v-spacer>
+          <v-icon @click="documentsDialog = false" outlined dark>
+            mdi mdi-close-circle
+          </v-icon>
+        </v-card-title>
+        <v-card-text>
+          <CommunityContractorCompanyDocumentsList
+            :key="key"
+            :contractor_id="documentsSelectedItem.id"
+          ></CommunityContractorCompanyDocumentsList>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <div v-if="!loading">
       <v-dialog persistent v-model="branchDialog" width="900">
         <v-card>
@@ -579,14 +597,23 @@
                   </v-btn>
                 </template>
                 <v-list width="120" dense>
-                  <v-list-item v-if="can('branch_edit')">
+                  <v-list-item
+                    v-if="can('branch_view')"
+                    @click="viewDocuments(item)"
+                  >
+                    <v-list-item-title style="cursor: pointer">
+                      <v-icon color="secondary" small>mdi-file </v-icon>
+                      Documents
+                    </v-list-item-title>
+                  </v-list-item>
+                  <!-- <v-list-item v-if="can('branch_edit')">
                     <v-list-item-title style="cursor: pointer">
                       <CommunityContractorCompanyDocument
                         :id="item.id"
                         @success="handleSuccessResponse"
                       />
                     </v-list-item-title>
-                  </v-list-item>
+                  </v-list-item> -->
                   <v-list-item
                     v-if="can('branch_view')"
                     @click="viewItem(item)"
@@ -638,6 +665,9 @@ export default {
   },
 
   data: () => ({
+    key: 0,
+    documentsDialog: false,
+    documentsSelectedItem: {},
     departments: [],
     shifts: [],
     timezones: [],
@@ -786,6 +816,11 @@ export default {
     },
   },
   methods: {
+    viewDocuments(item) {
+      this.key++;
+      this.documentsDialog = true;
+      this.documentsSelectedItem = item;
+    },
     handleSuccessResponse(value) {
       alert(value);
       this.getDataFromApi();
