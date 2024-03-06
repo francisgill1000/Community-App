@@ -115,56 +115,31 @@
           :server-items-length="totalRowsCount"
         >
           <template v-slot:item.cards="{ item }">
-            <!-- <v-icon color="primary" class="mx-1" @click="viewMember(item)">
-              mdi-card-outline
-            </v-icon> -->
             {{ item.members.filter((e) => e.member_type == "card").length }}
           </template>
 
           <template v-slot:item.members="{ item }">
-            <!-- <v-icon color="primary" class="mx-1" @click="viewMember(item)">
-              mdi-eye
-            </v-icon> -->
             {{ item.members.filter((e) => e.member_type !== "card").length }}
           </template>
 
-          <template
-            v-slot:item.full_name="{ item, index }"
-            style="width: 300px"
-          >
+          <template v-slot:item.full_name="{ item, index }">
             <v-row no-gutters>
-              <v-col
-                style="
-                  padding: 5px;
-                  padding-left: 0px;
-                  width: 50px;
-                  max-width: 50px;
-                "
-              >
-                <v-img
-                  style="
-                    border-radius: 50%;
-                    height: 50px;
-                    width: 50px;
-                    max-width: 50px;
-                  "
-                  :src="
-                    item.profile_picture
-                      ? item.profile_picture
-                      : '/no-profile-image.jpg'
-                  "
-                >
-                </v-img>
-              </v-col>
-              <v-col style="padding: 10px">
-                <strong> {{ item.full_name }}</strong>
-                <p>
-                  {{ item.phone_number }}<br v-if="item.phone_number" />{{
-                    item.nationality
-                  }}
-                </p>
-              </v-col>
-            </v-row>
+                <v-col cols="3" class="ma-2">
+                  <v-avatar>
+                    <v-img
+                      :src="item.profile_picture ?? '/no-profile-image.jpg'"
+                    />
+                  </v-avatar>
+                </v-col>
+                <v-col class="pt-2">
+                  <strong> {{ item.full_name }}</strong>
+                  <p>
+                    {{ item.phone_number }}<br v-if="item.phone_number" />{{
+                      item.nationality
+                    }}
+                  </p>
+                </v-col>
+              </v-row>
           </template>
 
           <template v-slot:item.options="{ item }">
@@ -332,14 +307,6 @@ export default {
     errors: [],
     headers: [
       {
-        text: "Ref #",
-        align: "left",
-        sortable: false,
-        key: "id",
-        value: "id",
-        filterable: false,
-      },
-      {
         text: "Full Name",
         align: "left",
         sortable: false,
@@ -347,6 +314,7 @@ export default {
         value: "full_name",
         filterable: true,
         type: "text",
+        width:"200px"
       },
       {
         text: "Members",
@@ -355,7 +323,7 @@ export default {
         key: "members",
         value: "members",
         filterable: false,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Cards",
@@ -364,7 +332,7 @@ export default {
         key: "cards",
         value: "cards",
         filterable: false,
-        filterSpecial: false,
+        type: "text",
       },
       {
         text: "Term",

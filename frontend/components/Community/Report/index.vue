@@ -176,7 +176,7 @@
               ><img
                 title="Print"
                 style="cursor: pointer"
-                @click="process_file('print_pdf')"
+                @click="process_file('community/print')"
                 src="/icons/icon_print.png"
                 class="iconsize"
             /></span>
@@ -184,7 +184,7 @@
               ><img
                 title="Download Pdf"
                 style="cursor: pointer"
-                @click="process_file('download_pdf')"
+                @click="process_file('community/download')"
                 src="/icons/icon_pdf.png"
                 class="iconsize"
             /></span>
@@ -406,7 +406,6 @@ export default {
     daily_date: "",
     to_date: "",
 
-    isFilter: false,
     totalRowsCount: 0,
     snack: false,
     snackColor: "",
@@ -415,9 +414,6 @@ export default {
     menu: false,
     options: {},
     date: null,
-    menu: false,
-    loading: false,
-    time_menu: false,
     endpoint: "community_common_report",
     search: "",
     snackbar: false,
@@ -447,8 +443,6 @@ export default {
 
     response: "",
     data: [],
-    errors: [],
-    report_template: "Template1",
     headers: [
       {
         text: "S.NO",
@@ -500,9 +494,6 @@ export default {
         value: "user_type",
       },
     ],
-    max_date: null,
-
-    isCompany: true,
   }),
 
   watch: {
@@ -512,12 +503,6 @@ export default {
       },
       deep: true,
     },
-  },
-  mounted() {
-    this.tableHeight = window.innerHeight - 370;
-    window.addEventListener("resize", () => {
-      this.tableHeight = window.innerHeight - 370;
-    });
   },
   created() {
     this.getUsers();
@@ -625,10 +610,6 @@ export default {
           this.devices = data.filter((e) => !e.name.includes("Mobile"));
         });
     },
-
-    caps(str) {
-      return str.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-    },
     can(per) {
       return this.$pagePermission.can(per, this);
     },
@@ -657,15 +638,7 @@ export default {
       this.loading = false;
     },
 
-    pdfDownload() {
-      let path = process.env.BACKEND_URL + "/pdf";
-      let pdf = document.createElement("a");
-      pdf.setAttribute("href", path);
-      pdf.setAttribute("target", "_blank");
-      pdf.click();
-    },
-
-    async process_file(type) {
+    async process_file(endpoint) {
       try {
         if (!this.data || !this.data.length) {
           alert("No data found");
@@ -675,7 +648,6 @@ export default {
         const backendUrl = process.env.BACKEND_URL;
         const queryParams = {
           company_id: this.$auth.user.company_id,
-          branch_id: this.payload.branch_id,
           UserID: this.payload.UserID,
           DeviceID: this.payload.DeviceID,
           from_date: this.payload.from_date,
@@ -701,7 +673,7 @@ export default {
           )
           .join("&");
 
-        const reportUrl = `${backendUrl}/accessControlReport_${type.toLowerCase()}?${queryString}`;
+        const reportUrl = `${backendUrl}/${endpoint}?${queryString}`;
 
         const report = document.createElement("a");
         report.setAttribute("href", reportUrl);

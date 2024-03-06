@@ -30,7 +30,7 @@
           <v-toolbar class="mb-2 white--text" color="white" dense flat>
             <v-toolbar-title>
               <span style="color: black">
-                Attendances Logs</span
+                Device Logs</span
               ></v-toolbar-title
             >
             <!-- <v-tooltip top color="primary">
@@ -68,7 +68,7 @@
             <v-spacer></v-spacer>
             <!-- <v-tooltip top color="primary">
               <template v-slot:activator="{ on, attrs }"> -->
-            <v-btn
+            <!-- <v-btn
               v-if="can(`logs_create`)"
               title="Attendance Log"
               x-small
@@ -77,7 +77,7 @@
               @click="generateLogsDialog = true"
             >
               <v-icon class="">mdi mdi-plus-circle</v-icon>
-            </v-btn>
+            </v-btn> -->
             <!-- </template>
               <span> Attendance Log</span>
             </v-tooltip> -->

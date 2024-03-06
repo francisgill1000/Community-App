@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\Community\AttendanceLogController;
+use App\Http\Controllers\AttendanceLogController;
 use App\Http\Controllers\CompanyController;
 use Illuminate\Support\Facades\Route;
 

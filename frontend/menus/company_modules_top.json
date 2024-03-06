@@ -48,20 +48,20 @@
     "permission": "maid_access"
   },
   {
-    "icon": "mdi mdi-calendar-star-four-points",
-    "title": "Employee",
-    "to": "/employees",
-    "menu": "access_control",
-    "module": "topmenu",
-    "permission": "employee_access"
-  },
-  {
     "icon": "mdi mdi-calendar-account",
     "title": "Parking",
     "to": "/community/parking",
     "menu": "parking",
     "module": "topmenu",
     "permission": "parking_access"
+  },
+  {
+    "icon": "mdi mdi-calendar-star-four-points",
+    "title": "Employee",
+    "to": "/employees",
+    "menu": "access_control",
+    "module": "topmenu",
+    "permission": "employee_access"
   },
   {
     "icon": "mdi-bell",
