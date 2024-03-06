@@ -216,6 +216,7 @@
               @success="handleSuccessResponse"
             />
             <CommunityVisitorCreate
+              :label="label"
               button_type="icon"
               visitor_type="visitor"
               v-if="can(`visitor_create`)"

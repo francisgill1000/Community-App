@@ -123,7 +123,7 @@
           </v-card>
         </v-col>
       </v-row>
-      <CommunityVisitorDashboardDeviceLogs />
+      <CommunityVisitorDashboardDeviceLogs label="Visitor" user_type="visitor" />
     </div>
     <Preloader v-else />
   </div>

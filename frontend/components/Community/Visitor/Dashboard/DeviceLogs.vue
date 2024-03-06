@@ -21,7 +21,7 @@
         </div>
         <v-card class="mb-5" elevation="0">
           <CommunityReport
-            label="Visitor"
+            :label="label"
             :user_type="user_type"
             :showFilters="false"
           />
@@ -34,7 +34,7 @@
 </template>
 <script>
 export default {
-  props: ["user_type"],
+  props: ["user_type", "label"],
 
   data: () => ({
     tableHeight: 750,
