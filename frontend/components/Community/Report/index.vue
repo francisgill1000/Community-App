@@ -212,14 +212,14 @@
             <CommunityManualCheckOut
               button_type="icon"
               visitor_type="visitor"
-              v-if="can(`visitor_view`)"
+              v-if="can(`${user_type}_view`)"
               @success="handleSuccessResponse"
             />
             <CommunityVisitorCreate
               :label="label"
               button_type="icon"
-              visitor_type="visitor"
-              v-if="can(`visitor_create`)"
+              :visitor_type="user_type"
+              v-if="can(`${user_type}_create`)"
               @success="handleSuccessResponse"
             />
           </v-toolbar>

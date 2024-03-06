@@ -573,6 +573,7 @@ export default {
         .get(`purpose_list`, {
           params: {
             company_id: this.$auth.user.company_id,
+            type: this.visitor_type,
           },
         })
         .then(({ data }) => {
