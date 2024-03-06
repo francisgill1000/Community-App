@@ -80,7 +80,10 @@
           </v-row>
         </v-card> -->
 
-        <CommDashboardRightsideStaticstics :branch_id="branch_id" />
+        <!-- <CommDashboardRightsideStaticstics :branch_id="branch_id" /> -->
+        <CommDashboardRightsideStaticstics2 :branch_id="branch_id" />
+        <!-- <CommDashboardRightsideStaticstics3 :branch_id="branch_id" /> -->
+
         <v-row>
           <v-col lg="12" md="12" sm="12" xs="12">
             <v-card class="py-2 mt-2" style="height: 312px; overflow: hidden">
@@ -115,6 +118,9 @@ import CommDashboardAttendanceChart from "../../../components/Community/Dashboar
 import CommDashboardLastMonthStatistics from "../../../components/Community/Dashboard/CommDashboardlLastMonthStatisticsV1.vue";
 import CommDashboardRealTimeLogTableview from "../../../components/Community/Dashboard/CommDashboardRealTimeLogTableviewV1.vue";
 import CommDashboardRightsideStaticstics from "../../../components/Community/Dashboard/CommDashboardRightsideStaticsticsV1.vue";
+import CommDashboardRightsideStaticstics2 from "../../../components/Community/Dashboard/CommDashboardRightsideStaticsticsV2.vue";
+import CommDashboardRightsideStaticstics3 from "../../../components/Community/Dashboard/CommDashboardRightsideStaticsticsV3.vue";
+
 import CommDashboardCommunityMembers from "../../../components/Community/Dashboard/CommDashboardCommunityMembersV1.vue";
 
 import CommDashboardAnnouncment from "../../../components/Community/Dashboard/CommDashboardAnnouncmentV1.vue";
@@ -131,6 +137,9 @@ export default {
     CommDashboardLoginActivities,
     CommDashboardAttednaceDepartmentWise,
     CommDashboardRightsideStaticstics,
+    CommDashboardRightsideStaticstics2,
+    CommDashboardRightsideStaticstics3,
+
     // DashboardlastMultiStatistics,
     CommDashboardAttendanceHourChart,
     CommDashboardCommunityMembers,
