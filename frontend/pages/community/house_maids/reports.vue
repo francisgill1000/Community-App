@@ -1,3 +1,7 @@
 <template>
-  <CommunityReport label="Maid Report" :user_type="`maid`" />
+  <CommunityReport
+    label="Maid Reports"
+    :user_type="`maid`"
+    :showFilters="true"
+  />
 </template>

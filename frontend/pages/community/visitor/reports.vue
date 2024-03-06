@@ -1,3 +1,7 @@
 <template>
-  <CommunityReport label="Visitor Report" :user_type="`visitor`" :showFilters="true" />
+  <CommunityReport
+    label="Visitor Reports"
+    :user_type="`visitor`"
+    :showFilters="true"
+  />
 </template>

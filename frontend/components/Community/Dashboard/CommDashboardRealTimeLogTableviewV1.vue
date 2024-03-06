@@ -30,7 +30,9 @@
             v-else-if="
               visitor_type == 'tenant' ||
               visitor_type == 'Tanent' ||
-              visitor_type == 'Owner'
+              visitor_type == 'Owner' ||
+              visitor_type == 'Family Member' ||
+              visitor_type == 'Maid'
             "
             :key="key"
             :UserID="UserID"
@@ -239,6 +241,15 @@
                   <div>
                     {{ item.maid.first_name ?? "---" }}
                     {{ item.maid.last_name ?? "---" }}
+                  </div>
+                  <small>{{ item.maid.phone_number ?? "" }}</small>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.family_member" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.family_member.first_name ?? "---" }}
+                    {{ item.family_member.last_name ?? "---" }}
                   </div>
                   <small>{{ item.maid.phone_number ?? "" }}</small>
                 </v-col>
@@ -482,6 +493,12 @@ export default {
         this.UserID = item.contractor.id;
       } else if (item.delivery) {
         this.UserID = item.delivery.id;
+      } else if (item.maid) {
+        this.UserID = item.maid.id;
+      } else if (item.primary) {
+        this.UserID = item.primary.id;
+      } else if (item.family_member) {
+        this.UserID = item.family_member.id;
       }
 
       this.visitor_type = this.getUserType(item);

@@ -406,13 +406,7 @@
     "menu": "parking_access",
     "module": "parking"
   },
-  {
-    "icon": "mdi-home",
-    "title": "Dashboard",
-    "to": "/community/dashboard",
-    "menu": "tanent",
-    "module": "tanents"
-  },
+
   {
     "icon": "mdi-account-card-details",
     "image": "/tenet-3.png",

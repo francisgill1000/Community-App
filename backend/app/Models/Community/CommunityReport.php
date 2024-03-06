@@ -40,7 +40,7 @@ class CommunityReport extends Model
 
     public function tanent()
     {
-        return $this->belongsTo(Tanent::class, "user_id")->where("member_type", "Primary")->with("room");
+        return $this->belongsTo(Tanent::class, "user_id", "id")->where("member_type", "Primary")->with("room");
     }
 
     public function family_member()
@@ -50,12 +50,12 @@ class CommunityReport extends Model
 
     public function owner()
     {
-        return $this->belongsTo(Tanent::class, "user_id")->where("member_type", "Owner")->with("room");
+        return $this->belongsTo(Tanent::class,   "user_id", "id")->where("member_type", "Owner")->with("room");
     }
 
     public function maid()
     {
-        return $this->belongsTo(Tanent::class, "user_id")->where("member_type", "Maid");
+        return $this->belongsTo(Tanent::class,     "user_id", "id")->where("member_type", "Maid")->with("room");
     }
 
     public function employee()

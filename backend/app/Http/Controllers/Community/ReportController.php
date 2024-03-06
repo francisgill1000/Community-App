@@ -151,6 +151,8 @@ class ReportController extends Controller
         $out_ids = [];
         foreach ($userLogs as $key => $logs) {
 
+
+
             $logs = $logs->toArray() ?? [];
 
             $firstLog = collect($logs)->filter(function ($record) {
@@ -165,6 +167,8 @@ class ReportController extends Controller
             $lastLog = $logs[count($logs) - 1];
 
             $userDetails = $this->getUserDetails($key);
+
+
 
             $userKey = array_key_first($userDetails);
 
@@ -230,7 +234,57 @@ class ReportController extends Controller
 
         $query = CommunityReport::query();
 
-        $query->when(request()->filled("user_type"), fn ($q) => $q->where("user_type", request("user_type")));
+        //$query->when(request()->filled("user_type"), fn ($q) => $q->where("user_type", request("user_type")));
+
+        if (request()->filled("user_type")) {
+            if (request("user_type") == 'tanent') {
+                $query->whereIn("user_type", ["Owner", "Primary", "Family Member", "Maid"]);
+
+                $query->with([
+
+                    "tanent",
+                    "family_member",
+                    "owner",
+
+
+                ]);
+            } else if (request("user_type") == 'maid') {
+                $query->where("user_type", request("user_type"));
+                $query->with([
+                    "maid",
+
+
+                ]);
+            } else if (request("user_type") == 'visitor') {
+                $query->where("user_type", request("user_type"));
+                $query->with([
+                    "visitor",
+
+
+                ]);
+            } else if (request("user_type") == 'delivery') {
+                $query->where("user_type", request("user_type"));
+                $query->with([
+
+                    "delivery",
+
+                ]);
+            } else if (request("user_type") == 'contractor') {
+                $query->where("user_type", request("user_type"));
+                $query->with([
+
+
+                    "contractor",
+                ]);
+            } else if (request("user_type") == 'employee') {
+                $query->where("user_type", request("user_type"));
+                $query->with([
+
+                    'employee:first_name,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
+
+                ]);
+            }
+        }
 
         $query->when(request()->filled("UserID"), function ($q) {
             $q->whereHas("in_log", function ($qu) {
@@ -248,40 +302,41 @@ class ReportController extends Controller
                 });
             });
         });
+        $query->when(request()->filled("from_date"), function ($q) {
 
-        $query->when(request()->filled("from_date"), function ($query) {
-            $query->where(function ($q) {
-                $q->whereHas("in_log", function ($qu) {
-                    $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
-                });
-                $q->orWhereHas("out_log", function ($qu) {
-                    $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
-                });
-            });
+            $q->where('date', '>=', request("from_date"));
         });
+        $query->when(request()->filled("to_date"), function ($q) {
 
-        $query->when(request()->filled("to_date"), function ($query) {
-            $query->where(function ($q) {
-                $q->whereHas("in_log", function ($qu) {
-                    $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
-                });
-                $q->orWhereHas("out_log", function ($qu) {
-                    $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
-                });
-            });
+            $q->where('date', '<=', request("to_date"));
         });
+        // $query->when(request()->filled("from_date"), function ($query) {
+        //     $query->where(function ($q) {
+        //         $q->whereHas("in_log", function ($qu) {
+        //             $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
+        //         });
+        //         $q->orWhereHas("out_log", function ($qu) {
+        //             $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
+        //         });
+        //     });
+        // });
+
+        // $query->when(request()->filled("to_date"), function ($query) {
+        //     $query->where(function ($q) {
+        //         $q->whereHas("in_log", function ($qu) {
+        //             $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
+        //         });
+        //         $q->orWhereHas("out_log", function ($qu) {
+        //             $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
+        //         });
+        //     });
+        // });
 
         $query->with([
             "in_log",
             "out_log",
-            "visitor",
-            "delivery",
-            "contractor",
-            "tanent",
-            "family_member",
-            "owner",
-            "maid",
-            'employee:first_named,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
+
+
         ]);
 
         return $query;

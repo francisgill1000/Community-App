@@ -151,6 +151,11 @@
                     </td>
                     <td style="font-size: 12px">
                       <small>
+                        <b>Tenant</b>
+                      </small>
+                    </td>
+                    <td style="font-size: 12px">
+                      <small>
                         <b>Flat</b>
                       </small>
                     </td>
@@ -178,11 +183,32 @@
                       v-if="log.visitor"
                       style="font-size: 14px; border-bottom: 1px solid #dddddd"
                     >
-                      <small>{{ log.visitor.tanent?.room.room_number }}</small
-                      ><br />
                       <small>{{ log.visitor.tanent?.full_name }}</small
                       ><br />
                       <small>{{ log.visitor.tanent?.phone_number }}</small>
+                    </td>
+                    <td
+                      v-if="log.contractor"
+                      style="font-size: 14px; border-bottom: 1px solid #dddddd"
+                    >
+                      <small>{{ log.contractor.tanent?.full_name }}</small
+                      ><br />
+                      <small>{{ log.contractor.tanent?.phone_number }}</small>
+                    </td>
+                    <td
+                      v-if="log.delivery"
+                      style="font-size: 14px; border-bottom: 1px solid #dddddd"
+                    >
+                      <small>{{ log.delivery.tanent?.full_name }}</small
+                      ><br />
+                      <small>{{ log.delivery.tanent?.phone_number }}</small>
+                    </td>
+                    <td
+                      v-if="log.visitor"
+                      style="font-size: 14px; border-bottom: 1px solid #dddddd"
+                    >
+                      <small>{{ log.visitor.tanent?.room.room_number }}</small
+                      ><br />
                     </td>
                     <td
                       v-else-if="log.contractor"
@@ -192,9 +218,9 @@
                         log.contractor.tanent?.room.room_number
                       }}</small
                       ><br />
-                      <small>{{ log.contractor.tanent?.full_name }}</small
+                      <!-- <small>{{ log.contractor.tanent?.full_name }}</small
                       ><br />
-                      <small>{{ log.contractor.tanent?.phone_number }}</small>
+                      <small>{{ log.contractor.tanent?.phone_number }}</small> -->
                     </td>
                     <td
                       v-else-if="log.delivery"
@@ -202,9 +228,9 @@
                     >
                       <small>{{ log.delivery.tanent?.room.room_number }}</small
                       ><br />
-                      <small>{{ log.delivery.tanent?.full_name }}</small
+                      <!-- <small>{{ log.delivery.tanent?.full_name }}</small
                       ><br />
-                      <small>{{ log.delivery.tanent?.phone_number }}</small>
+                      <small>{{ log.delivery.tanent?.phone_number }}</small> -->
                     </td>
 
                     <td
