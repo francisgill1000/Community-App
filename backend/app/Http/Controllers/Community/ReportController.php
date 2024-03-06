@@ -6,12 +6,45 @@ use Illuminate\Http\Request;
 use App\Models\AttendanceLog;
 use App\Http\Controllers\Controller;
 use App\Models\Community\CommunityReport;
+use App\Models\Company;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
     public function index()
     {
         return $this->processFilter()->paginate(request("per_page") ?? 10);
+    }
+
+    public function print(Request $request)
+    {
+        $data = $this->processFilter()->get()->toArray();
+
+        if ($request->debug) return $data;
+
+        $chunks = array_chunk($data, 10);
+
+        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.community.report', [
+            "chunks" => $chunks,
+            "company" => Company::whereId(request("company_id") ?? 0)->first(),
+            "params" => $request->all(),
+
+        ])->stream();
+    }
+    public function download(Request $request)
+    {
+        $data = $this->processFilter()->get()->toArray();
+
+        if ($request->debug) return $data;
+
+        $chunks = array_chunk($data, 10);
+
+        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.community.report', [
+            "chunks" => $chunks,
+            "company" => Company::whereId(request("company_id") ?? 0)->first(),
+            "params" => $request->all(),
+
+        ])->download();
     }
     public function renderData(Request $request)
     {
@@ -187,7 +220,6 @@ class ReportController extends Controller
             });
         });
 
-        // Filter by DeviceID
         $query->when(request()->filled("DeviceID"), function ($query) {
             $query->where(function ($q) {
                 $q->whereHas("in_log", function ($qu) {
