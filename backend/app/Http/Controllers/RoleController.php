@@ -14,7 +14,11 @@ class RoleController extends Controller
 {
     public function dropdownList()
     {
-        return Role::orderBy("name", "asc")->where('company_id', request("company_id"))->get();
+        $model = Role::query();
+        $model->where('company_id', request('company_id'));
+        $model->when(request()->filled('branch_id'), fn ($q) => $q->where('branch_id', request('branch_id')));
+        $model->orderBy(request('order_by') ?? "id", request('sort_by_desc') ? "desc" : "asc");
+        return $model->get(["id", "name"]);
     }
 
     public function index(Role $model, Request $request)
@@ -134,7 +138,7 @@ class RoleController extends Controller
 
     public function deleteSelected(Request $request)
     {
-        $record = Role::whereIn('id', $request->id)->delete();
+        $record = Role::whereIn('id', $request->ids)->delete();
 
         if ($record) {
             return $this->response('Role Successfully Deleted.', $record, true);

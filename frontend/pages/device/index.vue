@@ -1,5 +1,5 @@
 <template>
-  <div v-if="can(`device_access`)">
+  <div v-if="can(`automation_contnet_access`)">
     <v-dialog
       v-model="dialogAccessSettings"
       width="90%"
@@ -642,6 +642,25 @@
             </span>
           </v-col>
           <v-col md="12">
+            <v-autocomplete
+              class="pb-0"
+              :hide-details="!payload.branch_id"
+              v-model="payload.branch_id"
+              placeholder="Branch Name"
+              outlined
+              dense
+              label="Branch Name *"
+              :items="branches"
+              item-value="id"
+              item-text="branch_name"
+            ></v-autocomplete>
+            <span
+              v-if="errors && errors.branch_id"
+              class="error--text pa-0 ma-0"
+              >{{ errors.branch_id[0] }}
+            </span>
+          </v-col>
+          <v-col md="12">
             <v-text-field
               class="pb-0"
               :hide-details="!payload.location"
@@ -823,7 +842,20 @@
           </v-btn>
         </span>
 
-       
+        <span v-if="isCompany" style="width: 250px">
+          <v-select
+            @change="getDataFromApi()"
+            class="pt-10 px-2"
+            v-model="filters[`branch_id`]"
+            :items="[{ id: ``, branch_name: `Select All` }, ...branchesList]"
+            dense
+            placeholder="Select Branch"
+            outlined
+            item-value="id"
+            item-text="branch_name"
+          >
+          </v-select>
+        </span>
         <!-- </template>
           <span>Reload</span>
         </v-tooltip> -->
@@ -1171,7 +1203,6 @@
       </v-data-table>
     </v-card>
   </div>
-  <NoAccess v-else />
 </template>
 <script>
 // import Back from "../../components/Snippets/Back.vue";
@@ -1211,6 +1242,7 @@ export default {
     editDialog: false,
     showFilters: false,
     filters: {
+      branch_id: "",
     },
     isFilter: false,
     totalRowsCount: 0,
@@ -1263,6 +1295,20 @@ export default {
         value: "name",
         filterable: false,
       },
+      // {
+      //   text: "Short Name",
+      //   align: "left",
+      //   sortable: false,
+      //   value: "short_name",
+      //   filterable: false,
+      // },
+      // {
+      //   text: "Branch",
+      //   align: "left",
+      //   sortable: false,
+      //   value: "branch",
+      //   filterable: false,
+      // },
 
       {
         text: "Location",
@@ -1366,6 +1412,8 @@ export default {
     errors: [],
 
     device_statusses: [],
+    branches: [],
+    branchesList: [],
     isCompany: true,
     timeZoneOptions: [],
     editedItem: null,
@@ -1404,7 +1452,41 @@ export default {
   async created() {
     this.loading = true;
 
+    if (this.$auth.user.branch_id) {
+      this.filters[branch_id] = this.$auth.user.branch_id;
+      this.isCompany = false;
+      return;
+    }
+
+    let branch_header = [
+      {
+        text: "Branch",
+        align: "left",
+        sortable: true,
+        key: "branch_id", //sorting
+        value: "company_branch.branch_name", //edit purpose
+
+        filterable: true,
+        filterSpecial: true,
+      },
+    ];
+    this.headers.splice(1, 0, ...branch_header);
+
+    try {
+      const { data } = await this.$axios.get(`branches_list`, {
+        params: {
+          per_page: 100,
+          company_id: this.$auth.user.company_id,
+        },
+      });
+      this.branchesList = data;
+    } catch (error) {
+      // Handle the error
+      console.error("Error fetching branch list", error);
+    }
+
     this.getDataFromApi();
+    this.getBranches();
     this.getDeviceStatus();
   },
 
@@ -1660,6 +1742,13 @@ export default {
         text: key + " - " + this.timeZones[key].offset,
       }));
     },
+    getBranches() {
+      this.$axios
+        .get(`branch`, { params: { company_id: this.$auth.user.company_id } })
+        .then(({ data }) => {
+          this.branches = data.data;
+        });
+    },
     getDeviceStatus() {
       this.$axios.get(`device_status`).then(({ data }) => {
         this.device_statusses = data.data;
@@ -1824,6 +1913,50 @@ export default {
       this.data = data.data;
       this.totalRowsCount = data.total;
       this.loading = false;
+
+      return;
+
+      if (url == "") url = this.endpoint;
+      this.loading = true;
+      let { sortBy, sortDesc, page, itemsPerPage } = this.options;
+
+      let sortedBy = sortBy ? sortBy[0] : "";
+      let sortedDesc = sortDesc ? sortDesc[0] : "";
+      let options = {
+        params: {
+          page: page,
+          sortBy: sortedBy,
+          sortDesc: sortedDesc,
+          per_page: itemsPerPage,
+          branch_id: this.branch_id,
+          company_id: this.$auth.user.company_id,
+          ...this.filters,
+        },
+      };
+      if (filter_column != "") {
+        if (filter_column == "serach_status_name") {
+          options.params[filter_column] =
+            filter_value.toLowerCase() == "online"
+              ? "active"
+              : filter_value.toLowerCase() == "offline"
+              ? "inactive"
+              : "";
+        } else options.params[filter_column] = filter_value;
+      }
+      await this.$axios.get(`${url}?page=${page}`, options).then(({ data }) => {
+        if (filter_column != "" && data.data.length == 0) {
+          this.snack = true;
+          this.snackColor = "error";
+          this.snackText = "No Results Found";
+          this.loading = false;
+          return false;
+        }
+        this.totalRowsCount = data.total;
+        this.data = data.data;
+        this.pagination.current = data.current_page;
+        this.pagination.total = data.last_page;
+        this.loading = false;
+      });
     },
     async updateDevicesHealth() {
       let options = {
@@ -1876,6 +2009,9 @@ export default {
     addItem() {
       this.payload = {};
       this.errors = [];
+      if (!this.isCompany) {
+        this.payload.branch_id = this.branch_id;
+      }
 
       this.editedIndex = -1;
       this.editDialog = true;
@@ -1895,6 +2031,7 @@ export default {
 
       delete this.payload.status;
       delete this.payload.company;
+      delete this.payload.company_branch;
 
       this.loading = true;
       if (this.editedIndex == -1) {

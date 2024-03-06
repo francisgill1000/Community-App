@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Requests\Community\Contractor\StoreRequest;
 use App\Http\Requests\Community\Contractor\UpdateRequest;
+use App\Models\Company;
 use App\Models\Community\Contractor;
-use App\Models\Community\ContractorDocuments;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -145,135 +145,6 @@ class ContractorController extends Controller
             return response()->json(['message' => 'Branch successfully deleted.', 'status' => true], 200);
         } catch (\Throwable $th) {
             throw $th;
-        }
-    }
-    public function getDocumentsList(ContractorDocuments $DocumentInfo, $id)
-    {
-        return $DocumentInfo->where('contractor_id', $id)->get();
-    }
-    public function downloadDocuments(Request $request, $employee_id, $file_name)
-    {
-        // Define the path to the file in the public folder
-        $filePath = public_path("contractor_documents/" . $employee_id) .  '/' . $file_name;
-
-        // Check if the file exists
-        if (file_exists($filePath)) {
-            // Create a response to download the file
-            return response()->download($filePath, $file_name);
-        } else {
-            // Return a 404 Not Found response if the file doesn't exist
-            abort(404);
-        }
-    }
-    public function deleteDocument($id, $contractor_id, $file_name)
-    {
-
-
-
-
-        $record = ContractorDocuments::find($id);
-
-        if ($record->delete()) {
-            if (file_exists(public_path('contractor_documents/' . $contractor_id . "/") . "" . $file_name)) {
-                try {
-
-
-                    unlink(public_path('contractor_documents/' . $contractor_id . "/") . "" . $file_name);
-                } catch (\Exception $e) {
-                }
-            }
-            return response()->json([
-                "status" => true,
-                "message" => "Record has been successfully deleted",
-                "record" => null,
-            ]);
-        } else {
-            return response()->json([
-                "status" => false,
-                "message" => "Record cannot delete",
-                "record" => null,
-            ]);
-        }
-    }
-    public function contractorDocumentsStore(Request $request)
-    {
-        // $this->cleanRecord($request->employee_id);
-        $arr = [];
-        foreach ($request->items as $item) {
-            $arr[] = [
-                "title" => $item["title"],
-                "attachment" => $this->saveFile($item["file"], $request->contractor_id),
-                "contractor_id" => $request->contractor_id,
-                "company_id" => $request->company_id,
-                "date_time" => date('Y-m-d H:i:s'),
-                "branch_id" => 0,
-            ];
-        }
-
-        try {
-
-            return response()->json([
-                "status" => true,
-                "message" => "Record has been successfully added",
-                "record" => ContractorDocuments::insert($arr),
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                "status" => true,
-                "message" => $th,
-                "record" => null,
-            ]);
-        }
-    }
-    public function saveFile($file, $id)
-    {
-        $filename = $file->getClientOriginalName();
-        $file->move(public_path('contractor_documents/' . $id . "/"), $filename);
-        return $filename;
-    }
-    public function contractorDocumentsUpdate(Request $request)
-    {
-
-
-        $arr = [];
-
-        $document_id = $request->items[1]["document_id"];
-        if ($document_id > 0) {
-            if (isset($request->items[0]["file"])) {
-
-                $arr  = [
-                    "title" => $request->items[0]["title"],
-                    "attachment" => $this->saveFile($request->items[0]["file"], $request->contractor_id),
-
-                    "date_time" => date('Y-m-d H:i:s'),
-                    "branch_id" => 0,
-                ];
-            } else {
-
-                $arr  = [
-                    "title" => $request->items[0]["title"],
-                    "date_time" => date('Y-m-d H:i:s'),
-                    "branch_id" => 0,
-                ];
-            }
-
-
-            ContractorDocuments::where("id", $document_id)->update($arr);
-        }
-
-        try {
-
-            return response()->json([
-                "status" => true,
-                "message" => "Record has been successfully added",
-                "record" => [],
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                "status" => true,
-                "message" => $th,
-                "record" => null,
-            ]);
         }
     }
 }

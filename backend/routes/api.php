@@ -45,7 +45,8 @@ include('community/dashboard.php');
 include('community/parking.php');
 include('community/contractor.php');
 include('community/card.php');
-include('community/admin.php');
+
+
 
 include('csv.php');
 include('other.php');

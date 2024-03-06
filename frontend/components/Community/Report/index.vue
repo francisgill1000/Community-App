@@ -141,7 +141,7 @@
               ><img
                 title="Print"
                 style="cursor: pointer"
-                @click="process_file('community/print')"
+                @click="process_file('print_pdf')"
                 src="/icons/icon_print.png"
                 class="iconsize"
             /></span>
@@ -149,7 +149,7 @@
               ><img
                 title="Download Pdf"
                 style="cursor: pointer"
-                @click="process_file('community/download')"
+                @click="process_file('download_pdf')"
                 src="/icons/icon_pdf.png"
                 class="iconsize"
             /></span>
@@ -206,28 +206,36 @@
             <template v-slot:item.id="{ item, index }">
               {{ index + 1 }}
             </template>
-            <template v-slot:item.status="{ item, index }"> Allowed </template>
-            <template v-slot:item.in="{ item, index }">
-              {{ item?.in_log.LogTime ?? "---" }}
-              <br />
-              {{ item?.in_log?.device?.short_name ?? "---" }}
-            </template>
-            <template v-slot:item.out="{ item, index }">
-              {{ item?.out_log.LogTime ?? "---" }}
-              <br />
-              {{ item?.out_log?.device?.short_name ?? "---" }}
-            </template>
+
             <template v-slot:item.flat="{ item, index }">
               {{ item?.tanent?.room?.room_number ?? "---" }}
             </template>
 
             <template v-slot:item.host="{ item }" style="padding: 0px">
-              <v-row v-if="item.visitor.tanent" no-gutters>
+              <v-row v-if="item.visitor" no-gutters>
                 <v-col md="8">
                   <div>
-                    {{ item?.visitor?.tanent?.full_name ?? "---" }}
+                    {{ item.visitor.full_name ?? "---" }}
                     <br />
-                    {{ item?.visitor?.tanent?.room?.room_number ?? "---" }}
+                    {{ item.visitor.phone_number ?? "---" }}
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.delivery" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.delivery.full_name ?? "---" }}
+                    <br />
+                    {{ item.delivery.phone_number ?? "---" }}
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.contractor" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.contractor.full_name ?? "---" }}
+                    <br />
+                    {{ item.contractor.phone_number ?? "---" }}
                   </div>
                 </v-col>
               </v-row>
@@ -362,6 +370,7 @@ export default {
     daily_date: "",
     to_date: "",
 
+    isFilter: false,
     totalRowsCount: 0,
     snack: false,
     snackColor: "",
@@ -370,6 +379,9 @@ export default {
     menu: false,
     options: {},
     date: null,
+    menu: false,
+    loading: false,
+    time_menu: false,
     endpoint: "community_common_report",
     search: "",
     snackbar: false,
@@ -399,6 +411,8 @@ export default {
 
     response: "",
     data: [],
+    errors: [],
+    report_template: "Template1",
     headers: [
       {
         text: "S.NO",
@@ -422,25 +436,39 @@ export default {
         value: "host",
       },
       {
+        text: "Flat",
+        align: "left",
+        sortable: true,
+        key: "flat",
+        value: "flat",
+      },
+      {
         text: "In",
         align: "left",
         sortable: false,
-        key: "in",
-        value: "in",
+        key: "in_log.LogTime",
+        value: "in_log.LogTime",
       },
       {
         text: "Out",
         align: "left",
         sortable: false,
-        key: "in",
-        value: "in",
+        key: "out_log.LogTime",
+        value: "out_log.LogTime",
       },
       {
-        text: "Status",
+        text: "D.In",
         align: "left",
         sortable: false,
-        key: "status",
-        value: "status",
+        key: "in_log.device.short_name",
+        value: "in_log.device.short_name",
+      },
+      {
+        text: "D.Out",
+        align: "left",
+        sortable: false,
+        key: "out_log.device.short_name",
+        value: "out_log.device.short_name",
       },
       {
         text: "User Type",
@@ -450,6 +478,9 @@ export default {
         value: "user_type",
       },
     ],
+    max_date: null,
+
+    isCompany: true,
   }),
 
   watch: {
@@ -459,6 +490,12 @@ export default {
       },
       deep: true,
     },
+  },
+  mounted() {
+    this.tableHeight = window.innerHeight - 370;
+    window.addEventListener("resize", () => {
+      this.tableHeight = window.innerHeight - 370;
+    });
   },
   created() {
     this.getUsers();
@@ -470,6 +507,26 @@ export default {
     setUserID(id) {
       this.payload.UserID =
         this.users.find((e) => e.id == id).system_user_id ?? 0;
+    },
+
+    getUserPhone(item) {
+      const relationships = {
+        Tanent: item.tanent,
+        "Family Member": item.family_member,
+        Relative: item.relative,
+        Visitor: item.visitor,
+        Delivery: item.delivery,
+        Contractor: item.contractor,
+        Maid: item.maid,
+      };
+
+      for (const [type, value] of Object.entries(relationships)) {
+        if (value) {
+          return value;
+        }
+      }
+
+      return "---";
     },
 
     filterAttr(data) {
@@ -504,6 +561,10 @@ export default {
           this.devices = data.filter((e) => !e.name.includes("Mobile"));
         });
     },
+
+    caps(str) {
+      return str.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    },
     can(per) {
       return this.$pagePermission.can(per, this);
     },
@@ -532,7 +593,15 @@ export default {
       this.loading = false;
     },
 
-    async process_file(endpoint) {
+    pdfDownload() {
+      let path = process.env.BACKEND_URL + "/pdf";
+      let pdf = document.createElement("a");
+      pdf.setAttribute("href", path);
+      pdf.setAttribute("target", "_blank");
+      pdf.click();
+    },
+
+    async process_file(type) {
       try {
         if (!this.data || !this.data.length) {
           alert("No data found");
@@ -542,6 +611,7 @@ export default {
         const backendUrl = process.env.BACKEND_URL;
         const queryParams = {
           company_id: this.$auth.user.company_id,
+          branch_id: this.payload.branch_id,
           UserID: this.payload.UserID,
           DeviceID: this.payload.DeviceID,
           from_date: this.payload.from_date,
@@ -567,7 +637,7 @@ export default {
           )
           .join("&");
 
-        const reportUrl = `${backendUrl}/${endpoint}?${queryString}`;
+        const reportUrl = `${backendUrl}/accessControlReport_${type.toLowerCase()}?${queryString}`;
 
         const report = document.createElement("a");
         report.setAttribute("href", reportUrl);

@@ -4,71 +4,62 @@
     "title": "Dashboard",
     "to": "/dashboard",
     "menu": "dashboard",
-    "module": "topmenu",
-    "permission": "dashboard_access"
+    "module": "topmenu"
   },
   {
     "icon": "mdi-bell",
     "title": "Tanent",
     "to": "/community/tanent",
     "menu": "tanents",
-    "module": "topmenu",
-    "permission": "tanent_access"
+    "module": "topmenu"
   },
   {
     "icon": "mdi-bell",
     "title": "Visitors",
     "to": "/community/visitor/dashboard",
     "menu": "visitors",
-    "module": "topmenu",
-    "permission": "visitor_access"
+    "module": "topmenu"
   },
   {
     "icon": "mdi-clipboard-text-clock",
     "title": "Delivery",
     "to": "/community/delivery_man/dashboard",
     "menu": "delivery_man",
-    "module": "topmenu",
-    "permission": "delivery_access"
+    "module": "topmenu"
   },
   {
     "icon": "mdi-clock-outline",
     "title": "Contractor",
     "to": "/community/contractors/dashboard",
     "menu": "contractor",
-    "module": "topmenu",
-    "permission": "contractor_access"
+    "module": "topmenu"
   },
   {
     "icon": "mdi mdi-calendar-account",
     "title": "House Maid",
     "to": "/community/house_maids",
     "menu": "house_maids",
-    "module": "topmenu",
-    "permission": "maid_access"
-  },
-  {
-    "icon": "mdi mdi-calendar-account",
-    "title": "Parking",
-    "to": "/community/parking",
-    "menu": "parking",
-    "module": "topmenu",
-    "permission": "parking_access"
+    "module": "topmenu"
   },
   {
     "icon": "mdi mdi-calendar-star-four-points",
     "title": "Employee",
     "to": "/employees",
     "menu": "access_control",
-    "module": "topmenu",
-    "permission": "employee_access"
+    "module": "topmenu"
+  },
+  {
+    "icon": "mdi mdi-calendar-account",
+    "title": "Parking",
+    "to": "/community/parking",
+    "menu": "parking",
+    "module": "topmenu"
   },
   {
     "icon": "mdi-bell",
     "title": "Reports",
     "to": "/attendance_report",
     "menu": "reports",
-    "module": "topmenu",
-    "permission": "attendance_report_access"
+    "module": "topmenu"
   }
 ]

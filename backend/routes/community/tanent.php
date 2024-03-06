@@ -32,10 +32,3 @@ Route::post('/tanent-update-validate/{id}', [TanentController::class, "validateU
 
 Route::post('/assign-tanents/{id}', [TanentController::class, "assignTanentstoMaid"]);
 Route::get('/get-associated-tanent-ids/{id}', [TanentController::class, "getAssociatedTanentIds"]);
-
-
-Route::post('/tenant-documents-store', [TanentController::class, "TenantsDocumentsStore"]);
-Route::get('/tenant-documents-list/{id}', [TanentController::class, "getDocumentsList"]);
-Route::get('/download-tenant-documents/{id}/{file_name}', [TanentController::class, 'downloadDocuments']);
-Route::post('/tenant-documents-delete/{id}/{tenant_id}/{file_name}', [TanentController::class, 'deleteDocument']);
-Route::post('/tenant-documents-update', [TanentController::class, 'tenantsDocumentsUpdate']);
