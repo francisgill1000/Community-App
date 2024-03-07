@@ -1,6 +1,6 @@
 <template>
   <div style="padding: 0px; width: 100%">
-    <div id="visitors" name="visitors" height="200" width="200"></div>
+    <div id="visitors" name="visitors" height="250" width="250"></div>
     <div
       v-if="totalCount == 0"
       style="
@@ -8,7 +8,7 @@
         margin: auto;
         text-align: center;
         vertical-align: middle;
-        height: 300px;
+        height: 250px;
         padding-top: 36%;
       "
     >
@@ -38,7 +38,7 @@ export default {
           offsetY: 0,
         },
         title: {
-          text: "Delivery Boys",
+          text: "Delivery Man",
           align: "left",
           margin: 0,
         },
@@ -52,7 +52,7 @@ export default {
           },
           width: "100%", //200 //275
           type: "donut",
-          height: 350,
+          height: 250,
         },
         customTotalValue: 0,
         plotOptions: {

@@ -1283,5 +1283,17 @@ body {
   width: 100%;
 }
 </style>
+<style>
+.v-data-table-header tr > th {
+  font-weight: bold;
+  color: black !important;
+  font-size: 12px;
+}
+.theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+  font-weight: bold;
+  color: black !important;
+  font-size: 13px;
+}
+</style>
 
 <!-- <link rel="stylesheet" href="../static/css/textbox-label-style.css" /> -->

@@ -41,7 +41,7 @@
         </v-container>
       </v-card>
     </v-dialog>
-    <v-card v-if="showFilters" elevation="0" class="mt-2">
+    <v-card v-if="showFilters" elevation="1" class="mt-2">
       <v-toolbar dense flat>
         <span class="headline black--text"> {{ label }}</span>
         <span>
@@ -167,7 +167,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-card class="mb-5 mt-0" elevation="0">
+    <v-card class="mb-5 mt-5" elevation="1">
       <div v-if="can(`attendance_report_access`)">
         <div class="text-center">
           <v-snackbar
@@ -186,8 +186,8 @@
             </template>
           </v-snackbar>
         </div>
-        <v-card class="mb-5" elevation="0">
-          <v-toolbar class="backgrounds" flat>
+        <v-card class="mb-0" elevation="0">
+          <v-toolbar class="backgrounds" flat style="height: 40px">
             <!-- <v-toolbar-title>
               <span class="headline black--text"> Device Logs</span>
             </v-toolbar-title> -->
@@ -239,39 +239,6 @@
               v-if="can(`${user_type}_create`) && !showFilters"
               @success="handleSuccessResponse"
             />
-          </v-toolbar>
-
-          <v-toolbar class="backgrounds" flat>
-            <!-- <v-toolbar-title>
-              <span class="headline black--text"> Device Reports</span>
-            </v-toolbar-title> -->
-            <!-- <span>
-              <v-btn
-                dense
-                class="ma-0 px-0"
-                x-small
-                :ripple="false"
-                text
-                title="Reload"
-              >
-                <v-icon class="ml-2" @click="getDataFromApi" dark
-                  >mdi-reload</v-icon
-                >
-              </v-btn>
-            </span> -->
-            <v-spacer></v-spacer>
-            <!-- <CommunityManualCheckOut
-              button_type="icon"
-              visitor_type="visitor"
-              v-if="can(`visitor_view`)"
-              @success="handleSuccessResponse"
-            />
-            <CommunityVisitorCreate
-              button_type="icon"
-              visitor_type="visitor"
-              v-if="can(`visitor_create`)"
-              @success="handleSuccessResponse"
-            /> -->
           </v-toolbar>
 
           <v-data-table
@@ -516,6 +483,7 @@ export default {
         sortable: true,
         key: "id",
         value: "id",
+        color: "red",
       },
       {
         text: "Name",

@@ -148,7 +148,7 @@
 
       <v-row>
         <v-col md="12">
-          <v-card class="pa-2" style="height: 354px; overflow: hidden">
+          <v-card class="pa-2" style="height: 250px; overflow: hidden">
             <v-row background fill>
               <v-col
                 lg="3"
@@ -172,7 +172,7 @@
                 <VisitorHourChart
                   :name="'visitor'"
                   :branch_id="null"
-                  :height="300"
+                  :height="210"
                 ></VisitorHourChart>
               </v-col>
             </v-row>

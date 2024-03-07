@@ -102,7 +102,7 @@
         >{{ data && data.DeliverysCount }}</v-col
       >
       <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
-        >Delivery Boys</v-col
+        >Delivery Man</v-col
       >
     </v-row>
     <v-row class="mt-2">
