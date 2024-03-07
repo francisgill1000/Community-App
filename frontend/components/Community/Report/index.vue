@@ -210,10 +210,10 @@
           </v-toolbar> -->
 
           <v-toolbar class="backgrounds" flat>
-            <v-toolbar-title>
+            <!-- <v-toolbar-title>
               <span class="headline black--text"> Device Logs</span>
-            </v-toolbar-title>
-            <span>
+            </v-toolbar-title> -->
+            <!-- <span>
               <v-btn
                 dense
                 class="ma-0 px-0"
@@ -226,8 +226,24 @@
                   >mdi-reload</v-icon
                 >
               </v-btn>
-            </span>
+            </span> -->
             <v-spacer></v-spacer>
+            <span style="padding-left: 15px"
+              ><img
+                title="Print"
+                style="cursor: pointer"
+                @click="process_file('community/print')"
+                src="/icons/icon_print.png"
+                class="iconsize"
+            /></span>
+            <span style="padding-left: 15px; padding-right: 10px"
+              ><img
+                title="Download Pdf"
+                style="cursor: pointer"
+                @click="process_file('community/download')"
+                src="/icons/icon_pdf.png"
+                class="iconsize"
+            /></span>
             <CommunityManualCheckOut
               class="pl-10"
               style="padding-left: 10px !important"
