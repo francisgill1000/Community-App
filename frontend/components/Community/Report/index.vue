@@ -167,7 +167,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-card class="mb-5 mt-5" elevation="0">
+    <v-card class="mb-5 mt-0" elevation="0">
       <div v-if="can(`attendance_report_access`)">
         <div class="text-center">
           <v-snackbar
