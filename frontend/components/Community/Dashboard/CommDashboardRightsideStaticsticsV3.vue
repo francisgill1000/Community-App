@@ -40,7 +40,7 @@
             <v-row class="pa-2">
               <v-row class="pa-0 ma-0" style="width: 100%">
                 <v-col md="6">
-                  <v-avatar size="50">
+                  <v-avatar :size="card.size">
                     <v-img :src="card.src" />
                   </v-avatar>
                   <!-- <v-icon color="blue" size="30" fill>mdi-airplane-takeoff</v-icon> -->
@@ -158,6 +158,7 @@ export default {
 
             this.cardsJson = [
               {
+                size: "30",
                 src: "/home-green-2.png",
                 link: "/",
                 count: data.flats_count,
@@ -165,6 +166,7 @@ export default {
                 color: "green",
               },
               {
+                size: "30",
                 src: "/home-red-2.png",
                 link: "",
                 count: data.occupied_count,
@@ -193,6 +195,7 @@ export default {
                 color: "black",
               },
               {
+                size: "40",
                 src: "/expired-2.png",
                 link: "",
                 count: data.contract_expiring_count,

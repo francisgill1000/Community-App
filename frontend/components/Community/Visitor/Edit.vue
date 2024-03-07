@@ -80,7 +80,7 @@
                       ? errors.system_user_id[0]
                       : ''
                   "
-                  label="Visitor Device Id"
+                  label="Visitor Card Id"
                   type="number"
                 ></v-text-field>
               </v-col>
@@ -576,3 +576,16 @@ export default {
   },
 };
 </script>
+<style>
+/* Hide the up and down arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>

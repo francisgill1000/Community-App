@@ -225,7 +225,7 @@
         offset-y
         transition="scale-transition"
       >
-        <template v-slot:activator="{ on, attrs }">
+        <!-- <template v-slot:activator="{ on, attrs }">
           <v-btn icon dark v-bind="attrs" v-on="on">
             <v-badge
               :color="pendingNotificationsCount > 0 ? 'red' : 'green'"
@@ -241,7 +241,7 @@
               >
             </v-badge>
           </v-btn>
-        </template>
+        </template> -->
         <v-list>
           <v-list-item
             style="height: 30px"

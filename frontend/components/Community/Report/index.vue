@@ -209,19 +209,59 @@
                 src="/icons/icon_pdf.png"
                 class="iconsize"
             /></span>
+          </v-toolbar>
+          -->
+
+          <v-toolbar class="backgrounds" flat>
+            <!-- <v-toolbar-title>
+              <span class="headline black--text"> Device Logs</span>
+            </v-toolbar-title> -->
+            <!-- <span>
+              <v-btn
+                dense
+                class="ma-0 px-0"
+                x-small
+                :ripple="false"
+                text
+                title="Reload"
+              >
+                <v-icon class="ml-2" @click="getDataFromApi" dark
+                  >mdi-reload</v-icon
+                >
+              </v-btn>
+            </span> -->
+            <v-spacer></v-spacer>
+            <span v-if="showFilters" style="padding-left: 15px"
+              ><img
+                title="Print"
+                style="cursor: pointer"
+                @click="process_file('community/print')"
+                src="/icons/icon_print.png"
+                class="iconsize"
+            /></span>
+            <span
+              v-if="showFilters"
+              style="padding-left: 15px; padding-right: 10px"
+              ><img
+                title="Download Pdf"
+                style="cursor: pointer"
+                @click="process_file('community/download')"
+                src="/icons/icon_pdf.png"
+                class="iconsize"
+            /></span>
             <CommunityManualCheckOut
               class="pl-10"
               style="padding-left: 10px !important"
               button_type="icon"
               visitor_type="visitor"
-              v-if="can(`${user_type}_view`)"
+              v-if="can(`${user_type}_view`) && !showFilters"
               @success="handleSuccessResponse"
             />
             <CommunityVisitorCreate
               :label="label"
               button_type="icon"
               :visitor_type="user_type"
-              v-if="can(`${user_type}_create`)"
+              v-if="can(`${user_type}_create`) && !showFilters"
               @success="handleSuccessResponse"
             />
           </v-toolbar>

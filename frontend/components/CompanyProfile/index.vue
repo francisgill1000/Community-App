@@ -543,7 +543,7 @@
                     </v-col>
                     <v-col md="12" sm="12" cols="12" dense>
                       <label class="col-form-label"
-                        >Password <span class="text-danger">*</span></label
+                        >New Password <span class="text-danger">*</span></label
                       >
                       <v-text-field
                         dense

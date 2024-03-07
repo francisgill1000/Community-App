@@ -84,8 +84,8 @@
         </v-card> -->
 
         <!-- <CommDashboardRightsideStaticstics :branch_id="branch_id" /> -->
-        <CommDashboardRightsideStaticstics2 :branch_id="branch_id" />
-        <!-- <CommDashboardRightsideStaticstics3 :branch_id="branch_id" /> -->
+        <!-- <CommDashboardRightsideStaticstics2 :branch_id="branch_id" /> -->
+        <CommDashboardRightsideStaticstics3 :branch_id="branch_id" />
 
         <v-row>
           <v-col lg="12" md="12" sm="12" xs="12">

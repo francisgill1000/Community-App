@@ -46,7 +46,7 @@
                     errors.name[0]
                   }}</span>
                 </v-col>
-                <v-col cols="12">
+                <!-- <v-col cols="12">
                   <v-autocomplete
                     v-model="editedItem.department_id"
                     :items="departments"
@@ -62,7 +62,7 @@
                     class="error--text"
                     >{{ errors.department_id[0] }}</span
                   >
-                </v-col>
+                </v-col> -->
                 <v-col md="12" lg="12" class="text-right" style="padding: 0px">
                   <v-btn class="primary" @click="save">Save</v-btn>
                 </v-col>

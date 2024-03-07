@@ -416,6 +416,7 @@
       </v-col>
     </v-row>
   </div>
+  <NoAccess v-else />
 </template>
 
 <script>
