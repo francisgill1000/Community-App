@@ -129,7 +129,7 @@ class ReportController extends Controller
         }
 
         $userLogs = AttendanceLog::whereDate("LogTime", '=', $date) // Only today's records
-
+            //->where("checked", false)
             ->whereIn("UserID", $userIds)
             ->where("company_id", $companyId)
             ->distinct("LogTime", "UserID", "company_id")
@@ -163,15 +163,17 @@ class ReportController extends Controller
                 return isset($record["device"]["function"]) && ($record["device"]["function"] !== "In");
             })->last();
 
-            $firstLog = $logs[0];
-            $lastLog = $logs[count($logs) - 1];
+
+
+            //$firstLog = $logs[0];
+            //$lastLog = $logs[count($logs) - 1];
 
             $userDetails = $this->getUserDetails($key);
 
 
 
             $userKey = array_key_first($userDetails);
-
+            $item = [];
             $item = [
                 "user_id" =>   $userDetails[$userKey]["id"],
                 "user_type" =>  $userKey,
@@ -179,25 +181,37 @@ class ReportController extends Controller
                 "in_id" => $firstLog["id"],
                 "status" => "in",
 
-            ];
-            $in_ids[] = $firstLog["id"];
+                "out_id" => "0",
 
-            if ($lastLog && count($logs) > 1) {
+                "total_hrs" => "0",
+
+
+
+
+
+            ];
+            if ($item["in_id"])
+                $in_ids[] =   $item["in_id"];
+
+            if ($lastLog) {
                 $item["out_id"] = $lastLog["id"] ?? 0;
                 $item["status"] = "out";
                 $item["total_hrs"] = $this->getTotalHrsMins($firstLog["time"] ?? 0, $lastLog["time"] ?? 0);
 
-                if ($lastLog["id"])
-                    $out_ids[] = $item["out_id"];
+
+                $out_ids[] = $item["out_id"];
             }
 
             $item["date"] = $params["date"];
             $items[] = $item;
         }
-
+        //return json_encode($items);
         if (!count($items)) {
             return '[' . $date . " " . date("H:i:s") . '] No data found' . $message;
         }
+
+
+
 
         //try {
         $user_ids = array_column($items, "user_id");
@@ -226,6 +240,8 @@ class ReportController extends Controller
         // }
 
         $this->devLog("render-manual-log", $message);
+
+
         return ($message);
     }
 
@@ -258,7 +274,7 @@ class ReportController extends Controller
             } else if (request("user_type") == 'visitor') {
                 $query->where("user_type", request("user_type"));
                 $query->with([
-                    "visitor",
+                    "visitor.purpose",
 
 
                 ]);
@@ -266,7 +282,7 @@ class ReportController extends Controller
                 $query->where("user_type", request("user_type"));
                 $query->with([
 
-                    "delivery",
+                    "delivery.purpose",
 
                 ]);
             } else if (request("user_type") == 'contractor') {
@@ -274,7 +290,7 @@ class ReportController extends Controller
                 $query->with([
 
 
-                    "contractor",
+                    "contractor.purpose",
                 ]);
             } else if (request("user_type") == 'employee') {
                 $query->where("user_type", request("user_type"));

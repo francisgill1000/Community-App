@@ -187,11 +187,11 @@
           </v-snackbar>
         </div>
         <v-card class="mb-5" elevation="0">
-          <v-toolbar v-if="showFilters" class="backgrounds" dense flat>
+          <v-toolbar class="backgrounds" dense flat>
             <v-toolbar-title> </v-toolbar-title>
 
             <v-spacer></v-spacer>
-            <span style="padding-left: 15px"
+            <span v-if="showFilters" style="padding-left: 15px"
               ><img
                 title="Print"
                 style="cursor: pointer"
@@ -199,7 +199,9 @@
                 src="/icons/icon_print.png"
                 class="iconsize"
             /></span>
-            <span style="padding-left: 15px; padding-right: 10px"
+            <span
+              v-if="showFilters"
+              style="padding-left: 15px; padding-right: 10px"
               ><img
                 title="Download Pdf"
                 style="cursor: pointer"
@@ -278,14 +280,17 @@
             </template>
             <template v-slot:item.status="{ item, index }"> Allowed </template>
             <template v-slot:item.in="{ item, index }">
-              {{ $dateFormat.format4(item?.in_log.LogTime) ?? "---" }}
+              {{ $dateFormat.format4(item?.in_log?.LogTime) ?? "---" }}
               <br />
               <small> {{ item?.in_log?.device?.short_name ?? "---" }}</small>
             </template>
             <template v-slot:item.out="{ item, index }">
-              {{ $dateFormat.format4(item?.out_log.LogTime) ?? "---" }}
-              <br />
-              <small> {{ item?.out_log?.device?.short_name ?? "---" }}</small>
+              <div v-if="item.out_log">
+                {{ $dateFormat.format4(item?.out_log?.LogTime) ?? "---" }}
+                <br />
+                <small> {{ item?.out_log?.device?.short_name ?? "---" }}</small>
+              </div>
+              <div v-else>---</div>
             </template>
             <template v-slot:item.flat="{ item, index }">
               <div v-if="item.tanent" no-gutters>
@@ -334,7 +339,17 @@
                 </v-col>
               </v-row>
             </template>
-
+            <template v-slot:item.purpose="{ item }" style="padding: 0px">
+              <div v-if="item.visitor">
+                {{ item.visitor?.purpose?.name ?? "---" }}
+              </div>
+              <div v-if="item.contractor">
+                {{ item.contractor?.purpose?.name ?? "---" }}
+              </div>
+              <div v-if="item.delivery">
+                {{ item.delivery?.purpose?.name ?? "---" }}
+              </div>
+            </template>
             <template v-slot:item.user="{ item }" style="padding: 0px">
               <v-row v-if="item.tanent" no-gutters>
                 <v-col md="8">
@@ -503,8 +518,8 @@ export default {
         text: "Out",
         align: "left",
         sortable: false,
-        key: "in",
-        value: "in",
+        key: "out",
+        value: "out",
       },
       {
         text: "Status",
@@ -549,7 +564,11 @@ export default {
         },
       ];
       this.headers.splice(2, 0, ...branch_header);
-    } else if (this.user_type == "visitor") {
+    } else if (
+      this.user_type == "visitor" ||
+      this.user_type == "delivery" ||
+      this.user_type == "contractor"
+    ) {
       let branch_header = [
         {
           text: "Host",
@@ -560,6 +579,16 @@ export default {
         },
       ];
       this.headers.splice(2, 0, ...branch_header);
+      branch_header = [
+        {
+          text: "Purpose",
+          align: "left",
+          sortable: true,
+          key: "purpose",
+          value: "purpose",
+        },
+      ];
+      this.headers.splice(6, 0, ...branch_header);
     }
   },
   methods: {

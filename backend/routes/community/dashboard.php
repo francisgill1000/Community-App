@@ -24,4 +24,4 @@ Route::get('community_dashboard_get_male_female_count', [DashboardController::cl
 
 
 
-Route::get('community_dashboard_get_visitor_counts_today_hour_in_out', [DashboardController::class, "dashboardGetVisitorCountsTodayHourInOut"]);
+//Route::get('community_dashboard_get_visitor_counts_today_hour_in_out', [DashboardController::class, "dashboardGetVisitorCountsTodayHourInOut"]);

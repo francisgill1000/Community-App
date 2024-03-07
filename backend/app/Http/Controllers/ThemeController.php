@@ -338,26 +338,33 @@ class ThemeController extends Controller
 
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
-                        ->where('visit_from', "<=", date('Y-m-d'))
-                        ->where('visit_to', ">=", date('Y-m-d'))
+                        // ->where('visit_from', "<=", date('Y-m-d'))
+                        // ->where('visit_to', ">=", date('Y-m-d'))
                         ->when($request->filled("branch_id"), function ($query) use ($request) {
                             return $query->where('branch_id', $request->branch_id);
                         })
+                        ->when($request->filled("user_type"), function ($query) use ($request) {
+                            return $query->where('visitor_type', $request->user_type);
+                        })
+
                         ->from('visitors');
                 })
-                // ->when($request->filled("branch_id"), function ($q) use ($request) {
-                //     $q->whereHas("visitor", fn ($q) => $q->where("branch_id", $request->branch_id));
-                // })
-                // ->whereDate('LogTime', $date)
+
 
                 ->where('LogTime', '>=', $date . ' ' . $j . ':00:00')
-                ->where('LogTime', '<', $date  . ' ' . $j . ':59:59')
-                ->get();
+                ->where('LogTime', '<', $date  . ' ' . $j . ':59:59');
+
+            $modelIn = $model->clone()->where("log_type", "in");
+            $modelOut = $model->clone()->where("log_type", "out");
+
+
 
             $finalarray[] = [
                 "date" => $date,
                 "hour" => $i,
-                "count" => $model->count(),
+                "count" => $model->clone()->get()->count(),
+                "in_count" => $modelIn->get()->count(),
+                "out_count" => $modelOut->get()->count(),
 
             ];
         }

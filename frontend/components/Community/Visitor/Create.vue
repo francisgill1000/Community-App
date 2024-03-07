@@ -525,11 +525,13 @@ export default {
     purposes: [],
   }),
 
-  async created() {
+  created() {
     this.company_id = this.$auth.user.company_id;
     this.payload.company_id = this.$auth.user.company_id;
     this.loading = false;
-    await this.getPurposes();
+  },
+  mounted() {
+    this.getPurposes();
   },
 
   methods: {
@@ -566,20 +568,21 @@ export default {
     },
     async handleResponse(e) {
       this.payload.purpose_id = e;
-      await this.getPurposes();
+      this.getPurposes();
     },
-    async getPurposes() {
-      this.$axios
-        .get(`purpose_list`, {
-          params: {
-            company_id: this.$auth.user.company_id,
-            type: this.visitor_type,
-          },
-        })
-        .then(({ data }) => {
-          this.purposes = data;
-        })
-        .catch((e) => console.log(e));
+    getPurposes() {
+      if (this.visitor_type)
+        this.$axios
+          .get(`purpose_list`, {
+            params: {
+              company_id: this.$auth.user.company_id,
+              type: this.visitor_type,
+            },
+          })
+          .then(({ data }) => {
+            this.purposes = data;
+          })
+          .catch((e) => console.log(e));
     },
     handleAttachment(e) {
       this.payload.profile_picture = e;

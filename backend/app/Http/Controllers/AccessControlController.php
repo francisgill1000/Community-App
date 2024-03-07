@@ -68,7 +68,8 @@ class AccessControlController extends Controller
 
     public function get_logs_by_visitor_id()
     {
-        return  Visitor::with(["attendance_logs.visitor.tanent.room", "attendance_logs.contractor.tanent.room", "attendance_logs.delivery.tanent.room", "purpose"])->where("id", request("id"))->first();
+        return  Visitor::with(["attendance_logs.visitor.tanent.room", "attendance_logs.contractor.tanent.room", "attendance_logs.delivery.tanent.room", "purpose"])->where("id", request("id"))
+            ->first();
     }
 
     public function get_logs_by_tanent_id()

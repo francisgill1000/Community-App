@@ -15,6 +15,7 @@ export const state = () => ({
   attendance_count_by_department: null,
   branch_id: null,
   system_user_id: null,
+  user_type: null,
 
   visitor_every_hour_count: null,
 });
@@ -38,6 +39,10 @@ export const mutations = {
   date_from(state, date_from) {
     // Mutation to set 'date_from'
     state.date_from = date_from;
+  },
+  user_type(state, user_type) {
+    // Mutation to set 'date_from'
+    state.user_type = user_type;
   },
   date_to(state, date_to) {
     // Mutation to set 'date_to'
@@ -145,6 +150,10 @@ export const actions = {
     }
   },
   async visitor_every_hour_count({ commit, state }) {
+    console.log(
+      "state.visitor_every_hour_count",
+      state.visitor_every_hour_count
+    );
     if (state.visitor_every_hour_count) return state.visitor_every_hour_count;
     try {
       const { data } = await this.$axios.get(
@@ -153,10 +162,16 @@ export const actions = {
           params: {
             company_id: this.$auth.user.company_id,
             branch_id: state.branch_id > 0 ? state.branch_id : null,
+            user_type: state.user_type,
             system_user_id:
               state.system_user_id > 0 ? state.system_user_id : null,
           },
         }
+      );
+
+      console.log(
+        "state.visitor_every_hour_count2",
+        state.visitor_every_hour_count
       );
       commit("visitor_every_hour_count", data);
       return data;
@@ -164,12 +179,77 @@ export const actions = {
       return error;
     }
   },
-  setDates({ commit }, { date_from, date_to, branch_id, system_user_id }) {
+  async delivery_every_hour_count({ commit, state }) {
+    console.log(
+      "state.delivery_every_hour_count",
+      state.visitor_every_hour_count
+    );
+    if (state.delivery_every_hour_count) return state.delivery_every_hour_count;
+    try {
+      const { data } = await this.$axios.get(
+        "dashboard_get_visitor_counts_today_hour_in_out",
+        {
+          params: {
+            company_id: this.$auth.user.company_id,
+            branch_id: state.branch_id > 0 ? state.branch_id : null,
+            user_type: state.user_type,
+            system_user_id:
+              state.system_user_id > 0 ? state.system_user_id : null,
+          },
+        }
+      );
+
+      console.log(
+        "state.delivery_every_hour_count",
+        state.delivery_every_hour_count
+      );
+      commit("delivery_every_hour_count", data);
+      return data;
+    } catch (error) {
+      return error;
+    }
+  },
+  async contractor_every_hour_count({ commit, state }) {
+    console.log(
+      "state.contractor_every_hour_count",
+      state.contractor_every_hour_count
+    );
+    if (state.contractor_every_hour_count)
+      return state.contractor_every_hour_count;
+    try {
+      const { data } = await this.$axios.get(
+        "dashboard_get_visitor_counts_today_hour_in_out",
+        {
+          params: {
+            company_id: this.$auth.user.company_id,
+            branch_id: state.branch_id > 0 ? state.branch_id : null,
+            user_type: state.user_type,
+            system_user_id:
+              state.system_user_id > 0 ? state.system_user_id : null,
+          },
+        }
+      );
+
+      console.log(
+        "state.contractor_every_hour_count",
+        state.contractor_every_hour_count
+      );
+      commit("contractor_every_hour_count", data);
+      return data;
+    } catch (error) {
+      return error;
+    }
+  },
+  setDates(
+    { commit },
+    { date_from, date_to, branch_id, system_user_id, user_type }
+  ) {
     //console.log(date_from);
     // Action to set 'date_from' and 'date_to'
     commit("date_from", date_from);
     commit("date_to", date_to);
     commit("branch_id", branch_id);
     commit("system_user_id", system_user_id);
+    commit("user_type", user_type);
   },
 };

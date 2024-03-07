@@ -4,6 +4,7 @@ export const state = () => ({
   dashboardData: null,
   date_from: null, // Add 'date_from' property
   date_to: null, // Add 'date_to' property
+  user_type: null,
   recent_logs: null, // Add 'date_to' property
   previous_week_attendance_count: null, // Add 'date_to' property
   attendance_count: null, // Add 'date_to' property
@@ -45,6 +46,11 @@ export const mutations = {
   branch_id(state, branch_id) {
     // Mutation to set 'date_from'
     state.branch_id = branch_id;
+  },
+
+  user_type(state, user_type) {
+    // Mutation to set 'date_from'
+    state.user_type = user_type;
   },
   date_from(state, date_from) {
     state.date_from = date_from;
@@ -216,7 +222,7 @@ export const actions = {
   },
   setDates(
     { commit },
-    { date_from, date_to, branch_id, system_user_id, device_id }
+    { date_from, date_to, branch_id, system_user_id, device_id, user_type }
   ) {
     //console.log(date_from);
     // Action to set 'date_from' and 'date_to'
@@ -225,5 +231,6 @@ export const actions = {
     commit("branch_id", branch_id);
     commit("system_user_id", system_user_id);
     commit("device_id", device_id);
+    commit("user_type", user_type);
   },
 };

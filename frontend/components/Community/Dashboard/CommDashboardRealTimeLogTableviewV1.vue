@@ -666,7 +666,8 @@ export default {
     },
 
     caps(str) {
-      return str.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      if (str)
+        return str.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
     },
     can(per) {
       return this.$pagePermission.can(per, this);

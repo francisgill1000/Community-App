@@ -36,7 +36,7 @@
         xs="4"
         class="text-red bold text-h3 red--text text-center laptop-padding pt-0"
         align-self="center"
-        style="font-size: 40px"
+        style="font-size: 40px; color: #14b012 !important"
         >{{ data && data.TenantCount }}</v-col
       >
       <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
@@ -56,7 +56,7 @@
         xs="4"
         class="text-red bold text-h3 orange--text text-center laptop-padding pt-0"
         align-self="center"
-        style="font-size: 40px"
+        style="font-size: 40px; color: #2196f3 !important"
         >{{ data && data.EmployeeCount }}</v-col
       >
       <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
@@ -77,7 +77,7 @@
         xs="4"
         class="text-red bold text-h3 blue--text text-center laptop-padding pt-0"
         align-self="center"
-        style="font-size: 40px"
+        style="font-size: 40px; color: #ffb600 !important"
         >{{ data && data.VisitorCount }}</v-col
       >
       <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
@@ -98,7 +98,7 @@
         xs="4"
         class="text-red bold text-h3 orange--text text-center laptop-padding pt-0"
         align-self="center"
-        style="font-size: 40px"
+        style="font-size: 40px; color: #c8b053 !important"
         >{{ data && data.DeliverysCount }}</v-col
       >
       <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
@@ -118,7 +118,7 @@
         xs="4"
         class="text-red bold text-h3 orange--text text-center laptop-padding pt-0"
         align-self="center"
-        style="font-size: 40px"
+        style="font-size: 40px; color: #f1c40f !important"
         >{{ data && data.ContractorsCount }}</v-col
       >
       <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
@@ -137,8 +137,8 @@
         sm="4"
         xs="4"
         class="text-red bold text-h3 orange--text text-center laptop-padding pt-0"
-        style="font-size: 40px"
-        align-self="center"
+        style="font-size: 40px; color: #ff0000 !important"
+        align-self="center; "
         >{{ data && data.DeniedCount }}</v-col
       >
       <v-col lg="6" md="6" sm="6" xs="6" class="pt-0" align-self="center"
@@ -162,7 +162,7 @@
 </template>
 <script>
 export default {
-  props: ["branch_id"],
+  props: ["branch_id", "user_type"],
   data: () => ({
     options: {},
 
@@ -211,6 +211,7 @@ export default {
         branch_id: null,
         system_user_id: null,
         device_id: null,
+        user_type: this.user_type,
       });
       this.data = await this.$store.dispatch("CommDashboard/today_statistics"); //this.$store.state.CommDashboard.today_statistics;
 

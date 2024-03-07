@@ -121,7 +121,7 @@
                     <td
                       style="font-size: 14px; border-bottom: 1px solid #dddddd"
                     >
-                      <small>{{ log.date }}</small>
+                      <small>{{ log.LogTime }}</small>
                     </td>
                     <td
                       style="font-size: 14px; border-bottom: 1px solid #dddddd"

@@ -33,7 +33,11 @@ export default {
     return {
       series: [
         {
-          name: "Device Logs",
+          name: "In",
+          data: [],
+        },
+        {
+          name: "Out",
           data: [],
         },
       ],
@@ -108,6 +112,9 @@ export default {
       this.$router.push("/visitor_logs");
     },
     async getDataFromApi() {
+      this.$store.dispatch("dashboard/setDates", {
+        user_type: "visitor",
+      });
       const data = await this.$store.dispatch(
         "dashboard/visitor_every_hour_count"
       );
@@ -116,7 +123,8 @@ export default {
     renderChart(data) {
       let counter = 0;
       data.forEach((item) => {
-        this.chartOptions.series[0]["data"][counter] = parseInt(item.count);
+        this.chartOptions.series[0]["data"][counter] = parseInt(item.in_count);
+        this.chartOptions.series[1]["data"][counter] = parseInt(item.out_count);
         this.chartOptions.xaxis.categories[counter] = item.hour;
         counter++;
       });

@@ -47,7 +47,10 @@
         <v-row>
           <v-col lg="12" md="12" sm="12" xs="12">
             <v-card class="py-2" style="height: 932px; overflow: hidden">
-              <CommDashboardRealTimeLogTableview :branch_id="branch_id" />
+              <CommDashboardRealTimeLogTableview
+                :user_type="null"
+                :branch_id="branch_id"
+              />
             </v-card>
           </v-col>
         </v-row>
