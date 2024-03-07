@@ -210,7 +210,7 @@
               ><img
                 title="Print"
                 style="cursor: pointer"
-                @click="process_file('community/print')"
+                @click="process_file('community-report-print')"
                 src="/icons/icon_print.png"
                 class="iconsize"
             /></span>
@@ -220,7 +220,7 @@
               ><img
                 title="Download Pdf"
                 style="cursor: pointer"
-                @click="process_file('community/download')"
+                @click="process_file('community-report-download')"
                 src="/icons/icon_pdf.png"
                 class="iconsize"
             /></span>
