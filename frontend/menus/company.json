@@ -107,21 +107,20 @@
     "menu": "visitors_access",
     "module": "visitors"
   },
-
-  {
-    "icon": "mdi-filmstrip-box-multiple",
-    "image": "/work_man.png",
-    "title": "Contractor",
-    "to": "/community/contractors",
-    "menu": "branch_access",
-    "module": "settings"
-  },
   {
     "icon": "mdi-domain",
     "title": "Profile",
     "to": "/companies",
     "menu": "setting_access",
     "class": "submenutitle",
+    "module": "settings"
+  },
+  {
+    "icon": "mdi-filmstrip-box-multiple",
+    "image": "/work_man.png",
+    "title": "Contractor",
+    "to": "/community/contractors",
+    "menu": "branch_access",
     "module": "settings"
   },
   {
@@ -489,13 +488,6 @@
     "title": "Attendance",
     "to": "/attendance_report",
     "menu": "attendance_report_access",
-    "module": "reports"
-  },
-  {
-    "icon": "mdi-lock",
-    "title": "Access Control",
-    "to": "/access_control_report",
-    "menu": "timezone",
     "module": "reports"
   },
   {
