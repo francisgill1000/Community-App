@@ -410,6 +410,8 @@ let date = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
 let hours = String(new Date().getHours()).padStart(2, "0");
 let minutes = String(new Date().getMinutes()).padStart(2, "0");
 let dynamicTime = hours + ":" + minutes;
+hours = parseInt(hours) + 2;
+let dynamicOutTime = hours + ":" + minutes;
 export default {
   props: ["visitor_type", "button_type", "label"],
 
@@ -421,7 +423,7 @@ export default {
       visit_from: date,
       visit_to: date,
       time_in: dynamicTime,
-      time_out: dynamicTime,
+      time_out: dynamicOutTime,
 
       tanent_room_number: null,
       tanent_full_name: null,

@@ -201,14 +201,14 @@
               {{ item.device.short_name }}
             </template>
 
-            <template v-slot:item.door="{ item, index }">
+            <!-- <template v-slot:item.door="{ item, index }">
               <div v-if="item.tanent">
                 {{ item.tanent.phone_number || "---" }}
               </div>
               <div v-if="item.member">
                 {{ item.member.phone_number || "---" }}
               </div>
-            </template>
+            </template> -->
 
             <template v-slot:item.user="{ item }" style="padding: 0px">
               <v-row no-gutters>
