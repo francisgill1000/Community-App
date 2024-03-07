@@ -323,9 +323,13 @@ class DashboardController extends Controller
 
         foreach ($dateStrings as $key => $value) {
 
+
+
             $date = $value; //date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
             $AttendanceLogModel = AttendanceLog::where('company_id', $request->company_id)
                 ->whereDate("LogTime",  $date)->distinct("UserID");
+
+
 
             $EmployeesCount = $AttendanceLogModel->clone()
                 ->where("status", "Allowed")
