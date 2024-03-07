@@ -34,7 +34,12 @@ class AccessControlController extends Controller
             } else if ($user_type == 'Maid') {
                 $tanents->where("member_type", "Maid");
             }
-            $tanents = $tanents->get(["id", "full_name", "system_user_id"])->toArray();
+            // $tanents = $tanents->get(["id", "full_name", "system_user_id"])->toArray();
+            $tanents = $tanents->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
+                ->orderBy("first_name", "asc")
+                ->get(['tanents.id', DB::raw('full_name || \' - \' || rooms.room_number  as full_name'), 'tanents.system_user_id']) // Include the room_name column from the rooms table
+
+                ->toArray();
         }
 
         if ($user_type == 'visitor' || $user_type == 'delivery' || $user_type == 'contractor') {
@@ -46,11 +51,15 @@ class AccessControlController extends Controller
             } else if ($user_type == 'contractor') {
                 $visitors->where("visitor_type", "contractor");
             }
-            $visitors = $visitors->get(["id", DB::raw('first_name || \' \' || last_name as full_name'), "system_user_id"])->toArray();
+            $visitors->orderBy("first_name", "asc");
+            $visitors = $visitors->get(["id", DB::raw('first_name || \' \' || last_name  as full_name'), "system_user_id"])
+
+
+                ->toArray();
         }
         if ($user_type == 'employee') {
             $employees = DB::table('employees')
-
+                ->orderBy("first_name", "asc")
                 ->get(["id", "full_name", "system_user_id"])->toArray();
         }
 
