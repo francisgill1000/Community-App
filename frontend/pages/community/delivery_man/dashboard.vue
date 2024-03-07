@@ -37,7 +37,7 @@
           <v-card class="pa-2" style="height: 150px; overflow: hidden">
             <v-row>
               <v-col cols="7">
-                <h2>Checked In</h2>
+                <h3>Checked In</h3>
 
                 <v-col class="text-left pa-0" cols="12">
                   <div class="bold" style="font-size: 60px; color: #33691e">
@@ -48,7 +48,7 @@
               <v-col cols="5" class="text-right">
                 <img
                   src="../../../static/checked-in2.png"
-                  style="width: 100px; padding: 0%"
+                  style="width: 100px; padding: 14%"
                 />
               </v-col>
             </v-row>
@@ -58,7 +58,7 @@
           <v-card class="pa-2" style="height: 150px; overflow: hidden">
             <v-row>
               <v-col cols="7">
-                <h2>Checked Out</h2>
+                <h3>Checked Out</h3>
 
                 <v-col class="text-left pa-0" cols="12">
                   <div class="bold" style="font-size: 60px; color: #b91e20">
@@ -69,7 +69,7 @@
               <v-col cols="5" class="text-right">
                 <img
                   src="../../../static/checked-out.png"
-                  style="width: 100px; padding: 0%"
+                  style="width: 100px; padding: 14%"
                 />
               </v-col>
             </v-row>
@@ -82,8 +82,8 @@
               <v-col cols="4" class="card1 rounded-5 text-left">
                 <v-row>
                   <v-col cols="3" class="text-center">
-                    <v-avatar size="60" color="#033F9B" class="text-center">
-                      <v-icon size="50" class="pa-2" style="color: #fff"
+                    <v-avatar size="45" color="#033F9B" class="text-center">
+                      <v-icon size="35" class="pa-2" style="color: #fff"
                         >mdi-account-supervisor</v-icon
                       >
                     </v-avatar>
@@ -103,8 +103,8 @@
               <v-col cols="4" class="card1 rounded-5 text-left">
                 <v-row>
                   <v-col cols="3" class="text-center">
-                    <v-avatar size="60" color="#ff0000" class="text-center">
-                      <v-icon size="50" class="pa-2" style="color: #fff"
+                    <v-avatar size="45" color="#ff0000" class="text-center">
+                      <v-icon size="35" class="pa-2" style="color: #fff"
                         >mdi mdi-timer-sand-full</v-icon
                       >
                     </v-avatar>
@@ -124,8 +124,8 @@
               <v-col cols="4" class="card1 rounded-5 text-left">
                 <v-row>
                   <v-col cols="3" class="text-center">
-                    <v-avatar size="60" color="black" class="text-center">
-                      <v-icon size="50" class="pa-2" style="color: #fff"
+                    <v-avatar size="45" color="black" class="text-center">
+                      <v-icon size="35" class="pa-2" style="color: #fff"
                         >mdi-account-details</v-icon
                       >
                     </v-avatar>
@@ -179,7 +179,10 @@
           </v-card>
         </v-col>
       </v-row>
-      <CommunityVisitorDashboardDeviceLogs label="Delivery" user_type="delivery" />
+      <CommunityVisitorDashboardDeviceLogs
+        label="Delivery"
+        user_type="delivery"
+      />
     </div>
     <Preloader v-else />
   </div>
