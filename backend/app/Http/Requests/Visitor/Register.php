@@ -47,7 +47,9 @@ class Register extends FormRequest
         $validations["time_in"] = "required";
         $validations["time_out"] = "required";
 
-        $validations["system_user_id"] = "required|regex:/^[1-9][0-9]*$/|min:4|max:9|unique:employees";
+        $validations["system_user_id"] = "nullable";
+        $validations["rfid"] = "required|regex:/^[1-9][0-9]*$/|min:4|max:9";
+
         $validations["visitor_type"] = "required";
 
         $validations['tanent_id'] = 'required';
@@ -62,6 +64,8 @@ class Register extends FormRequest
         return [
             'logo.required' => 'The Photo field is required',
             'tanent_id.required' => 'No tanent found',
+            'rfid.required' => 'The visitor Card Id field is required.',
+
         ];
     }
 }

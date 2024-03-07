@@ -168,7 +168,7 @@
           </v-snackbar>
         </div>
         <v-card class="mb-5" elevation="0">
-          <v-toolbar v-if="showFilters" class="backgrounds" dense flat>
+          <!-- <v-toolbar v-if="showFilters" class="backgrounds" dense flat>
             <v-toolbar-title> </v-toolbar-title>
 
             <v-spacer></v-spacer>
@@ -188,7 +188,7 @@
                 src="/icons/icon_pdf.png"
                 class="iconsize"
             /></span>
-          </v-toolbar>
+          </v-toolbar> -->
 
           <v-toolbar class="backgrounds" flat>
             <v-toolbar-title>
@@ -212,14 +212,14 @@
             <CommunityManualCheckOut
               button_type="icon"
               visitor_type="visitor"
-              v-if="can(`${user_type}_view`)"
+              v-if="can(`${user_type}_view`) && !showFilters"
               @success="handleSuccessResponse"
             />
             <CommunityVisitorCreate
               :label="label"
               button_type="icon"
               :visitor_type="user_type"
-              v-if="can(`${user_type}_create`)"
+              v-if="can(`${user_type}_create`) && !showFilters"
               @success="handleSuccessResponse"
             />
           </v-toolbar>

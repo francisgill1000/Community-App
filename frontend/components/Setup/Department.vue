@@ -159,7 +159,7 @@
               <v-card-text>
                 <v-container>
                   <v-row class="">
-                    <v-col md="12" sm="12" cols="12" small dense class="pb-0">
+                    <!-- <v-col md="12" sm="12" cols="12" small dense class="pb-0">
                       <v-select
                         label="Branch "
                         v-model="editedItem.branch_id"
@@ -175,7 +175,7 @@
                         "
                       >
                       </v-select>
-                    </v-col>
+                    </v-col> -->
                     <v-col md="12" sm="12" cols="12" small dense class="pt-0">
                       <v-text-field
                         label="Department Name"
@@ -461,14 +461,14 @@
           filterable: true,
         },
   
-        {
-          key: "branch_name",
-          text: "Branch",
-          align: "left",
-          sortable: true,
-          value: "branch_name",
-          filterable: true,
-        },
+        // {
+        //   key: "branch_name",
+        //   text: "Branch",
+        //   align: "left",
+        //   sortable: true,
+        //   value: "branch_name",
+        //   filterable: true,
+        // },
   
         {
           text: "Sub Department",
@@ -748,7 +748,7 @@
         let payload = {
           name: this.editedItem.name,
           company_id: this.$auth.user.company_id,
-          branch_id: this.editedItem.branch_id,
+          branch_id: 0,
         };
         if (this.editedIndex > -1) {
           this.$axios

@@ -59,7 +59,30 @@
                 </div>
               </v-col>
               <v-col cols="12">
+                <v-select
+                  v-if="visitor_type == 'contractor'"
+                  v-model="payload.visitor_company_name"
+                  :items="[
+                    {
+                      id: ``,
+                      name: `Select Company`,
+                    },
+                    ...contractorCompanies,
+                  ]"
+                  dense
+                  outlined
+                  item-text="name"
+                  item-value="id"
+                  :hide-details="!errors.visitor_company_name"
+                  :error-messages="
+                    errors && errors.visitor_company_name
+                      ? errors.visitor_company_name[0]
+                      : ''
+                  "
+                  :label="`Contractor Company`"
+                ></v-select>
                 <v-text-field
+                  v-else
                   v-model="payload.visitor_company_name"
                   dense
                   outlined
@@ -87,16 +110,12 @@
               <v-col cols="12">
                 <v-text-field
                   append-icon="mdi-credit-card-scan-outline"
-                  v-model="payload.system_user_id"
+                  v-model="payload.rfid"
                   dense
                   outlined
-                  :hide-details="!errors.system_user_id"
-                  :error-messages="
-                    errors && errors.system_user_id
-                      ? errors.system_user_id[0]
-                      : ''
-                  "
-                  :label="`Create ${label} Card ID`"
+                  :hide-details="!errors.rfid"
+                  :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
+                  :label="`${label} Card ID`"
                   type="number"
                 ></v-text-field>
               </v-col>
@@ -161,7 +180,12 @@
                   @change="openDialogForCustom(payload.purpose_id)"
                   v-model="payload.purpose_id"
                   :items="[
-                    { id: ``, name: `Select Purpose` },
+                    {
+                      id: ``,
+                      name: `Select ${
+                        visitor_type == 'contractor' ? 'Activity' : 'Purpose'
+                      }`,
+                    },
                     ...purposes,
                     { id: `custom`, name: `Custom` },
                   ]"
@@ -170,7 +194,9 @@
                   item-text="name"
                   item-value="id"
                   :hide-details="!errors.purpose_id"
-                  label="Purpose"
+                  :label="`${
+                    visitor_type == 'contractor' ? 'Activity' : 'Purpose'
+                  }`"
                 ></v-select>
               </v-col>
               <v-col cols="6">
@@ -413,7 +439,7 @@ export default {
       gender: "Male",
       phone_number: null,
       email: null,
-      visitor_company_name: null,
+      visitor_company_name: ``,
 
       status_id: 1,
       date,
@@ -493,7 +519,7 @@ export default {
     },
     options: {},
     Model: "Tanent",
-    endpoint: "tanent",
+    endpoint: "visitor-self-register",
     search: "",
     snackbar: false,
     ids: [],
@@ -523,6 +549,7 @@ export default {
     floors: [],
     rooms: [],
     purposes: [],
+    contractorCompanies: [],
   }),
 
   async created() {
@@ -530,6 +557,7 @@ export default {
     this.payload.company_id = this.$auth.user.company_id;
     this.loading = false;
     await this.getPurposes();
+    await this.getContractorCompanies();
   },
 
   methods: {
@@ -581,6 +609,18 @@ export default {
         })
         .catch((e) => console.log(e));
     },
+    async getContractorCompanies() {
+      this.$axios
+        .get(`branch-list`, {
+          params: {
+            company_id: this.$auth.user.company_id,
+          },
+        })
+        .then(({ data }) => {
+          this.contractorCompanies = data;
+        })
+        .catch((e) => console.log(e));
+    },
     handleAttachment(e) {
       this.payload.profile_picture = e;
     },
@@ -590,7 +630,7 @@ export default {
     submit() {
       (this.payload.visitor_type = this.visitor_type),
         this.$axios
-          .post(`visitor-self-register`, this.payload)
+          .post(this.endpoint, this.payload)
           .then(({ data }) => {
             this.handleSuccessResponse("Visitor inserted successfully");
           })

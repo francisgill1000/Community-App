@@ -3,14 +3,14 @@
     <template v-if="buttonVisible" v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
         <v-btn dense small class="primary" text title="Create Tanent">
-          Create Purpose
+          Create {{ type == "contractor" ? "Activity" : "Purpose" }}
           <v-icon right dark>mdi-plus-circle-outline</v-icon>
         </v-btn>
       </span>
     </template>
     <v-card>
       <v-toolbar class="popup_background" flat dense>
-        Create Purpose
+        Create {{ type == "contractor" ? "Activity" : "Purpose" }}
         <v-spacer></v-spacer>
         <span>
           <v-icon class="ml-2" @click="DialogBox = false" dark>
@@ -34,7 +34,7 @@
           </v-col>
           <v-col cols="12">
             <v-text-field
-              label="Purpose"
+              :label="`${type == 'contractor' ? 'Activity' : 'Purpose'}`"
               v-model="payload.name"
               dense
               class="text-center"
@@ -85,10 +85,11 @@ export default {
       this.$axios
         .post(this.endpoint, this.payload)
         .then(({ data }) => {
+          let type = this.type == "contractor" ? "Activity" : "Purpose";
           this.errors = [];
           this.$emit(
             "success",
-            !this.type ? "Purpose inserted successfully" : data.record.id
+            !this.type ? type + " inserted successfully" : data.record.id
           );
           this.DialogBox = false;
         })
