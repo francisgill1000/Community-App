@@ -293,6 +293,9 @@
             <template v-slot:item.id="{ item, index }">
               {{ index + 1 }}
             </template>
+            <template v-slot:item.mode="{ item, index }">
+              {{ item?.in_log?.mode ?? item?.out_log?.mode }}
+            </template>
             <template v-slot:item.status="{ item, index }"> Allowed </template>
             <template v-slot:item.in="{ item, index }">
               {{ $dateFormat.format4(item?.in_log?.LogTime) ?? "---" }}
@@ -542,6 +545,13 @@ export default {
         sortable: false,
         key: "status",
         value: "status",
+      },
+      {
+        text: "Mode",
+        align: "left",
+        sortable: false,
+        key: "mode",
+        value: "mode",
       },
       {
         text: "User Type",
