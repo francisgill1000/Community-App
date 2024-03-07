@@ -60,7 +60,7 @@
 
     <v-col cols="8">
       <v-divider></v-divider>
-      <v-row no-gutters class="mx-2">
+      <!-- <v-row no-gutters class="mx-2">
         <v-col
           cols="4"
           class="text-center"
@@ -99,7 +99,7 @@
           </b>
           <div style="font-size: 12px">OverTime</div>
         </v-col>
-      </v-row>
+      </v-row> -->
       <v-row no-gutters class="px-3">
         <v-col cols="12">
           <ComonPreloader icon="face-scan" v-if="loading" />
@@ -118,6 +118,9 @@
               <td style="font-size: 12px">
                 <small><b>Device</b></small>
               </td>
+              <td style="font-size: 12px">
+                <small><b>In/Out</b></small>
+              </td>
             </tr>
             <tr v-for="(item, index) in logs_data" :key="item.id">
               <td style="font-size: 14px; border-bottom: 1px solid #dddddd">
@@ -128,6 +131,9 @@
               </td>
               <td style="font-size: 14px; border-bottom: 1px solid #dddddd">
                 <small>{{ item.device ? item.device.name : "---" }}</small>
+              </td>
+              <td style="font-size: 14px; border-bottom: 1px solid #dddddd">
+                <small>{{ caps(log?.log_type) }}</small>
               </td>
             </tr>
           </table>
@@ -208,6 +214,9 @@ export default {
     await this.getLogs();
   },
   methods: {
+    caps(str) {
+      if (str) return str.replace(/\b\w/g, (c) => c.toUpperCase());
+    },
     getDate() {
       const date = new Date();
       const year = date.getFullYear();

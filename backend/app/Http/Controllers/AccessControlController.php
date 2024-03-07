@@ -11,9 +11,48 @@ class AccessControlController extends Controller
 {
     public function getUniqueUsers()
     {
-        $tanents = DB::table('tanents')->get(["id", "full_name", "system_user_id"])->toArray();
-        $visitors = DB::table('visitors')->get(["id", "first_name as full_name", "system_user_id"])->toArray();
-        $employees = DB::table('employees')->get(["id", "full_name", "system_user_id"])->toArray();
+
+        $tanents = [];
+        $visitors = [];
+        $employees = [];
+
+
+        $user_type = '';
+        if (request()->filled("user_type")) {
+            $user_type = request("user_type");
+
+            if ($user_type == 'maid') {
+                $user_type = 'Maid';
+            }
+        }
+
+        if ($user_type == 'tanent' || $user_type == 'Maid') {
+            $tanents = DB::table('tanents');
+
+            if ($user_type == 'tanent') {
+                $tanents->whereIn("member_type", ["Owner", "Primary", "Family Member"]);
+            } else if ($user_type == 'Maid') {
+                $tanents->where("member_type", "Maid");
+            }
+            $tanents = $tanents->get(["id", "full_name", "system_user_id"])->toArray();
+        }
+
+        if ($user_type == 'visitor' || $user_type == 'delivery' || $user_type == 'contractor') {
+            $visitors = DB::table('visitors');
+            if ($user_type == 'visitor') {
+                $visitors->where("visitor_type", "visitor");
+            } else if ($user_type == 'delivery') {
+                $visitors->where("visitor_type", "delivery");
+            } else if ($user_type == 'contractor') {
+                $visitors->where("visitor_type", "contractor");
+            }
+            $visitors = $visitors->get(["id", DB::raw('first_name || \' \' || last_name as full_name'), "system_user_id"])->toArray();
+        }
+        if ($user_type == 'employee') {
+            $employees = DB::table('employees')
+
+                ->get(["id", "full_name", "system_user_id"])->toArray();
+        }
 
         return array_merge($tanents, $visitors, $employees);
     }

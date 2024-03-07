@@ -124,22 +124,22 @@
 
           <template v-slot:item.full_name="{ item, index }">
             <v-row no-gutters>
-                <v-col cols="3" class="ma-2">
-                  <v-avatar>
-                    <v-img
-                      :src="item.profile_picture ?? '/no-profile-image.jpg'"
-                    />
-                  </v-avatar>
-                </v-col>
-                <v-col class="pt-2">
-                  <strong> {{ item.full_name }}</strong>
-                  <p>
-                    {{ item.phone_number }}<br v-if="item.phone_number" />{{
-                      item.nationality
-                    }}
-                  </p>
-                </v-col>
-              </v-row>
+              <v-col cols="3" class="ma-2">
+                <v-avatar>
+                  <v-img
+                    :src="item.profile_picture ?? '/no-profile-image.jpg'"
+                  />
+                </v-avatar>
+              </v-col>
+              <v-col class="pt-2">
+                <strong> {{ item.full_name }}</strong>
+                <p>
+                  {{ item.phone_number }}<br v-if="item.phone_number" />{{
+                    item.nationality
+                  }}
+                </p>
+              </v-col>
+            </v-row>
           </template>
 
           <template v-slot:item.options="{ item }">
@@ -314,7 +314,7 @@ export default {
         value: "full_name",
         filterable: true,
         type: "text",
-        width:"200px"
+        width: "200px",
       },
       {
         text: "Members",

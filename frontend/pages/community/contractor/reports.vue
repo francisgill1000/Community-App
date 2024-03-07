@@ -1,3 +1,7 @@
 <template>
-  <CommunityReport label="Contractor Report" :user_type="`contractor`" :showFilters="true" />
+  <CommunityReport
+    label="Contractor Reports"
+    :user_type="`contractor`"
+    :showFilters="true"
+  />
 </template>

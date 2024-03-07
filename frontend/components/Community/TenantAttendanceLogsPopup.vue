@@ -3,10 +3,9 @@
     <v-container>
       <v-row no-gutters>
         <v-col cols="4" style="border-right: 1px solid #dddddd">
-          <h3>{{ caps(item.member_type) }}</h3>
-
           <v-card elevation="0" outlined>
             <v-container>
+              <h3>{{ caps(item.member_type) }}</h3>
               <v-row>
                 <v-col cols="12" class="text-center">
                   <v-avatar size="100" style="border: 1px solid #dddddd">

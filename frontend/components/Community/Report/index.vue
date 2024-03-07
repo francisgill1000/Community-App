@@ -10,7 +10,7 @@
               </v-icon>
             </v-col>
           </v-row>
-          {{ visitor_type }}
+
           <EmployeeShortView
             v-if="selectedItem.employee != null"
             :item="selectedItem"
@@ -19,18 +19,24 @@
 
           <VisitorAttendanceLogsPopup
             v-else-if="
-              visitor_type == 'Visitor' ||
-              visitor_type == 'Contractor' ||
-              visitor_type == 'Delivery'
+              visitor_type.toLowerCase() == 'visitor' ||
+              visitor_type.toLowerCase() == 'contractor' ||
+              visitor_type.toLowerCase() == 'delivery'
             "
             :key="generateRandomId()"
             :UserID="UserID"
           />
           <TenantAttendanceLogsPopup
-            v-else-if="visitor_type == 'tenant' || visitor_type == 'Tanent'"
+            v-else-if="
+              visitor_type == 'tenant' ||
+              visitor_type == 'Tanent' ||
+              visitor_type == 'Owner' ||
+              visitor_type == 'Family Member' ||
+              visitor_type == 'Maid'
+            "
             :key="key"
             :UserID="UserID"
-            :visitor_type="'tenant'"
+            :visitor_type="visitor_type"
           />
         </v-container>
       </v-card>
@@ -38,6 +44,20 @@
     <v-card v-if="showFilters" elevation="0" class="mt-2">
       <v-toolbar dense flat>
         <span class="headline black--text"> {{ label }}</span>
+        <span>
+          <v-btn
+            dense
+            class="ma-0 px-0"
+            x-small
+            :ripple="false"
+            text
+            title="Reload"
+          >
+            <v-icon class="ml-2" @click="getDataFromApi" dark
+              >mdi-reload</v-icon
+            >
+          </v-btn>
+        </span>
       </v-toolbar>
 
       <v-card-text class="py-3">
@@ -119,7 +139,7 @@
             <v-autocomplete
               @change="setUserID(UserID)"
               density="comfortable"
-              label="User ID"
+              label="Members"
               outlined
               dense
               v-model="UserID"
@@ -130,7 +150,6 @@
               ]"
               item-value="id"
               item-text="full_name"
-              :hide-details="true"
             ></v-autocomplete>
           </v-col>
           <v-col md="2" sm="5">
@@ -148,7 +167,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-card class="mb-5 mt-5" elevation="0">
+    <v-card class="mb-5 mt-0" elevation="0">
       <div v-if="can(`attendance_report_access`)">
         <div class="text-center">
           <v-snackbar
@@ -180,7 +199,7 @@
                 src="/icons/icon_print.png"
                 class="iconsize"
             /></span>
-            <span style="padding-left: 15px"
+            <span style="padding-left: 15px; padding-right: 10px"
               ><img
                 title="Download Pdf"
                 style="cursor: pointer"
@@ -210,6 +229,8 @@
             </span>
             <v-spacer></v-spacer>
             <CommunityManualCheckOut
+              class="pl-10"
+              style="padding-left: 10px !important"
               button_type="icon"
               visitor_type="visitor"
               v-if="can(`${user_type}_view`) && !showFilters"
@@ -223,7 +244,40 @@
               @success="handleSuccessResponse"
             />
           </v-toolbar>
-          {{ UserID }}
+
+          <v-toolbar class="backgrounds" flat>
+            <!-- <v-toolbar-title>
+              <span class="headline black--text"> Device Reports</span>
+            </v-toolbar-title> -->
+            <!-- <span>
+              <v-btn
+                dense
+                class="ma-0 px-0"
+                x-small
+                :ripple="false"
+                text
+                title="Reload"
+              >
+                <v-icon class="ml-2" @click="getDataFromApi" dark
+                  >mdi-reload</v-icon
+                >
+              </v-btn>
+            </span> -->
+            <v-spacer></v-spacer>
+            <!-- <CommunityManualCheckOut
+              button_type="icon"
+              visitor_type="visitor"
+              v-if="can(`visitor_view`)"
+              @success="handleSuccessResponse"
+            />
+            <CommunityVisitorCreate
+              button_type="icon"
+              visitor_type="visitor"
+              v-if="can(`visitor_create`)"
+              @success="handleSuccessResponse"
+            /> -->
+          </v-toolbar>
+
           <v-data-table
             @click:row="showDialog"
             dense
@@ -245,21 +299,35 @@
             </template>
             <template v-slot:item.status="{ item, index }"> Allowed </template>
             <template v-slot:item.in="{ item, index }">
-              {{ item?.in_log.LogTime ?? "---" }}
+              {{ $dateFormat.format4(item?.in_log.LogTime) ?? "---" }}
               <br />
-              {{ item?.in_log?.device?.short_name ?? "---" }}
+              <small> {{ item?.in_log?.device?.short_name ?? "---" }}</small>
             </template>
             <template v-slot:item.out="{ item, index }">
-              {{ item?.out_log.LogTime ?? "---" }}
+              {{ $dateFormat.format4(item?.out_log.LogTime) ?? "---" }}
               <br />
-              {{ item?.out_log?.device?.short_name ?? "---" }}
+              <small> {{ item?.out_log?.device?.short_name ?? "---" }}</small>
             </template>
             <template v-slot:item.flat="{ item, index }">
-              {{ item?.tanent?.room?.room_number ?? "---" }}
+              <div v-if="item.tanent" no-gutters>
+                {{ item.tanent?.room?.room_number ?? "---" }}
+              </div>
+              <div v-else-if="item.family_member" no-gutters>
+                {{ item.family_member?.room?.room_number ?? "---" }}
+              </div>
+              <div v-else-if="item.owner" no-gutters>
+                {{ item.owner?.room?.room_number ?? "---" }}
+              </div>
+              <div v-else-if="item.maid" no-gutters>
+                {{ item.maid?.room?.room_number ?? "---" }}
+              </div>
+              <div v-else-if="item.primary" no-gutters>
+                {{ item.primary?.room?.room_number ?? "---" }}
+              </div>
             </template>
 
             <template v-slot:item.host="{ item }" style="padding: 0px">
-              <v-row v-if="item.visitor.tanent" no-gutters>
+              <v-row v-if="item.visitor" no-gutters>
                 <v-col md="8">
                   <div>
                     {{ item?.visitor?.tanent?.full_name ?? "---" }}
@@ -268,113 +336,98 @@
                   </div>
                 </v-col>
               </v-row>
+              <v-row v-if="item.contractor" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item?.contractor?.tanent?.full_name ?? "---" }}
+                    <br />
+                    {{ item?.contractor?.tanent?.room?.room_number ?? "---" }}
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-if="item.delivery" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item?.delivery?.tanent?.full_name ?? "---" }}
+                    <br />
+                    {{ item?.delivery?.tanent?.room?.room_number ?? "---" }}
+                  </div>
+                </v-col>
+              </v-row>
             </template>
 
             <template v-slot:item.user="{ item }" style="padding: 0px">
-              <v-row
-                v-if="
-                  item.tanent || item.family_member || item.owner || item.maid
-                "
-                no-gutters
-              >
-                <!-- <v-col
-                    md="2"
-                    style="
-                      padding: 3px;
-                      padding-left: 0px;
-                      width: 30px;
-                      max-width: 30px;
-                    "
-                  >
-                    <v-img
-                      style="
-                        border-radius: 50%;
-                        height: auto;
-                        width: 30px;
-                        max-width: 30px;
-                      "
-                      :src="
-                        item.tanent.profile_picture
-                          ? item.tanent.profile_picture
-                          : '/no-profile-image.jpg'
-                      "
-                    >
-                    </v-img>
-                  </v-col> -->
+              <v-row v-if="item.tanent" no-gutters>
                 <v-col md="8">
                   <div>
-                    {{ item.tanent.first_name ?? "---" }}
-                    {{ item.tanent.last_name ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row
-                v-else-if="item.visitor || item.delivery || item.contractor"
-                no-gutters
-              >
-                <!-- <v-col
-                    md="2"
-                    style="
-                      padding: 3px;
-                      padding-left: 0px;
-                      width: 30px;  
-                      max-width: 30px;
-                    "
-                  >
-                    <v-img
-                      style="
-                        border-radius: 50%;
-                        height: auto;
-                        width: 30px;
-                        max-width: 30px;
-                      "
-                      :src="
-                        item.visitor.profile_picture
-                          ? item.visitor.profile_picture
-                          : '/no-profile-image.jpg'
-                      "
-                    >
-                    </v-img>
-                  </v-col> -->
-                <v-col md="8">
-                  <div>
-                    {{ item.visitor.full_name ?? "---" }}
+                    {{ item.tanent?.full_name ?? "---" }}
                     <br />
-                    {{ item.visitor.phone_number ?? "---" }}
+                    <small> {{ item.tanent?.phone_number ?? "---" }}</small>
                   </div>
                 </v-col>
               </v-row>
-
-              <v-row v-else-if="item.employee" no-gutters>
-                <!-- <v-col
-                    md="2"
-                    style="
-                      padding: 3px;
-                      padding-left: 0px;
-                      width: 30px;
-                      max-width: 30px;
-                    "
-                  >
-                    <v-img
-                      style="
-                        border-radius: 50%;
-                        height: auto;
-                        width: 30px;
-                        max-width: 30px;
-                      "
-                      :src="
-                        item.employee && item.employee.profile_picture
-                          ? item.employee.profile_picture
-                          : '/no-profile-image.jpg'
-                      "
-                    >
-                    </v-img>
-                  </v-col> -->
+              <v-row v-else-if="item.family_member" no-gutters>
                 <v-col md="8">
                   <div>
-                    {{ item.employee.first_name ?? "---" }}
-                    {{ item.employee.last_name ?? "---" }}
+                    {{ item.family_member?.first_name ?? "---" }}
+                    <br />
+                    <small>
+                      {{ item.family_member?.phone_number ?? "---" }}</small
+                    >
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.owner" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.owner?.first_name ?? "---" }}
+                    <br />
+                    <small> {{ item.owner?.phone_number ?? "---" }}</small>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.maid" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.maid?.full_name ?? "---" }}
+
+                    <br />
+                    <small> {{ item.maid?.phone_number ?? "---" }}</small>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.visitor" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.visitor?.full_name ?? "---" }}
+                    <br />
+                    <small> {{ item.visitor?.phone_number ?? "---" }}</small>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.delivery" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.delivery?.full_name ?? "---" }}
+                    <br />
+                    <small> {{ item.delivery?.phone_number ?? "---" }}</small>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.contractor" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.contractor?.full_name ?? "---" }}
+                    <br />
+                    <small> {{ item.contractor?.phone_number ?? "---" }}</small>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-else-if="item.employee" no-gutters>
+                <v-col md="8">
+                  <div>
+                    {{ item.employee?.first_name ?? "---" }}
+                    {{ item.employee?.last_name ?? "---" }}
                   </div>
                 </v-col>
               </v-row>
@@ -459,13 +512,7 @@ export default {
         key: "user",
         value: "user",
       },
-      {
-        text: "Host",
-        align: "left",
-        sortable: true,
-        key: "host",
-        value: "host",
-      },
+
       {
         text: "In",
         align: "left",
@@ -495,6 +542,7 @@ export default {
         value: "user_type",
       },
     ],
+    visitor_type: "",
   }),
 
   watch: {
@@ -510,13 +558,35 @@ export default {
     this.getDeviceList();
 
     this.payload.user_type = this.user_type;
+
+    if (this.user_type == "tanent") {
+      let branch_header = [
+        {
+          text: "Flat",
+          align: "left",
+          sortable: true,
+          key: "flat",
+          value: "flat",
+        },
+      ];
+      this.headers.splice(2, 0, ...branch_header);
+    } else if (this.user_type == "visitor") {
+      let branch_header = [
+        {
+          text: "Host",
+          align: "left",
+          sortable: true,
+          key: "host",
+          value: "host",
+        },
+      ];
+      this.headers.splice(2, 0, ...branch_header);
+    }
   },
   methods: {
     showDialog(item) {
       this.key++;
       this.selectedItem = item;
-
-      console.log("item", item);
 
       if (item.visitor) {
         this.UserID = item.visitor.id;
@@ -526,6 +596,14 @@ export default {
         this.UserID = item.owner.id;
       } else if (item.contractor) {
         this.UserID = item.contractor.id;
+      } else if (item.delivery) {
+        this.UserID = item.delivery.id;
+      } else if (item.maid) {
+        this.UserID = item.maid.id;
+      } else if (item.primary) {
+        this.UserID = item.primary.id;
+      } else if (item.family_member) {
+        this.UserID = item.family_member.id;
       }
 
       this.visitor_type = this.getUserType(item);
@@ -544,6 +622,8 @@ export default {
         Delivery: item.delivery,
         Contractor: item.contractor,
         Maid: item.maid,
+        Owner: item.owner,
+        Employee: item.employee,
       };
 
       for (const [type, value] of Object.entries(relationships)) {
@@ -552,7 +632,7 @@ export default {
         }
       }
 
-      return "Employee";
+      return "Unknown";
     },
     generateRandomId() {
       const length = 8; // Adjust the length of the ID as needed
@@ -590,11 +670,11 @@ export default {
         params: {
           per_page: 1000,
           company_id: this.$auth.user.company_id,
+          user_type: this.user_type,
         },
       };
 
       this.$axios.get(`/get_users`, options).then(({ data }) => {
-        console.log(data);
         this.users = data;
       });
     },
