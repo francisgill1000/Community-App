@@ -144,13 +144,7 @@
     "menu": "device_access",
     "module": "settings"
   },
-  {
-    "icon": "mdi-bell",
-    "title": "Announ..Categories",
-    "open_menu": false,
-    "to": "/announcement_type",
-    "module": "settings"
-  },
+
   {
     "icon": "mdi-bell",
     "title": "Announcements",

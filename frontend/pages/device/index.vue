@@ -804,7 +804,7 @@
       </v-row>
     </v-navigation-drawer>
 
-    <v-card class="mb-5 mt-2" elevation="0">
+    <v-card class="mb-5 mt-2 mb-5" elevation="1">
       <v-toolbar class="rounded-md" dense flat>
         <v-toolbar-title><span> Devices List</span></v-toolbar-title>
 
@@ -823,7 +823,6 @@
           </v-btn>
         </span>
 
-       
         <!-- </template>
           <span>Reload</span>
         </v-tooltip> -->
@@ -1210,8 +1209,7 @@ export default {
     popup_device_id: "",
     editDialog: false,
     showFilters: false,
-    filters: {
-    },
+    filters: {},
     isFilter: false,
     totalRowsCount: 0,
     datatable_search_textbox: "",
@@ -1231,6 +1229,7 @@ export default {
       short_name: "",
       ip: "",
       port: "",
+      utc_time_zone: "Asia/Dubai",
       camera_save_images: false,
     },
     Model: "Device",
@@ -1874,7 +1873,7 @@ export default {
       this.DialogDeviceSettings = true;
     },
     addItem() {
-      this.payload = {};
+      this.payload = { utc_time_zone: "Asia/Dubai" };
       this.errors = [];
 
       this.editedIndex = -1;

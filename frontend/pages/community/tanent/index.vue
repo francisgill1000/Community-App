@@ -71,10 +71,10 @@
           <v-btn v-bind="attrs" text @click="snack = false"> Close </v-btn>
         </template>
       </v-snackbar>
-      <v-card elevation="0">
-        <v-toolbar class="mb-2" dense flat>
+      <v-card elevation="1" class="mb-5">
+        <v-toolbar dense flat>
           <v-toolbar-title
-            ><span>{{ Model }}s </span></v-toolbar-title
+            ><span>{{ Model }} </span></v-toolbar-title
           >
           <span>
             <v-btn
@@ -94,11 +94,15 @@
           <ExportData :data="exportData()" />
           <TanentCreate @success="handleSuccessResponse" />
         </v-toolbar>
+
         <SnippetsFiltersRenderFields
           :fields="headers.map((e) => e.key)"
           @filtered="handleFilter"
           :headers="headers"
         />
+      </v-card>
+
+      <v-card elevation="1">
         <!-- @dblclick:row="showDialog"
           @click:row="showDialog" -->
         <v-data-table
@@ -296,7 +300,7 @@ export default {
       name: "",
     },
     options: {},
-    Model: "Tanent",
+    Model: "Tenants",
     endpoint: "tanent",
     search: "",
     snackbar: false,

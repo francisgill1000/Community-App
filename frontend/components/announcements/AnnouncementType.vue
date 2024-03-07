@@ -80,11 +80,11 @@
 
         <v-card class="mb-5 mt-2 rounded-md" elevation="0">
           <v-toolbar class="rounded-md" dense flat>
-            <v-toolbar-title
-              ><span> {{ Model }}</span></v-toolbar-title
-            >
+            <v-toolbar-title>
+              <!-- <span> {{ Model }}</span> -->
+            </v-toolbar-title>
             <span>
-              <v-btn
+              <!-- <v-btn
                 dense
                 class="ma-0 px-0"
                 x-small
@@ -95,22 +95,24 @@
                 <v-icon class="ml-2" @click="getDataFromApi()" dark
                   >mdi-reload</v-icon
                 >
-              </v-btn>
+              </v-btn> -->
             </span>
             <v-spacer></v-spacer>
             <span>
               <v-btn
                 v-if="can(`announcement_category_create`)"
                 dense
-                class="ma-0 px-0"
+                class="ma-0 px-2"
                 x-small
                 :ripple="false"
-                text
+                color="primary"
                 title="Add Announcement Category"
+                @click="newDialog()"
               >
-                <v-icon class="ml-2" @click="newDialog()" dark
+                Add New Category
+                <!-- <v-icon class="ml-2" @click="newDialog()" dark
                   >mdi mdi-plus-circle</v-icon
-                >
+                > -->
               </v-btn>
             </span>
           </v-toolbar>
@@ -133,6 +135,7 @@
               itemsPerPageOptions: [10, 50, 100, 500, 1000],
             }"
             class="elevation-1"
+            height="300px"
           >
             <template v-slot:item.action="{ item }">
               <v-menu bottom left>

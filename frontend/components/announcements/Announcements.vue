@@ -371,6 +371,19 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog persistent v-model="dialogAnnouncementType" max-width="800">
+      <v-card>
+        <v-card-title dense class="popup_background">
+          Announcement Categories
+          <v-spacer></v-spacer>
+          <v-icon @click="dialogAnnouncementType = false" outlined dark>
+            mdi mdi-close-circle
+          </v-icon>
+        </v-card-title>
+        <v-card-text> <AnnouncementType /></v-card-text>
+      </v-card>
+    </v-dialog>
+
     <v-row>
       <v-col md="12">
         <v-card class="mb-5 mt-2 rounded-md" elevation="0">
@@ -391,23 +404,27 @@
             <v-spacer></v-spacer>
             <!-- <v-tooltip top color="primary" v-if="can(`announcement_create`)">
               <template v-slot:activator="{ on, attrs }"> -->
+
             <v-btn
               v-if="can(`announcement_create`)"
               dense
-              class="ma-0 px-0"
+              class="ma-2 px-2"
               x-small
               :ripple="false"
-              text
+              color="primary"
               title="Add Announcement"
+              @click="dialog = true"
             >
-              <v-icon class="ml-2" @click="dialog = true" dark
+              Announcement +
+              <!-- <v-icon class="ml-2" color="primary" @click="dialog = true" dark
                 >mdi mdi-plus-circle</v-icon
-              >
+              > -->
             </v-btn>
+
             <v-btn
               v-if="can(`announcement_edit`) && selectedItem"
               dense
-              class="ma-0 px-0"
+              class="ma-2 px-2"
               x-small
               :ripple="false"
               text
@@ -416,6 +433,18 @@
               <v-icon class="ml-2" @click="editItem()" dark
                 >mdi mdi-pencil-circle</v-icon
               >
+            </v-btn>
+            <v-btn
+              v-if="can(`announcement_create`)"
+              dense
+              class="ma-2 px-2"
+              x-small
+              :ripple="false"
+              color="primary"
+              title="Add Announcement Category"
+              @click="goToPage('/announcement_type')"
+            >
+              Category +
             </v-btn>
             <!-- </template>
               <span>New Announcement</span>
@@ -586,6 +615,7 @@
 import DateRangePicker from "../../components/Snippets/Filters/DateRangePicker.vue";
 import TextField from "../../components/Snippets/Filters/TextField.vue";
 import DropDown from "../../components/Snippets/Filters/DropDown.vue";
+import AnnouncementType from "../../components/announcements/AnnouncementType.vue";
 import {
   TiptapVuetify,
   Heading,
@@ -607,6 +637,7 @@ export default {
     TextField,
     DropDown,
     TiptapVuetify,
+    AnnouncementType,
   },
   data: () => ({
     extensions: [
@@ -634,6 +665,7 @@ export default {
       { text: "Audience", icon: "mdi-account" },
       { text: "Conversions", icon: "mdi-flag" },
     ],
+    dialogAnnouncementType: false,
     branchesList: [],
     categories: [],
     totalRowsCount: 0,
@@ -1119,7 +1151,11 @@ export default {
         this.loading = false;
       });
     },
+    goToPage(page) {
+      this.dialogAnnouncementType = true;
 
+      //this.$router.push(page);
+    },
     save() {
       this.editedItem.company_id = this.$auth.user.company_id;
 
