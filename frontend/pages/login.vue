@@ -225,8 +225,8 @@
             <v-col class="pa-5">
               <a
                 style="text-decoration: none; color: black"
-                href="mailto:support@mytime2cloud.com"
-                >support@mytime2cloud.com</a
+                href="mailto:support@myhome2cloud.com"
+                >support@myhome2cloud.com</a
               ></v-col
             >
           </v-row>
@@ -286,8 +286,8 @@
               <br />
               <a
                 style="text-decoration: none; color: #fff; font-weight: 300"
-                href="mailto:support@mytime2cloud.com"
-                >support@mytime2cloud.com</a
+                href="mailto:support@myhome2cloud.com"
+                >support@myhome2cloud.com</a
               >
             </v-col>
           </v-row>

@@ -242,6 +242,7 @@
           </v-toolbar>
 
           <v-data-table
+            style="padding-top: 10px"
             @click:row="showDialog"
             dense
             :headers="headers"
