@@ -186,8 +186,7 @@
                 <tr>
                     <td class="text-left border-none col-4">
                         <div class="logo pt">
-                            <img style="width: 100%" src="https://amc.mytime2cloud.com/mail-logo.png"
-                                alt="Company Logo" />
+                            <img style="width: 100%" src="{{ getcwd() . '/upload/logo22.png' }}" alt="Company Logo" />
                         </div>
                     </td>
                     <td class="text-center border-none col-4 uppercase">
@@ -210,66 +209,88 @@
                 </tr>
             </table>
             <table class="mt-5">
+
                 <tr>
                     <th>S.NO</th>
                     <th>Name</th>
-                    <th>Phone</th>
-                    <th>Door</th>
-                    <th>DateTime</th>
+
+                    <th>{{ in_array($params['user_type'], ['visitor', 'delivery', 'contractor']) ? 'Host' : 'Flat' }}
+                    </th>
+
+
                     <th>In</th>
                     <th>Out</th>
-                    <th>Mode</th>
                     <th>Status</th>
+                    <th>Mode</th>
                     <th>User Type</th>
                 </tr>
                 @foreach ($chunk as $key => $data)
+                    @php
+                        $entity = null;
+                        $full_name = '---';
+                        $phone_number = '---';
+
+                        if ($data['user_type'] == 'Primary') {
+                            $entity = $data['tanent'];
+                        } elseif ($data['user_type'] == 'Owner') {
+                            $entity = $data['owner'];
+                        } elseif ($data['user_type'] == 'Family Member') {
+                            $entity = $data['family_member'];
+                        } elseif ($data['user_type'] == 'Maid') {
+                            $entity = $data['maid'];
+                        } elseif ($data['user_type'] == 'visitor') {
+                            $entity = $data['visitor'];
+                        } elseif ($data['user_type'] == 'delivery') {
+                            $entity = $data['delivery'];
+                        } elseif ($data['user_type'] == 'contractor') {
+                            $entity = $data['contractor'];
+                        }
+
+                    @endphp
                     <tr>
                         <td style="width:10px;">{{ $key + 1 }}</td>
 
                         <td>
-                            @php
-                                $pic = 'https://i.pinimg.com/originals/df/5f/5b/df5f5b1b174a2b4b6026cc6c8f9395c1.jpg';
-
-                                if ($data['tanent'] && $data['tanent']['profile_picture']) {
-                                    $pic = getcwd() . '/community/profile_picture/' . $data['tanent']['profile_picture_name'];
-                                } else {
-                                    $pic = getcwd() . '/community/profile_picture/' . $data['member']['profile_picture_name'];
-                                }
-
-                            @endphp
-
                             <table>
                                 <tr>
-                                    <td style="width:20px;" class="border-none">
-
-                                        <img alt="{{ $pic }}"
-                                            style="border-radius: 50%;width:40px;height:40px;padding-top:5px;"src="{{ $pic }}" />
-                                    </td>
                                     <td class="border-none">
-                                        <b style="margin-left:5px; padding-top:-30px;">
-                                            {{ $data['tanent']['full_name'] ?? $data['member']['full_name'] }}
-                                        </b>
-                                        <br>
-                                        <small style="margin-left:5px;">
-                                            EID:{{ $data['tanent']['system_user_id'] ?? $data['member']['system_user_id'] }}
-                                        </small>
+                                        <b
+                                            style="margin-left:5px; padding-top:-30px;">{{ $entity['full_name'] }}</b><br>
+                                        <small style="margin-left:5px;">{{ $entity['phone_number'] }}</small>
                                     </td>
                                 </tr>
                             </table>
                         </td>
-                        <td>{{ $data['tanent']['phone_number'] ?? $data['member']['phone_number'] }}</td>
-                        <td>{{ $data['device']['location'] ?? '---' }}</td>
-                        <td>{{ $data['date'] }} {{ $data['time'] }}</td>
+                        <?php if (in_array($params['user_type'], ['visitor', 'delivery', 'contractor'])) { ?>
                         <td>
-                            {{ strtolower($data['device']['function']) !== 'out' ? 'In' : '---' }}
+                            {{ $entity['tanent']['full_name'] ?? '---' }}
+                            <br />
+                            {{ $entity['tanent']['room']['room_number'] ?? '---' }}
                         </td>
+
+                        <?php } else { ?>
+                        <td>{{ $entity['room']['room_number'] ?? '---' }}</td>
+                        <?php } ?>
+
+                        <td>{{ $data['in_log']['LogTime'] ?? '---' }}</td>
+                        <td>{{ $data['out_log']['LogTime'] ?? '---' }}</td>
                         <td>
-                            {{ strtolower($data['device']['function']) == 'out' ? 'Out' : '---' }}
+                            @if ($data['in_log'])
+                                {{ $data['in_log']['status'] == 'Allowed' ? 'Allowed' : 'Denied' }}
+                            @elseif ($data['out_log'])
+                                {{ $data['out_log']['status'] == 'Allowed' ? 'Allowed' : 'Denied' }}
+                            @endif
                         </td>
+
+                        <td>
+                            @if ($data['in_log'])
+                                {{ $data['in_log']['mode'] }}
+                            @elseif ($data['out_log'])
+                                {{ $data['out_log']['mode'] }}
+                            @endif
                         </td>
-                        <td>{{ $data['device']['mode'] ?? '---' }}</td>
-                        <td>{{ $data['status'] }}</td>
-                        <td>{{ $data['tanent'] ? "Tanent" : "Member" }}</td>
+
+                        <td>{{ $data['user_type'] }}</td>
                     </tr>
                 @endforeach
             </table>
