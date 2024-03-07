@@ -187,31 +187,6 @@
           </v-snackbar>
         </div>
         <v-card class="mb-5" elevation="0">
-          <v-toolbar class="backgrounds" dense flat>
-            <v-toolbar-title> </v-toolbar-title>
-
-            <v-spacer></v-spacer>
-            <span v-if="showFilters" style="padding-left: 15px"
-              ><img
-                title="Print"
-                style="cursor: pointer"
-                @click="process_file('community/print')"
-                src="/icons/icon_print.png"
-                class="iconsize"
-            /></span>
-            <span
-              v-if="showFilters"
-              style="padding-left: 15px; padding-right: 10px"
-              ><img
-                title="Download Pdf"
-                style="cursor: pointer"
-                @click="process_file('community/download')"
-                src="/icons/icon_pdf.png"
-                class="iconsize"
-            /></span>
-          </v-toolbar>
-          -->
-
           <v-toolbar class="backgrounds" flat>
             <!-- <v-toolbar-title>
               <span class="headline black--text"> Device Logs</span>

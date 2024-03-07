@@ -559,8 +559,8 @@ export default {
   },
   mounted() {
     this.getPurposes();
-    await this.getPurposes();
-    await this.getContractorCompanies();
+
+    this.getContractorCompanies();
   },
 
   methods: {
@@ -595,7 +595,7 @@ export default {
         this.$refs["customPopup"].DialogBox = true;
       }
     },
-    async handleResponse(e) {
+    handleResponse(e) {
       this.payload.purpose_id = e;
       this.getPurposes();
     },
@@ -613,19 +613,8 @@ export default {
           })
           .catch((e) => console.log(e));
     },
-    async getContractorCompanies() {
-      this.$axios
-        .get(`branch-list`, {
-          params: {
-            company_id: this.$auth.user.company_id,
-          },
-        })
-        .then(({ data }) => {
-          this.contractorCompanies = data;
-        })
-        .catch((e) => console.log(e));
-    },
-    async getContractorCompanies() {
+
+    getContractorCompanies() {
       this.$axios
         .get(`branch-list`, {
           params: {

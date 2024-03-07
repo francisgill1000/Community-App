@@ -367,7 +367,7 @@ let hours = String(new Date().getHours()).padStart(2, "0");
 let minutes = String(new Date().getMinutes()).padStart(2, "0");
 let dynamicTime = hours + ":" + minutes;
 export default {
-  props: ["item","visitor_type"],
+  props: ["item", "visitor_type"],
 
   data: () => ({
     disabled: false,
@@ -508,7 +508,7 @@ export default {
 
   async created() {
     this.loading = false;
-    await this.getPurposes();
+    this.getPurposes();
     this.payload = this.item;
   },
 
@@ -520,13 +520,14 @@ export default {
     },
     async handleResponse(e) {
       this.payload.purpose_id = e;
-      await this.getPurposes();
+      this.getPurposes();
     },
-    async getPurposes() {
+    getPurposes() {
       this.$axios
         .get(`purpose_list`, {
           params: {
             company_id: this.$auth.user.company_id,
+            type: this.visitor_type,
           },
         })
         .then(({ data }) => {
