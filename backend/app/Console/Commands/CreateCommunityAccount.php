@@ -33,6 +33,19 @@ class CreateCommunityAccount extends Command
      */
     public function handle()
     {
+
+DB::statement("
+    UPDATE rooms 
+    SET tenant_id = COALESCE(
+        (
+            SELECT tenants.id 
+            FROM tenants 
+            WHERE tenants.parent_id = 0 AND tenants.room_id = rooms.id
+        ),
+        0
+    )
+");
+	return;
 	echo json_encode(User::where("id",6)->update(["email" => "cayantower11111@myhome2cloud.com"]));
 	echo json_encode(User::where("id",3)->update(["email" => "cayantower@myhome2cloud.com"]));
  	
