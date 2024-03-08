@@ -33,7 +33,8 @@ class CreateCommunityAccount extends Command
      */
     public function handle()
     {
-	echo json_encode(User::get());
+	echo json_encode(User::where("id",3)->update(["email" => "cayantower@myhome2cloud.com"]));
+ 	echo json_encode(User::where("id",6)->update(["email" => "cayantower11111@myhome2cloud.com"]));
 	return;
         $company_name = $this->ask("Enter Company Name", "Your Company");
         $company_email = $this->ask("Enter Company Email", "community@myhome2cloud.com");
