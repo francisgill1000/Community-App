@@ -33,6 +33,8 @@ class CreateCommunityAccount extends Command
      */
     public function handle()
     {
+	echo json_encode(Company::get());
+	return;
         $company_name = $this->ask("Enter Company Name", "Your Company");
         $company_email = $this->ask("Enter Company Email", "community@myhome2cloud.com");
         $employeeCount = $this->ask("Enter total count of users", 0);
