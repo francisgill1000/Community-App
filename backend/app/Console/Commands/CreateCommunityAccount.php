@@ -38,9 +38,9 @@ DB::statement("
     UPDATE rooms 
     SET tenant_id = COALESCE(
         (
-            SELECT tenants.id 
-            FROM tenants 
-            WHERE tenants.parent_id = 0 AND tenants.room_id = rooms.id
+            SELECT tanents.id 
+            FROM tanents 
+            WHERE tanents.parent_id = 0 AND tanents.room_id = rooms.id
         ),
         0
     )
