@@ -3,7 +3,7 @@ import colors from "vuetify/es5/util/colors";
 export default {
   buildDir: ".nuxt",
   // Target: https://go.nuxtjs.dev/config-target
-  target: "server",
+  target: "static",
   generate: {
     // Interval in milliseconds between two render cycles to avoid
     // flooding a potential API with calls from the web application.
@@ -12,7 +12,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: "",
-    title: "MyTime 2 Cloud",
+    title: "MyHome 2 Cloud",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
