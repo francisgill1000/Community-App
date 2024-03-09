@@ -442,18 +442,8 @@ export default {
         sortable: true,
         key: "UserID",
         value: "UserID",
-        width: "150px",
         filterable: true,
         filterSpecial: false,
-      },
-      {
-        text: "Department",
-        align: "left",
-        sortable: false,
-        key: "department", //sorting
-        value: "department.name.id", //edit purpose
-        filterable: true,
-        filterSpecial: true,
       },
       {
         text: "Date Range",
