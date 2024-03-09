@@ -25,8 +25,8 @@ class UpdateRequest extends FormRequest
     {
         return [
             "name" => "required",
-            "number" => "required|min:4|max:9",
-            "system_number" => "required|numeric|min:4|max:999999999|unique:cards|regex:/^[1-9][0-9]*$/", 
+            "number" => "required|min:0|max:10",
+            "system_number" => "required|min:0|max:10",
             "issue_date" => "required|date",
             "expire_date" => "required|date",
             "type" => "required",
