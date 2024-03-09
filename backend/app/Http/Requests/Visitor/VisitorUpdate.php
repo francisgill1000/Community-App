@@ -53,7 +53,7 @@ class VisitorUpdate extends FormRequest
         $validations["time_out"] = "required";
 
         $validations["system_user_id"] = "nullable";
-        $validations["rfid"] =   "required"; //"required|regex:/^[1-9][0-9]*$/|min:4|max:9";
+        $validations["rfid"] =   "required|min:0|max:10"; //"required|regex:/^[1-9][0-9]*$/|min:4|max:9";
 
 
         return $validations;

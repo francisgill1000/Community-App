@@ -34,7 +34,7 @@ class Update extends FormRequest
         $validations["zone_id"] = "required";
 
         $validations["system_user_id"] = "nullable";
-        $validations["rfid"] = "required|regex:/^[1-9][0-9]*$/|min:4|max:9";
+        $validations["rfid"] = "required|min:0|max:10";
 
         $validations['visit_from'] = 'required|date';
         $validations['visit_to'] = 'required|date';

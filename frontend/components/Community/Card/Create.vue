@@ -149,6 +149,7 @@ export default {
   },
   methods: {
     submit() {
+      this.payload.number = Number(this.payload.number).toString();
       this.payload.system_number = this.payload.number;
       this.payload.company_id = this.$auth.user.company_id;
 

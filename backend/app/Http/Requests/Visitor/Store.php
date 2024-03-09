@@ -36,7 +36,7 @@ class Store extends FormRequest
         // $validations['system_user_id'] = 'required|numeric|unique:visitors,system_user_id';
 
         $validations["system_user_id"] = "nullable";
-        $validations["rfid"] = "required"; // "required|regex:/^[1-9][0-9]*$/|min:4|max:9";
+        $validations["rfid"] = "required|min:0|max:10"; // "required|regex:/^[1-9][0-9]*$/|min:4|max:9";
 
         $validations['visit_from'] = 'required|date';
         $validations['visit_to'] = 'required|date';

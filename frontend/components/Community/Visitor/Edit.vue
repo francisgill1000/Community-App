@@ -542,6 +542,9 @@ export default {
       return this.$pagePermission.can(per, this);
     },
     submit() {
+      this.payload.rfid = Number(this.payload.rfid).toString();
+      this.payload.system_user_id = this.payload.rfid;
+
       this.$axios
         .post(`visitor-update/${this.payload.id}`, this.payload)
         .then(({ data }) => {

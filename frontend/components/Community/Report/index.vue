@@ -233,6 +233,7 @@
               @success="handleSuccessResponse"
             />
             <CommunityVisitorCreate
+              :standalone="true"
               :label="label"
               button_type="icon"
               :visitor_type="user_type"

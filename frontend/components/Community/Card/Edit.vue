@@ -145,6 +145,7 @@ export default {
   },
   methods: {
     submit() {
+      this.payload.number = Number(this.payload.number).toString();
       this.payload.system_number = this.payload.number;
       this.$axios
         .put(this.endpoint + "/" + this.payload.id, this.payload)

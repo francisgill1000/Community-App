@@ -437,7 +437,7 @@ export default {
     snackbar: false,
     headers_table: [
       {
-        text: "User Id /Emp.Id ",
+        text: "User Id",
         align: "left",
         sortable: true,
         key: "UserID",
@@ -446,17 +446,6 @@ export default {
         filterable: true,
         filterSpecial: false,
       },
-      {
-        text: "Employee",
-        align: "left",
-        sortable: true,
-        key: "employee_first_name", //sorting
-        value: "employee.first_name", //edit purpose
-        width: "300px",
-        filterable: true,
-        filterSpecial: false,
-      },
-
       {
         text: "Department",
         align: "left",

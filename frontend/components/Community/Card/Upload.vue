@@ -917,7 +917,7 @@ export default {
         this.loading_dialog = false;
 
         this.snackbar.show = true;
-        this.response = "Employee(s) Pictures  has been uploaded";
+        this.response = "Card(s) has been uploaded";
 
         let jsrightEmployees = this.rightEmployees;
         let SDKSuccessStatus = true;

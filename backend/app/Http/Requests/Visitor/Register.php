@@ -33,7 +33,7 @@ class Register extends FormRequest
         $validations['gender'] = 'required|in:Male,Female';
         $validations['phone_number'] = 'required|string|max:255';
         $validations['email'] = 'nullable|email|max:255';
-        $validations['visitor_company_name'] = 'required|string|max:255';
+        $validations['visitor_company_name'] = 'required|max:255';
         $validations['id_type'] = 'nullable';
         $validations['id_number'] = 'nullable|string|max:255';
         $validations['host_company_id'] = 'nullable';
@@ -48,7 +48,7 @@ class Register extends FormRequest
         $validations["time_out"] = "required";
 
         $validations["system_user_id"] = "nullable";
-        $validations["rfid"] = "required|regex:/^[1-9][0-9]*$/|min:4|max:9";
+        $validations["rfid"] = "required|min:0|max:10";
 
         $validations["visitor_type"] = "required";
 

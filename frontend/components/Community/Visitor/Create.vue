@@ -413,7 +413,7 @@ let dynamicTime = hours + ":" + minutes;
 hours = parseInt(hours) + 2;
 let dynamicOutTime = hours + ":" + minutes;
 export default {
-  props: ["visitor_type", "button_type", "label"],
+  props: ["visitor_type", "button_type", "label", "standalone"],
 
   data: () => ({
     disabled: false,
@@ -635,15 +635,24 @@ export default {
       return this.$pagePermission.can(per, this);
     },
     submit() {
-      (this.payload.visitor_type = this.visitor_type),
-        this.$axios
-          .post(this.endpoint, this.payload)
-          .then(({ data }) => {
-            this.handleSuccessResponse("Visitor inserted successfully");
-          })
-          .catch(({ response }) => {
-            this.handleErrorResponse(response);
-          });
+      this.payload.rfid = Number(this.payload.rfid).toString();
+      this.payload.system_user_id = this.payload.rfid;
+      this.payload.visitor_type = this.visitor_type;
+      this.$axios
+        .post(this.endpoint, this.payload)
+        .then(({ data }) => {
+          if (!data.status && this.standalone) {
+            alert(data.message);
+            return;
+          } else if (this.standalone) {
+            alert("Visitor inserted successfully");
+            return;
+          }
+          this.handleSuccessResponse("Visitor inserted successfully");
+        })
+        .catch(({ response }) => {
+          this.handleErrorResponse(response);
+        });
 
       // }
     },
@@ -654,8 +663,7 @@ export default {
     },
     handleErrorResponse(response) {
       if (!response) {
-        this.snackbar = true;
-        this.response = "An unexpected error occurred.";
+        alert("An unexpected error occurred.");
         return;
       }
       let { status, data, statusText } = response;
@@ -665,22 +673,8 @@ export default {
         return;
       }
 
-      this.snackbar = true;
-      this.response = statusText;
+      alert(statusText);
     },
   },
 };
 </script>
-<style>
-/* Hide the up and down arrows */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-</style>

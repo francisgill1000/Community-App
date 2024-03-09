@@ -531,7 +531,7 @@ export default {
         );
       }
     }
-    this.setupInactivityDetection();
+    // this.setupInactivityDetection();
 
     // setTimeout(() => {
     //   this.$router.push(`/dashboard2`);
