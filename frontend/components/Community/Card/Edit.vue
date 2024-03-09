@@ -19,7 +19,7 @@
       </v-toolbar>
       <v-container>
         <v-row>
-          <v-col cols="4">
+          <v-col cols="6">
             <v-text-field
               label="Card Name"
               v-model="payload.name"
@@ -31,7 +31,7 @@
               :error-messages="errors && errors.name ? errors.name[0] : ''"
             ></v-text-field>
           </v-col>
-          <v-col cols="4">
+          <v-col cols="6">
             <v-text-field
               append-icon="mdi-credit-card-scan-outline"
               label="Card Number"
@@ -44,21 +44,7 @@
               :error-messages="errors && errors.number ? errors.number[0] : ''"
             ></v-text-field>
           </v-col>
-          <v-col cols="4">
-            <v-text-field
-              label="Card Sytem Number"
-              v-model="payload.system_number"
-              dense
-              class="text-center"
-              outlined
-              :hide-details="!errors.system_number"
-              :error="errors.system_number"
-              :error-messages="
-                errors && errors.system_number ? errors.system_number[0] : ''
-              "
-            ></v-text-field>
-          </v-col>
-          <v-col cols="4">
+          <v-col cols="6">
             <v-menu
               v-model="issue_date"
               :close-on-content-click="false"
@@ -91,7 +77,7 @@
               ></v-date-picker>
             </v-menu>
           </v-col>
-          <v-col cols="4">
+          <v-col cols="6">
             <v-menu
               v-model="expire_date"
               :close-on-content-click="false"
@@ -159,6 +145,7 @@ export default {
   },
   methods: {
     submit() {
+      this.payload.system_number = this.payload.number;
       this.$axios
         .put(this.endpoint + "/" + this.payload.id, this.payload)
         .then(({ data }) => {

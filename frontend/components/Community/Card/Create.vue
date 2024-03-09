@@ -45,20 +45,6 @@
               :error-messages="errors && errors.number ? errors.number[0] : ''"
             ></v-text-field>
           </v-col>
-          <!-- <v-col cols="4">
-            <v-text-field
-              label="Card Sytem Number"
-              v-model="payload.system_number"
-              dense
-              class="text-center"
-              outlined
-              :hide-details="!errors.system_number"
-              :error="errors.system_number"
-              :error-messages="
-                errors && errors.system_number ? errors.system_number[0] : ''
-              "
-            ></v-text-field>
-          </v-col> -->
           <v-col cols="6">
             <v-menu
               v-model="issue_date"
@@ -149,9 +135,7 @@ export default {
   props: ["label", "buttonVisible", "type"],
   data: () => ({
     endpoint: "card",
-    payload: {
-      system_number: 1111,
-    },
+    payload: {},
     errors: [],
     loading: false,
     response: null,
@@ -165,7 +149,9 @@ export default {
   },
   methods: {
     submit() {
+      this.payload.system_number = this.payload.number;
       this.payload.company_id = this.$auth.user.company_id;
+
       this.$axios
         .post(this.endpoint, this.payload)
         .then(({ data }) => {
