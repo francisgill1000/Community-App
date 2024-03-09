@@ -2,6 +2,8 @@ const WebSocket = require("ws");
 const fs = require("fs");
 const { log } = require("console");
 require("dotenv").config();
+const path = require('path');
+
 
 const verification_methods = {
   1: "Card",
@@ -34,7 +36,11 @@ const reasons = {
   27: "No Fingerprint",
 };
 
-const { SOCKET_ENDPOINT } = process.env;
+// const { SOCKET_ENDPOINT } = process.env;
+const SOCKET_ENDPOINT = "ws://192.168.1.107:8080/WebSocket";
+
+
+
 
 // Create a WebSocket connection
 const socket = new WebSocket(SOCKET_ENDPOINT);
@@ -66,12 +72,17 @@ socket.onmessage = ({ data }) => {
   const logFilePath = `../backend/storage/app/logs-${getFormattedDate().date}.csv`;
   const logFilePathAlarm = `../backend/storage/app/alarm/alarm-logs-${getFormattedDate().date}.csv`;
 
+
   try {
     const jsonData = JSON.parse(data).Data;
 
     const { UserCode, SN, RecordDate, RecordNumber, RecordCode } = jsonData;
 
     if (UserCode > 0) {
+      const logFileDir = path.dirname(logFilePath);
+      if (!fs.existsSync(logFileDir)) {
+        fs.mkdirSync(logFileDir, { recursive: true });
+      }
       let status = RecordCode > 15 ? "Access Denied" : "Allowed";
 
       let mode = verification_methods[RecordCode] ?? "---";
@@ -86,6 +97,13 @@ socket.onmessage = ({ data }) => {
     }
     //Alarm Code
     if (UserCode == 0 && RecordCode == 19) {
+
+      // Ensure that the directory exists before attempting to write the file
+      const logDirectory = path.dirname(logFilePathAlarm);
+      if (!fs.existsSync(logDirectory)) {
+        fs.mkdirSync(logDirectory, { recursive: true });
+      }
+
       const alarm_logEntry = `${SN},${RecordDate}`;
       fs.appendFileSync(logFilePathAlarm, alarm_logEntry + "\n");
       console.log("Alarm", alarm_logEntry);
