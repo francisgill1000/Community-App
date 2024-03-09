@@ -207,6 +207,7 @@ class AttendanceLogController extends Controller
                     "status" => $columns[4] ?? "Allowed",
                     "mode" => $columns[5] ?? "Face",
                     "reason" => $columns[6] ?? "---",
+                    'visitor_id' => Visitor::where("system_user_id", $columns[0])->orderBy("id", "desc")->value("id"),
                 ];
             }
         }

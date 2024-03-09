@@ -26,6 +26,12 @@ class CardController extends Controller
     }
 
 
+    public function dropDown()
+    {
+        return Card::get();
+        return Card::where("type", request("type"))->get();
+    }
+
     public function index()
     {
         return Card::where("type", request("type"))->paginate(request("per_page") ?? 10);

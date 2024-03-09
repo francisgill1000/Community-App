@@ -108,16 +108,20 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-text-field
-                  append-icon="mdi-credit-card-scan-outline"
+                <v-autocomplete
                   v-model="payload.rfid"
+                  :items="cards"
                   dense
                   outlined
+                  deletable-chips
+                  item-text="name"
+                  item-value="id"
+                  label="Select Card"
                   :hide-details="!errors.rfid"
                   :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
-                  :label="`${label} Card ID`"
-                  type="number"
-                ></v-text-field>
+                  color="background"
+                >
+                </v-autocomplete>
               </v-col>
             </v-row>
           </v-col>
@@ -417,6 +421,7 @@ export default {
 
   data: () => ({
     disabled: false,
+    cards: [],
     step: 1,
     payload: {
       company_id: 0,
@@ -554,18 +559,26 @@ export default {
     contractorCompanies: [],
   }),
 
-  created() {
+  async created() {
     this.company_id = this.$auth.user.company_id;
     this.payload.company_id = this.$auth.user.company_id;
     this.loading = false;
+    await this.getCards();
   },
   mounted() {
     this.getPurposes();
 
     this.getContractorCompanies();
+
+    
   },
 
   methods: {
+    async getCards() {
+      const { data } = await this.$axios.get(`/card-list`);
+
+      this.cards = data;
+    },
     async getDetailsByRoomNumber(room) {
       try {
         // Make a GET request to the endpoint
