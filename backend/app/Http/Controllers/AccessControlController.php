@@ -67,7 +67,7 @@ class AccessControlController extends Controller
     }
     public function index()
     {
-        return $this->processFilter()->paginate(request("per_page") ?? 100);
+        return $this->processFilter()->orderBy("id","desc")->paginate(request("per_page") ?? 100);
     }
 
     public function search_visitor_by_user_id()

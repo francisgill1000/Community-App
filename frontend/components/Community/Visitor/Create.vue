@@ -114,8 +114,8 @@
                   dense
                   outlined
                   deletable-chips
+                  item-value="number"
                   item-text="name"
-                  item-value="id"
                   label="Select Card"
                   :hide-details="!errors.rfid"
                   :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"

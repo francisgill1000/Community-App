@@ -18,7 +18,7 @@ class AttendanceLogController extends Controller
 {
     public function index(AttendanceLog $model, Request $request)
     {
-        return $model->filter($request)->paginate($request->per_page);
+        return $model->filter($request)->order("id", "desc")->paginate($request->per_page);
     }
     public function getAttendanceLogs(AttendanceLog $model, Request $request)
     {
@@ -196,6 +196,8 @@ class AttendanceLogController extends Controller
         foreach ($result["data"] as $row) {
             $columns = explode(',', $row);
 
+
+
             $isDuplicateLogTime = $this->verifyDuplicateLog($columns);
 
             if (!$isDuplicateLogTime) {
@@ -207,7 +209,7 @@ class AttendanceLogController extends Controller
                     "status" => $columns[4] ?? "Allowed",
                     "mode" => $columns[5] ?? "Face",
                     "reason" => $columns[6] ?? "---",
-                    'visitor_id' => Visitor::where("system_user_id", $columns[0])->orderBy("id", "desc")->value("id"),
+                    "visitor_id" => Visitor::where("system_user_id", $columns[0] ?? 0)->orderBy("id", "desc")->value("id") ?? 0
                 ];
             }
         }
@@ -218,6 +220,8 @@ class AttendanceLogController extends Controller
             Storage::put("logs-count-" . $result['date'] . ".txt", $result['totalLines']);
             return $this->getMeta("Sync Attenance Logs", count($records) . " new logs has been inserted." . "\n");
         } catch (\Throwable $th) {
+
+            return $th;
 
             Logger::channel("custom")->error('Error occured while inserting logs.');
             Logger::channel("custom")->error('Error Details: ' . $th);

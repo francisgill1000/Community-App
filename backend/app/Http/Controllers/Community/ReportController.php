@@ -70,6 +70,7 @@ class ReportController extends Controller
         while ($startDate <= $endDate) {
             //$response[] = $this->render($company_id, $startDate->format("Y-m-d"), 1, $employee_ids, true);
             $response[] = $this->render($company_id, $startDate->format("Y-m-d"), 1, $employee_ids, $request->filled("auto_render") ? false : true);
+           
 
             $startDate->modify('+1 day');
         }
@@ -79,7 +80,7 @@ class ReportController extends Controller
 
     public function renderRequest(Request $request)
     {
-        return $this->render($request->company_id ?? 0, $request->id, $request->date ?? date("Y-m-d"), $request->UserIds, true);
+        return $this->render($request->company_id ?? 0, $request->date ?? date("Y-m-d"), $request->UserIds, true);
     }
 
     public function getUserDetails($system_user_id)
