@@ -39,7 +39,7 @@ const reasons = {
 let { SOCKET_ENDPOINT } = process.env;
 
 if (process.env.ENVIRONMENT == "local") {
-  SOCKET_ENDPOINT = "ws://192.168.2.32:8080/WebSocket";
+  SOCKET_ENDPOINT = "ws://192.168.1.107:8080/WebSocket";
 }
 
 // Create a WebSocket connection
