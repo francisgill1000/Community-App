@@ -76,7 +76,7 @@ class VisitorController extends Controller
     {
         return Visitor::orderBy("id", "desc")
             ->where("visitor_type", $request->visitor_type ?? "visitor")
-            ->with(["tanent", "branch", "zone", "zone.devices",  "host", "timezone:id,timezone_id,timezone_name", "purpose:id,name"])
+            ->with(["card", "tanent", "branch", "zone", "zone.devices",  "host", "timezone:id,timezone_id,timezone_name", "purpose:id,name"])
             ->paginate($request->input("per_page", 100));
     }
 

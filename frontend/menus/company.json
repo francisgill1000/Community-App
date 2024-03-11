@@ -264,7 +264,7 @@
   {
     "icon": "mdi-chart-box-outline",
     "title": "Reports",
-    "to": "/employees/reports",
+    "to": "/community/visitor/reports",
     "menu": "timezone_mapping_list",
     "module": "access_control"
   },

@@ -56,16 +56,12 @@
               <v-col cols="12">
                 <v-text-field
                   readonly
-                  v-model="payload.card_rfid_number"
+                  v-model="payload.card.name"
                   dense
                   outlined
-                  :hide-details="!errors.card_rfid_number"
-                  :error-messages="
-                    errors && errors.card_rfid_number
-                      ? errors.card_rfid_number[0]
-                      : ''
-                  "
-                  label="RFID"
+                  :hide-details="!errors.rfid"
+                  :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
+                  label="Card"
                 ></v-text-field>
               </v-col>
             </v-row>

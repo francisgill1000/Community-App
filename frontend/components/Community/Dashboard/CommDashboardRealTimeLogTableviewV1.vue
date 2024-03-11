@@ -1,5 +1,5 @@
 <template>
-  <div v-if="can(`attendance_report_view`)">
+  <div v-if="can(`dashboard_access`)">
     <v-dialog v-model="dialog" max-width="1000">
       <v-card>
         <v-container>
@@ -62,7 +62,7 @@
       </v-toolbar>
     </v-card>
     <v-card class="mb-5" elevation="0">
-      <div v-if="can(`attendance_report_access`)">
+      <div v-if="can(`dashboard_access`)">
         <v-card class="mb-5" elevation="0">
           <v-data-table
             @click:row="showDialog"

@@ -1,7 +1,7 @@
 <template>
   <div
     style="width: 100%"
-    v-if="can('dashboard_access') && can('dashboard_view')"
+    v-if="can('dashboard_access')"
   >
     <v-overlay :value="overlay">
       <v-progress-circular indeterminate size="64"></v-progress-circular>

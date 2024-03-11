@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Community\Card;
 use App\Models\Community\Tanent;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -154,6 +155,16 @@ class Visitor extends Model
     public function getFullNameAttribute()
     {
         return $this->first_name . " " . $this->last_name;
+    }
+
+    /**
+     * Get the card that owns the Visitor
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function card()
+    {
+        return $this->belongsTo(Card::class, 'rfid', 'number');
     }
 
 
