@@ -77,7 +77,6 @@
                     :value="user.id"
                   ></v-checkbox>
                   <!-- :disabled="!user.profile_picture" -->
-
                 </v-col>
 
                 <v-col cols="1" class="py-1 ma-0">
@@ -519,6 +518,7 @@ export default {
           system_user_id: parseInt(e.system_user_id),
           profile_picture: e.profile_picture,
           isPrimaryUser: "(Primary Member)",
+          rfid: e.rfid,
         });
 
         e.members.forEach((m) => {
@@ -527,6 +527,7 @@ export default {
             full_name: m.full_name,
             system_user_id: m.system_user_id,
             profile_picture: m.profile_picture,
+            rfid: m.rfid,
           });
         });
       });
@@ -886,10 +887,12 @@ export default {
       let personListArray = [];
 
       this.rightEmployees.forEach((item) => {
+        console.log("item",item);
         let person = {
           name: item.full_name,
           userCode: parseInt(item.system_user_id),
           faceImage: item.profile_picture,
+          cardData:   item.rfid ,
           // process.env.APP_ENV != "local"
           //   ? item.profile_picture
           //   : "https://backend.mytime2cloud.com/media/employee/profile_picture/1697544063.jpg",
