@@ -139,6 +139,7 @@ export default {
         DeviceID: "Manual",
         company_id: this.$auth.user.company_id,
         log_type: "out",
+        mode: "Manual",
         visitor_id: this.item.id,
       };
 
@@ -146,16 +147,18 @@ export default {
 
       this.$axios
         .post(`generate_log`, log_payload)
-        .then(({ data }) => {
+        .then(async ({ data }) => {
           this.loading = false;
 
           if (!data.status) {
             this.errors = data.errors;
-          } else {
-            this.render_report();
+            return;
           }
+
+          await this.render_report();
         })
         .catch(({ message }) => {
+          console.log(message);
           this.$emit("response", "Checkout cannot be done");
         });
     },
@@ -171,18 +174,20 @@ export default {
       this.loading = true;
 
       this.$axios
-        .post(`/community_common_report`, log_payload)
-        .then(({ data }) => {
+        .post(`/community_visitor_report`, log_payload)
+        .then(({ data, status }) => {
           this.loading = false;
 
-          if (!data.status) {
-            this.errors = data.errors;
-          } else {
+          if (status == 200) {
             this.$emit("success", "Checkout has been recorded");
             this.dialog = false;
+            return;
           }
+
+          this.errors = data.errors;
         })
         .catch(({ message }) => {
+          console.log(message);
           this.$emit("response", "Checkout cannot be done");
         });
     },

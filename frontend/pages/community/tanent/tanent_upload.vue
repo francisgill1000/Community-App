@@ -1,7 +1,7 @@
 <template>
   <div
     style="width: 100% !important"
-    v-if="can(`employee_device_photo_upload`)"
+    v-if="can(`tanent_access`)"
   >
     <div class="text-center ma-2">
       <v-snackbar

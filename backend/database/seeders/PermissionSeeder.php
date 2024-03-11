@@ -42,6 +42,12 @@ class PermissionSeeder extends Seeder
             ['module' => 'contractor_dashboard', 'title' => 'Contractor dashboard edit', 'name' => 'contractor_dashboard_edit'],
             ['module' => 'contractor_dashboard', 'title' => 'Contractor dashboard delete', 'name' => 'contractor_dashboard_delete'],
 
+            ['module' => 'community_report', 'title' => 'Community report access', 'name' => 'community_report_access'],
+            ['module' => 'community_report', 'title' => 'Community report view', 'name' => 'community_report_view'],
+            ['module' => 'community_report', 'title' => 'Community report create', 'name' => 'community_report_create'],
+            ['module' => 'community_report', 'title' => 'Community report edit', 'name' => 'community_report_edit'],
+            ['module' => 'community_report', 'title' => 'Community report delete', 'name' => 'community_report_delete'],
+
             ['module' => 'attendance_report', 'title' => 'Attendance report access', 'name' => 'attendance_report_access'],
             ['module' => 'attendance_report', 'title' => 'Attendance report view', 'name' => 'attendance_report_view'],
             ['module' => 'attendance_report', 'title' => 'Attendance report create', 'name' => 'attendance_report_create'],
@@ -108,18 +114,6 @@ class PermissionSeeder extends Seeder
             ['module' => 'device', 'title' => 'Device create', 'name' => 'device_create'],
             ['module' => 'device', 'title' => 'Device edit', 'name' => 'device_edit'],
             ['module' => 'device', 'title' => 'Device delete', 'name' => 'device_delete'],
-
-            ['module' => 'announcement', 'title' => 'Announcement access', 'name' => 'announcement_access'],
-            ['module' => 'announcement', 'title' => 'Announcement view', 'name' => 'announcement_view'],
-            ['module' => 'announcement', 'title' => 'Announcement create', 'name' => 'announcement_create'],
-            ['module' => 'announcement', 'title' => 'Announcement edit', 'name' => 'announcement_edit'],
-            ['module' => 'announcement', 'title' => 'Announcement delete', 'name' => 'announcement_delete'],
-
-            ['module' => 'announcement_category', 'title' => 'Announcement category access', 'name' => 'announcement_category_access'],
-            ['module' => 'announcement_category', 'title' => 'Announcement category view', 'name' => 'announcement_category_view'],
-            ['module' => 'announcement_category', 'title' => 'Announcement category create', 'name' => 'announcement_category_create'],
-            ['module' => 'announcement_category', 'title' => 'Announcement category edit', 'name' => 'announcement_category_edit'],
-            ['module' => 'announcement_category', 'title' => 'Announcement category delete', 'name' => 'announcement_category_delete'],
 
             ['module' => 'web_logs', 'title' => 'Web Logs access', 'name' => 'web_logs_access'],
             ['module' => 'web_logs', 'title' => 'Web Logs view', 'name' => 'web_logs_view'],
@@ -223,19 +217,16 @@ class PermissionSeeder extends Seeder
             ['module' => 'device_offline', 'title' => 'Device Notification create', 'name' => 'device_notification_contnet_create'],
             ['module' => 'device_offline', 'title' => 'Device Notification edit', 'name' => 'device_notification_contnet_edit'],
             ['module' => 'device_offline', 'title' => 'Device Notification delete', 'name' => 'device_notification_contnet_delete'],
-
-
-
         ];
 
         // // run this command to seed the data => php artisan db:seed --class=PermissionSeeder
-        // Permission::insert($data);
+        Permission::insert($data);
 
 
 
-        foreach ($data as $key => $dataArray) {
-            Permission::updateOrCreate(['name' => $dataArray['name']], $dataArray);
-        }
+        // foreach ($data as $key => $dataArray) {
+        //     Permission::updateOrCreate(['name' => $dataArray['name']], $dataArray);
+        // }
 
         // run this command to seed the data => php artisan db:seed --class=PermissionSeeder
         // Permission::insert($data);

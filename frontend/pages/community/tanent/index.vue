@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="can(`tanent_access`)">
     <div class="text-center ma-2">
       <v-snackbar v-model="snackbar" small top="top" :color="color">
         {{ response }}
@@ -48,7 +48,7 @@
         </v-container>
       </v-card>
     </v-dialog>
-    <div v-if="!loading">
+    <div v-if="!loading && can(`tanent_view`)">
       <v-dialog persistent v-model="viewMemberDialogBox" width="700">
         <v-toolbar flat dense>
           <b> Members </b>
@@ -74,7 +74,7 @@
       <v-card elevation="1" class="mb-5">
         <v-toolbar dense flat>
           <v-toolbar-title
-            ><span>{{ Model }} </span></v-toolbar-title
+            ><span>{{ Model }}</span></v-toolbar-title
           >
           <span>
             <v-btn
@@ -92,7 +92,10 @@
           </span>
           <v-spacer></v-spacer>
           <ExportData :data="exportData()" />
-          <TanentCreate @success="handleSuccessResponse" />
+          <TanentCreate
+            v-if="can(`tanent_create`)"
+            @success="handleSuccessResponse"
+          />
         </v-toolbar>
 
         <SnippetsFiltersRenderFields
@@ -154,7 +157,7 @@
                 </v-btn>
               </template>
               <v-list width="150" dense>
-                <v-list-item>
+                <v-list-item v-if="can(`tanent_create`)">
                   <v-list-item-title style="cursor: pointer">
                     <TanentAddMember
                       :key="generateRandomId()"
@@ -169,7 +172,7 @@
                     />
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item v-if="can(`tanent_create`)">
                   <v-list-item-title style="cursor: pointer">
                     <v-list-item-title
                       style="cursor: pointer"
@@ -180,7 +183,7 @@
                     </v-list-item-title>
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item v-if="can(`tanent_create`)">
                   <v-list-item-title style="cursor: pointer">
                     <TanentAddCard
                       :key="generateRandomId()"
@@ -195,12 +198,12 @@
                     />
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item v-if="can(`tanent_view`)">
                   <v-list-item-title style="cursor: pointer">
                     <TanentSingle :key="generateRandomId()" :item="item" />
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item v-if="can(`tanent_edit`)">
                   <v-list-item-title style="cursor: pointer">
                     <TanentEdit
                       :key="generateRandomId()"
@@ -209,7 +212,7 @@
                     />
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="deleteItem(item)">
+                <v-list-item v-if="can(`tanent_delete`)" @click="deleteItem(item)">
                   <v-list-item-title style="cursor: pointer">
                     <v-icon color="error" small> mdi-delete </v-icon>
                     Delete

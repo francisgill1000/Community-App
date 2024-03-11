@@ -308,11 +308,11 @@ export default {
     this.to_date = `${y}-${m}-${dt.getDate()}`;
     this.getDataFromApi();
 
-    setInterval(() => {
-      if (this.$route.name == "visitor-unknown") {
-        this.getDataFromApi();
-      }
-    }, 1000 * 60);
+    // setInterval(() => {
+    //   if (this.$route.name == "visitor-unknown") {
+    //     this.getDataFromApi();
+    //   }
+    // }, 1000 * 60);
   },
 
   methods: {

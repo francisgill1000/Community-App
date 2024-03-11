@@ -232,9 +232,9 @@ export default {
   },
   created() {
     this.initialize();
-    setInterval(() => {
-      this.initialize();
-    }, 1000 * 60);
+    // setInterval(() => {
+    //   this.initialize();
+    // }, 1000 * 60);
   },
   mounted() {},
   computed: {

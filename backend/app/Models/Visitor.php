@@ -47,7 +47,7 @@ class Visitor extends Model
 
     public function tanent()
     {
-        return $this->belongsTo(Tanent::class);
+        return $this->belongsTo(Tanent::class)->with("room");
     }
 
     public function getFromDateDisplayAttribute()

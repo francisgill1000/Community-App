@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Community\ReportController;
+use App\Http\Controllers\Community\VisitorReportController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -13,3 +14,6 @@ Route::post('community_common_report', [ReportController::class, 'renderRequest'
 
 
 Route::post('community_common_report_bulk_store', [ReportController::class, 'bulkStore']);
+
+
+Route::post('community_visitor_report', [VisitorReportController::class, 'renderRequest']);

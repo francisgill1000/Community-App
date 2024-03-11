@@ -120,17 +120,9 @@
                   item?.delivery.tanent?.phone_number ?? "---"
                 }}</small>
               </div>
+              <div v-else>---</div>
             </template>
 
-            <template v-slot:item.branch="{ item, index }">
-              <span>
-                <b>{{
-                  item.employee ? item.employee?.branch?.branch_name : "---"
-                }}</b
-                ><br />
-                {{ item.employee ? item.employee?.department?.name : "---" }}
-              </span>
-            </template>
             <template v-slot:item.in="{ item, index }">
               {{
                 item.device.function !== "out" || item.device.function !== "Out"
@@ -164,7 +156,7 @@
               {{ item.mode ?? "---" }}
             </template>
             <template v-slot:item.in_out="{ item, index }">
-              {{ caps(item.log_type) ?? "---" }}
+              {{ item.log_type && item.log_type == "out" ? "Out" : "In" }}
             </template>
             <template v-slot:item.door="{ item, index }">
               {{ item.device.short_name ?? "---" }}
@@ -262,6 +254,11 @@
                     {{ item.employee.last_name ?? "---" }}
                   </div>
                   <small>{{ item.employee.phone_number ?? "" }}</small>
+                </v-col>
+              </v-row>
+              <v-row v-else no-gutters>
+                <v-col md="8">
+                  <div>Unkown</div>
                 </v-col>
               </v-row>
             </template>
@@ -450,11 +447,11 @@ export default {
       this.socketConnection();
     }, 1000 * 10);
 
-    setInterval(() => {
-      if (this.$route.name == "community-dashboard") {
-        if (this.$auth.user) this.getDataFromApi(1);
-      }
-    }, 1000 * 30);
+    // setInterval(() => {
+    //   if (this.$route.name == "community-dashboard") {
+    //     if (this.$auth.user) this.getDataFromApi(1);
+    //   }
+    // }, 1000 * 30);
   },
   created() {
     // let branch_header = [

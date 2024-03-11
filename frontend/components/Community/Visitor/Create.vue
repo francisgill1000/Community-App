@@ -72,7 +72,7 @@
                   dense
                   outlined
                   item-text="name"
-                  item-value="id"
+                  item-value="name"
                   :hide-details="!errors.visitor_company_name"
                   :error-messages="
                     errors && errors.visitor_company_name
@@ -569,8 +569,6 @@ export default {
     this.getPurposes();
 
     this.getContractorCompanies();
-
-    
   },
 
   methods: {
@@ -597,8 +595,8 @@ export default {
         this.payload.tanent_id = tanent.id;
         this.payload.tanent_full_name = tanent.full_name;
         this.payload.tanent_phone_number = tanent.phone_number;
-        this.payload.tanent_gender = tanent.email;
-        this.payload.tanent_email = tanent.gender;
+        this.payload.tanent_gender = tanent.gender;
+        this.payload.tanent_email = tanent.email;
         this.payload.tanent_term = tanent.term;
         this.payload.tanent_nationality = tanent.nationality;
       } catch (error) {
@@ -657,9 +655,6 @@ export default {
           if (!data.status && this.standalone) {
             alert(data.message);
             return;
-          } else if (this.standalone) {
-            alert("Visitor inserted successfully");
-            return;
           }
           this.handleSuccessResponse("Visitor inserted successfully");
         })
@@ -672,6 +667,11 @@ export default {
     handleSuccessResponse(message) {
       this.errors = [];
       this.dialog = false;
+
+      if (this.standalone) {
+        alert("Visitor inserted successfully");
+        return;
+      }
       this.$emit("success", message);
     },
     handleErrorResponse(response) {

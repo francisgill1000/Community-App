@@ -9,43 +9,8 @@ use App\Models\Community\CommunityReport;
 use App\Models\Company;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-class ReportController extends Controller
+class VisitorReportController extends Controller
 {
-    public function index()
-    {
-        return $this->processFilter()->paginate(request("per_page") ?? 10);
-    }
-
-    public function print(Request $request)
-    {
-        $data = $this->processFilter()->get()->toArray();
-
-        if ($request->debug) return $data;
-
-        $chunks = array_chunk($data, 10);
-
-        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.community.report', [
-            "chunks" => $chunks,
-            "company" => Company::whereId(request("company_id") ?? 0)->first(),
-            "params" => $request->all(),
-
-        ])->stream();
-    }
-    public function download(Request $request)
-    {
-        $data = $this->processFilter()->get()->toArray();
-
-        if ($request->debug) return $data;
-
-        $chunks = array_chunk($data, 10);
-
-        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.community.report', [
-            "chunks" => $chunks,
-            "company" => Company::whereId(request("company_id") ?? 0)->first(),
-            "params" => $request->all(),
-
-        ])->download();
-    }
     public function renderData(Request $request)
     {
         // Extract start and end dates from the JSON data
@@ -125,20 +90,20 @@ class ReportController extends Controller
             $userIds = AttendanceLog::where("company_id", $companyId)
                 ->where("checked", false) // Only today's records
                 ->whereDate("LogTime", '=', $date) // Only today's records
-                ->distinct("UserID", "company_id")
+                ->distinct("visitor_id", "company_id")
                 ->pluck('UserID');
         }
 
         $userLogs = AttendanceLog::whereDate("LogTime", '=', $date) // Only today's records
             //->where("checked", false)
-            ->where("visitor_id", 0)
+            ->where("visitor_id", ">", 0)
             ->whereIn("UserID", $userIds)
             ->where("company_id", $companyId)
             ->distinct("LogTime", "UserID", "company_id")
             ->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid"])
             ->orderBy("LogTime", "asc")
             ->get()
-            ->groupBy('UserID');
+            ->groupBy('visitor_id');
 
 
         //update atendance table with shift ID if shift with employee not found 
@@ -165,20 +130,27 @@ class ReportController extends Controller
                 return isset($record["device"]["function"]) && ($record["device"]["function"] !== "In");
             })->last();
 
-            $userDetails = $this->getUserDetails($key);
+
+            $userDetails = $this->getUserDetails($firstLog['UserID']);
 
             $userKey = array_key_first($userDetails);
             $item = [];
             $item = [
-                "user_id" =>   $userDetails[$userKey]["id"],
+                "user_id" =>   $key,
                 "user_type" =>  $userKey,
                 "total_hrs" => '00:00',
                 "in_id" => $firstLog["id"],
                 "status" => "in",
-                "out_id" => "0",
-                "total_hrs" => "0",
-            ];
 
+                "out_id" => "0",
+
+                "total_hrs" => "0",
+
+
+
+
+
+            ];
             if ($item["in_id"])
                 $in_ids[] =   $item["in_id"];
 
@@ -207,7 +179,6 @@ class ReportController extends Controller
             $model->delete();
             $model->insert($items);
 
-
             AttendanceLog::where("company_id", $companyId)->whereIn("id", $in_ids)->update(["log_type" => 'in']);
             AttendanceLog::where("company_id", $companyId)->whereIn("id", $out_ids)->update(["log_type" => 'out']);
             AttendanceLog::where("company_id", $companyId)->whereIn("UserID", $userIds)->update(["checked" => true, "checked_datetime" => date('Y-m-d H:i:s')]);
@@ -215,120 +186,5 @@ class ReportController extends Controller
         } catch (\Throwable $e) {
             return  $message = "[" . $date . " " . date("H:i:s") .  "]. " . $e->getMessage();
         }
-
-        return ($message);
-    }
-
-    public function processFilter()
-    {
-
-        $query = CommunityReport::query();
-
-        //$query->when(request()->filled("user_type"), fn ($q) => $q->where("user_type", request("user_type")));
-
-        if (request()->filled("user_type")) {
-            if (request("user_type") == 'tanent') {
-                $query->whereIn("user_type", ["Owner", "Primary", "Family Member", "Maid"]);
-
-                $query->with([
-
-                    "tanent",
-                    "family_member",
-                    "owner",
-
-
-                ]);
-            } else if (request("user_type") == 'maid') {
-                $query->where("user_type", request("user_type"));
-                $query->with([
-                    "maid",
-
-
-                ]);
-            } else if (request("user_type") == 'visitor') {
-                $query->where("user_type", request("user_type"));
-                $query->with([
-                    "visitor.purpose",
-
-
-                ]);
-            } else if (request("user_type") == 'delivery') {
-                $query->where("user_type", request("user_type"));
-                $query->with([
-
-                    "delivery.purpose",
-
-                ]);
-            } else if (request("user_type") == 'contractor') {
-                $query->where("user_type", request("user_type"));
-                $query->with([
-
-
-                    "contractor.purpose",
-                ]);
-            } else if (request("user_type") == 'employee') {
-                $query->where("user_type", request("user_type"));
-                $query->with([
-
-                    'employee:id,first_name,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
-
-                ]);
-            }
-        }
-
-        $query->when(request()->filled("UserID"), function ($q) {
-            $q->whereHas("in_log", function ($qu) {
-                $qu->where('UserID', request("UserID"));
-            });
-        });
-
-        $query->when(request()->filled("DeviceID"), function ($query) {
-            $query->where(function ($q) {
-                $q->whereHas("in_log", function ($qu) {
-                    $qu->where('DeviceID', request("DeviceID"));
-                });
-                $q->orWhereHas("out_log", function ($qu) {
-                    $qu->where('DeviceID', request("DeviceID"));
-                });
-            });
-        });
-        $query->when(request()->filled("from_date"), function ($q) {
-
-            $q->where('date', '>=', request("from_date"));
-        });
-        $query->when(request()->filled("to_date"), function ($q) {
-
-            $q->where('date', '<=', request("to_date"));
-        });
-        // $query->when(request()->filled("from_date"), function ($query) {
-        //     $query->where(function ($q) {
-        //         $q->whereHas("in_log", function ($qu) {
-        //             $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
-        //         });
-        //         $q->orWhereHas("out_log", function ($qu) {
-        //             $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
-        //         });
-        //     });
-        // });
-
-        // $query->when(request()->filled("to_date"), function ($query) {
-        //     $query->where(function ($q) {
-        //         $q->whereHas("in_log", function ($qu) {
-        //             $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
-        //         });
-        //         $q->orWhereHas("out_log", function ($qu) {
-        //             $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
-        //         });
-        //     });
-        // });
-
-        $query->with([
-            "in_log",
-            "out_log",
-
-
-        ]);
-
-        return $query;
     }
 }

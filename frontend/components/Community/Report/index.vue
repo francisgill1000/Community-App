@@ -1,5 +1,5 @@
 <template>
-  <div v-if="can(`attendance_report_view`)">
+  <div v-if="can(`dashboard_access`)">
     <v-dialog v-model="dialog" max-width="1000">
       <v-card>
         <v-container>
@@ -168,7 +168,7 @@
       </v-card-text>
     </v-card>
     <v-card class="mb-5 mt-5" elevation="1">
-      <div v-if="can(`attendance_report_access`)">
+      <div>
         <div class="text-center">
           <v-snackbar
             v-model="snackbar"
@@ -587,6 +587,11 @@ export default {
     }
   },
   methods: {
+    handleSuccessResponse(message) {
+      this.snackbar = true;
+      this.response = message;
+      this.getDataFromApi();
+    },
     showDialog(item) {
       this.key++;
       this.selectedItem = item;

@@ -196,22 +196,34 @@ class AttendanceLogController extends Controller
         foreach ($result["data"] as $row) {
             $columns = explode(',', $row);
 
+            $records[] = [
+                "company_id" => 2,
+                "UserID" => $columns[0],
+                "DeviceID" => $columns[1],
+                "LogTime" => substr(str_replace("T", " ", $columns[2]), 0, 16),
+                "SerialNumber" => $columns[3],
+                "status" => $columns[4] ?? "Allowed",
+                "mode" => $columns[5] ?? "Face",
+                "reason" => $columns[6] ?? "---",
+                "visitor_id" => Visitor::where("system_user_id", $columns[0] ?? 0)->orderBy("id", "desc")->value("id") ?? 0
+            ];
 
 
-            $isDuplicateLogTime = $this->verifyDuplicateLog($columns);
 
-            if (!$isDuplicateLogTime) {
-                $records[] = [
-                    "UserID" => $columns[0],
-                    "DeviceID" => $columns[1],
-                    "LogTime" => substr(str_replace("T", " ", $columns[2]), 0, 16),
-                    "SerialNumber" => $columns[3],
-                    "status" => $columns[4] ?? "Allowed",
-                    "mode" => $columns[5] ?? "Face",
-                    "reason" => $columns[6] ?? "---",
-                    "visitor_id" => Visitor::where("system_user_id", $columns[0] ?? 0)->orderBy("id", "desc")->value("id") ?? 0
-                ];
-            }
+            // $isDuplicateLogTime = $this->verifyDuplicateLog($columns);
+
+            // if (!$isDuplicateLogTime) {
+            //     $records[] = [
+            //         "UserID" => $columns[0],
+            //         "DeviceID" => $columns[1],
+            //         "LogTime" => substr(str_replace("T", " ", $columns[2]), 0, 16),
+            //         "SerialNumber" => $columns[3],
+            //         "status" => $columns[4] ?? "Allowed",
+            //         "mode" => $columns[5] ?? "Face",
+            //         "reason" => $columns[6] ?? "---",
+            //         "visitor_id" => Visitor::where("system_user_id", $columns[0] ?? 0)->orderBy("id", "desc")->value("id") ?? 0
+            //     ];
+            // }
         }
 
         try {
@@ -220,8 +232,6 @@ class AttendanceLogController extends Controller
             Storage::put("logs-count-" . $result['date'] . ".txt", $result['totalLines']);
             return $this->getMeta("Sync Attenance Logs", count($records) . " new logs has been inserted." . "\n");
         } catch (\Throwable $th) {
-
-            return $th;
 
             Logger::channel("custom")->error('Error occured while inserting logs.');
             Logger::channel("custom")->error('Error Details: ' . $th);
