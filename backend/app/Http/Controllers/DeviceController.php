@@ -762,7 +762,6 @@ class DeviceController extends Controller
     }
     public function checkDeviceHealth(Request $request)
     {
-
         return $this->checkDevicesHealthCompanyId($request->company_id);
     }
 
@@ -777,7 +776,7 @@ class DeviceController extends Controller
             ->where("device_id", "!=", "Manual")
 
 
-            ->get()->count();;
+            ->get()->count();
 
         $devicesHealth = (new SDKController())->GetAllDevicesHealth();
 

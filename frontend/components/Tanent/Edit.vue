@@ -44,17 +44,6 @@
                     "
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    label="PIN"
-                    v-model="payload.pin"
-                    dense
-                    class="text-center"
-                    outlined
-                    :hide-details="!errors.pin"
-                    :error-messages="errors && errors.pin ? errors.pin[0] : ''"
-                  ></v-text-field>
-                </v-col>
               </v-row>
             </v-col>
             <v-col cols="9">

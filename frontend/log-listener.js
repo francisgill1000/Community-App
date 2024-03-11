@@ -37,7 +37,7 @@ const reasons = {
 };
 
 // const { SOCKET_ENDPOINT } = process.env;
-const SOCKET_ENDPOINT = "ws://192.168.1.107:8080/WebSocket";
+const SOCKET_ENDPOINT = "ws://192.168.2.32:8080/WebSocket";
 
 
 

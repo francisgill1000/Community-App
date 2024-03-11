@@ -1,8 +1,5 @@
 <template>
-  <div
-    style="width: 100% !important"
-    v-if="can(`tanent_access`)"
-  >
+  <div style="width: 100% !important" v-if="can(`tanent_access`)">
     <div class="text-center ma-2">
       <v-snackbar
         color="primary"
@@ -37,7 +34,7 @@
           label="Room"
           outlined
           v-model="room_id"
-          :items="rooms"
+          :items="[{ id: ``, room_number: `Select All` }, ...rooms]"
           dense
           item-text="room_number"
           item-value="id"
@@ -78,8 +75,9 @@
                     hide-details
                     v-model="leftSelectedEmp"
                     :value="user.id"
-                    :disabled="!user.profile_picture"
                   ></v-checkbox>
+                  <!-- :disabled="!user.profile_picture" -->
+
                 </v-col>
 
                 <v-col cols="1" class="py-1 ma-0">
@@ -509,6 +507,7 @@ export default {
         params: {
           company_id: this.$auth.user.company_id,
           room_id: room_id,
+          floor_id: this.floor_id,
         },
       });
 

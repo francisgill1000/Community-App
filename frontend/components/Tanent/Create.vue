@@ -51,18 +51,6 @@
                   :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="PIN"
-                  :readonly="disabled"
-                  v-model="payload.pin"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.pin"
-                  :error-messages="errors && errors.pin ? errors.pin[0] : ''"
-                ></v-text-field>
-              </v-col>
             </v-row>
           </v-col>
           <v-col cols="9">
@@ -584,8 +572,6 @@ export default {
     dialogCropping: false,
     tabMenu: [],
     tab: "0",
-    employeeId: 0,
-    employeeObject: {},
     attrs: [],
     dialog: false,
     editDialog: false,
@@ -617,13 +603,6 @@ export default {
     response: "",
     snackbar: false,
     btnLoader: false,
-    max_employee: 0,
-    employee: {
-      title: "Mr",
-      display_name: "",
-      employee_id: "",
-      system_user_id: "",
-    },
     upload: {
       name: "",
     },
@@ -650,7 +629,6 @@ export default {
     errors: [],
     designations: [],
     roles: [],
-    employees: [],
     department_filter_id: "",
     dialogVisible: false,
     formAction: "Create",

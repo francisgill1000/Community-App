@@ -144,7 +144,10 @@ class RoomController extends Controller
 
     public function getTanentsAndMembersByRoomsId()
     {
-        return Tanent::where("company_id", request("company_id"))->where("room_id", request("room_id"))->with("members")->get();
+        return Tanent::where("company_id", request("company_id"))
+            ->where("floor_id", request("floor_id"))
+            ->when(request()->filled("room_id"), fn ($q) => $q->where("room_id", request("room_id")))
+            ->with("members")->get();
     }
 
     /**
