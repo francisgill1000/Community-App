@@ -8,22 +8,14 @@
         </v-btn>
       </span>
     </template>
-    <v-stepper v-model="step" horizontal>
-      <v-stepper-header>
-        <v-stepper-step :complete="step > 1" step="1" editable>
-          Basic Info
-        </v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="step > 2" step="2" editable>
-          Vehicle Info
-        </v-stepper-step>
-        <!-- <v-stepper-step :complete="step > 3" step="3" editable>
-          Documentation
-        </v-stepper-step> -->
-      </v-stepper-header>
+    <v-card>
+      <v-toolbar flat dense>
+        <v-card-title> Create Tanent </v-card-title>
+        <v-spacer></v-spacer>
+        <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
+      </v-toolbar>
 
-      <v-stepper-content step="1">
-        <!-- Step 1 Content -->
+      <v-container>
         <v-row>
           <v-col cols="3">
             <v-row>
@@ -359,157 +351,24 @@
                   ></v-date-picker>
                 </v-menu>
               </v-col>
-              <!-- <v-col cols="12">
-                <v-switch
-                  style="margin-top: 5px"
-                  label="Web Access"
-                  outlined
-                  :readonly="disabled"
-                  v-model="payload.web_access"
-                  dense
-                  :hide-details="!errors.web_access"
-                  :error-messages="
-                    errors && errors.web_access ? errors.web_access[0] : ''
-                  "
-                >
-                </v-switch>
-              </v-col> -->
-              <v-col cols="6" class="my-1">
-                <v-btn
-                  v-if="formAction == 'Edit'"
-                  class="primary"
-                  @click="update_data"
-                  >Update</v-btn
-                >
+              <v-col v-if="errorResponse">
+                <span class="red--text">{{ errorResponse }}</span>
               </v-col>
+
               <v-col cols="6" class="text-right my-1">
                 <v-btn @click="dialog = false">Close</v-btn>
                 <v-btn
                   v-if="formAction == 'Create'"
                   class="primary"
-                  @click="tanentValidate"
-                  >Next</v-btn
-                >
-                <v-btn
-                  v-if="formAction == 'Edit'"
-                  class="primary"
-                  @click="tanentUpdateValidate"
-                  >Next</v-btn
+                  @click="submit"
+                  >Submit</v-btn
                 >
               </v-col>
             </v-row>
           </v-col>
         </v-row>
-      </v-stepper-content>
-
-      <v-stepper-content step="2">
-        <v-container>
-          <v-row
-            class="mt-0"
-            v-for="(vehicles, index) in vehicles"
-            :key="index"
-          >
-            <v-col cols="3">
-              <v-text-field
-                label="Car Number"
-                :readonly="disabled"
-                v-model="vehicles.car_number"
-                dense
-                class="text-center"
-                outlined
-                :hide-details="!errors.car_number"
-                :error-messages="
-                  errors && errors.car_number ? errors.car_number[0] : ''
-                "
-              ></v-text-field>
-            </v-col>
-            <v-col cols="3">
-              <v-text-field
-                label="Car Brand"
-                :readonly="disabled"
-                v-model="vehicles.car_brand"
-                dense
-                class="text-center"
-                outlined
-                :hide-details="!errors.car_brand"
-                :error-messages="
-                  errors && errors.car_brand ? errors.car_brand[0] : ''
-                "
-              ></v-text-field>
-            </v-col>
-            <v-col cols="3">
-              <v-autocomplete
-                label="Parking Number"
-                outlined
-                :readonly="disabled"
-                v-model="vehicles.parking_id"
-                :items="parkings"
-                dense
-                item-text="parking_number"
-                item-value="id"
-                :hide-details="!errors.parking_number"
-                :error-messages="
-                  errors && errors.parking_number
-                    ? errors.parking_number[0]
-                    : ''
-                "
-              >
-              </v-autocomplete>
-            </v-col>
-          </v-row>
-
-          <v-row no-gutters class="mt-1">
-            <v-col cols="9" class="text-right">
-              <v-icon @click="addItem">mdi-plus-circle-outline</v-icon>
-              <v-icon class="" @click="deleteItem(index)">mdi-delete</v-icon>
-            </v-col>
-          </v-row>
-        </v-container>
-        <!-- <v-row>
-          <v-col class="text-right my-1">
-            <v-btn @click="dialog = false">close</v-btn>
-            <v-btn class="primary" @click="vehicleValidate">Next</v-btn>
-          </v-col>
-        </v-row> -->
-        <v-col cols="12" class="text-right my-1">
-          <v-btn @click="dialog = false">close</v-btn>
-          <v-btn v-if="formAction == 'Create'" class="primary" @click="submit"
-            >Submit</v-btn
-          >
-          <v-btn
-            v-else-if="formAction == 'Edit'"
-            class="primary"
-            @click="update_data"
-            >Update</v-btn
-          >
-        </v-col>
-      </v-stepper-content>
-
-      <!-- <v-stepper-content step="3">
-        
-        <v-row>
-          <v-col v-for="(document, index) in documents" :key="index" cols="6">
-            <SnippetsUploadDocument
-              :label="document.label"
-              @uploaded="updatePayload(document.key, $event)"
-            />
-          </v-col>
-
-          <v-col cols="12" class="text-right my-1">
-            <v-btn @click="dialog = false">close</v-btn>
-            <v-btn v-if="formAction == 'Create'" class="primary" @click="submit"
-              >Submit</v-btn
-            >
-            <v-btn
-              v-else-if="formAction == 'Edit'"
-              class="primary"
-              @click="update_data"
-              >Update</v-btn
-            >
-          </v-col>
-        </v-row>
-      </v-stepper-content> -->
-    </v-stepper>
+      </v-container>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -606,6 +465,8 @@ export default {
     upload: {
       name: "",
     },
+
+    errorResponse: null,
 
     pagination: {
       current: 1,
@@ -841,7 +702,7 @@ export default {
       if (this.payload.passport_doc) {
         formData.append("passport_doc", this.payload.passport_doc.name);
       }
-      
+
       formData.append("member_type", "Primary");
       formData.append("company_id", this.$auth.user.company_id);
 
@@ -877,12 +738,16 @@ export default {
     },
 
     submit() {
-      this.vehicleValidate();
+      // this.vehicleValidate();
 
       this.$axios
         .post(this.endpoint, this.mapper(Object.assign(this.payload)))
         .then(({ data }) => {
-          this.storeVehicle(data.record.id);
+          if (!data.status) {
+            this.errorResponse = data.message;
+            return;
+          }
+          this.handleSuccessResponse("Tanent inserted successfully");
         })
         .catch(({ response }) => {
           this.handleErrorResponse(response);
@@ -913,6 +778,7 @@ export default {
         });
     },
     handleSuccessResponse(message) {
+      this.errorResponse = null;
       this.errors = [];
       this.dialog = false;
       this.$emit("success", message);

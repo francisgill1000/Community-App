@@ -200,20 +200,20 @@ class TanentController extends Controller
                 $data['profile_picture'] = $fileName;
             }
 
-            $documents = [
-                'passport_doc',
-                'id_doc',
-                'contract_doc',
-                'ejari_doc',
-                'license_doc',
-                'others_doc'
-            ];
+            // $documents = [
+            //     'passport_doc',
+            //     'id_doc',
+            //     'contract_doc',
+            //     'ejari_doc',
+            //     'license_doc',
+            //     'others_doc'
+            // ];
 
-            foreach ($documents as $document) {
-                if ($request->hasFile($document)) {
-                    $data[$document] = Tanent::ProcessDocument($request->file($document), "/community/$document");
-                }
-            }
+            // foreach ($documents as $document) {
+            //     if ($request->hasFile($document)) {
+            //         $data[$document] = Tanent::ProcessDocument($request->file($document), "/community/$document");
+            //     }
+            // }
 
             $record = Tanent::create($data);
 
