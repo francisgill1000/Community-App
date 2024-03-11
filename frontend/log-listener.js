@@ -36,11 +36,11 @@ const reasons = {
   27: "No Fingerprint",
 };
 
-// const { SOCKET_ENDPOINT } = process.env;
-const SOCKET_ENDPOINT = "ws://192.168.2.32:8080/WebSocket";
+let { SOCKET_ENDPOINT } = process.env;
 
-
-
+if (process.env.ENVIRONMENT == "local") {
+  SOCKET_ENDPOINT = "ws://192.168.2.32:8080/WebSocket";
+}
 
 // Create a WebSocket connection
 const socket = new WebSocket(SOCKET_ENDPOINT);
