@@ -841,7 +841,8 @@ export default {
       if (this.payload.passport_doc) {
         formData.append("passport_doc", this.payload.passport_doc.name);
       }
-
+      
+      formData.append("member_type", "Primary");
       formData.append("company_id", this.$auth.user.company_id);
 
       return formData;
