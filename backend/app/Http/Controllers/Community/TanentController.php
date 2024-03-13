@@ -18,9 +18,11 @@ use App\Models\Community\TenantsDocuments;
 use App\Models\Community\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class TanentController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -37,6 +39,11 @@ class TanentController extends Controller
 
             ->orderBy('full_name', 'asc')
             ->get();
+    }
+
+    public function syncTanents()
+    {
+        return Http::withoutVerifying()->get('https://backend.eztime.online/api/tanent?company_id=2')->json();
     }
 
     /**
@@ -83,6 +90,7 @@ class TanentController extends Controller
 
             ->withCount("members")
             ->with(["vehicles", "members", "floor", "room"])
+            ->skip($request->skip ?? 100)
             ->orderBy('id', 'desc')
             ->paginate(request("per_page") ?? 10);
 
