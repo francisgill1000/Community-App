@@ -95,8 +95,33 @@ class TanentController extends Controller
             ['read_count' => $upatedReadCount] // Data to be inserted or updated
         );
 
+        $fields = [
+            "full_name",
+            "phone_number",
+            "floor_id",
+            "room_id",
+            "profile_picture",
+            "company_id",
+            "system_user_id",
+            "email",
+            "first_name",
+            "last_name",
+            "whatsapp_number",
+            "date_of_birth",
+            "nationality",
+            "rfid",
+            "pin",
+            "address",
+            "gender",
+            "term",
+            "room_category_id",
+            "room_sub_category_id",
+            "age",
+            "member_type",
+            "parent_id",
+        ];
 
-        $records = Tanent::skip($previousReadCount)->take($readableCount)->get()->toArray();
+        $records = Tanent::skip($previousReadCount)->take($readableCount)->get($fields)->toArray();
 
         if (!count($records)) return "No record found";
 
