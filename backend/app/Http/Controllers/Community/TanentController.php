@@ -43,10 +43,6 @@ class TanentController extends Controller
 
     public function syncTanents()
     {
-
-
-
-
         $read_count =  DB::table("tanent_counts")->value("read_count") ?? 100;
 
         // Create or update record in tanent_counts table
@@ -58,6 +54,12 @@ class TanentController extends Controller
 
     public function getTanentsFromLive()
     {
+        if (request("reset") == true) {
+            DB::table("tanent_counts")->update([
+                "read_count" => 0
+            ]);
+        }
+        
         $previousReadCount =  DB::table("tanent_counts")->value("read_count") ?? 0;
         $readableCount =  request("readable_count") ?? 10;
 
