@@ -125,22 +125,7 @@ class TanentController extends Controller
 
         if (!count($records)) return "No record found";
 
-
-        $data = json_decode($records, true);
-
-        // Function to remove profile_picture_name field
-        $removeProfilePictureName = function ($item) {
-            unset($item['profile_picture_name']);
-            return $item;
-        };
-
-        // Remove profile_picture_name from each object in the array
-        $modifiedData = array_map($removeProfilePictureName, $data);
-
-        // Convert the modified data back to JSON
-        $modifiedJsonData = json_encode($modifiedData);
-
-        return $modifiedJsonData;
+        return $records;
     }
 
 
