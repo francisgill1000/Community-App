@@ -43,7 +43,9 @@ class TanentController extends Controller
 
     public function syncTanents()
     {
-        return Http::withoutVerifying()->get("https://backend.eztime.online/api/get-new-tanents-from-live?readable_count=10&reset=false")->json();
+        $url = "https://backend.eztime.online/api/get-new-tanents-from-live?readable_count=" . request('readable_count') . '&reset='.request('readable_count')."";
+
+        return Http::withoutVerifying()->get($url)->json();
     }
 
     public function getTanentsFromLive()
@@ -66,7 +68,7 @@ class TanentController extends Controller
         );
 
 
-        $records = Tanent::skip($previousReadCount)->take($readableCount)->get(["id", "full_name"])->toArray();
+        $records = Tanent::skip($previousReadCount)->take($readableCount)->get()->toArray();
 
         if (!count($records)) return "No record found";
 
