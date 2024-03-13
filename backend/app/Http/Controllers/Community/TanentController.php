@@ -44,7 +44,7 @@ class TanentController extends Controller
     public function syncTanents()
     {
         // Construct URL with query parameters
-        $url = config('services.eztime_backend.url') . "/api/get-new-tenants-from-live";
+        $url = "https://backend.eztime.online/api/get-new-tanents-from-live";
         $queryParams = [
             'readable_count' => request("readable_count"),
             'reset' => request("reset")
