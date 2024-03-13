@@ -54,7 +54,7 @@ class TanentController extends Controller
 
     public function getTanentsFromLive()
     {
-        if (request()->filled("reset") == "true") {
+        if (request("reset") === "true") {
             DB::table("tanent_counts")->update([
                 "read_count" => 0
             ]);
