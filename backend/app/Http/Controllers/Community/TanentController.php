@@ -43,8 +43,38 @@ class TanentController extends Controller
 
     public function syncTanents()
     {
-        return Http::withoutVerifying()->get('https://backend.eztime.online/api/tanent?company_id=2')->json();
+
+        return Http::withoutVerifying()->get('http://192.168.2.32:8000/api/get-new-tanents-from-live?company_id=2')->json();
+
+
+
+        $read_count =  DB::table("tanent_counts")->value("read_count") ?? 100;
+
+        // Create or update record in tanent_counts table
+        DB::table("tanent_counts")->updateOrInsert(
+            ['id' => 1], // Assuming 'id' is the primary key
+            ['read_count' => $read_count] // Data to be inserted or updated
+        );
     }
+
+    public function getTanentsFromLive()
+    {
+        $previousReadCount =  DB::table("tanent_counts")->value("read_count") ?? 0;
+        $readableCount =  request("readable_count") ?? 10;
+
+        $records = Tanent::skip($previousReadCount)->take($readableCount)->get(["id", "full_name"])->toArray();
+
+        if (!count($records)) return "no record found";
+
+        // Create or update record in tanent_counts table
+        DB::table("tanent_counts")->updateOrInsert(
+            ['id' => 1], // Assuming 'id' is the primary key
+            ['read_count' => $previousReadCount + $readableCount] // Data to be inserted or updated
+        );
+
+        return "read $readableCount record";
+    }
+
 
     /**
      * Display a listing of the resource.
@@ -90,7 +120,6 @@ class TanentController extends Controller
 
             ->withCount("members")
             ->with(["vehicles", "members", "floor", "room"])
-            ->skip($request->skip ?? 100)
             ->orderBy('id', 'desc')
             ->paginate(request("per_page") ?? 10);
 

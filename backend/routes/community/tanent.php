@@ -4,7 +4,11 @@ use App\Http\Controllers\Community\TanentController;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('/tanent', TanentController::class);
+
+Route::get('/get-new-tanents-from-live', [TanentController::class, "getTanentsFromLive"]);
+
 Route::get('/sync-tanents', [TanentController::class, "syncTanents"]);
+
 
 Route::get('/tanent-records-csv', [TanentController::class, "recordsCsv"]);
 
