@@ -47,7 +47,8 @@ class TanentController extends Controller
         $url = "https://backend.eztime.online/api/get-new-tanents-from-live";
         $queryParams = [
             'readable_count' => request("readable_count"),
-            'reset' => request("reset")
+            'reset' => request("reset"),
+            'insert' => request("insert")
         ];
         $url .= '?' . http_build_query($queryParams);
 
@@ -62,7 +63,11 @@ class TanentController extends Controller
                 'response' => $responseData
             ]);
 
-            return Tanent::insert($responseData);
+            if (request("insert") === "true") {
+                return Tanent::insert($responseData);
+            }
+
+            return $responseData;
         } catch (\Exception $e) {
             // Log error if request fails
             logger()->error("Sync Tenants request failed.", [
