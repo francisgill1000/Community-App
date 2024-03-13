@@ -43,13 +43,7 @@ class TanentController extends Controller
 
     public function syncTanents()
     {
-        $read_count =  DB::table("tanent_counts")->value("read_count") ?? 100;
-
-        // Create or update record in tanent_counts table
-        DB::table("tanent_counts")->updateOrInsert(
-            ['id' => 1], // Assuming 'id' is the primary key
-            ['read_count' => $read_count] // Data to be inserted or updated
-        );
+        return Http::withoutVerifying()->get("https://backend.eztime.online/api/get-new-tanents-from-live?readable_count=10&reset=false")->json();
     }
 
     public function getTanentsFromLive()
