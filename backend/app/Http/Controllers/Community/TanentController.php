@@ -41,12 +41,45 @@ class TanentController extends Controller
             ->get();
     }
 
-    public function syncTanents()
-    {
-        $url = "https://backend.eztime.online/api/get-new-tanents-from-live?readable_count=" . request('readable_count') . '&reset='.request('readable_count')."";
-
-        return Http::withoutVerifying()->get($url)->json();
+    public function syncTenants($readableCount)
+{
+    // Validate input parameters
+    if (!is_numeric($readableCount)) {
+        throw new \InvalidArgumentException("Invalid readable count provided.");
     }
+
+    // Construct URL with query parameters
+    $url = config('services.eztime_backend.url') . "/api/get-new-tenants-from-live";
+    $queryParams = [
+        'readable_count' => $readableCount,
+        'reset' => $readableCount
+    ];
+    $url .= '?' . http_build_query($queryParams);
+
+    // Perform HTTP request
+    try {
+        $response = Http::withoutVerifying()->get($url);
+        $responseData = $response->json();
+
+        // Log successful request
+        logger()->info("Sync Tenants request successful.", [
+            'url' => $url,
+            'response' => $responseData
+        ]);
+
+        return $responseData;
+    } catch (\Exception $e) {
+        // Log error if request fails
+        logger()->error("Sync Tenants request failed.", [
+            'url' => $url,
+            'error' => $e->getMessage()
+        ]);
+
+        // Optionally, you can re-throw the exception to propagate it further
+        throw $e;
+    }
+}
+
 
     public function getTanentsFromLive()
     {
