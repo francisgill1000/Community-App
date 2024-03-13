@@ -41,7 +41,7 @@ class TanentController extends Controller
             ->get();
     }
 
-    public function syncTenants($readableCount)
+    public function syncTanents($readableCount)
 {
     // Validate input parameters
     if (!is_numeric($readableCount)) {
