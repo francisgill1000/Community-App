@@ -44,7 +44,6 @@ class TanentController extends Controller
     public function syncTanents()
     {
 
-        return Http::withoutVerifying()->get('http://192.168.2.32:8000/api/get-new-tanents-from-live?company_id=2')->json();
 
 
 
@@ -62,17 +61,20 @@ class TanentController extends Controller
         $previousReadCount =  DB::table("tanent_counts")->value("read_count") ?? 0;
         $readableCount =  request("readable_count") ?? 10;
 
-        $records = Tanent::skip($previousReadCount)->take($readableCount)->get(["id", "full_name"])->toArray();
-
-        if (!count($records)) return "no record found";
+        $upatedReadCount = $previousReadCount + $readableCount;
 
         // Create or update record in tanent_counts table
         DB::table("tanent_counts")->updateOrInsert(
             ['id' => 1], // Assuming 'id' is the primary key
-            ['read_count' => $previousReadCount + $readableCount] // Data to be inserted or updated
+            ['read_count' => $upatedReadCount] // Data to be inserted or updated
         );
 
-        return "read $readableCount record";
+
+        $records = Tanent::skip($previousReadCount)->take($readableCount)->get(["id", "full_name"])->toArray();
+
+        if (!count($records)) return "No record found";
+
+        return $records;
     }
 
 
