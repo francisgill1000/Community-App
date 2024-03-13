@@ -62,7 +62,7 @@ class TanentController extends Controller
                 'response' => $responseData
             ]);
 
-            return $responseData;
+            return Tanent::insert($responseData);
         } catch (\Exception $e) {
             // Log error if request fails
             logger()->error("Sync Tenants request failed.", [
