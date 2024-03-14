@@ -19,28 +19,9 @@
         <v-row>
           <v-col cols="3">
             <v-row>
-              <!-- <v-col cols="12">
-                <div class="text-center">
-                  <SnippetsUploadAttachment
-                    :defaultImage="setImagePreview"
-                    @uploaded="handleAttachment"
-                  />
-
-                  <span v-if="errors && errors.logo" class="text-danger mt-2">{{
-                    errors.logo[0]
-                  }}</span>
-                </div>
-              </v-col> -->
               <v-col cols="12">
                 <div class="text-center">
-                  <!-- <CameraORUpload
-                    ref="CameraComponent"
-                    @imageSrc="handleAttachment"
-                  /> -->
-                  <SnippetsUploadAttachment
-                    :defaultImage="setImagePreview"
-                    @uploaded="handleAttachment"
-                  />
+                  <CameraORUpload @imageSrc="handleAttachment" />
                   <span
                     v-if="errors && errors.profile_picture"
                     class="error--text mt-2"
@@ -717,25 +698,13 @@ export default {
         this.dialogCropping = true;
       }
     },
-    mapper(obj) {
-      let formData = new FormData();
-
-      for (let x in obj) {
-        formData.append(x, obj[x]);
-      }
-      if (this.payload.profile_picture) {
-        formData.append("profile_picture", this.upload.name);
-      }
-
-      formData.append("member_type", this.type);
-      formData.append("company_id", this.$auth.user.company_id);
-
-      return formData;
-    },
 
     submit() {
+      this.payload.member_type = this.type;
+      this.payload.company_id = this.$auth.user.company_id;
+
       this.$axios
-        .post(this.endpoint, this.mapper(Object.assign(this.payload)))
+        .post(this.endpoint, this.payload)
         .then(({ data }) => {
           if (!data.status) {
             this.errorResponse = data.message;
