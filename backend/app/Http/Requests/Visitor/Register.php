@@ -40,7 +40,7 @@ class Register extends FormRequest
         $validations['company_id'] = 'required';
         $validations['status_id'] = 'nullable';
 
-        $validations['logo'] = 'nullable';
+        $validations['profile_picture'] = 'nullable';
         $validations['id_copy'] = 'nullable';
         $validations['date'] = 'required|date';
 
@@ -62,7 +62,7 @@ class Register extends FormRequest
     public function messages()
     {
         return [
-            'logo.required' => 'The Photo field is required',
+            'profile_picture.required' => 'The Photo field is required',
             'tanent_id.required' => 'No tanent found',
             'rfid.required' => 'The visitor Card Id field is required.',
 

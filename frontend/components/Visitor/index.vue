@@ -84,8 +84,8 @@
                     max-width: 50px;
                   "
                   :src="
-                    item.profile_picture
-                      ? item.profile_picture
+                    item.logo
+                      ? item.logo
                       : '/no-profile-image.jpg'
                   "
                 >

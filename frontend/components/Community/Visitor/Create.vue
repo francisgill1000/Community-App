@@ -31,31 +31,17 @@
         <v-row>
           <v-col cols="3">
             <v-row>
-              <!-- <v-col cols="12">
-                <div class="text-center">
-                  <SnippetsUploadAttachment
-                    :defaultImage="setImagePreview"
-                    @uploaded="handleAttachment"
-                  />
-
-                  <span v-if="errors && errors.logo" class="text-danger mt-2">{{
-                    errors.logo[0]
-                  }}</span>
-                </div>
-              </v-col> -->
               <v-col cols="12">
                 <div class="text-center">
-                  <Camera
+                  <CameraORUpload
                     ref="CameraComponent"
-                    @imageSrc="
-                      (e) => {
-                        payload.logo = e;
-                      }
-                    "
+                    @imageSrc="handleAttachment"
                   />
-                  <span v-if="errors && errors.logo" class="error--text mt-2">{{
-                    errors.logo[0]
-                  }}</span>
+                  <span
+                    v-if="errors && errors.profile_picture"
+                    class="error--text mt-2"
+                    >{{ errors.profile_picture[0] }}</span
+                  >
                 </div>
               </v-col>
               <v-col cols="12">

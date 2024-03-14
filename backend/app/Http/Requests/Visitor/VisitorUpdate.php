@@ -47,7 +47,7 @@ class VisitorUpdate extends FormRequest
         $validations['id_number'] = 'nullable|string|max:255';
         $validations['host_company_id'] = 'nullable';
 
-        $validations['logo'] = 'nullable';
+        $validations['profile_pictture'] = 'nullable';
 
         $validations["time_in"] = "required";
         $validations["time_out"] = "required";
@@ -62,7 +62,7 @@ class VisitorUpdate extends FormRequest
     public function messages()
     {
         return [
-            'logo.required' => 'The Photo field is required',
+            'profile_pictture.required' => 'The Photo field is required',
         ];
     }
 }
