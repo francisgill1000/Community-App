@@ -17,6 +17,15 @@
     "module": "dashboard"
   },
   {
+    "icon": "mdi-account",
+    "image": "/tenet-3.png",
+    "title": "Owner",
+    "to": "/community/owner",
+    "menu": "true",
+    "submenu": "owners",
+    "module": "dashboard"
+  },
+  {
     "icon": "mdi-transit-transfer",
     "image": "/visitors.png",
     "title": "Visitors",
@@ -45,7 +54,7 @@
   {
     "icon": "mdi-account",
     "image": "/maid.png",
-    "title": "House Maids",
+    "title": "Maids",
     "to": "/community/house_maids",
     "submenu": "house_maids",
     "module": "dashboard"
@@ -379,7 +388,7 @@
   {
     "icon": "mdi-account",
     "image": "/maid.png",
-    "title": "House Maids",
+    "title": "Maids",
     "to": "/community/house_maids",
     "menu": "contractor_access",
     "module": "house_maids"

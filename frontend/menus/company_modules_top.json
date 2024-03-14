@@ -17,6 +17,14 @@
   },
   {
     "icon": "mdi-bell",
+    "title": "Owner",
+    "to": "/community/owner",
+    "menu": "owners",
+    "module": "topmenu",
+    "permission": "tanent_access"
+  },
+  {
+    "icon": "mdi-bell",
     "title": "Visitors",
     "to": "/community/visitor/dashboard",
     "menu": "visitors",
@@ -41,7 +49,7 @@
   },
   {
     "icon": "mdi mdi-calendar-account",
-    "title": "House Maid",
+    "title": "Maid",
     "to": "/community/house_maids",
     "menu": "house_maids",
     "module": "topmenu",
