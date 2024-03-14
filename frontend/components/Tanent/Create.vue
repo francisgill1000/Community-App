@@ -3,14 +3,14 @@
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
         <v-btn dense small class="primary" text title="Add Company">
-          Create Tanent
+          Create {{ label }}
           <v-icon right dark>mdi-plus-circle-outline</v-icon>
         </v-btn>
       </span>
     </template>
     <v-card>
       <v-toolbar flat dense>
-        <v-card-title> Create Tanent </v-card-title>
+        <v-card-title> Create {{ label }} </v-card-title>
         <v-spacer></v-spacer>
         <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
       </v-toolbar>
@@ -19,7 +19,7 @@
         <v-row>
           <v-col cols="3">
             <v-row>
-              <v-col cols="12">
+              <!-- <v-col cols="12">
                 <div class="text-center">
                   <SnippetsUploadAttachment
                     :defaultImage="setImagePreview"
@@ -30,7 +30,25 @@
                     errors.logo[0]
                   }}</span>
                 </div>
+              </v-col> -->
+              <v-col cols="12">
+                <div class="text-center">
+                  <!-- <CameraORUpload
+                    ref="CameraComponent"
+                    @imageSrc="handleAttachment"
+                  /> -->
+                  <SnippetsUploadAttachment
+                    :defaultImage="setImagePreview"
+                    @uploaded="handleAttachment"
+                  />
+                  <span
+                    v-if="errors && errors.profile_picture"
+                    class="error--text mt-2"
+                    >{{ errors.profile_picture[0] }}</span
+                  >
+                </div>
               </v-col>
+
               <v-col cols="12">
                 <v-text-field
                   label="RFID"
@@ -351,11 +369,11 @@
                   ></v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col v-if="errorResponse">
+              <v-col cols="12" v-if="errorResponse">
                 <span class="red--text">{{ errorResponse }}</span>
               </v-col>
 
-              <v-col cols="6" class="text-right my-1">
+              <v-col cols="12" class="text-right my-1">
                 <v-btn @click="dialog = false">Close</v-btn>
                 <v-btn
                   v-if="formAction == 'Create'"
@@ -379,6 +397,17 @@ import VueCropper from "vue-cropperjs";
 export default {
   components: {
     VueCropper,
+  },
+
+  props: {
+    label: {
+      type: String,
+      default: "Tanent", // Define your default value here
+    },
+    type: {
+      type: String,
+      default: "Primary", // Define your default value here
+    },
   },
 
   data: () => ({
@@ -474,7 +503,6 @@ export default {
       per_page: 10,
     },
     options: {},
-    Model: "Tanent",
     endpoint: "tanent",
     search: "",
     snackbar: false,
@@ -699,47 +727,13 @@ export default {
         formData.append("profile_picture", this.upload.name);
       }
 
-      if (this.payload.passport_doc) {
-        formData.append("passport_doc", this.payload.passport_doc.name);
-      }
-
-      formData.append("member_type", "Primary");
+      formData.append("member_type", this.type);
       formData.append("company_id", this.$auth.user.company_id);
 
       return formData;
     },
-    tanentValidate() {
-      this.$axios
-        .post(
-          this.endpoint + "-validate",
-          this.mapper(Object.assign(this.payload))
-        )
-        .then(({ data }) => {
-          this.errors = [];
-          this.nextStep();
-        })
-        .catch(({ response }) => {
-          this.handleErrorResponse(response);
-        });
-
-      // }
-    },
-
-    vehicleValidate() {
-      this.$axios
-        .post("vehicle-validate", { vehicles: this.vehicles })
-        .then(({ data }) => {
-          this.errors = [];
-          this.nextStep();
-        })
-        .catch(({ response }) => {
-          this.handleErrorResponse(response);
-        });
-    },
 
     submit() {
-      // this.vehicleValidate();
-
       this.$axios
         .post(this.endpoint, this.mapper(Object.assign(this.payload)))
         .then(({ data }) => {
@@ -747,7 +741,7 @@ export default {
             this.errorResponse = data.message;
             return;
           }
-          this.handleSuccessResponse("Tanent inserted successfully");
+          this.handleSuccessResponse(this.label + " inserted successfully");
         })
         .catch(({ response }) => {
           this.handleErrorResponse(response);
@@ -756,27 +750,6 @@ export default {
       // }
     },
 
-    storeVehicle(id) {
-      let dataToInsert = [];
-
-      this.vehicles.forEach(({ car_number, car_brand, parking_id }) => {
-        dataToInsert.push({
-          tanent_id: id,
-          car_brand: car_brand,
-          car_number: car_number,
-          parking_id: parking_id,
-        });
-      });
-      this.$axios
-        .post("vehicle-store", { vehicles: dataToInsert })
-        .then(({ data }) => {
-          this.errors = [];
-          this.handleSuccessResponse("Tanent inserted successfully");
-        })
-        .catch(({ response }) => {
-          this.handleErrorResponse(response);
-        });
-    },
     handleSuccessResponse(message) {
       this.errorResponse = null;
       this.errors = [];

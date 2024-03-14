@@ -93,6 +93,8 @@
           <v-spacer></v-spacer>
           <ExportData :data="exportData()" />
           <TanentCreate
+            label="Owner"
+            type="Owner"
             v-if="can(`tanent_create`)"
             @success="handleSuccessResponse"
           />
@@ -212,7 +214,10 @@
                     />
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item v-if="can(`tanent_delete`)" @click="deleteItem(item)">
+                <v-list-item
+                  v-if="can(`tanent_delete`)"
+                  @click="deleteItem(item)"
+                >
                   <v-list-item-title style="cursor: pointer">
                     <v-icon color="error" small> mdi-delete </v-icon>
                     Delete
@@ -303,12 +308,9 @@ export default {
       name: "",
     },
     options: {},
-    Model: "Tenants",
-    endpoint: "tanents-only",
-    search: "",
-    snackbar: false,
+    Model: "Owners",
+    endpoint: "owners-only",
     ids: [],
-    loading: false,
     //total: 0,
     data: [],
     errors: [],
@@ -482,7 +484,7 @@ export default {
         "category",
         "start_date",
         "end_date",
-        "rfid"
+        "rfid",
       ];
 
       return this.data.map((item) => {

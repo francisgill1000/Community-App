@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('/tanent', TanentController::class);
 
+
+Route::get('/tanents-only', [TanentController::class, "tanentsOnly"]);
+Route::get('/owners-only', [TanentController::class, "ownersOnly"]);
+
 Route::get('/get-new-tanents-from-live', [TanentController::class, "getTanentsFromLive"]);
 
 Route::get('/sync-tanents', [TanentController::class, "syncTanents"]);

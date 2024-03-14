@@ -41,7 +41,6 @@
                   {{ item.first_name }} {{ item.last_name }}
                 </div>
                 <small>
-                  {{ item.system_user_id }} <br />
                   {{ item.nationality }}
                 </small>
               </v-col>
