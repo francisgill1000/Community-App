@@ -14,12 +14,6 @@
             <v-col cols="12">
               <v-row no-gutters>
                 <v-col cols="6">
-                  <small style="font-size: 11px">ID</small>
-                </v-col>
-                <v-col cols="6" class="text-right">
-                  <small style="font-size: 11px"> {{ item.system_user_id }} </small>
-                </v-col>
-                <v-col cols="6">
                   <small style="font-size: 11px">Full Name</small>
                 </v-col>
                 <v-col cols="6" class="text-right">

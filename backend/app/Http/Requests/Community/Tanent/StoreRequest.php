@@ -38,7 +38,7 @@ class StoreRequest extends FormRequest
             "full_name" => "nullable|min:3|max:20",
             "first_name" => "required|min:3|max:20",
             "last_name" => "required|min:3|max:20",
-            "phone_number" => "required|min:10|max:20",
+            "phone_number" => "required|min:10|max:20|unique:tanents",
             "floor_id" => "required",
             "start_date" => "required",
             "end_date" => "required",

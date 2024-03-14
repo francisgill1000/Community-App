@@ -14,13 +14,10 @@
             <v-row>
               <v-col cols="12">
                 <div class="text-center">
-                  <SnippetsUploadAttachment
-                    :defaultImage="setImagePreview"
-                    @uploaded="handleAttachment"
-                  />
+                  <CameraORUpload @imageSrc="handleAttachment"/>
 
-                  <span v-if="errors && errors.logo" class="text-danger mt-2">{{
-                    errors.logo[0]
+                  <span v-if="errors && errors.profile_picture" class="text-danger mt-2">{{
+                    errors.profile_picture[0]
                   }}</span>
                 </div>
               </v-col>
@@ -151,18 +148,6 @@
                   outlined
                   :hide-details="!errors.rfid"
                   :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  label="PIN"
-                  :readonly="disabled"
-                  v-model="payload.pin"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.pin"
-                  :error-messages="errors && errors.pin ? errors.pin[0] : ''"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
@@ -362,26 +347,14 @@ export default {
     handleAttachment(e) {
       this.payload.profile_picture = e;
     },
-    mapper(obj) {
-      let formData = new FormData();
-
-      for (let x in obj) {
-        formData.append(x, obj[x]);
-      }
-      if (this.payload.profile_picture) {
-        formData.append("profile_picture", this.upload.name);
-      }
-      formData.append("company_id", this.$auth.user.company_id);
-
-      return formData;
-    },
-
     submit() {
+      this.payload.company_id = this.$auth.user.company_id;
+
       this.$axios
-        .post(`add-member`, this.mapper(Object.assign(this.payload)))
+        .post(`add-member`, this.payload)
         .then(({ data }) => {
           this.errors = [];
-          this.handleSuccessResponse("Tanent inserted successfully");
+          this.handleSuccessResponse("Member inserted successfully");
         })
         .catch(({ response }) => {
           this.handleErrorResponse(response);

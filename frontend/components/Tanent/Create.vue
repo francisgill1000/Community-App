@@ -639,65 +639,6 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
-    previewImage(event) {
-      const file = this.payload.profile_picture;
-
-      if (file) {
-        // Read the selected file and create a preview
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imagePreview = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.imagePreview = null;
-      }
-    },
-
-    previewMemberImage(event) {
-      const file = this.member.profile_picture;
-
-      if (file) {
-        // Read the selected file and create a preview
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          this.imageMemberPreview = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        this.imageMemberPreview = null;
-      }
-    },
-    others_doc(e) {
-      this.upload.name = e.target.files[0] || "";
-
-      let input = this.$refs.otherDoc_input;
-      let file = input.files;
-
-      if (file[0].size > 1024 * 1024) {
-        e.preventDefault();
-        this.errors["profile_picture"] = [
-          "File too big (> 1MB). Upload less than 1MB",
-        ];
-        return;
-      }
-
-      if (file && file[0]) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          //croppedimage step6
-          // this.previewImage = e.target.result;
-
-          this.selectedFile = event.target.result;
-
-          this.$refs.cropper.replace(this.selectedFile);
-        };
-        reader.readAsDataURL(file[0]);
-        this.$emit("input", file[0]);
-
-        this.dialogCropping = true;
-      }
-    },
 
     submit() {
       this.payload.member_type = this.type;

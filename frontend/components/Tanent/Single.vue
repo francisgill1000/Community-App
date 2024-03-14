@@ -6,6 +6,14 @@
         View
       </span>
     </template>
+    <v-row class="white pa-2" no-gutters >
+     <v-col cols="12" class="text-right">
+      <v-icon @click="dialog = false" color="primary">
+      mdi-close
+    </v-icon>
+     </v-col>
+     
+  </v-row>
     <v-stepper v-model="step" horizontal>
       <v-stepper-header>
         <v-stepper-step :complete="step > 1" step="1" editable>
@@ -15,7 +23,6 @@
         <v-stepper-step :complete="step > 2" step="2" editable>
           Vehicle Info
         </v-stepper-step>
-        <v-divider></v-divider>
         <!-- <v-stepper-step :complete="step > 3" step="3" editable>
           Documentation
         </v-stepper-step> -->

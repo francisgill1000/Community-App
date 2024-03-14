@@ -19,7 +19,7 @@
               <v-row>
                 <v-col cols="12">
                   <div class="text-center">
-                    <CameraORUpload @imageSrc="handleAttachment" />
+                    <CameraORUpload :PreviewImage="setImagePreview" @imageSrc="handleAttachment" />
                     <span
                       v-if="errors && errors.profile_picture"
                       class="error--text mt-2"
@@ -405,19 +405,16 @@
               <v-row>
                 <v-col cols="3">
                   <div class="text-center">
-                    <SnippetsUploadAttachment
-                      :defaultImage="member.profile_picture"
-                      @uploaded="
+                    <CameraORUpload :PreviewImage="member.profile_picture" @imageSrc="
                         (e) => {
                           member.profile_picture = e;
                         }
-                      "
-                    />
+                      " />
 
                     <span
-                      v-if="errors && errors.logo"
+                      v-if="errors && errors.profile_picture"
                       class="text-danger mt-2"
-                      >{{ errors.logo[0] }}</span
+                      >{{ errors.profile_picture[0] }}</span
                     >
                   </div>
                 </v-col>
@@ -525,20 +522,6 @@
                         :hide-details="!errors.rfid"
                         :error-messages="
                           errors && errors.rfid ? errors.rfid[0] : ''
-                        "
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Pin"
-                        v-model="member.pin"
-                        dense
-                        class="text-center"
-                        outlined
-                        :hide-details="!errors.pin"
-                        :error-messages="
-                          errors && errors.pin ? errors.pin[0] : ''
                         "
                       ></v-text-field>
                     </v-col>
@@ -791,6 +774,8 @@ export default {
 
     let { data } = await this.$axios.get(`parking-list`);
     this.parkings = data;
+
+    await this.setRoomSubCategories(this.payload.room_category_id);
   },
 
   methods: {
@@ -807,8 +792,6 @@ export default {
     async getFloorByCategory(id) {
       let { data } = await this.$axios.get(`room-floor-by-category/${id}`);
       this.floors = data;
-
-      this.getRoomsByFloorId(this.payload);
     },
     updatePayload(key, document) {
       this.payload[key] = document;
@@ -949,24 +932,8 @@ export default {
     },
 
     update_member(member) {
-      let formData = new FormData();
-
-      if (member.profile_picture && member.profile_picture.name) {
-        formData.append("profile_picture", member.profile_picture);
-      }
-
-      formData.append("first_name", member.first_name);
-      formData.append("last_name", member.last_name);
-      formData.append("age", member.age);
-      formData.append("member_type", member.member_type);
-      formData.append("nationality", member.nationality);
-      formData.append("gender", member.gender);
-
-      formData.append("rfid", member.rfid);
-      formData.append("pin", member.pin);
-
       this.$axios
-        .post("/update-member/" + member.id, formData)
+        .post("/update-member/" + member.id, member)
         .then(({ data }) => {
           this.singleMessage = null;
           this.errors = [];

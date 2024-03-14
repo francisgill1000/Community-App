@@ -361,17 +361,10 @@ class TanentController extends Controller
     {
 
         try {
-            $exists = Tanent::where("company_id", $request->company_id)->where('phone_number', $request->phone_number)->exists();
-
-            // Check if the Tanent number already exists
-            if ($exists) {
-                return $this->response('Tanent already exists.', null, false);
-            }
 
             $data = $request->validated();
 
             $data["full_name"] = "{$data["first_name"]} {$data["last_name"]}";
-
 
             $room_number = $request->room_number;
             $room_category_id = $request->room_category_id;
@@ -382,16 +375,6 @@ class TanentController extends Controller
             if ($request->filled("profile_picture")) {
                 $data['profile_picture'] = $this->processImage("community/profile_picture");
             }
-
-            // if (isset($request->profile_picture)) {
-            //     $file = $request->file('profile_picture');
-            //     $ext = $file->getClientOriginalExtension();
-            //     $fileName = time() . '.' . $ext;
-            //     $request->file('profile_picture')->move(public_path('/community/profile_picture'), $fileName);
-            //     $data['profile_picture'] = $fileName;
-            // }
-
-
 
             $record = Tanent::create($data);
 
@@ -480,12 +463,8 @@ class TanentController extends Controller
 
             $data = $request->validated();
 
-            if (isset($request->profile_picture)) {
-                $file = $request->file('profile_picture');
-                $ext = $file->getClientOriginalExtension();
-                $fileName = time() . '.' . $ext;
-                $request->file('profile_picture')->move(public_path('/community/profile_picture'), $fileName);
-                $data['profile_picture'] = $fileName;
+            if ($request->filled("profile_picture")) {
+                $data['profile_picture'] = $this->processImage("community/profile_picture");
             }
 
             $data["full_name"] = "{$data["first_name"]} {$data["last_name"]}";
@@ -544,12 +523,8 @@ class TanentController extends Controller
 
             $data = $request->validated();
 
-            if (isset($request->profile_picture)) {
-                $file = $request->file('profile_picture');
-                $ext = $file->getClientOriginalExtension();
-                $fileName = time() . '.' . $ext;
-                $request->file('profile_picture')->move(public_path('/community/profile_picture'), $fileName);
-                $data['profile_picture'] = $fileName;
+            if ($request->filled("profile_picture")) {
+                $data['profile_picture'] = $this->processImage("community/profile_picture");
             }
 
             $data["full_name"] = "{$data["first_name"]} {$data["last_name"]}";
