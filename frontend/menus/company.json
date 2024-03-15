@@ -412,7 +412,7 @@
   {
     "icon": "mdi-account-card-details",
     "image": "/tenet-3.png",
-    "title": "Tanent",
+    "title": "Tenant",
     "to": "/community/tanent?1",
     "menu": "tanent",
     "module": "tanents"
@@ -441,7 +441,7 @@
   {
     "icon": "mdi-chart-box-outline",
     "image": "/tenet-3.png",
-    "title": "Tanents",
+    "title": "Tenants",
     "to": "/community/tanent/reports",
     "menu": "tanents_access",
     "module": "reports"
