@@ -1361,7 +1361,7 @@ export default {
   },
   methods: {
     handleAttachment(e) {
-      this.payload.profile_picture = e;
+      this.employee.profile_picture = e;
     },
     closePopup2() {
       this.editDialog = false;
@@ -1773,7 +1773,7 @@ export default {
 
       return employee;
     },
-    store_data() {
+    store_data_old() {
       let final = Object.assign(this.employee);
       let employee = this.mapper(final);
 
@@ -1791,12 +1791,15 @@ export default {
           this.saveToAPI(employee);
         }, "image/jpeg");
       } else {
-        this.saveToAPI(employee);
+        // this.saveToAPI(employee);
       }
     },
-    saveToAPI(employee) {
+    store_data() {
+
+      this.employee.company_id = this.$auth.user.company_id;
+
       this.$axios
-        .post("/employee-store", employee)
+        .post("/employee-store", this.employee)
         .then(async ({ data }) => {
           //this.loading = false;
 
@@ -1810,7 +1813,7 @@ export default {
           } else {
             this.errors = [];
             this.snackbar = true;
-            this.response = "Employees inserted successfully";
+            this.response = "Employee(s) inserted successfully";
             this.refresh = true;
             await this.getDataFromApi();
             this.employeeDialog = false;

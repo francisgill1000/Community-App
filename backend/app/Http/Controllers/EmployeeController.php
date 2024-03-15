@@ -87,47 +87,12 @@ class EmployeeController extends Controller
     {
         $data = $request->validated();
 
-        if ($request->hasFile('profile_picture')) {
-            $file = $request->file('profile_picture');
-            $ext = $file->getClientOriginalExtension();
-            $fileName = time() . '.' . $ext;
-            $request->profile_picture->move(public_path('media/employee/profile_picture/'), $fileName);
-            $data['profile_picture'] = $fileName;
+
+        if ($request->filled("profile_picture")) {
+            $data['profile_picture'] = $this->processImage("media/employee/profile_picture");
         }
 
-        // $maximumEmployeeCount = Company::whereId($data["company_id"])->pluck("max_employee")[0];
-        // $existEmployeeCount = Employee::where("company_id", $data["company_id"])->count();
-
-
-
-        // if ($maximumEmployeeCount - $existEmployeeCount <= 0) {
-        //     return $this->response("Account Maximum " . $maximumEmployeeCount . " Employee count is reached.", null, false);
-        // }
-
-        DB::beginTransaction();
-
-        if ($request->filled('email')) {
-
-            $user = User::create([
-                "user_type" => "employee",
-                "name" => "null",
-                "email" => $request->email,
-                "password" => Hash::make("password"),
-                "company_id" => $data["company_id"],
-            ]);
-
-            if (!$user) {
-                return $this->response('User cannot add.', null, false);
-            }
-
-            $data["user_id"] = $user->id;
-        }
-
-        unset($data['email']);
-
-        try {   
-
-            $data["branch_id"] = $data["branch_id"] ?? 0;
+        try {
 
             $employee = Employee::create($data);
             if (!$employee) {
@@ -135,11 +100,9 @@ class EmployeeController extends Controller
             }
             $employee->profile_picture = asset('media/employee/profile_picture' . $employee->profile_picture);
 
-            DB::commit();
 
             //set default attendance data for new Employees(1 month) 
-
-            (new AttendanceController)->seedDefaultData($data["company_id"], [$data["system_user_id"]], $data["branch_id"]);
+            (new AttendanceController)->seedDefaultData($data["company_id"], [$data["system_user_id"]], 0);
 
 
             return $this->response('Employee successfully created.', null, true);
@@ -179,12 +142,8 @@ class EmployeeController extends Controller
             }
         }
 
-        if ($request->profile_picture && $request->hasFile('profile_picture')) {
-            $file = $request->file('profile_picture');
-            $ext = $file->getClientOriginalExtension();
-            $fileName = time() . '.' . $ext;
-            $request->profile_picture->move(public_path('media/employee/profile_picture/'), $fileName);
-            $data['profile_picture'] = $fileName;
+        if ($request->filled("profile_picture")) {
+            $data['profile_picture'] = $this->processImage("media/employee/profile_picture");
         }
 
 

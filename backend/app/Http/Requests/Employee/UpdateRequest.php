@@ -21,7 +21,6 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'company_id' => ['required'],
             'employee_id' => ['required'],
             'system_user_id' => ['required', 'regex:/^[1-9][0-9]*$/'],
             'full_name' => ['nullable', 'min:3', 'max:100'],
@@ -37,7 +36,7 @@ class UpdateRequest extends FormRequest
             'leave_group_id' => ['nullable'],
             'reporting_manager_id' => ['nullable'],
             'branch_id' => ['nullable'],
-            'profile_picture' => ['image', 'mimes:jpeg,png,jpg,svg', 'max:2048', 'sometimes', 'nullable'],
+            'profile_picture' => "nullable",
             // 'phone_number' =>  ['required', 'min:10', 'max:12'],
             // 'whatsapp_number' => ['required', 'min:10', 'max:12'],
         ];

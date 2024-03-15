@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <v-avatar style="border: 1px solid #6946dd" size="175">
-      <img v-show="isUpload" :src="PreviewImage" ref="img" alt="" />
+      <img v-show="isUpload" :src="PlaceHolderImage" ref="img" alt="" />
 
       <video
         v-show="!isUpload"
@@ -45,10 +45,13 @@ export default {
     isCamera: false,
     videoStream: null,
     isUpload: true,
+    PlaceHolderImage: null,
   }),
 
   mounted() {
     this.setupCamera();
+
+    this.PlaceHolderImage = this.PreviewImage;
   },
   methods: {
     async setupCamera() {
@@ -94,7 +97,7 @@ export default {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.isUpload = true;
-        this.PreviewImage = e.target.result;
+        this.PlaceHolderImage = e.target.result;
         this.$emit("imageSrc", e.target.result);
       };
       reader.readAsDataURL(file);

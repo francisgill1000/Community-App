@@ -54,7 +54,7 @@ class StoreRequest extends FormRequest
             'status' => ['nullable'],
             'branch_id' => ['nullable'],
             'email' => 'nullable|min:3|max:191|unique:users',
-            'profile_picture' => ['image', 'mimes:jpeg,png,jpg,svg', 'max:2048', 'sometimes', 'nullable'],
+            'profile_picture' => "nullable",
         ];
     }
 

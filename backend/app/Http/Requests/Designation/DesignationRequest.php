@@ -27,7 +27,7 @@ class DesignationRequest extends FormRequest
     {
         return [
             'name'=>'required|min:4|max:100',
-            'department_id'=>'required'
+            'department_id'=>'nullable'
         ];
     }
 }
