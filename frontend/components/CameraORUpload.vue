@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="text-center">
     <v-avatar style="border: 1px solid #6946dd" size="175">
       <img v-show="isUpload" :src="PreviewImage" ref="img" alt="" />
 
@@ -13,25 +13,10 @@
       <canvas ref="canvas" style="display: none"></canvas>
     </v-avatar>
 
-    <div class="mb-1">
-      <v-btn
-        small
-        block
-        dark
-        color="primary"
-        class="mt-1"
-        @click="toggleCamera"
-        >{{ isCamera ? "Take Picture" : "Open Camera" }}</v-btn
-      >
-
-      <v-btn
-        small
-        block
-        dark
-        color="primary"
-        class="mt-1"
-        @click="uploadPicture"
-        >Upload Picture</v-btn
+    <div class="pa-5">
+      <v-icon large color="primary" @click="toggleCamera">mdi-camera</v-icon>
+      <v-icon large color="primary" @click="uploadPicture"
+        >mdi-folder-open</v-icon
       >
     </div>
 

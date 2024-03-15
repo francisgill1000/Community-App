@@ -19,7 +19,10 @@
               <v-row>
                 <v-col cols="12">
                   <div class="text-center">
-                    <CameraORUpload :PreviewImage="setImagePreview" @imageSrc="handleAttachment" />
+                    <CameraORUpload
+                      :PreviewImage="setImagePreview"
+                      @imageSrc="handleAttachment"
+                    />
                     <span
                       v-if="errors && errors.profile_picture"
                       class="error--text mt-2"
@@ -347,20 +350,18 @@
                   </v-menu>
                 </v-col>
 
-                <!-- <v-col cols="12">
-                  <v-switch
-                    style="margin-top: 5px"
-                    label="Web Access"
-                    outlined
-                    v-model="payload.web_access"
+                <v-col cols="12" v-if="payload.member_type == 'Owner'">
+                  <v-checkbox
+                    label="Is Staying"
                     dense
-                    :hide-details="!errors.web_access"
+                    v-model="payload.isStaying"
+                    primary
+                    :hide-details="!errors.isStaying"
                     :error-messages="
-                      errors && errors.web_access ? errors.web_access[0] : ''
+                      errors && errors.isStaying ? errors.isStaying[0] : ''
                     "
-                  >
-                  </v-switch>
-                </v-col> -->
+                  ></v-checkbox>
+                </v-col>
 
                 <v-col cols="12" class="text-right my-1">
                   <v-btn @click="dialog = false">Close</v-btn>
@@ -405,11 +406,14 @@
               <v-row>
                 <v-col cols="3">
                   <div class="text-center">
-                    <CameraORUpload :PreviewImage="member.profile_picture" @imageSrc="
+                    <CameraORUpload
+                      :PreviewImage="member.profile_picture"
+                      @imageSrc="
                         (e) => {
                           member.profile_picture = e;
                         }
-                      " />
+                      "
+                    />
 
                     <span
                       v-if="errors && errors.profile_picture"
@@ -908,6 +912,7 @@ export default {
         });
     },
     update_data() {
+      this.payload.isStaying = this.payload.isStaying ? 1 : 0;
       this.$axios
         .post(
           this.endpoint + "-update/" + this.payload.id,

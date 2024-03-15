@@ -326,6 +326,15 @@ export default {
         width: "200px",
       },
       {
+        text: "Member Type",
+        align: "left",
+        sortable: false,
+        key: "member_type",
+        value: "member_type",
+        filterable: false,
+        type: "text",
+      },
+      {
         text: "Members",
         align: "left",
         sortable: false,
@@ -643,7 +652,7 @@ export default {
         "Are you sure you wish to delete , to mitigate any inconvenience in future."
       ) &&
         this.$axios
-          .delete(`${this.endpoint}/${item.id}`)
+          .delete(`tanent/${item.id}`)
           .then(({ data }) => {
             this.getDataFromApi();
             this.snackbar = true;
@@ -738,7 +747,6 @@ export default {
     handleSuccessResponse(message) {
       this.snackbar = true;
       this.response = message;
-      this.dialog = true;
       this.getDataFromApi();
     },
   },

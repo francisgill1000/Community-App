@@ -18,16 +18,14 @@
       <v-container>
         <v-row>
           <v-col cols="3">
-            <v-row>
+            <v-row no-gutters>
               <v-col cols="12">
-                <div class="text-center">
-                  <CameraORUpload @imageSrc="handleAttachment" />
-                  <span
-                    v-if="errors && errors.profile_picture"
-                    class="error--text mt-2"
-                    >{{ errors.profile_picture[0] }}</span
-                  >
-                </div>
+                <CameraORUpload @imageSrc="handleAttachment" />
+                <span
+                  v-if="errors && errors.profile_picture"
+                  class="error--text mt-2"
+                  >{{ errors.profile_picture[0] }}</span
+                >
               </v-col>
 
               <v-col cols="12">
@@ -45,7 +43,7 @@
             </v-row>
           </v-col>
           <v-col cols="9">
-            <v-row class="mt-4">
+            <v-row class="mt-1">
               <v-col cols="6">
                 <v-text-field
                   label="First Name"
@@ -350,6 +348,20 @@
                   ></v-date-picker>
                 </v-menu>
               </v-col>
+
+              <v-col cols="12" v-if="type == 'Owner'">
+                <v-checkbox
+                  label="Is Staying"
+                  dense
+                  v-model="payload.isStaying"
+                  primary
+                  :hide-details="!errors.isStaying"
+                  :error-messages="
+                    errors && errors.isStaying ? errors.isStaying[0] : ''
+                  "
+                ></v-checkbox>
+              </v-col>
+
               <v-col cols="12" v-if="errorResponse">
                 <span class="red--text">{{ errorResponse }}</span>
               </v-col>
@@ -407,6 +419,7 @@ export default {
       room_id: "",
       start_date: "",
       end_date: "",
+      isStaying: 0,
     },
     documents: [
       { label: "Passport", key: "passport_doc" },

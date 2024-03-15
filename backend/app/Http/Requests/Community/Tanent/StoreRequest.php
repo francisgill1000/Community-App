@@ -75,6 +75,8 @@ class StoreRequest extends FormRequest
             "room_sub_category_id" => "required",
 
             "member_type" => "nullable",
+
+            "isStaying" => "required",
         ];
     }
 }

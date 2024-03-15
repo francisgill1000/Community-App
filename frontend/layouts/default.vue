@@ -438,6 +438,10 @@ export default {
           elevation: 0,
           selected: "",
         },
+        owners: {
+          elevation: 0,
+          selected: "",
+        },
       },
 
       topMenu_Selected: "dashboard",

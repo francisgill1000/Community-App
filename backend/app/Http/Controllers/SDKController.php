@@ -53,6 +53,14 @@ class SDKController extends Controller
 
         $url = env('SDK_URL') . "/" . "{$id}/WriteTimeGroup";
 
+        return $data;
+
+        return [
+            "url" => $url,
+            "count" => count($data),
+            "data" => $data,
+        ];
+
         $sdkResponse = $this->processSDKRequestBulk($url, $data);
 
         return $sdkResponse;

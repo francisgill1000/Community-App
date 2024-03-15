@@ -324,6 +324,15 @@ export default {
         width: "200px",
       },
       {
+        text: "Member Type",
+        align: "left",
+        sortable: false,
+        key: "member_type",
+        value: "member_type",
+        filterable: false,
+        type: "text",
+      },
+      {
         text: "Members",
         align: "left",
         sortable: false,

@@ -327,7 +327,16 @@
               </v-row>
             </v-col>
             <v-col class="col-sm-6">
-              <div
+              <div class="text-center">
+                <CameraORUpload @imageSrc="handleAttachment" />
+
+                <span
+                  v-if="errors && errors.profile_picture"
+                  class="text-danger mt-2"
+                  >{{ errors.profile_picture[0] }}</span
+                >
+              </div>
+              <!-- <div
                 class="form-group pt-15"
                 style="margin: 0 auto; width: 200px"
               >
@@ -363,7 +372,7 @@
                   class="text-danger mt-2"
                   >{{ errors.profile_picture[0] }}</span
                 >
-              </div>
+              </div> -->
             </v-col>
           </v-row>
         </v-card-text>
@@ -1351,6 +1360,9 @@ export default {
     },
   },
   methods: {
+    handleAttachment(e) {
+      this.payload.profile_picture = e;
+    },
     closePopup2() {
       this.editDialog = false;
       this.getDataFromApi();
