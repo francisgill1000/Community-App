@@ -12,8 +12,5 @@ class Member extends Model
     public static $member_types = [
         'Primary',
         'Family Member',
-        'Relative',
-        'Maid',
-        'Visitor',
     ];
 }

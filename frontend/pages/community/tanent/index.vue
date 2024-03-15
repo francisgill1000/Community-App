@@ -121,14 +121,6 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
-          <template v-slot:item.cards="{ item }">
-            {{ item.members.filter((e) => e.member_type == "card").length }}
-          </template>
-
-          <template v-slot:item.members="{ item }">
-            {{ item.members.filter((e) => e.member_type !== "card").length }}
-          </template>
-
           <template v-slot:item.full_name="{ item, index }">
             <v-row no-gutters>
               <v-col cols="3" class="ma-2">
@@ -167,6 +159,7 @@
                         system_user_id:
                           parseInt(item.system_user_id) +
                           parseInt(item.members_count) +
+                          parseInt(item.cards_count) +
                           1,
                       }"
                     />
@@ -193,6 +186,7 @@
                         system_user_id:
                           parseInt(item.system_user_id) +
                           parseInt(item.members_count) +
+                          parseInt(item.cards_count) +
                           1,
                       }"
                     />
@@ -212,7 +206,10 @@
                     />
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item v-if="can(`tanent_delete`)" @click="deleteItem(item)">
+                <v-list-item
+                  v-if="can(`tanent_delete`)"
+                  @click="deleteItem(item)"
+                >
                   <v-list-item-title style="cursor: pointer">
                     <v-icon color="error" small> mdi-delete </v-icon>
                     Delete
@@ -336,8 +333,8 @@ export default {
         text: "Members",
         align: "left",
         sortable: false,
-        key: "members",
-        value: "members",
+        key: "members_count",
+        value: "members_count",
         filterable: false,
         type: "text",
       },
@@ -345,8 +342,8 @@ export default {
         text: "Cards",
         align: "left",
         sortable: false,
-        key: "cards",
-        value: "cards",
+        key: "cards_count",
+        value: "cards_count",
         filterable: false,
         type: "text",
       },
@@ -359,7 +356,6 @@ export default {
         filterable: true,
         type: "text",
       },
-
       // {
       //   text: "Phone No",
       //   align: "left",
@@ -369,7 +365,6 @@ export default {
       //   filterable: true,
       //   filterSpecial: false,
       // },
-
       {
         text: "Floor No",
         align: "left",
@@ -491,7 +486,7 @@ export default {
         "category",
         "start_date",
         "end_date",
-        "rfid"
+        "rfid",
       ];
 
       return this.data.map((item) => {

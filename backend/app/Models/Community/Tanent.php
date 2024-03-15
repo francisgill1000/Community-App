@@ -34,7 +34,22 @@ class Tanent extends Model
      */
     public function members()
     {
-        return $this->hasMany(Tanent::class, "parent_id");
+        return $this->hasMany(Tanent::class, "parent_id")->whereIn("member_type", ["Family Member", "Maid", "Owner"]);
+    }
+
+    public function members_only()
+    {
+        return $this->hasMany(Tanent::class, "parent_id")->where("member_type", "Family Member");
+    }
+
+    public function maids()
+    {
+        return $this->hasManyThrough(Tanent::class, MaidRelationTenant::class, 'tanent_id', 'id', 'id', 'maid_id');
+    }
+
+    public function cards()
+    {
+        return $this->hasMany(Tanent::class, "parent_id")->where("member_type", "card");
     }
 
     public function tanent()
@@ -54,7 +69,6 @@ class Tanent extends Model
     {
         return $this->hasOne(MaidRelationTenant::class, "maid_id")->orderBy("id", "desc")->with("tanent");
     }
-
 
     public function vehicles()
     {

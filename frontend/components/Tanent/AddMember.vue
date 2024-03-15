@@ -14,17 +14,19 @@
             <v-row>
               <v-col cols="12">
                 <div class="text-center">
-                  <CameraORUpload @imageSrc="handleAttachment"/>
+                  <CameraORUpload @imageSrc="handleAttachment" />
 
-                  <span v-if="errors && errors.profile_picture" class="text-danger mt-2">{{
-                    errors.profile_picture[0]
-                  }}</span>
+                  <span
+                    v-if="errors && errors.profile_picture"
+                    class="text-danger mt-2"
+                    >{{ errors.profile_picture[0] }}</span
+                  >
                 </div>
               </v-col>
             </v-row>
           </v-col>
           <v-col cols="9">
-            <v-row >
+            <v-row>
               <v-col cols="6">
                 <v-text-field
                   label="Tanent Ref #"
@@ -49,7 +51,9 @@
                   outlined
                   :hide-details="!errors.system_user_id"
                   :error-messages="
-                    errors && errors.system_user_id ? errors.system_user_id[0] : ''
+                    errors && errors.system_user_id
+                      ? errors.system_user_id[0]
+                      : ''
                   "
                 ></v-text-field>
               </v-col>
@@ -95,19 +99,17 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-autocomplete
-                  label="Member Type"
-                  outlined
-                  :readonly="disabled"
-                  v-model="payload.member_type"
-                  :items="member_types"
+                <v-text-field
+                  label="Phone Number"
+                  v-model="payload.phone_number"
                   dense
-                  :hide-details="!errors.member_type"
+                  class="text-center"
+                  outlined
+                  :hide-details="!errors.phone_number"
                   :error-messages="
-                    errors && errors.member_type ? errors.member_type[0] : ''
+                    errors && errors.phone_number ? errors.phone_number[0] : ''
                   "
-                >
-                </v-autocomplete>
+                ></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -124,6 +126,18 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
+                <v-text-field
+                  label="RFID"
+                  :readonly="disabled"
+                  v-model="payload.rfid"
+                  dense
+                  class="text-center"
+                  outlined
+                  :hide-details="!errors.rfid"
+                  :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
                 <v-radio-group
                   class="ma-0 mt-2 px-2 pa-0"
                   v-model="payload.gender"
@@ -137,31 +151,6 @@
                   <v-radio label="Female" value="Female"></v-radio>
                   <v-radio label="Other" value="Other"></v-radio>
                 </v-radio-group>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  label="RFID"
-                  :readonly="disabled"
-                  v-model="payload.rfid"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.rfid"
-                  :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  label="Phone Number"
-                  v-model="payload.phone_number"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.phone_number"
-                  :error-messages="
-                    errors && errors.phone_number ? errors.phone_number[0] : ''
-                  "
-                ></v-text-field>
               </v-col>
             </v-row>
           </v-col>
@@ -203,6 +192,7 @@ export default {
       room_id: "",
       start_date: "",
       end_date: "",
+      member_type: "Family Member",
     },
     imagePreview: "/no-profile-image.jpg",
     setImagePreview: null,
@@ -335,9 +325,9 @@ export default {
     let { data } = await this.$axios.get(`parking-list`);
     this.parkings = data;
 
-    let { data: member_types } = await this.$axios.get(`get_member_types`);
-    member_types.shift();
-    this.member_types = member_types;
+    // let { data: member_types } = await this.$axios.get(`get_member_types`);
+    // member_types.shift();
+    // this.member_types = member_types;
 
     this.payload.parent_id = this.item.tanent_id;
     this.payload.system_user_id = this.item.system_user_id;

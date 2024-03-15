@@ -15,16 +15,13 @@
           <v-col cols="3">
             <v-row>
               <v-col cols="12">
-                <div class="text-center">
-                  <SnippetsUploadAttachment
-                    :defaultImage="setImagePreview"
-                    @uploaded="handleAttachment"
-                  />
+                <CameraORUpload @imageSrc="handleAttachment" />
 
-                  <span v-if="errors && errors.logo" class="text-danger mt-2">{{
-                    errors.logo[0]
-                  }}</span>
-                </div>
+                <span
+                  v-if="errors && errors.profile_picture"
+                  class="text-danger mt-2"
+                  >{{ errors.profile_picture[0] }}</span
+                >
               </v-col>
             </v-row>
           </v-col>
@@ -116,19 +113,15 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-radio-group
-                  class="ma-0 mt-2 px-2 pa-0"
-                  v-model="payload.gender"
-                  row
-                  :hide-details="!errors.gender"
-                  :error-messages="
-                    errors && errors.gender ? errors.gender[0] : ''
-                  "
-                >
-                  <v-radio label="Male" value="Male"></v-radio>
-                  <v-radio label="Female" value="Female"></v-radio>
-                  <v-radio label="Other" value="Other"></v-radio>
-                </v-radio-group>
+                <v-text-field
+                  label="RFID"
+                  v-model="payload.rfid"
+                  dense
+                  class="text-center"
+                  outlined
+                  :hide-details="!errors.rfid"
+                  :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
+                ></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -144,26 +137,19 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-text-field
-                  label="RFID"
-                  v-model="payload.rfid"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.rfid"
-                  :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  label="PIN"
-                  v-model="payload.pin"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.pin"
-                  :error-messages="errors && errors.pin ? errors.pin[0] : ''"
-                ></v-text-field>
+                <v-radio-group
+                  class="ma-0 mt-2 px-2 pa-0"
+                  v-model="payload.gender"
+                  row
+                  :hide-details="!errors.gender"
+                  :error-messages="
+                    errors && errors.gender ? errors.gender[0] : ''
+                  "
+                >
+                  <v-radio label="Male" value="Male"></v-radio>
+                  <v-radio label="Female" value="Female"></v-radio>
+                  <v-radio label="Other" value="Other"></v-radio>
+                </v-radio-group>
               </v-col>
             </v-row>
           </v-col>
@@ -192,7 +178,7 @@ export default {
       nationality: "Maid",
       gender: "Male",
       rfid: "2112",
-      pin: "12313",
+      pin: "0000",
       full_name: "",
       phone_number: "",
     },
@@ -240,9 +226,10 @@ export default {
       const tenant = this.tanents.find((e) => e.id === id);
 
       if (tenant) {
-        const { system_user_id, members_count } = tenant;
+        console.log(tenant);
+        const { system_user_id, members_count, cards_count } = tenant;
         this.payload.system_user_id =
-          parseInt(system_user_id) + members_count + 1;
+          parseInt(system_user_id) + members_count + cards_count + 1;
       } else {
         this.payload.system_user_id = `Tenant with ID ${id} not found.`;
       }
@@ -250,31 +237,35 @@ export default {
     handleAttachment(e) {
       this.payload.profile_picture = e;
     },
-    mapper(obj) {
-      let formData = new FormData();
-
-      for (let x in obj) {
-        formData.append(x, obj[x]);
-      }
-      if (this.payload.profile_picture) {
-        formData.append("profile_picture", this.upload.name);
-      }
-      formData.append("company_id", this.$auth.user.company_id);
-
-      return formData;
-    },
 
     submit() {
+      this.payload.company_id = this.$auth.user.company_id;
+
       this.$axios
-        .post(`add-member`, this.mapper(Object.assign(this.payload)))
+        .post(`add-member`, this.payload)
         .then(({ data }) => {
           this.errors = [];
-          this.$emit("response", "Tanent inserted successfully");
+          this.assignTanent(data.record.id);
         })
         .catch(({ response }) => {
           this.response = response?.data?.message ?? null;
           this.errors = response?.data?.errors ?? [];
         });
+    },
+
+    assignTanent(id) {
+      this.$axios
+        .post(`/assign-tanents/${id}`, {
+          parent_ids: [this.payload.parent_id],
+        })
+        .then(({ data }) => {
+          this.$emit("response", "Maid inserted successfully");
+        })
+        .catch(({ response }) => {
+          this.handleErrorResponse(response);
+        });
+
+      // }
     },
   },
 };

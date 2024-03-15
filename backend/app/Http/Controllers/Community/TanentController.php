@@ -35,7 +35,7 @@ class TanentController extends Controller
             "parent_id" => 0,
         ])
             ->with(["floor", "room"])
-            ->withCount("members")
+            ->withCount(["members", "cards"])
 
             ->orderBy('full_name', 'asc')
             ->get();
@@ -221,8 +221,8 @@ class TanentController extends Controller
                     ->whereDate('end_date', '<=', request("end_date"));
             })
 
-            ->withCount("members")
-            ->with(["vehicles", "members", "floor", "room"])
+            ->withCount(["members", "cards"])
+            ->with(["vehicles", "members", "members_only", "cards", "maids", "floor", "room"])
             ->orderBy('id', 'desc')
             ->paginate(request("per_page") ?? 10);
 
@@ -237,7 +237,6 @@ class TanentController extends Controller
         ])
 
             ->when(request()->filled("system_user_id"), fn ($q) => $q->where("system_user_id", request("system_user_id")))
-
             ->when(request()->filled("full_name"), fn ($q) => $q->whereRaw('LOWER(full_name) LIKE ?', "%" . strtolower(request("full_name")) . "%"))
             ->when(request()->filled("term"), fn ($q) => $q->whereRaw('LOWER(term) LIKE ?', "%" . strtolower(request("term")) . "%"))
             ->when(request()->filled("member_type"), fn ($q) => $q->where("member_type", request("member_type")))
@@ -374,6 +373,11 @@ class TanentController extends Controller
             if ($request->filled("profile_picture")) {
                 $data['profile_picture'] = $this->processImage("community/profile_picture");
             }
+
+            if ($data["member_type"] = "Primary") {
+                $data["isStaying"] = 1;
+            }
+
 
             $record = Tanent::create($data);
 

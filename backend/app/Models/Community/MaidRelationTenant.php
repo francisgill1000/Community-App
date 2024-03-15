@@ -20,4 +20,9 @@ class MaidRelationTenant extends Model
     {
         return $this->belongsTo(Tanent::class);
     }
+
+    public function maid()
+    {
+        return $this->belongsTo(Tanent::class)->where("member_type", "Maid");
+    }
 }

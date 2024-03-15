@@ -13,7 +13,25 @@
             <div class="mb-2">
               <b>Add Card</b>
             </div>
+          </v-col>
+
+          <v-col cols="12">
             <v-text-field
+              label="Device User Id"
+              :readonly="true"
+              v-model="payload.system_user_id"
+              dense
+              class="text-center"
+              outlined
+              :hide-details="!errors.system_user_id"
+              :error-messages="
+                errors && errors.system_user_id ? errors.system_user_id[0] : ''
+              "
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
+              append-icon="mdi-credit-card-scan-outline"
               label="RFID"
               :readonly="disabled"
               v-model="payload.rfid"

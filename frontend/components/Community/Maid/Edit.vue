@@ -13,16 +13,15 @@
           <v-col cols="3">
             <v-row>
               <v-col cols="12">
-                <div class="text-center">
-                  <SnippetsUploadAttachment
-                    :defaultImage="setImagePreview"
-                    @uploaded="handleAttachment"
-                  />
-
-                  <span v-if="errors && errors.logo" class="text-danger mt-2">{{
-                    errors.logo[0]
-                  }}</span>
-                </div>
+                <CameraORUpload
+                  :PreviewImage="payload.profile_picture"
+                  @imageSrc="handleAttachment"
+                />
+                <span
+                  v-if="errors && errors.profile_picture"
+                  class="text-danger mt-2"
+                  >{{ errors.profile_picture[0] }}</span
+                >
               </v-col>
             </v-row>
           </v-col>
@@ -114,19 +113,15 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-radio-group
-                  class="ma-0 mt-2 px-2 pa-0"
-                  v-model="payload.gender"
-                  row
-                  :hide-details="!errors.gender"
-                  :error-messages="
-                    errors && errors.gender ? errors.gender[0] : ''
-                  "
-                >
-                  <v-radio label="Male" value="Male"></v-radio>
-                  <v-radio label="Female" value="Female"></v-radio>
-                  <v-radio label="Other" value="Other"></v-radio>
-                </v-radio-group>
+                <v-text-field
+                  label="RFID"
+                  v-model="payload.rfid"
+                  dense
+                  class="text-center"
+                  outlined
+                  :hide-details="!errors.rfid"
+                  :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
+                ></v-text-field>
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -142,26 +137,19 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-text-field
-                  label="RFID"
-                  v-model="payload.rfid"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.rfid"
-                  :error-messages="errors && errors.rfid ? errors.rfid[0] : ''"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  label="PIN"
-                  v-model="payload.pin"
-                  dense
-                  class="text-center"
-                  outlined
-                  :hide-details="!errors.pin"
-                  :error-messages="errors && errors.pin ? errors.pin[0] : ''"
-                ></v-text-field>
+                <v-radio-group
+                  class="ma-0 mt-2 px-2 pa-0"
+                  v-model="payload.gender"
+                  row
+                  :hide-details="!errors.gender"
+                  :error-messages="
+                    errors && errors.gender ? errors.gender[0] : ''
+                  "
+                >
+                  <v-radio label="Male" value="Male"></v-radio>
+                  <v-radio label="Female" value="Female"></v-radio>
+                  <v-radio label="Other" value="Other"></v-radio>
+                </v-radio-group>
               </v-col>
             </v-row>
           </v-col>
@@ -256,27 +244,10 @@ export default {
     },
 
     submit(member) {
-      let formData = new FormData();
-
-      if (member.profile_picture && member.profile_picture.name) {
-        formData.append("profile_picture", member.profile_picture);
-      }
-
-      formData.append("first_name", member.first_name);
-      formData.append("last_name", member.last_name);
-      formData.append("age", member.age);
-      formData.append("phone_number", member.phone_number);
-      formData.append("member_type", member.member_type);
-      formData.append("nationality", member.nationality);
-      formData.append("gender", member.gender);
-
-      formData.append("rfid", member.rfid);
-      formData.append("pin", member.pin);
-
       this.$axios
-        .post("/update-member/" + this.item.id, formData)
+        .post("/update-member/" + this.item.id, member)
         .then(({ data }) => {
-          this.handleSuccessResponse("Member has been updated");
+          this.handleSuccessResponse("Maid has been updated");
         })
         .catch(({ response }) => {
           this.handleErrorResponse(response);

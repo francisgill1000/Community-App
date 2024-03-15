@@ -150,6 +150,14 @@ class RoomController extends Controller
             ->with("members")->get();
     }
 
+    public function getCardsByRoomsId()
+    {
+
+        $tanent_id = Room::where("id", request("room_id"))->orderBy("id", "desc")->value("tenant_id") ?? 0;
+
+        return Tanent::where("parent_id",$tanent_id)->where("member_type", "card")->get();
+    }
+
     /**
      * Store a newly created resource in storage.
      *

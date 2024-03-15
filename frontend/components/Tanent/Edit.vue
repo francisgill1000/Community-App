@@ -9,6 +9,7 @@
     <v-tabs color="deep-purple accent-4">
       <v-tab>Basic Info</v-tab>
       <v-tab>Members</v-tab>
+      <v-tab>Cards</v-tab>
       <v-tab>Vechicle Info</v-tab>
       <!-- <v-tab>Documentation</v-tab> -->
 
@@ -384,183 +385,445 @@
           </v-row>
           <TanentAddMemberFromEdit
             :item="payload"
+            v-if="!payload.members_only.length"
+          />
+          <div v-else>
+            <v-card
+              outlined
+              v-for="(member, index) in payload.members_only"
+              :key="index"
+              class="mb-2"
+            >
+              <v-container>
+                <v-row>
+                  <v-col cols="3">
+                    <v-row>
+                      <v-col cols="12">
+                        <CameraORUpload
+                          :PreviewImage="member.profile_picture"
+                          @imageSrc="
+                            (e) => {
+                              member.profile_picture = e;
+                            }
+                          "
+                        />
+
+                        <span
+                          v-if="errors && errors.profile_picture"
+                          class="text-danger mt-2"
+                          >{{ errors.profile_picture[0] }}</span
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="9">
+                    <v-row class="mt-1">
+                      <v-col cols="6">
+                        <v-text-field
+                          readonly
+                          label="Member Type"
+                          v-model="member.member_type"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.member_type"
+                          :error-messages="
+                            errors && errors.member_type
+                              ? errors.member_type[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          readonly
+                          label="System User Id"
+                          v-model="member.system_user_id"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.system_user_id"
+                          :error-messages="
+                            errors && errors.system_user_id
+                              ? errors.system_user_id[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          label="First Name"
+                          v-model="member.first_name"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.first_name"
+                          :error-messages="
+                            errors && errors.first_name
+                              ? errors.first_name[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          label="Last Name"
+                          v-model="member.last_name"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.last_name"
+                          :error-messages="
+                            errors && errors.last_name
+                              ? errors.last_name[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          label="Age"
+                          v-model="member.age"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.age"
+                          :error-messages="
+                            errors && errors.age ? errors.age[0] : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          label="Phone Number"
+                          v-model="member.phone_number"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.phone_number"
+                          :error-messages="
+                            errors && errors.phone_number
+                              ? errors.phone_number[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          label="Nationality"
+                          v-model="member.nationality"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.nationality"
+                          :error-messages="
+                            errors && errors.nationality
+                              ? errors.nationality[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          label="RFID"
+                          v-model="member.rfid"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.rfid"
+                          :error-messages="
+                            errors && errors.rfid ? errors.rfid[0] : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-radio-group
+                          class="ma-0 mt-2 px-2 pa-0"
+                          v-model="member.gender"
+                          row
+                          :hide-details="!errors.gender"
+                          :error-messages="
+                            errors && errors.gender ? errors.gender[0] : ''
+                          "
+                        >
+                          <v-radio label="Male" value="Male"></v-radio>
+                          <v-radio label="Female" value="Female"></v-radio>
+                          <v-radio label="Other" value="Other"></v-radio>
+                        </v-radio-group>
+                      </v-col>
+
+                      <v-col cols="6" class="text-right">
+                        <v-icon @click="update_member(member)" color="primary"
+                          >mdi-floppy</v-icon
+                        >
+                        <v-icon
+                          @click="delete_member(index, member)"
+                          color="error"
+                          >mdi-delete</v-icon
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+            <v-card
+              outlined
+              v-for="(maid, maidIndex) in payload.maids"
+              :key="maidIndex"
+              class="mb-2"
+            >
+              <v-container>
+                <v-row>
+                  <v-col cols="3">
+                    <v-row>
+                      <v-col cols="12">
+                        <CameraORUpload
+                          :PreviewImage="maid.profile_picture"
+                          @imageSrc="
+                            (e) => {
+                              maid.profile_picture = e;
+                            }
+                          "
+                        />
+
+                        <span
+                          v-if="errors && errors.profile_picture"
+                          class="text-danger mt-2"
+                          >{{ errors.profile_picture[0] }}</span
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="9">
+                    <v-row class="mt-1">
+                      <v-col cols="6">
+                        <v-text-field
+                          readonly
+                          label="Member Type"
+                          v-model="maid.member_type"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.member_type"
+                          :error-messages="
+                            errors && errors.member_type
+                              ? errors.member_type[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          readonly
+                          label="System User Id"
+                          v-model="maid.system_user_id"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.system_user_id"
+                          :error-messages="
+                            errors && errors.system_user_id
+                              ? errors.system_user_id[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          label="First Name"
+                          v-model="maid.first_name"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.first_name"
+                          :error-messages="
+                            errors && errors.first_name
+                              ? errors.first_name[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          label="Last Name"
+                          v-model="maid.last_name"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.last_name"
+                          :error-messages="
+                            errors && errors.last_name
+                              ? errors.last_name[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          label="Age"
+                          v-model="maid.age"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.age"
+                          :error-messages="
+                            errors && errors.age ? errors.age[0] : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          label="Phone Number"
+                          v-model="maid.phone_number"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.phone_number"
+                          :error-messages="
+                            errors && errors.phone_number
+                              ? errors.phone_number[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          label="Nationality"
+                          v-model="maid.nationality"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.nationality"
+                          :error-messages="
+                            errors && errors.nationality
+                              ? errors.nationality[0]
+                              : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field
+                          label="RFID"
+                          v-model="maid.rfid"
+                          dense
+                          class="text-center"
+                          outlined
+                          :hide-details="!errors.rfid"
+                          :error-messages="
+                            errors && errors.rfid ? errors.rfid[0] : ''
+                          "
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-radio-group
+                          class="ma-0 mt-2 px-2 pa-0"
+                          v-model="maid.gender"
+                          row
+                          :hide-details="!errors.gender"
+                          :error-messages="
+                            errors && errors.gender ? errors.gender[0] : ''
+                          "
+                        >
+                          <v-radio label="Male" value="Male"></v-radio>
+                          <v-radio label="Female" value="Female"></v-radio>
+                          <v-radio label="Other" value="Other"></v-radio>
+                        </v-radio-group>
+                      </v-col>
+
+                      <v-col cols="6" class="text-right">
+                        <v-icon @click="update_member(maid)" color="primary"
+                          >mdi-floppy</v-icon
+                        >
+                        <v-icon
+                          @click="delete_member(maidIndex, maid)"
+                          color="error"
+                          >mdi-delete</v-icon
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </div>
+        </v-container>
+      </v-tab-item>
+
+      <v-tab-item>
+        <v-container>
+          <v-row>
+            <v-col cols="12" class="text-right mb-5">
+              <v-icon color="primary" @click="dialog = false"
+                >mdi-close-circle-outline</v-icon
+              >
+            </v-col>
+          </v-row>
+          <TanentAddMemberFromEdit
+            :item="payload"
             v-if="!payload.members.length"
           />
-          <!-- <v-alert
-            v-if="!payload.members.length"
-            outlined
-            color="primary"
-            dense
-            class="text-center"
-          >
-            No Member(s) found
-          </v-alert> -->
-          <v-card
-            v-else
-            outlined
-            v-for="(member, index) in payload.members"
-            :key="index"
-            class="mb-2"
-          >
-            <v-container>
-              <v-row>
-                <v-col cols="3">
-                  <div class="text-center">
-                    <CameraORUpload
-                      :PreviewImage="member.profile_picture"
-                      @imageSrc="
-                        (e) => {
-                          member.profile_picture = e;
-                        }
+          <div v-else>
+            <v-card
+              outlined
+              v-for="(member, index) in payload.cards"
+              :key="index"
+              class="mb-2"
+            >
+              <v-container>
+                <v-row class="mt-1">
+                  <v-col cols="6">
+                    <v-text-field
+                      readonly
+                      label="System User Id"
+                      v-model="member.system_user_id"
+                      dense
+                      class="text-center"
+                      outlined
+                      :hide-details="!errors.system_user_id"
+                      :error-messages="
+                        errors && errors.system_user_id
+                          ? errors.system_user_id[0]
+                          : ''
                       "
-                    />
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-text-field
+                      label="RFID"
+                      v-model="member.rfid"
+                      dense
+                      class="text-center"
+                      outlined
+                      :hide-details="!errors.rfid"
+                      :error-messages="
+                        errors && errors.rfid ? errors.rfid[0] : ''
+                      "
+                    ></v-text-field>
+                  </v-col>
 
-                    <span
-                      v-if="errors && errors.profile_picture"
-                      class="text-danger mt-2"
-                      >{{ errors.profile_picture[0] }}</span
+                  <v-col cols="12" class="text-right">
+                    <v-icon @click="update_member(member)" color="primary"
+                      >mdi-floppy</v-icon
                     >
-                  </div>
-                </v-col>
-                <v-col cols="9">
-                  <v-row class="mt-1">
-                    <v-col cols="6">
-                      <v-text-field
-                        label="First Name"
-                        v-model="member.first_name"
-                        dense
-                        class="text-center"
-                        outlined
-                        :hide-details="!errors.first_name"
-                        :error-messages="
-                          errors && errors.first_name
-                            ? errors.first_name[0]
-                            : ''
-                        "
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Last Name"
-                        v-model="member.last_name"
-                        dense
-                        class="text-center"
-                        outlined
-                        :hide-details="!errors.last_name"
-                        :error-messages="
-                          errors && errors.last_name ? errors.last_name[0] : ''
-                        "
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Age"
-                        v-model="member.age"
-                        dense
-                        class="text-center"
-                        outlined
-                        :hide-details="!errors.age"
-                        :error-messages="
-                          errors && errors.age ? errors.age[0] : ''
-                        "
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-autocomplete
-                        label="Member Type"
-                        outlined
-                        v-model="member.member_type"
-                        :items="member_types"
-                        dense
-                        :hide-details="!errors.member_type"
-                        :error-messages="
-                          errors && errors.member_type
-                            ? errors.member_type[0]
-                            : ''
-                        "
-                      >
-                      </v-autocomplete>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Nationality"
-                        v-model="member.nationality"
-                        dense
-                        class="text-center"
-                        outlined
-                        :hide-details="!errors.nationality"
-                        :error-messages="
-                          errors && errors.nationality
-                            ? errors.nationality[0]
-                            : ''
-                        "
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-radio-group
-                        class="ma-0 mt-2 px-2 pa-0"
-                        v-model="member.gender"
-                        row
-                        :hide-details="!errors.gender"
-                        :error-messages="
-                          errors && errors.gender ? errors.gender[0] : ''
-                        "
-                      >
-                        <v-radio label="Male" value="Male"></v-radio>
-                        <v-radio label="Female" value="Female"></v-radio>
-                        <v-radio label="Other" value="Other"></v-radio>
-                      </v-radio-group>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-text-field
-                        label="RFID"
-                        v-model="member.rfid"
-                        dense
-                        class="text-center"
-                        outlined
-                        :hide-details="!errors.rfid"
-                        :error-messages="
-                          errors && errors.rfid ? errors.rfid[0] : ''
-                        "
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="6">
-                      <v-text-field
-                        label="Phone Number"
-                        v-model="member.phone_number"
-                        dense
-                        class="text-center"
-                        outlined
-                        :hide-details="!errors.phone_number"
-                        :error-messages="
-                          errors && errors.phone_number
-                            ? errors.phone_number[0]
-                            : ''
-                        "
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" class="text-right">
-                      <v-icon @click="update_member(member)" color="primary"
-                        >mdi-floppy</v-icon
-                      >
-                      <v-icon
-                        @click="delete_member(index, member)"
-                        color="error"
-                        >mdi-delete</v-icon
-                      >
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
+                    <v-icon @click="delete_member(index, member)" color="error"
+                      >mdi-delete</v-icon
+                    >
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+          </div>
         </v-container>
       </v-tab-item>
 
@@ -801,6 +1064,7 @@ export default {
       this.payload[key] = document;
     },
     handleAttachment(e) {
+      console.log("🚀 ~ handleAttachment ~ e:", e);
       this.payload.profile_picture = e;
     },
     getRoomNumber(room_id) {
@@ -849,7 +1113,11 @@ export default {
       ...payload
     }) {
       this.setImagePreview = profile_picture;
+
+      
       this.payload = payload;
+
+      
 
       this.getRoomsByFloorId(payload.floor_id);
     },

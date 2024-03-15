@@ -425,6 +425,13 @@
     "module": "tanents"
   },
   {
+    "icon": "mdi-credit-card-scan-outline",
+    "title": "Tenant Card Upload",
+    "to": "/community/tanent/tanent_card_upload",
+    "menu": "tanent",
+    "module": "tanents"
+  },
+  {
     "icon": "mdi-chart-box-outline",
     "title": "Reports",
     "to": "/community/tanent/reports",
