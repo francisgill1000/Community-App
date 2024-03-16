@@ -67,7 +67,9 @@ class Tanent extends Model
     }
     public function tanent_for_maid()
     {
-        return $this->hasOne(MaidRelationTenant::class, "maid_id")->orderBy("id", "desc")->with("tanent");
+        return $this->hasOne(MaidRelationTenant::class, "maid_id")->orderBy("id", "desc")->with([
+            "tanent" => fn ($q) => $q->with("room")
+        ]);
     }
 
     public function vehicles()

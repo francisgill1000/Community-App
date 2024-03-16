@@ -357,12 +357,7 @@
 
 <script>
 import company_menus from "../menus/company.json";
-import visitor_menus from "../menus/visitor.json";
-
-import guard_menus from "../menus/guard.json";
-
 import company_top_menu from "../menus/company_modules_top.json";
-import visitor_top_menu from "../menus/visitor_modules_top.json";
 
 export default {
   data() {
@@ -446,10 +441,7 @@ export default {
 
       topMenu_Selected: "dashboard",
       company_menus,
-      visitor_menus,
-      guard_menus,
       company_top_menu,
-      visitor_top_menu,
       pendingLeavesCount: 0,
       pendingNotificationsCount: 0,
       snackNotificationText: "",

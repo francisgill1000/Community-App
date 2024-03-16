@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Community;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Community\Tanent\CardRequest;
+use App\Http\Requests\Community\Tanent\CardUpdateRequest;
 use App\Http\Requests\Community\Tanent\RegisterRequest;
 use App\Http\Requests\Community\Tanent\MemberRequest;
 use App\Http\Requests\Community\Tanent\MemberUpdateRequest;
@@ -365,9 +367,8 @@ class TanentController extends Controller
             $data["full_name"] = "{$data["first_name"]} {$data["last_name"]}";
 
             $room_number = $request->room_number;
-            $room_category_id = $request->room_category_id;
-            $tanentId = Tanent::max('id') + 1;
-            $data["system_user_id"] = "{$room_category_id}{$room_number}{$tanentId}";
+            $tanentId = Tanent::where("room_id", $request->room_id)->count() + 1;
+            $data["system_user_id"] = "{$room_number}{$tanentId}";
 
 
             if ($request->filled("profile_picture")) {
@@ -484,6 +485,38 @@ class TanentController extends Controller
         }
     }
 
+    public function addCard(CardRequest $request)
+    {
+        try {
+
+            $record = Tanent::create($request->validated());
+
+            if ($record) {
+                return $this->response('Card Successfully created.', $record, true);
+            } else {
+                return $this->response('Card cannot create.', null, false);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function updateCard(CardUpdateRequest $request, $id)
+    {
+        try {
+
+            $record = Tanent::where("id", $id)->update($request->validated());
+
+            if ($record) {
+                return $this->response('Card Successfully updated.', $record, true);
+            } else {
+                return $this->response('Card cannot update.', null, false);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function assignTanentstoMaid(Request $request, $id)
     {
         $arr = [];
@@ -526,8 +559,10 @@ class TanentController extends Controller
 
             $data = $request->validated();
 
-            if ($request->filled("profile_picture")) {
+            if ($data["profile_picture"]) {
                 $data['profile_picture'] = $this->processImage("community/profile_picture");
+            } else {
+                unset($data["profile_picture"]);
             }
 
             $data["full_name"] = "{$data["first_name"]} {$data["last_name"]}";

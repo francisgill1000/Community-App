@@ -14,7 +14,7 @@
             <v-row>
               <v-col cols="12">
                 <CameraORUpload
-                  :PreviewImage="payload.profile_picture"
+                  :PreviewImage="PreviewImage"
                   @imageSrc="handleAttachment"
                 />
                 <span
@@ -183,9 +183,7 @@ export default {
       full_name: "",
       phone_number: "",
     },
-    imagePreview: "/no-profile-image.jpg",
-    setImagePreview: null,
-    imageMemberPreview: "/no-profile-image.jpg",
+    PreviewImage:"/no-profile-image.jpg",
 
     snack: false,
     snackColor: "",
@@ -201,7 +199,6 @@ export default {
     upload: {
       name: "",
     },
-
     snackbar: false,
     ids: [],
     loading: false,
@@ -212,7 +209,11 @@ export default {
     tanents: [],
   }),
   mounted() {
-    this.payload = this.item;
+    this.PreviewImage = this.item.profile_picture;
+    this.payload = {
+      ...this.item,
+      profile_picture: '',
+    };
   },
   async created() {
     this.loading = false;

@@ -56,40 +56,33 @@
             v-slot:item.full_name="{ item, index }"
             style="width: 300px"
           >
-            <v-row no-gutters>
-              <v-col
-                style="
-                  padding: 5px;
-                  padding-left: 0px;
-                  width: 50px;
-                  max-width: 50px;
-                "
-              >
-                <v-img
-                  style="
-                    border-radius: 50%;
-                    height: 50px;
-                    width: 50px;
-                    max-width: 50px;
-                  "
-                  :src="
-                    item.profile_picture
-                      ? item.profile_picture
-                      : '/no-profile-image.jpg'
-                  "
-                >
-                </v-img>
+            <v-row no-gutters class="pa-1">
+              <v-col cols="3">
+                <v-avatar size="50">
+                  <v-img
+                    :src="
+                      item.profile_picture
+                        ? item.profile_picture
+                        : '/no-profile-image.jpg'
+                    "
+                  >
+                  </v-img>
+                </v-avatar>
               </v-col>
-              <v-col style="padding: 10px">
-                <strong> {{ item.full_name }}</strong>
-                <p>
-                  {{ item.phone_number }}<br v-if="item.phone_number" />{{
-                    item.nationality
-                  }}
-                </p>
+              <v-col>
+                <div>
+                  <strong> {{ item.full_name }}</strong>
+                  <p>{{ item.age }} years old <br />{{ item.nationality }}</p>
+                </div>
               </v-col>
             </v-row>
           </template>
+
+          <template v-slot:item.tanent_for_maid="{ item, index }">
+            <strong> {{ item.tanent_for_maid?.tanent?.full_name }}</strong>
+            <p>Flat {{ item.tanent_for_maid?.tanent?.room?.room_number }}</p>
+          </template>
+
           <template v-slot:item.options="{ item }">
             <v-menu bottom left>
               <template v-slot:activator="{ on, attrs }">
@@ -205,20 +198,11 @@ export default {
         filterSpecial: false,
       },
       {
-        text: "Age",
-        align: "left",
-        sortable: true,
-        key: "age",
-        value: "age",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
         text: "Tanent",
         align: "left",
         sortable: true,
-        key: "tanent_for_maid.tanent.full_name",
-        value: "tanent_for_maid.tanent.full_name",
+        key: "tanent_for_maid",
+        value: "tanent_for_maid",
         filterable: true,
         filterSpecial: false,
       },
@@ -228,24 +212,6 @@ export default {
         sortable: true,
         key: "tanent_for_maid.tanent.phone_number",
         value: "tanent_for_maid.tanent.phone_number",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
-        text: "Tanent Term",
-        align: "left",
-        sortable: true,
-        key: "tanent_for_maid.tanent.term",
-        value: "tanent_for_maid.tanent.term",
-        filterable: true,
-        filterSpecial: false,
-      },
-      {
-        text: "Nationality",
-        align: "left",
-        sortable: true,
-        key: "nationality",
-        value: "nationality",
         filterable: true,
         filterSpecial: false,
       },
@@ -290,9 +256,12 @@ export default {
         Object.keys(item).forEach((key) => {
           if (cols.includes(key)) {
             filteredItem[key] = item[key];
-            filteredItem["tanent_full_name"] = item?.tanent_for_maid?.tanent?.full_name ?? "---";
-            filteredItem["tanent_phone_number"] = item?.tanent_for_maid?.tanent?.phone_number ?? "---";
-            filteredItem["tanent_term"] = item?.tanent_for_maid?.tanent?.term ?? "---";
+            filteredItem["tanent_full_name"] =
+              item?.tanent_for_maid?.tanent?.full_name ?? "---";
+            filteredItem["tanent_phone_number"] =
+              item?.tanent_for_maid?.tanent?.phone_number ?? "---";
+            filteredItem["tanent_term"] =
+              item?.tanent_for_maid?.tanent?.term ?? "---";
           }
         });
         return filteredItem;

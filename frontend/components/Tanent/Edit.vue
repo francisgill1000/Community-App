@@ -33,6 +33,21 @@
                 </v-col>
                 <v-col cols="12">
                   <v-text-field
+                    label="User Device Id"
+                    v-model="payload.system_user_id"
+                    dense
+                    class="text-center"
+                    outlined
+                    :hide-details="!errors.system_user_id"
+                    :error-messages="
+                      errors && errors.system_user_id
+                        ? errors.system_user_id[0]
+                        : ''
+                    "
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
                     label="RFID"
                     v-model="payload.rfid"
                     dense
@@ -384,8 +399,15 @@
             </v-col>
           </v-row>
           <TanentAddMemberFromEdit
-            :item="payload"
-            v-if="!payload.members_only.length"
+            :item="{
+              tanent_id: item.id,
+              system_user_id:
+                parseInt(item.system_user_id) +
+                parseInt(item.members_count) +
+                parseInt(item.cards_count) +
+                1,
+            }"
+            v-if="!payload.members_only.length && !payload.maids.length"
           />
           <div v-else>
             <v-card
@@ -404,6 +426,7 @@
                           @imageSrc="
                             (e) => {
                               member.profile_picture = e;
+                              member.isImage = true;
                             }
                           "
                         />
@@ -769,9 +792,16 @@
               >
             </v-col>
           </v-row>
-          <TanentAddMemberFromEdit
-            :item="payload"
-            v-if="!payload.members.length"
+          <TanentAddCardFromEdit
+            @success="handleSuccessResponse"
+            :item="{
+              tanent_id: item.id,
+              system_user_id:
+                parseInt(item.system_user_id) +
+                parseInt(item.members_count + parseInt(item.cards_count)) +
+                1,
+            }"
+            v-if="!payload.cards.length"
           />
           <div v-else>
             <v-card
@@ -782,10 +812,10 @@
             >
               <v-container>
                 <v-row class="mt-1">
-                  <v-col cols="6">
+                  <v-col cols="12">
                     <v-text-field
-                      readonly
-                      label="System User Id"
+                      disabled
+                      label="User Device Id"
                       v-model="member.system_user_id"
                       dense
                       class="text-center"
@@ -798,8 +828,22 @@
                       "
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="6">
+                  <v-col cols="5">
                     <v-text-field
+                      label="Card Name"
+                      v-model="member.full_name"
+                      dense
+                      class="text-center"
+                      outlined
+                      :hide-details="!errors.full_name"
+                      :error-messages="
+                        errors && errors.full_name ? errors.full_name[0] : ''
+                      "
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-text-field
+                      append-icon="mdi-credit-card-scan-outline"
                       label="RFID"
                       v-model="member.rfid"
                       dense
@@ -812,8 +856,8 @@
                     ></v-text-field>
                   </v-col>
 
-                  <v-col cols="12" class="text-right">
-                    <v-icon @click="update_member(member)" color="primary"
+                  <v-col cols="2" class="">
+                    <v-icon @click="update_card(member)" color="primary"
                       >mdi-floppy</v-icon
                     >
                     <v-icon @click="delete_member(index, member)" color="error"
@@ -1046,6 +1090,10 @@ export default {
   },
 
   methods: {
+    handleSuccessResponse(message) {
+      this.$emit("success", message);
+    },
+
     async getRelatedChildDetails() {
       await this.setRoomSubCategories(this.payload.room_category_id);
     },
@@ -1114,10 +1162,7 @@ export default {
     }) {
       this.setImagePreview = profile_picture;
 
-      
       this.payload = payload;
-
-      
 
       this.getRoomsByFloorId(payload.floor_id);
     },
@@ -1205,8 +1250,32 @@ export default {
     },
 
     update_member(member) {
+      let newObj = {};
+
+      if (!member.isImage) {
+        newObj = { ...member, profile_picture: null };
+      } else {
+        newObj = member;
+      }
+
       this.$axios
-        .post("/update-member/" + member.id, member)
+        .post("/update-member/" + member.id, newObj)
+        .then(({ data }) => {
+          this.singleMessage = null;
+          this.errors = [];
+          this.$emit("success", "Member has been updated");
+        })
+        .catch(({ response }) => {
+          this.handleErrorResponse(response);
+        });
+
+      // }
+    },
+
+    update_card(member) {
+
+      this.$axios
+        .post("/update-card/" + member.id, member)
         .then(({ data }) => {
           this.singleMessage = null;
           this.errors = [];
@@ -1227,8 +1296,7 @@ export default {
           .delete(`delete-member/${member.id}`)
           .then(({ data }) => {
             this.payload.members.splice(index, 1);
-            this.snackbar = true;
-            this.response = "Record deleted successfully";
+            this.$emit("success", "Record deleted successfully");
           })
           .catch((err) => console.log(err));
     },

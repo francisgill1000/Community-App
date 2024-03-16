@@ -31,7 +31,7 @@
                 <v-text-field
                   label="Tanent Ref #"
                   :disabled="true"
-                  v-model="payload.parent_id"
+                  v-model="item.tanent_id"
                   dense
                   class="text-center"
                   outlined
@@ -45,7 +45,7 @@
                 <v-text-field
                   label="Device User Id"
                   :readonly="true"
-                  v-model="payload.system_user_id"
+                  v-model="item.system_user_id"
                   dense
                   class="text-center"
                   outlined

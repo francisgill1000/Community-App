@@ -521,13 +521,23 @@ export default {
           rfid: e.rfid,
         });
 
-        e.members.forEach((m) => {
+        e.members_only.forEach((member) => {
           result.push({
-            id: e.id + m.id,
-            full_name: m.full_name,
-            system_user_id: m.system_user_id,
-            profile_picture: m.profile_picture,
-            rfid: m.rfid,
+            id: e.id + member.id,
+            full_name: member.full_name,
+            system_user_id: member.system_user_id,
+            profile_picture: member.profile_picture,
+            rfid: member.rfid,
+          });
+        });
+
+        e.maids.forEach((maid) => {
+          result.push({
+            id: e.id + maid.id,
+            full_name: maid.full_name,
+            system_user_id: maid.system_user_id,
+            profile_picture: maid.profile_picture,
+            rfid: maid.rfid,
           });
         });
       });
@@ -887,12 +897,12 @@ export default {
       let personListArray = [];
 
       this.rightEmployees.forEach((item) => {
-        console.log("item",item);
+        console.log("item", item);
         let person = {
           name: item.full_name,
           userCode: parseInt(item.system_user_id),
           faceImage: item.profile_picture,
-          cardData:   item.rfid ,
+          cardData: item.rfid,
           // process.env.APP_ENV != "local"
           //   ? item.profile_picture
           //   : "https://backend.mytime2cloud.com/media/employee/profile_picture/1697544063.jpg",

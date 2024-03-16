@@ -2,8 +2,10 @@
   <v-dialog persistent v-model="dialog" width="500">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-icon color="secondary" small> mdi-credit-card-scan-outline</v-icon>
-        Add Card
+        <v-alert outlined color="primary" dense class="text-center">
+          <v-icon color="primary" small> mdi-credit-card-scan-outline </v-icon>
+          Add Card(s)
+        </v-alert>
       </span>
     </template>
     <v-card>
@@ -122,7 +124,7 @@ export default {
         .post(`add-card`, this.payload)
         .then(({ data }) => {
           this.errors = [];
-          this.handleSuccessResponse("Tanent inserted successfully");
+          this.handleSuccessResponse("Card inserted successfully");
         })
         .catch(({ response }) => {
           this.handleErrorResponse(response);

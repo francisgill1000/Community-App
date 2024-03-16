@@ -514,7 +514,7 @@ export default {
       data.forEach((e) => {
         result.push({
           id: e.id,
-          full_name: "Card " + e.rfid,
+          full_name: e.full_name,
           system_user_id: parseInt(e.system_user_id),
           profile_picture: null,
           rfid: e.rfid,
