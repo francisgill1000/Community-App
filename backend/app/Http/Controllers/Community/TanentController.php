@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Community;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SDKController;
 use App\Http\Requests\Community\Tanent\CardRequest;
 use App\Http\Requests\Community\Tanent\CardUpdateRequest;
 use App\Http\Requests\Community\Tanent\RegisterRequest;
@@ -12,7 +13,7 @@ use App\Http\Requests\Community\Tanent\MemberUpdateRequest;
 use App\Http\Requests\Community\Tanent\StoreRequest;
 use App\Http\Requests\Community\Tanent\UpdateRequest;
 use App\Http\Requests\Community\Tanent\VehicleRequest;
-
+use App\Jobs\TimezonePhotoUploadJob;
 use App\Models\Community\MaidRelationTenant;
 use App\Models\Community\Room;
 use App\Models\Community\Tanent;
@@ -500,6 +501,24 @@ class TanentController extends Controller
             throw $th;
         }
     }
+
+    public function deleteCard(Request $request)
+    {
+
+        $preparedJson = [
+            "userCodeArray" => [$request->rfid],
+        ];
+
+        try {
+            $url = env('SDK_URL') . "/" . $request->device_id . "/DeletePerson";
+            $message = TimezonePhotoUploadJob::dispatch($preparedJson, $url)->get();
+            return $this->response($message, $request->device_id, true);
+        } catch (\Throwable $th) {
+            return $this->response("Card cannot delete", null, false);
+        }
+    }
+
+
 
     public function updateCard(CardUpdateRequest $request, $id)
     {

@@ -41,25 +41,25 @@ export default {
       },
     ],
     script: [
-      {
-        type: "text/javascript",
-        src: "https://code.jquery.com/jquery-3.5.1.js",
-        async: false,
-        body: false,
-      }, // Insert in body
-      {
-        type: "text/javascript",
-        src: "https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js",
-        async: false,
-        body: false,
-      }, // Insert in body
+      // {
+      //   type: "text/javascript",
+      //   src: "https://code.jquery.com/jquery-3.5.1.js",
+      //   async: false,
+      //   body: false,
+      // }, // Insert in body
+      // {
+      //   type: "text/javascript",
+      //   src: "https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js",
+      //   async: false,
+      //   body: false,
+      // }, // Insert in body
 
-      {
-        type: "text/javascript",
-        src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js",
-        async: false,
-        body: false,
-      }, // Insert in body
+      // {
+      //   type: "text/javascript",
+      //   src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js",
+      //   async: false,
+      //   body: false,
+      // }, // Insert in body
     ],
   },
 

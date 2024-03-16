@@ -20,6 +20,8 @@ Route::get('/tanent-records-csv', [TanentController::class, "recordsCsv"]);
 Route::post('/tanent-register', [TanentController::class, "register"]);
 Route::post('/add-member', [TanentController::class, "addMember"]);
 Route::post('/add-card', [TanentController::class, "addCard"]);
+Route::post('/delete-card', [TanentController::class, "deleteCard"]);
+
 Route::post('/update-card/{id}', [TanentController::class, "updateCard"]);
 Route::post('/update-member/{id}', [TanentController::class, "updateMember"]);
 Route::get('/get_member_types', [TanentController::class, "getMemberTypes"]);

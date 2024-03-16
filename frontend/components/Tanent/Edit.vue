@@ -864,6 +864,9 @@
                       >mdi-delete</v-icon
                     >
                   </v-col>
+                  <v-col cols="12">
+                    <DeleteCardDialog :key="generateRandomId()" />
+                  </v-col>
                 </v-row>
               </v-container>
             </v-card>
@@ -1090,6 +1093,11 @@ export default {
   },
 
   methods: {
+    generateRandomId() {
+      const length = 8; // Adjust the length of the ID as needed
+      const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number
+      return randomNumber.toString().padStart(length, "0"); // Convert to string and pad with leading zeros if necessary
+    },
     handleSuccessResponse(message) {
       this.$emit("success", message);
     },
@@ -1273,7 +1281,6 @@ export default {
     },
 
     update_card(member) {
-
       this.$axios
         .post("/update-card/" + member.id, member)
         .then(({ data }) => {
