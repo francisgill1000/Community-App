@@ -504,18 +504,17 @@ class TanentController extends Controller
 
     public function deleteCard(Request $request)
     {
-
         $preparedJson = [
-            "userCodeArray" => [$request->rfid],
+            "userCodeArray" => [$request->UserID],
         ];
 
-        try {
-            $url = env('SDK_URL') . "/" . $request->device_id . "/DeletePerson";
-            $message = TimezonePhotoUploadJob::dispatch($preparedJson, $url)->get();
-            return $this->response($message, $request->device_id, true);
-        } catch (\Throwable $th) {
-            return $this->response("Card cannot delete", null, false);
-        }
+        $url = env('SDK_URL') . "/" . $request->DeviceID . "/DeletePerson";
+
+        $response = Http::timeout(3000)->withoutVerifying()->post($url, $preparedJson);
+
+        $message = $response["status"] == 200 ? "Card deleted Successfully" : "Card cannot delete";
+
+        return $this->response($message, null, $response["status"]);
     }
 
 

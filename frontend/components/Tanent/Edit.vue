@@ -784,94 +784,11 @@
       </v-tab-item>
 
       <v-tab-item>
-        <v-container>
-          <v-row>
-            <v-col cols="12" class="text-right mb-5">
-              <v-icon color="primary" @click="dialog = false"
-                >mdi-close-circle-outline</v-icon
-              >
-            </v-col>
-          </v-row>
-          <TanentAddCardFromEdit
-            @success="handleSuccessResponse"
-            :item="{
-              tanent_id: item.id,
-              system_user_id:
-                parseInt(item.system_user_id) +
-                parseInt(item.members_count + parseInt(item.cards_count)) +
-                1,
-            }"
-            v-if="!payload.cards.length"
-          />
-          <div v-else>
-            <v-card
-              outlined
-              v-for="(member, index) in payload.cards"
-              :key="index"
-              class="mb-2"
-            >
-              <v-container>
-                <v-row class="mt-1">
-                  <v-col cols="12">
-                    <v-text-field
-                      disabled
-                      label="User Device Id"
-                      v-model="member.system_user_id"
-                      dense
-                      class="text-center"
-                      outlined
-                      :hide-details="!errors.system_user_id"
-                      :error-messages="
-                        errors && errors.system_user_id
-                          ? errors.system_user_id[0]
-                          : ''
-                      "
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="5">
-                    <v-text-field
-                      label="Card Name"
-                      v-model="member.full_name"
-                      dense
-                      class="text-center"
-                      outlined
-                      :hide-details="!errors.full_name"
-                      :error-messages="
-                        errors && errors.full_name ? errors.full_name[0] : ''
-                      "
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="5">
-                    <v-text-field
-                      append-icon="mdi-credit-card-scan-outline"
-                      label="RFID"
-                      v-model="member.rfid"
-                      dense
-                      class="text-center"
-                      outlined
-                      :hide-details="!errors.rfid"
-                      :error-messages="
-                        errors && errors.rfid ? errors.rfid[0] : ''
-                      "
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="2" class="">
-                    <v-icon @click="update_card(member)" color="primary"
-                      >mdi-floppy</v-icon
-                    >
-                    <v-icon @click="delete_member(index, member)" color="error"
-                      >mdi-delete</v-icon
-                    >
-                  </v-col>
-                  <v-col cols="12">
-                    <DeleteCardDialog :key="generateRandomId()" />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-          </div>
-        </v-container>
+        <TanentCardEdit
+          :item="payload"
+          @close="(e) => (dialog = false)"
+          @success="handleSuccessResponse"
+        />
       </v-tab-item>
 
       <v-tab-item>
@@ -1279,22 +1196,6 @@ export default {
 
       // }
     },
-
-    update_card(member) {
-      this.$axios
-        .post("/update-card/" + member.id, member)
-        .then(({ data }) => {
-          this.singleMessage = null;
-          this.errors = [];
-          this.$emit("success", "Member has been updated");
-        })
-        .catch(({ response }) => {
-          this.handleErrorResponse(response);
-        });
-
-      // }
-    },
-
     delete_member(index, member) {
       confirm(
         "Are you sure you wish to delete , to mitigate any inconvenience in future."
