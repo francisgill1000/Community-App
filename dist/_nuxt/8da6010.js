@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[341],{1825:function(n,t,o){"use strict";o.r(t);var l=o(60),component=Object(l.a)({},(function(){return(0,this._self._c)("CommunityCardUpload",{attrs:{label:"Visitor",endpoint:"visitor-dropdown-list"}})}),[],!1,null,null,null);t.default=component.exports;installComponents(component,{CommunityCardUpload:o(1213).default})}}]);
