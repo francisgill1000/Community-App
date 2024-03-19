@@ -376,7 +376,7 @@ class TanentController extends Controller
                 $data['profile_picture'] = $this->processImage("community/profile_picture");
             }
 
-            if ($data["member_type"] = "Primary") {
+            if ($data["member_type"] == "Primary") {
                 $data["isStaying"] = 1;
             }
 
