@@ -142,15 +142,11 @@ class EmployeeController extends Controller
             }
         }
 
-        if ($request->filled("profile_picture")) {
+        if ($data["profile_picture"]) {
             $data['profile_picture'] = $this->processImage("media/employee/profile_picture");
+        } else {
+            unset($data["profile_picture"]);
         }
-
-
-        // if ($data['sub_department_id']=='---')
-        // {
-
-        // }
         try {
             $updated = $employee->update($data);
             if (!$updated) {

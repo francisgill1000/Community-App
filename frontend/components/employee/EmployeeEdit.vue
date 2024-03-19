@@ -167,7 +167,6 @@
                 <!-- <label class="col-form-label">Department</label> -->
                 <v-select
                   label="Department"
-                  @change="filterSubDepartmentsByDepartment($event)"
                   :items="departments"
                   item-text="name"
                   item-value="id"
@@ -177,26 +176,6 @@
                   :error-messages="
                     errors && errors.department_id
                       ? errors.department_id[0]
-                      : ''
-                  "
-                  dense
-                  outlined
-                ></v-select>
-              </v-col>
-              <v-col md="6" sm="12" cols="12">
-                <!-- <label class="col-form-label">Sub Department </label> -->
-                <v-select
-                  label="Sub Department "
-                  :items="sub_departments"
-                  item-text="name"
-                  item-value="id"
-                  placeholder="Select"
-                  v-model="employee.sub_department_id"
-                  :hide-details="!errors.sub_department_id"
-                  :error="errors.sub_department_id"
-                  :error-messages="
-                    errors && errors.sub_department_id
-                      ? errors.sub_department_id[0]
                       : ''
                   "
                   dense
@@ -227,8 +206,7 @@
           </v-col>
           <v-col class="col-sm-6">
             <CameraORUpload
-              v-if="employee && employee.profile_picture"
-              :PreviewImage="employee.profile_picture"
+              :PreviewImage="setPreviewImage"
               @imageSrc="handleAttachment"
             />
 
@@ -320,7 +298,7 @@ export default {
     upload: {
       name: "",
     },
-    previewImage: null,
+    setPreviewImage: null,
     snackbar: false,
     ids: [],
     loading: false,
@@ -336,13 +314,15 @@ export default {
     errors: [],
     departments: [],
     department_id: "",
-    filterBranchId: null,
     branchesList: [],
     isCompany: true,
+    isImage: false,
   }),
 
   async created() {
     this.getInfo(this.employeeId);
+
+    this.getDepartments();
   },
   mounted() {
     //this.getDataFromApi();
@@ -359,6 +339,10 @@ export default {
     },
   },
   methods: {
+    handleAttachment(e) {
+      this.isImage = true;
+      this.employee.profile_picture = e;
+    },
     getInfo(id) {
       this.$axios
         .get(`employee-single/${id}`)
@@ -366,7 +350,6 @@ export default {
           this.employee = {
             title: data.title,
             display_name: data.display_name,
-            profile_picture: data.profile_picture,
             full_name: data.full_name,
             first_name: data.first_name,
             last_name: data.last_name,
@@ -380,11 +363,8 @@ export default {
             reporting_manager_id: data.reporting_manager_id,
             branch_id: data.branch_id,
           };
-
-          if (this.employee.sub_department_id)
-            this.filterSubDepartmentsByDepartment(this.employee.department_id);
           // this.employee.id = data.id;
-          this.previewImage = data.profile_picture;
+          this.setPreviewImage = data.profile_picture;
           this.getDesignations();
         })
         .catch((err) => console.log(err));
@@ -403,9 +383,7 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-    getDepartments(filterBranchId) {
-      this.filterBranchId = filterBranchId;
-
+    getDepartments() {
       this.$axios
         .get(`departments`, {
           params: {
@@ -417,20 +395,6 @@ export default {
           this.departments = data.data;
         });
     },
-    filterSubDepartmentsByDepartment(filterDepartmentId) {
-      this.employee.sub_department_id = "0";
-      this.$axios
-        .get(`sub-departments`, {
-          params: {
-            per_page: 1000,
-            company_id: this.$auth.user.company_id,
-            department_ids: [filterDepartmentId],
-          },
-        })
-        .then(({ data }) => {
-          this.sub_departments = data.data;
-        });
-    },
     can() {
       return true;
     },
@@ -439,8 +403,16 @@ export default {
     },
 
     store_data() {
+      let newObj = {};
+
+      if (!this.isImage) {
+        newObj = { ...this.employee, profile_picture: null };
+      } else {
+        newObj = this.employee;
+      }
+
       this.$axios
-        .post(`/employee-update/${this.employeeId}`, this.employee)
+        .post(`/employee-update/${this.employeeId}`, newObj)
         .then(({ data }) => {
           this.loading = false;
 
