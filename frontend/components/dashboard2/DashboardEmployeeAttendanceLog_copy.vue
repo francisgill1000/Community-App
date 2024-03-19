@@ -280,7 +280,7 @@
 </template>
 <script>
 import AttendanceReport from "../../components/attendance_report/reportComponent.vue";
-import Back from "../../components/Snippets/Back.vue";
+import Back from "@/components/Snippets/Back.vue";
 
 import generalHeaders from "../../headers/general.json";
 import multiHeaders from "../../headers/multi.json";

@@ -288,7 +288,7 @@
 </template>
 <script>
 import DatePickerCommon from "../../components/Snippets/DatePickerCommon.vue";
-import Back from "../../components/Snippets/Back.vue";
+import Back from "@/components/Snippets/Back.vue";
 import headers from "../../menus/shift.json";
 import defaults from "../../defaults/shift.json";
 

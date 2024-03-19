@@ -400,7 +400,6 @@
     "menu": "contractor_access",
     "module": "house_maids"
   },
-
   {
     "icon": "mdi-account",
     "title": "Parking",
@@ -408,7 +407,27 @@
     "menu": "parking_access",
     "module": "parking"
   },
-
+  {
+    "icon": "mdi-clock-time-four-outline",
+    "title": "Timezones",
+    "to": "/community/access_control/timezone",
+    "menu": "timezone_access",
+    "module": "timezone"
+  },
+  {
+    "icon": "mdi-credit-card-clock-outline",
+    "title": "Tenant Mapping",
+    "to": "/community/access_control/tenant-mapping",
+    "menu": "timezone_access",
+    "module": "timezone"
+  },
+  {
+    "icon": "mdi-credit-card-clock-outline",
+    "title": "Employee Mapping",
+    "to": "/community/access_control/employee-mapping",
+    "menu": "timezone_access",
+    "module": "timezone"
+  },
   {
     "icon": "mdi-account-card-details",
     "image": "/tenet-3.png",

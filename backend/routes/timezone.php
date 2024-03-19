@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::apiResource('timezone', TimezoneController::class);
 
 Route::post('getTimezoneJson', [TimezoneController::class, 'getTimezoneJson']);
+Route::get('getNextAvailableIndexForTimezone', [TimezoneController::class, 'getNextAvailableIndexForTimezone']);
 Route::post('storeTimezoneDefaultJson', [TimezoneController::class, 'storeTimezoneDefaultJson']);
 Route::get('GetTimezoneDefaultJson', [TimezoneController::class, 'GetTimezoneDefaultJson']);
 Route::get('timezone/search/{key}', [TimezoneController::class, 'search']);

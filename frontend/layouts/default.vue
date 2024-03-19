@@ -208,12 +208,7 @@
         >
       </v-btn> -->
 
-      <v-btn
-        v-if="getLoginType == 'company' || getLoginType == 'branch'"
-        icon
-        plan
-        @click="goToSettings()"
-        class="mr-3"
+      <v-btn icon plan @click="goToSettings()" class="mr-3"
         ><v-icon class="violet--text" style="text-align: center"
           >mdi-settings</v-icon
         ></v-btn
@@ -356,12 +351,14 @@
 </template>
 
 <script>
-import company_menus from "../menus/company.json";
-import company_top_menu from "../menus/company_modules_top.json";
-
 export default {
   data() {
     return {
+      
+      menuProperties: require("../menus/menuProperties.json"),
+      company_menus: require("../menus/company.json"),
+      company_top_menu: require("../menus/company_modules_top.json"),
+
       notificationsMenuItems: [
         {
           title: "Visitors Pending (0)",
@@ -371,86 +368,14 @@ export default {
         },
       ],
       notificationAlarmDevices: {},
-      selectedBranchName: "All Branches",
-      seelctedBranchId: "",
-      branch_id: "",
-      menuProperties: {
-        dashboard: {
-          elevation: 0,
-          selected: "",
-        },
-        settings: {
-          elevation: 0,
-          selected: "",
-        },
-        employees: {
-          elevation: 0,
-          selected: "",
-        },
-        attendance: {
-          elevation: 0,
-          selected: "",
-        },
-        payroll: {
-          elevation: 0,
-          selected: "",
-        },
-        access_control: {
-          elevation: 0,
-          selected: "",
-        },
-        visitors: {
-          elevation: 0,
-          selected: "",
-        },
-        delivery_man: {
-          elevation: 0,
-          selected: "",
-        },
-        contractor: {
-          elevation: 0,
-          selected: "",
-        },
-        house_maids: {
-          elevation: 0,
-          selected: "",
-        },
-        parking: {
-          elevation: 0,
-          selected: "",
-        },
-        reports: {
-          elevation: 0,
-          selected: "",
-        },
-
-        profile_topmenu: {
-          elevation: 0,
-          selected: "",
-        },
-
-        tanents: {
-          elevation: 0,
-          selected: "",
-        },
-        owners: {
-          elevation: 0,
-          selected: "",
-        },
-      },
 
       topMenu_Selected: "dashboard",
-      company_menus,
-      company_top_menu,
-      pendingLeavesCount: 0,
       pendingNotificationsCount: 0,
       snackNotificationText: "",
       snackNotification: false,
       snackNotificationColor: "black",
-      socketConnectionStatus: 0,
 
       right: true,
-      rightDrawer: false,
       color: "",
       sideBarcolor: "background",
       year: new Date().getFullYear(),
@@ -460,7 +385,6 @@ export default {
       open_menu: [],
       drawer: true,
       fixed: false,
-      order_count: "",
       logo_src: "",
       items: [],
       modules: {
@@ -476,14 +400,11 @@ export default {
         icon: "mdi-logout",
         label: "Logout",
       },
-      viewing_page_name: "",
-
       inactivityTimeout: null,
       alarmNotificationStatus: false,
     };
   },
   created() {
-    this.$store.commit("loginType", this.$auth.user.user_type);
     this.getCompanyDetails();
     this.setSubLeftMenuItems("dashboard", "/dashboard", false);
     this.logo_src = require("@/static/logo22.png");
@@ -502,36 +423,29 @@ export default {
 
     menu_name = menu_name.replaceAll("-", "/");
 
-    if (this.getLoginType === "company") {
-      //-------------------
-      loadSelectedMenu = this.company_menus.filter(
-        (item) => item.to === "/" + menu_name && item.submenu == null
-      );
+    //-------------------
+    loadSelectedMenu = this.company_menus.filter(
+      (item) => item.to === "/" + menu_name && item.submenu == null
+    );
 
-      if (loadSelectedMenu[0]) {
-        menu_name = loadSelectedMenu[0].module;
+    if (loadSelectedMenu[0]) {
+      menu_name = loadSelectedMenu[0].module;
 
-        if (this.menuProperties.hasOwnProperty(menu_name)) {
-          for (const key in this.menuProperties) {
-            this.menuProperties[key].elevation = 0;
-            this.menuProperties[key].selected = "";
-          }
-
-          this.menuProperties[menu_name].elevation = 0;
-          this.menuProperties[menu_name].selected = bgColor;
+      if (this.menuProperties.hasOwnProperty(menu_name)) {
+        for (const key in this.menuProperties) {
+          this.menuProperties[key].elevation = 0;
+          this.menuProperties[key].selected = "";
         }
-        //Color is changed and Now display sub menu - click - load left sub menu items
 
-        this.items = this.company_menus.filter(
-          (item) => item.module === loadSelectedMenu[0].module
-        );
+        this.menuProperties[menu_name].elevation = 0;
+        this.menuProperties[menu_name].selected = bgColor;
       }
-    }
-    // this.setupInactivityDetection();
+      //Color is changed and Now display sub menu - click - load left sub menu items
 
-    // setTimeout(() => {
-    //   this.$router.push(`/dashboard2`);
-    // }, 1000 * 60 * 15); //15 minutes
+      this.items = this.company_menus.filter(
+        (item) => item.module === loadSelectedMenu[0].module
+      );
+    }
   },
   watch: {},
   computed: {
@@ -547,9 +461,6 @@ export default {
       }
 
       return logosrc;
-    },
-    getLoginType() {
-      return this.$store.state.loginType;
     },
   },
   methods: {
@@ -578,35 +489,6 @@ export default {
       this.company_top_menu = menus.filter((e) =>
         permissions.includes(e.permission)
       );
-
-      return;
-      //update company Top menu
-      //filter Display Modules From Company Settings
-
-      // try {
-      //   if (this.$auth.user.company.display_modules) {
-      //     let display_modules = JSON.parse(
-      //       this.$auth.user.company.display_modules
-      //     );
-      //     if (display_modules) {
-      //       if (display_modules.access_control == false) {
-      //         this.company_top_menu = this.company_top_menu.filter(
-      //           (item) => item.menu != "access_control"
-      //         );
-      //       }
-      //       if (display_modules.visitors == false) {
-      //         this.company_top_menu = this.company_top_menu.filter(
-      //           (item) => item.menu != "visitors"
-      //         );
-      //       }
-      //       if (display_modules.community == false) {
-      //         this.company_top_menu = this.company_top_menu.filter(
-      //           (item) => item.menu != "community"
-      //         );
-      //       }
-      //     }
-      //   }
-      // } catch (e) {}
     },
     handleActivity() {
       this.resetTimer();

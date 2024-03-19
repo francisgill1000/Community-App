@@ -28,8 +28,7 @@ class ZombieDelete extends Command
      */
     public function handle()
     {
-        echo Tanent::where("room_id", 83)->delete();
-
+        // use this file in you need to delete record form the command.
         return 0;
     }
 }

@@ -283,29 +283,7 @@
                     "
                   ></v-text-field>
                 </v-col>
-                <!-- <v-col v-if="isCompany" cols="6">
-                  <v-select
-                    label="Branch"
-                    @change="filterDepartmentsByBranch(employee.branch_id)"
-                    v-model="employee.branch_id"
-                    :items="branchList"
-                    dense
-                    placeholder="Select Branch"
-                    outlined
-                    item-value="id"
-                    item-text="name"
-                    :error="errors.branch_id"
-                    :error-messages="
-                      errors && errors.branch_id ? errors.branch_id[0] : ''
-                    "
-                  >
-                  </v-select>
-                </v-col> -->
-
                 <v-col cols="6">
-                  <!-- <label class="col-form-label"
-                    >Department <span class="text-danger">*</span></label
-                  > -->
                   <v-autocomplete
                     label="Designations"
                     :items="designations"
@@ -479,18 +457,6 @@
           <v-card-text>
             <v-container>
               <v-row>
-                <v-col>
-                  <v-select
-                    :hide-details="true"
-                    clearable
-                    item-value="id"
-                    item-text="name"
-                    v-model="import_branch_id"
-                    outlined
-                    dense
-                    :items="branchList"
-                  ></v-select>
-                </v-col>
                 <v-col cols="12">
                   <v-file-input
                     accept="text/csv"
@@ -553,48 +519,8 @@
               >
             </v-btn>
           </span>
-          <!-- <span
-            ><v-btn
-              dense
-              class="ma-0 px-0"
-              x-small
-              :ripple="false"
-              text
-              title="Filter"
-            >
-              <v-icon @click="toggleFilter" class="mx-1 ml-2"
-                >mdi-filter</v-icon
-              >
-            </v-btn>
-          </span> -->
           <v-spacer></v-spacer>
-
-          <!-- <span>
-            <v-text-field
-              @input="serachAll($event)"
-              style="height: 30px; margin-top: 5px"
-              clearable
-              :hide-details="true"
-              outlined
-              dense
-              autocomplete="off"
-              placeholder="Employee Details"
-            ></v-text-field>
-          </span> -->
-
-          <span
-            class="pa-2 text-center"
-            @click="() => ((dialog = true), handleChangeEvent())"
-          >
-            <!-- <v-icon
-              title="Import File"
-              @click="() => ((dialog = true), handleChangeEvent())"
-              right
-              dark
-              color="black"
-              size="x-large"
-              >mdi-file-import</v-icon
-            > -->
+          <span class="pa-2 text-center" @click="() => (dialog = true)">
             <img
               title="Import File"
               style="width: 20px; cursor: pointer"
@@ -605,15 +531,6 @@
             </div>
           </span>
           <span class="pa-2 text-center" @click="export_submit">
-            <!-- <v-icon
-              title="Download"
-              @click="export_submit"
-              right
-              dark
-              color="black"
-              size="x-large"
-              >mdi-arrow-down-bold-circle</v-icon
-            > -->
             <img
               title="Download"
               style="width: 20px; cursor: pointer"
@@ -682,29 +599,6 @@
               autocomplete="off"
             ></v-text-field>
           </v-col>
-
-          <!-- <v-col style="max-width: 10%" v-if="$auth.user.branch_id == 0">
-            <v-autocomplete
-              style="width: 100%"
-              clearable
-              @click:clear="
-                filters['branch_id'] = '';
-                getDataFromApi();
-              "
-              :hide-details="true"
-              outlined
-              dense
-              small
-              v-model="filters['branch_id']"
-              item-text="name"
-              item-value="id"
-              :items="[{ name: `All Branches`, id: `` }, ...branchList]"
-              placeholder="All Branches"
-              solo
-              flat
-              @change="applyFilters(filters['branch_id'])"
-            ></v-autocomplete>
-          </v-col> -->
           <v-col style="max-width: 15%">
             <v-autocomplete
               style="width: 100%"
@@ -810,110 +704,6 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
-          <!-- <template v-slot:header="{ props: { headers } }">
-            <tr v-if="isFilter">
-              <td v-for="header in headers" :key="header.text">
-                <v-container style="padding-left: 0px !important">
-                  <v-text-field
-                    clearable
-                    @click:clear="
-                      filters[header.value] = '';
-                      getDataFromApi();
-                    "
-                    :hide-details="true"
-                    v-if="header.filterable && !header.filterSpecial"
-                    v-model="filters[header.value]"
-                    :id="header.value"
-                    @input="getDataFromApi()"
-                    outlined
-                    dense
-                    autocomplete="off"
-                  ></v-text-field>
-
-                  <v-select
-                    clearable
-                    @click:clear="
-                      filters[header.value] = '';
-                      getDataFromApi();
-                    "
-                    :id="header.key"
-                    :hide-details="true"
-                    v-if="
-                      header.filterSpecial &&
-                      header.value == 'department_name_id'
-                    "
-                    outlined
-                    dense
-                    small
-                    v-model="filters[header.key]"
-                    item-text="name"
-                    item-value="id"
-                    :items="[
-                      { name: `All Departments`, id: `` },
-                      ...departments,
-                    ]"
-                    placeholder="Department"
-                    solo
-                    flat
-                    @change="getDataFromApi()"
-                  ></v-select>
-                  <v-select
-                    clearable
-                    @click:clear="
-                      filters[header.value] = '';
-                      getDataFromApi();
-                    "
-                    :id="header.key"
-                    :hide-details="true"
-                    v-if="
-                      header.filterSpecial &&
-                      header.value == 'branch.branch_name'
-                    "
-                    outlined
-                    dense
-                    small
-                    v-model="filters[header.key]"
-                    item-text="name"
-                    item-value="id"
-                    :items="[{ name: `All Branches`, id: `` }, ...branchList]"
-                    placeholder="All Branches"
-                    solo
-                    flat
-                    @change="applyFilters(filters[header.key])"
-                  ></v-select>
-                  <v-select
-                    clearable
-                    @click:clear="
-                      filters[header.value] = '';
-                      getDataFromApi();
-                    "
-                    :id="header.key"
-                    :hide-details="true"
-                    v-if="
-                      header.filterSpecial && header.value == 'timezone.name'
-                    "
-                    outlined
-                    dense
-                    small
-                    v-model="filters[header.key]"
-                    item-text="name"
-                    item-value="id"
-                    :items="[
-                      {
-                        name: `All Timezones`,
-                        id: ``,
-                      },
-                      ...timezones,
-                    ]"
-                    placeholder="Timezone"
-                    solo
-                    flat
-                    @change="getDataFromApi()"
-                  ></v-select>
-                </v-container>
-              </td>
-            </tr>
-          </template> -->
           <template v-slot:item.employee_id="{ item }">
             <strong>{{ item.employee_id }} </strong><br /><span
               style="font-size: 12px"
@@ -962,11 +752,6 @@
                       ? "(Role:" + caps(item.user.role.name) + ")"
                       : ""
                   }}
-
-                  <!-- {{
-                    item.user.branch_login &&
-                    "(" + item.user.branch_login.branch_name + ")"
-                  }} -->
                 </div>
               </v-col>
             </v-row>
@@ -1042,7 +827,6 @@ import Bank from "../../components/employee/Bank.vue";
 import Document from "../../components/employee/Document.vue";
 import Qualification from "../../components/employee/Qualification.vue";
 import Setting from "../../components/employee/Setting.vue";
-// import Payroll from "../../components/employee/Payroll.vue";
 import Login from "../../components/employee/Login.vue";
 import Rfid from "../../components/employee/Rfid.vue";
 
@@ -1055,7 +839,6 @@ export default {
   components: {
     VueCropper,
     EmployeeProfileView,
-
     EmployeeEdit,
     Contact,
     Passport,
@@ -1065,7 +848,6 @@ export default {
     Document,
     Qualification,
     Setting,
-    // Payroll,
     Login,
     Rfid,
   },
@@ -1292,10 +1074,7 @@ export default {
         value: "options",
       },
     ],
-    branchList: [],
-    branch_id: null,
     isCompany: true,
-    import_branch_id: "",
 
     refresh: false,
   }),
@@ -1305,24 +1084,6 @@ export default {
     this.boilerplate = true;
 
     this.getDesignations(null);
-
-    if (this.$auth.user.branch_id) {
-      this.branch_id = this.$auth.user.branch_id;
-      this.employee.branch_id = this.$auth.user.branch_id;
-      this.isCompany = false;
-      await this.getDepartments(this.branch_id);
-      return;
-    }
-    this.headers_table.splice(2, 0, {
-      text: "Branch",
-      align: "left",
-      sortable: true,
-      key: "branch_id",
-      value: "branch.branch_name",
-      filterable: true,
-      width: "10%",
-      filterSpecial: true,
-    });
 
     if (!this.data) {
       this.refresh = true;
@@ -1346,8 +1107,7 @@ export default {
       { text: "Shift" },
       { text: "Actions" },
     ];
-    this.handleChangeEvent();
-    this.getDepartments(null);
+    this.getDepartments();
 
     this.getTimezone(null);
   },
@@ -1366,12 +1126,6 @@ export default {
     closePopup2() {
       this.editDialog = false;
       this.getDataFromApi();
-    },
-    async handleChangeEvent() {
-      this.branchList = await this.$store.dispatch("fetchDropDowns", {
-        key: "branchList",
-        endpoint: "branch-list",
-      });
     },
     getComponent(value) {
       const componentsList = {
@@ -1398,68 +1152,39 @@ export default {
       this.departments = [];
       this.employeeDialog = true;
 
-      if (this.$auth.user.branch_id) {
-        await this.getDepartments(this.$auth.user.branch_id);
-      } else {
-        await this.getDepartments(null);
-      }
-
-      await this.handleChangeEvent();
+      await this.getDepartments(null);
     },
-    async filterDepartmentsByBranch(filterBranchId) {
-      this.isFilter = true;
-      await this.getDepartments(filterBranchId);
-      await this.getTimezone(filterBranchId);
-    },
-    async getDepartments(filterBranchId) {
-      // if (filterBranchId > 0)
-      {
-        let options = {
-          endpoint: "department-list",
-          isFilter: this.isFilter,
-          params: {
-            company_id: this.$auth.user.company_id,
-            branch_id: filterBranchId,
-          },
-        };
-        this.departments = await this.$store.dispatch(
-          "department_list",
-          options
-        );
-      }
-      // else {
-      //   this.departments = [];
-      // }
+    async getDepartments() {
+      let options = {
+        endpoint: "department-list",
+        isFilter: this.isFilter,
+        params: {
+          company_id: this.$auth.user.company_id,
+        },
+      };
+      this.departments = await this.$store.dispatch("department_list", options);
     },
 
-    async getDesignations(filterBranchId) {
-      // if (filterBranchId > 0)
-      {
-        let options = {
-          endpoint: "designation-list",
-          isFilter: this.isFilter,
-          params: {
-            company_id: this.$auth.user.company_id,
-            branch_id: filterBranchId,
-          },
-        };
-        this.designations = await this.$store.dispatch(
-          "designation_list",
-          options
-        );
-      }
-      // else {
-      //   this.departments = [];
-      // }
+    async getDesignations() {
+      let options = {
+        endpoint: "designation-list",
+        isFilter: this.isFilter,
+        params: {
+          company_id: this.$auth.user.company_id,
+        },
+      };
+      this.designations = await this.$store.dispatch(
+        "designation_list",
+        options
+      );
     },
 
-    async getTimezone(filterBranchId) {
+    async getTimezone() {
       let options = {
         endpoint: "timezone-list",
         isFilter: this.isFilter,
         params: {
           company_id: this.$auth.user.company_id,
-          branch_id: filterBranchId,
         },
       };
       this.timezones = await this.$store.dispatch("timezone_list", options);
@@ -1499,7 +1224,6 @@ export default {
       let data = json.map((e) => ({
         first_name: e.first_name,
         last_name: e.last_name,
-        branch_name: e.department.branch && e.department.branch.branch_name,
         email: e.user.email,
         phone_number: e.phone_number,
         whatsapp_number: e.whatsapp_number,
@@ -1539,44 +1263,39 @@ export default {
       document.body.removeChild(element);
     },
     importEmployee() {
-      if (this.import_branch_id > 0) {
-        let payload = new FormData();
-        payload.append("employees", this.files);
-        payload.append("company_id", this.$auth?.user?.company?.id);
-        payload.append("branch_id", this.import_branch_id);
-        let options = {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        };
-        this.btnLoader = true;
-        this.$axios
-          .post("/employee/import", payload, options)
-          .then(async ({ data }) => {
+      let payload = new FormData();
+      payload.append("employees", this.files);
+      payload.append("company_id", this.$auth?.user?.company?.id);
+      let options = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      this.btnLoader = true;
+      this.$axios
+        .post("/employee/import", payload, options)
+        .then(async ({ data }) => {
+          this.btnLoader = false;
+          if (!data.status) {
+            this.errors = data.errors;
+            payload.delete("employees");
+          } else {
+            this.errors = [];
+            this.snackbar = true;
+            this.response = "Employees imported successfully";
+            this.refresh = true;
+            await this.getDataFromApi();
+            this.close();
+          }
+        })
+        .catch((e) => {
+          if (e.toString().includes("Error: Network Error")) {
+            this.errors = [
+              "File is modified.Please cancel the current file and try again",
+            ];
             this.btnLoader = false;
-            if (!data.status) {
-              this.errors = data.errors;
-              payload.delete("employees");
-            } else {
-              this.errors = [];
-              this.snackbar = true;
-              this.response = "Employees imported successfully";
-              this.refresh = true;
-              await this.getDataFromApi();
-              this.close();
-            }
-          })
-          .catch((e) => {
-            if (e.toString().includes("Error: Network Error")) {
-              this.errors = [
-                "File is modified.Please cancel the current file and try again",
-              ];
-              this.btnLoader = false;
-            }
-          });
-      } else {
-        alert("Select Branch");
-      }
+          }
+        });
     },
     can(per) {
       return this.$pagePermission.can(per, this);
@@ -1587,7 +1306,6 @@ export default {
 
       if (this.isFilter) {
         this.refresh = true;
-        this.handleChangeEvent();
       }
     },
     async serachAll(e) {
@@ -1622,12 +1340,6 @@ export default {
           console.log(`err`);
           this.loadinglinear = false;
         });
-    },
-    async applyFilters(id) {
-      this.refresh = true;
-      await this.getDataFromApi();
-      await this.getDepartments(id);
-      await this.getTimezone(id);
     },
     async getDataFromApi() {
       this.loadinglinear = true;
@@ -1795,7 +1507,6 @@ export default {
       }
     },
     store_data() {
-
       this.employee.company_id = this.$auth.user.company_id;
 
       this.$axios

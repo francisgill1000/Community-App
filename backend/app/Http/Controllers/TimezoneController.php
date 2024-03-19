@@ -14,9 +14,8 @@ class TimezoneController extends Controller
     {
         $model = Timezone::query();
         $model->where('company_id', request('company_id'));
-        $model->when(request()->filled('branch_id'), fn ($q) => $q->where('branch_id', request('branch_id')));
         $model->orderBy(request('order_by') ?? "id", request('sort_by_desc') ? "desc" : "asc");
-        return $model->get(["id","timezone_name as name"]);
+        return $model->get(["id", "timezone_name as name", "timezone_id"]);
     }
 
     public function timezonesList(Request $request)
@@ -28,10 +27,18 @@ class TimezoneController extends Controller
         $model = Timezone::query();
         $model->where('company_id', $request->company_id);
         $model->where("is_default", false);
-        $model->when($request->branch_id, fn ($q) => $q->where("branch_id", $request->branch_id));
         $model->with(["employee_device", "branch"]);
         $model->orderBy("timezone_id", "asc");
         return $model->paginate($request->per_page ?? 100);
+    }
+
+    public function getNextAvailableIndexForTimezone()
+    {
+        $model = Timezone::count();
+
+        $count =  $model == 0 ? 1 : $model;
+
+        return $count + 1;
     }
 
     public function getTimezoneJson(Request $request)
@@ -66,10 +73,17 @@ class TimezoneController extends Controller
 
         $data = $request->validated();
         $availalbeTimezoneIds = $this->getNextAvaialbleTimezoneid($request);
+        $data["interval"] = $this->getNewJsonIntervaldata($request);
+
+        return $data["interval"];
+
+
+        $data["scheduled_days"] = $this->processSchedule($data["scheduled_days"], false);
+        $data["json"] = $this->processJson($request->timezone_id, $data["interval"], false);
+
 
 
         $firstValue = reset($availalbeTimezoneIds);
-
 
         if (count($availalbeTimezoneIds)) {
             $data["timezone_id"] = $firstValue;
@@ -77,12 +91,8 @@ class TimezoneController extends Controller
             return $this->response('Timezone limit reached', null, false);
         }
 
-
-
-
-
         $data["scheduled_days"] = $this->processSchedule($data["scheduled_days"], false);
-        $data["json"] = $this->processJson($request->timezone_id, $data["interval"], false);
+
 
         try {
             $record = Timezone::create($data);
@@ -96,38 +106,71 @@ class TimezoneController extends Controller
     {
         return $timezone->find();
     }
+
+    public function getNewJsonIntervaldata1(Request $request)
+    {
+        $intervals_raw_data = $request->intervals_raw_data;
+        $input_time_slots = $request->input_time_slots;
+        $inerval_array = [];
+        $intervals_raw_data = json_decode($intervals_raw_data);
+        $hours = [];
+        foreach ($intervals_raw_data as $value) {
+            list($day, $hour) = explode('-', $value);
+            $hours[$day][] = $hour;
+        }
+
+
+        foreach ($hours as $dayKey => $value) {
+
+            $innerHours = array_chunk($value, 2);
+
+            foreach ($innerHours as $innerHour) {
+                $open_time = $input_time_slots[$innerHour[0]];
+                $close_time = $input_time_slots[$innerHour[1]];
+                $inerval_array[$dayKey][] = ["begin" => $open_time, "end" => $close_time];
+            }
+        }
+
+        $arr = [];
+
+        foreach ($inerval_array as $key => $interval) {
+            $arr[] = [
+                "dayWeek" => $key,
+                "timeSegmentList" => $interval,
+            ];
+        }
+        return $arr;
+    }
+
     public function getNewJsonIntervaldata(Request $request)
     {
 
 
         $intervals_raw_data = $request->intervals_raw_data;
         $input_time_slots = $request->input_time_slots;
-        $inerval_array = [];
         $intervals_raw_data = json_decode($intervals_raw_data);
-        $counter = 1;
+        $dayWiseHour = [];
+
+        $arr = [];
         foreach ($intervals_raw_data as $value) {
             list($day, $hour) = explode('-', $value);
-
-
-            $open_time = $input_time_slots[$hour];
-            $newtimestamp = strtotime(date('Y-m-d ' . $open_time . ':00 ') . '+ 30 minute');
-
-            $close_time = date('H:i', $newtimestamp);
-            // $test['interval'] = ["begin" => $open_time, "end" => $close_time];
-            $inerval_array[$day]['interval' . $counter] =   ["begin" => $open_time, "end" => $close_time];
-            $counter++;
-        }
-        $final_array = [];
-
-
-        for ($i = 0; $i <= 6; $i++) {
-            if (isset($inerval_array[$i]))
-                $final_array[] = $inerval_array[$i];
-            else
-                $final_array[] = [];
+            $dayWiseHour[$day][] = $input_time_slots[$hour];
         }
 
-        return $final_array;
+        foreach ($dayWiseHour as $dayKey => $dayHour) {
+            $chunks = array_chunk($dayHour, 2);
+            foreach ($chunks as $chunk) {
+                $arr[$dayKey]["dayWeek"] =   $dayKey;
+                $arr[$dayKey]["timeSegmentList"][] = ["begin" => $chunk[0], "end" => $chunk[1]];
+            }
+        }
+
+        return [
+            "index" => $request->timezone_id,
+            "dayTimeList" => $arr,
+        ];
+
+        return $arr;
     }
     public function update(UpdateRequest $request, Timezone $timezone)
     {
@@ -141,8 +184,6 @@ class TimezoneController extends Controller
 
         $data["scheduled_days"] = $this->processSchedule($data["scheduled_days"], false);
         $data["json"] = $this->processJson($request->timezone_id, $data["interval"], false);
-
-
 
 
         try {
@@ -201,7 +242,7 @@ class TimezoneController extends Controller
         foreach ($intervals as $key => $interval) {
             $arr[] = [
                 "dayWeek" => $key,
-                "timeSegmentList" => $this->processTimeFrames($interval, $isDefault),
+                "timeSegmentList" => $interval,
             ];
         }
         return $arr;
@@ -327,8 +368,8 @@ class TimezoneController extends Controller
                 "dayWeek" => 1,
                 "timeSegmentList" => [
                     [
-                        "begin" => "14:22",
-                        "end" => "14:22"
+                        "begin" => "00:00",
+                        "end" => "00:00"
                     ],
                     [
                         "begin" => "00:00",

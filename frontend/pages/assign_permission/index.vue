@@ -230,7 +230,7 @@
   <NoAccess v-else />
 </template>
 <script>
-import Back from "../../components/Snippets/Back.vue";
+import Back from "@/components/Snippets/Back.vue";
 
 export default {
   components: { Back },

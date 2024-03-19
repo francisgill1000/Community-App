@@ -1173,7 +1173,7 @@
   <NoAccess v-else />
 </template>
 <script>
-// import Back from "../../components/Snippets/Back.vue";
+// import Back from "@/components/Snippets/Back.vue";
 import timeZones from "../../defaults/utc_time_zones.json";
 import DeviceAccessSettings from "../../components/DeviceAccessSettings.vue";
 export default {
