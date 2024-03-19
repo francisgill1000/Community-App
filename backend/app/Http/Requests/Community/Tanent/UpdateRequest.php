@@ -39,8 +39,8 @@ class UpdateRequest extends FormRequest
             "company_id" => "nullable",
 
             "whatsapp_number" => "nullable",
-            "date_of_birth" => "required",
-            "nationality" => "required",
+            "date_of_birth" => "nullable",
+            "nationality" => "nullable",
             "car_number" => "nullable",
             "parking_number" => "nullable",
             "rfid" => "required",
