@@ -705,8 +705,10 @@ class TanentController extends Controller
 
     public function destroy(Tanent $Tanent)
     {
+
         try {
-            if ($Tanent->delete()) {
+            if ($Tanent->delete() && Tanent::where("parent_id", $Tanent->id)->delete()) {
+
                 return $this->response('Tanent successfully deleted.', null, true);
             } else {
                 return $this->response('Tanent cannot delete.', null, false);
