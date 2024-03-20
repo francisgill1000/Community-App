@@ -38,84 +38,20 @@ class SDKController extends Controller
             ->get();
 
         $timezoneIDArray = $timezones->pluck('timezone_id');
-
-
         $jsonArray = $timezones->pluck('json')->toArray();
-
         $TimezoneDefaultJson = TimezoneDefaultJson::query();
         $TimezoneDefaultJson->whereNotIn("index", $timezoneIDArray);
         $defaultArray = $TimezoneDefaultJson->get(["index", "dayTimeList"])->toArray();
-
         $data = array_merge($defaultArray, $jsonArray);
-        //ksort($data);
 
-        asort($data);
+        sort($data);
 
-        $url = env('SDK_URL') . "/" . "{$id}/WriteTimeGroup";
 
-        return $data;
-
-        return [
-            "url" => $url,
-            "count" => count($data),
-            "data" => $data,
-        ];
-
-        $sdkResponse = $this->processSDKRequestBulk($url, $data);
-
-        return $sdkResponse;
+        return $this->processSDKRequestBulk(env('SDK_URL') . "/" . "{$id}/WriteTimeGroup", $data);
     }
 
-    public function renderEmptyTimeFrame()
-    {
-        $arr = [];
-
-        for ($i = 0; $i <= 6; $i++) {
-            $arr[] = [
-                "dayWeek" => $i,
-                "timeSegmentList" => [
-                    [
-                        "begin" => "00:00",
-                        "end" => "00:00",
-                    ],
-                    [
-                        "begin" => "00:00",
-                        "end" => "00:00",
-                    ],
-                    [
-                        "begin" => "00:00",
-                        "end" => "00:00",
-                    ],
-                    [
-                        "begin" => "00:00",
-                        "end" => "00:00",
-                    ],
-                    [
-                        "begin" => "00:00",
-                        "end" => "00:00",
-                    ],
-                    [
-                        "begin" => "00:00",
-                        "end" => "00:00",
-                    ],
-                    [
-                        "begin" => "00:00",
-                        "end" => "00:00",
-                    ],
-                    [
-                        "begin" => "00:00",
-                        "end" => "00:00",
-                    ],
-                ],
-            ];
-        }
-        return $arr;
-    }
     public function UploadCards(Request $request)
     {
-
-
-
         $url = env('SDK_URL'); //. "/Person/AddRange";
 
         $deviceResponse = $this->processSDKRequestCardsJob($url, $request->all());

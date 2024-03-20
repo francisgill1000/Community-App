@@ -541,14 +541,16 @@ export default {
         this.dialog_time_start,
         this.dialog_time_end
       );
+
       timeArray.forEach((element) => {
         let columnIndex = this.timeSlots.findIndex((item) => item == element);
-
         this.toggleCellBackground(this.day_index, columnIndex, true);
       });
+
       this.dialogManualInput = false;
     },
     toggleCellBackground(rowIndex, columnIndex, isPopup = false) {
+      console.log(rowIndex, columnIndex);
       const refName = `cell_${rowIndex}_${columnIndex}`;
       const printableContent = document.getElementById(refName);
 
@@ -566,15 +568,11 @@ export default {
         }
       } else {
         this.selectedCells.add(key);
-
         if (printableContent) {
           printableContent.classList.add("selected");
           printableContent.classList.remove("un-selected");
         }
       }
-    },
-    isSelected(rowIndex, columnIndex) {
-      return this.selectedCells.has(`${rowIndex}-${columnIndex}`);
     },
     clearSelection() {
       const elementsArray = document.getElementsByClassName("tdcell");
@@ -584,23 +582,6 @@ export default {
         element.classList.add("un-selected");
       });
       this.selectedCells = new Set();
-    },
-    datatable_save() {},
-    datatable_cancel() {
-      this.datatable_search_textbox = "";
-    },
-    datatable_open() {
-      this.datatable_search_textbox = "";
-    },
-    datatable_close() {
-      this.loading = false;
-      //this.datatable_search_textbox = '';
-    },
-    // processInput(index, interval, type, input) {
-    //   this.editedItem.interval[index] = { "begin": interval,type, input };
-    // },
-    onPageChange() {
-      this.getDataFromApi();
     },
     async addItem() {
       this.viewmode = false;
@@ -689,14 +670,6 @@ export default {
       }
       return arr;
     },
-    caps(str) {
-      if (str == "" || str == null) {
-        return "---";
-      } else {
-        let res = str.toString();
-        return res.replace(/\b\w/g, (c) => c.toUpperCase());
-      }
-    },
     async openDeviceDialog() {
       if (!this.data.length) {
         this.snackbar = true;
@@ -752,10 +725,6 @@ export default {
     can(per) {
       return this.$pagePermission.can(per, this);
     },
-
-    getDataFromApi_DatatablFilter(filter_column, e) {
-      this.getDataFromApi(`${this.endpoint}/search/${e}`, filter_column, e);
-    },
     //main
     getDataFromApi(url = this.endpoint, filter_column = "", filter_value = "") {
       this.loading = true;
@@ -797,30 +766,26 @@ export default {
         this.getDataFromApi(`${this.endpoint}/search/${search}`);
       }
     },
-    reset() {
-      this.days.forEach((e) => {
-        for (let j = 1; j <= 4; j++) {
-          this.editedItem.interval[e.index][`interval${j}`] = {};
-          this.editedItem.interval[e.index][`interval${j}`] = {};
-        }
-      });
-    },
     submit() {
-      let sortedDays = this.showShortDays(this.editedItem.interval);
-
-      this.editedItem["scheduled_days"] = sortedDays;
-
       this.editedItem.company_id = this.$auth.user.company_id;
 
-      const myArray = Array.from(this.selectedCells);
+      let myArray = Array.from(this.selectedCells);
 
-      const jsonString = JSON.stringify(myArray);
+      console.log(myArray);
 
-      this.editedItem.intervals_raw_data = jsonString;
+      // return;
+
+      this.editedItem.intervals_raw_data = myArray;
+      this.editedItem.rowJson = myArray;
+
+      this.editedItem.dialogManualInput = this.dialogManualInput;
+      // if (!this.dialogManualInput) {
+      //   this.editedItem.rowJson = [myArray[0], myArray[myArray.length - 1]];
+      // } else {
+      //   this.editedItem.dialogManualInput = this.dialogManualInput;
+      // }
 
       this.editedItem.input_time_slots = this.timeSlots;
-
-      console.log("🚀 ~ submit ~ this.editedItem:", this.editedItem);
 
       return this.editedIndex === -1 ? this.store() : this.update();
     },

@@ -48,7 +48,7 @@
     "permission": "contractor_access"
   },
   {
-    "icon": "mdi mdi-calendar-account",
+    "icon": "mdi-calendar-account",
     "title": "Maid",
     "to": "/community/house_maids",
     "menu": "house_maids",
@@ -56,7 +56,7 @@
     "permission": "maid_access"
   },
   {
-    "icon": "mdi mdi-calendar-account",
+    "icon": "mdi-calendar-account",
     "title": "Parking",
     "to": "/community/parking",
     "menu": "parking",
@@ -64,7 +64,15 @@
     "permission": "parking_access"
   },
   {
-    "icon": "mdi mdi-calendar-star-four-points",
+    "icon": "mdi-calendar-account",
+    "title": "Access Control",
+    "to": "/community/access_control/timezone",
+    "menu": "timezone",
+    "module": "topmenu",
+    "permission": "timezone_access"
+  },
+  {
+    "icon": "mdi-calendar-star-four-points",
     "title": "Employee",
     "to": "/employees",
     "menu": "access_control",

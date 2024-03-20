@@ -70,33 +70,14 @@ class TimezoneController extends Controller
     }
     public function store(StoreRequest $request)
     {
-
         $data = $request->validated();
-        $availalbeTimezoneIds = $this->getNextAvaialbleTimezoneid($request);
-        $data["interval"] = $this->getNewJsonIntervaldata($request);
-
-        return $data["interval"];
-
-
-        $data["scheduled_days"] = $this->processSchedule($data["scheduled_days"], false);
-        $data["json"] = $this->processJson($request->timezone_id, $data["interval"], false);
-
-
-
-        $firstValue = reset($availalbeTimezoneIds);
-
-        if (count($availalbeTimezoneIds)) {
-            $data["timezone_id"] = $firstValue;
-        } else {
-            return $this->response('Timezone limit reached', null, false);
-        }
-
-        $data["scheduled_days"] = $this->processSchedule($data["scheduled_days"], false);
-
+        $data["json"] = $data["interval"] = $this->getNewJsonIntervaldata($request);
+        $data["intervals_raw_data"] = json_encode($request->intervals_raw_data);
+        $data["scheduled_days"] = [];
 
         try {
             $record = Timezone::create($data);
-            return $this->response('Timezone Successfully created.', $record, true);
+            return $this->response('Timezone Successfully created.', $data["json"], true);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -107,103 +88,77 @@ class TimezoneController extends Controller
         return $timezone->find();
     }
 
-    public function getNewJsonIntervaldata1(Request $request)
-    {
-        $intervals_raw_data = $request->intervals_raw_data;
-        $input_time_slots = $request->input_time_slots;
-        $inerval_array = [];
-        $intervals_raw_data = json_decode($intervals_raw_data);
-        $hours = [];
-        foreach ($intervals_raw_data as $value) {
-            list($day, $hour) = explode('-', $value);
-            $hours[$day][] = $hour;
-        }
-
-
-        foreach ($hours as $dayKey => $value) {
-
-            $innerHours = array_chunk($value, 2);
-
-            foreach ($innerHours as $innerHour) {
-                $open_time = $input_time_slots[$innerHour[0]];
-                $close_time = $input_time_slots[$innerHour[1]];
-                $inerval_array[$dayKey][] = ["begin" => $open_time, "end" => $close_time];
-            }
-        }
-
-        $arr = [];
-
-        foreach ($inerval_array as $key => $interval) {
-            $arr[] = [
-                "dayWeek" => $key,
-                "timeSegmentList" => $interval,
-            ];
-        }
-        return $arr;
-    }
-
     public function getNewJsonIntervaldata(Request $request)
     {
-
-
-        $intervals_raw_data = $request->intervals_raw_data;
+        $index = $request->timezone_id;
+        $rowJson = $request->rowJson;
         $input_time_slots = $request->input_time_slots;
-        $intervals_raw_data = json_decode($intervals_raw_data);
         $dayWiseHour = [];
+        $datasetList = [];
 
-        $arr = [];
-        foreach ($intervals_raw_data as $value) {
+        $days = [];
+
+        foreach ($rowJson as $value) {
             list($day, $hour) = explode('-', $value);
             $dayWiseHour[$day][] = $input_time_slots[$hour];
         }
 
         foreach ($dayWiseHour as $dayKey => $dayHour) {
-            $chunks = array_chunk($dayHour, 2);
-            foreach ($chunks as $chunk) {
-                $arr[$dayKey]["dayWeek"] =   $dayKey;
-                $arr[$dayKey]["timeSegmentList"][] = ["begin" => $chunk[0], "end" => $chunk[1]];
-            }
+
+            $datasetList[] = [
+                "dayWeek" => $dayKey,
+                "timeSegmentList" => $request->dialogManualInput ?  $this->processChunks(array_chunk($dayHour, 2)) : [$dayHour[0], end($dayHour)]
+            ];
+
+            $days[] = $dayKey;
         }
 
-        return [
-            "index" => $request->timezone_id,
-            "dayTimeList" => $arr,
-        ];
+        $array = array_merge($datasetList, $this->renderEmptyTimeFrame($days));
 
+        sort($array);
+
+        return ["index" => $index, "dayTimeList" => $array];
+    }
+
+    public function renderEmptyTimeFrame($days)
+    {
+        $arr = [];
+
+
+        for ($i = 0; $i <= 6; $i++) {
+
+            if (!in_array($i, $days)) {
+                $arr[] = [
+                    "dayWeek" => $i,
+                    "timeSegmentList" => [
+                        [
+                            "begin" => "00:00",
+                            "end" => "00:00",
+                        ],
+                    ],
+                ];
+            }
+        }
         return $arr;
+    }
+
+    public function processChunks($chunks)
+    {
+        $timeSegmentList = [];
+
+        foreach ($chunks as $chunk) {
+            $timeSegmentList[] = ["begin" => $chunks[0], "end" => $chunk[1]];
+        }
+
+        return $timeSegmentList;
     }
     public function update(UpdateRequest $request, Timezone $timezone)
     {
         $data = $request->validated();
+        $data["json"] = $data["interval"] = $this->getNewJsonIntervaldata($request);
+        $data["intervals_raw_data"] = json_encode($request->intervals_raw_data);
+        $data["scheduled_days"] = [];
 
-        $final_array = $this->getNewJsonIntervaldata($request);
-
-        ///---------------------------overiding interval
-        $data["interval"] = $final_array;
-
-
-        $data["scheduled_days"] = $this->processSchedule($data["scheduled_days"], false);
-        $data["json"] = $this->processJson($request->timezone_id, $data["interval"], false);
-
-
-        try {
-
-            $record = $timezone->update($data);
-
-            if ($record) {
-                return $this->response('Timezone Successfully updated.', $record, true);
-            } else {
-                return $this->response('Timezone cannot create.', null, false);
-            }
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-    public function update_old(UpdateRequest $request, Timezone $timezone)
-    {
-        $data = $request->validated();
-        $data["scheduled_days"] = $this->processSchedule($data["scheduled_days"], false);
-        $data["json"] = $this->processJson($request->timezone_id, $data["interval"], false);
 
         try {
 
