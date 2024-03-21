@@ -71,13 +71,17 @@ class TimezoneController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-        $data["json"] = $data["interval"] = $this->getNewJsonIntervaldata($request);
-        $data["intervals_raw_data"] = json_encode($request->intervals_raw_data);
-        $data["scheduled_days"] = [];
+        $data["json"] = json_encode($request->json);
+        $data["interval"] = json_encode($request->json);
+        $data["intervals_raw_data"] = json_encode($request->json);
+        $data["scheduled_days"] = json_encode($request->json);
+
+
+        $data["json_for_sdk"] = $this->getNewJsonIntervaldata($request) ;
 
         try {
             $record = Timezone::create($data);
-            return $this->response('Timezone Successfully created.', $data["json"], true);
+            return $this->response('Timezone Successfully created.', $data["json_for_sdk"], true);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -91,27 +95,21 @@ class TimezoneController extends Controller
     public function getNewJsonIntervaldata(Request $request)
     {
         $index = $request->timezone_id;
-        $rowJson = $request->rowJson;
-        $input_time_slots = $request->input_time_slots;
-        $dayWiseHour = [];
+        $rowJson = $request->json;
         $datasetList = [];
-
         $days = [];
 
-        foreach ($rowJson as $value) {
-            list($day, $hour) = explode('-', $value);
-            $dayWiseHour[$day][] = $input_time_slots[$hour];
-        }
 
-        foreach ($dayWiseHour as $dayKey => $dayHour) {
+        foreach ($rowJson as $dayKey => $rowJsonSingle) {
 
             $datasetList[] = [
-                "dayWeek" => $dayKey,
-                "timeSegmentList" => $request->dialogManualInput ?  $this->processChunks(array_chunk($dayHour, 2)) : [$dayHour[0], end($dayHour)]
+                "dayWeek" => $rowJsonSingle["id"],
+                "timeSegmentList" => $this->processTimeSlots($rowJsonSingle["timeSlots"])
             ];
 
-            $days[] = $dayKey;
+            $days[] = $rowJsonSingle["id"];
         }
+
 
         $array = array_merge($datasetList, $this->renderEmptyTimeFrame($days));
 
@@ -142,15 +140,17 @@ class TimezoneController extends Controller
         return $arr;
     }
 
-    public function processChunks($chunks)
+    public function processTimeSlots($slots)
     {
-        $timeSegmentList = [];
+        $chunks = array_chunk($slots, 2);
+
+        $arr = [];
 
         foreach ($chunks as $chunk) {
-            $timeSegmentList[] = ["begin" => $chunks[0], "end" => $chunk[1]];
+            $arr[] = ["begin" => $chunk[0]["time"], "end" => end($chunk)["time"]];
         }
 
-        return $timeSegmentList;
+        return $arr;
     }
     public function update(UpdateRequest $request, Timezone $timezone)
     {

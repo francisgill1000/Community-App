@@ -28,6 +28,7 @@ class Timezone extends Model
         "interval" => "array",
         "scheduled_days" => "array",
         "json" => "array",
+        "json_for_sdk" => "array",
         'updated_at' => 'datetime:d-M-y',
     ];
 }

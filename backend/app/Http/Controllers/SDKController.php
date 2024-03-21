@@ -34,11 +34,11 @@ class SDKController extends Controller
         // (new TimezoneController)->storeTimezoneDefaultJson();
 
         $timezones = Timezone::where('company_id', $request->company_id)
-            ->select('timezone_id', 'json')
+            ->select('timezone_id', 'json', "json_for_sdk")
             ->get();
 
         $timezoneIDArray = $timezones->pluck('timezone_id');
-        $jsonArray = $timezones->pluck('json')->toArray();
+        $jsonArray = $timezones->pluck('json_for_sdk')->toArray();
         $TimezoneDefaultJson = TimezoneDefaultJson::query();
         $TimezoneDefaultJson->whereNotIn("index", $timezoneIDArray);
         $defaultArray = $TimezoneDefaultJson->get(["index", "dayTimeList"])->toArray();

@@ -253,15 +253,16 @@
           </v-btn>
         </span>
         <span>
-          <v-btn
+          <TimezoneCreate @success="handleSuccessResponse" />
+          <!-- <v-btn
             v-if="can(`timezone_create`)"
             color="primary"
             title="Add Timezone"
             @click="addItem"
           >
             Add Timezone
-            <!-- <v-icon dark white>mdi-plus-circle-outline</v-icon> -->
-          </v-btn>
+            <v-icon dark white>mdi-plus-circle-outline</v-icon>
+          </v-btn> -->
         </span>
       </v-toolbar>
       <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
@@ -496,6 +497,11 @@ export default {
   },
 
   methods: {
+    handleSuccessResponse(message) {
+      this.snackbar = true;
+      this.response = message;
+      this.getDataFromApi();
+    },
     getSlotTitle(slot, slot2) {
       slot2 = slot2 != undefined ? slot2 : "24:00";
       return slot + " to " + slot2;
@@ -843,81 +849,5 @@ export default {
 </script>
 
 <style scoped>
-.circle-btn-grey {
-  border-radius: 50%;
-  border: 1px solid grey;
-}
-
-.circle-btn-green {
-  border-radius: 50%;
-  border: 1px solid #5fafa3;
-}
-
-/* table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td,
-th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-} */
-
-/* tr:nth-child(even) {
-  background-color: #dddddd;
-} */
-
-/* input[type="time"]::-webkit-datetime-edit-ampm-field {
-  display: none;
-} */
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  overflow: auto;
-}
-th {
-  font-size: 13px;
-  font-weight: 300;
-}
-th:nth-child(even) {
-  font-weight: bold;
-}
-th,
-td {
-  border: 1px solid #dddddd;
-  text-align: center;
-}
-
-th {
-  background-color: #f2f2f2;
-}
-
-.un-selected {
-  background-color: #ddd;
-  border: 1px solid #fff;
-}
-.selected {
-  background-color: #60ad60;
-  border: 1px solid #fff;
-}
-.selected-cell {
-  background-color: green; /* Change this color to the desired highlight color */
-}
-
-/*#60ad60 */
-
-.settings-time {
-  font-size: 10px;
-}
-.v-input__control .v-input__slot,
-.v-input__slot,
-input {
-  min-height: auto !important;
-  display: flex !important;
-  align-items: center !important;
-}
+@import url("@/assets/timezoneTableStyle.css");
 </style>
