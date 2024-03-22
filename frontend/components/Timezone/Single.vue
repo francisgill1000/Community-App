@@ -2,18 +2,18 @@
   <div>
     <v-dialog persistent v-model="dialog" width="80%">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn v-bind="attrs" v-on="on" color="primary" title="Add Timezone">
-          Add Timezone
-        </v-btn>
+        <span style="cursor: pointer" v-bind="attrs" v-on="on">
+          <v-icon color="secondary" small> mdi-eye </v-icon>
+          View
+        </span>
       </template>
       <v-card>
         <v-card-title
-          >Add Timezone <v-spacer></v-spacer>
+          >View Timezone <v-spacer></v-spacer>
           <v-icon color="primary" @click="dialog = false"
             >mdi-close</v-icon
           ></v-card-title
         >
-
         <v-card-text>
           <v-row>
             <v-col cols="4">
@@ -99,7 +99,6 @@
         </v-row>
       </v-card>
     </v-dialog>
-
     <v-dialog persistent v-model="hourRangeDialog" width="500px">
       <v-card>
         <v-toolbar flat dense v-if="dayWiseSlots[dayIndex]">
@@ -513,6 +512,7 @@ let customSlots = () => {
   ];
 };
 export default {
+  props: ["item"],
   data() {
     return {
       dayIndex: "-1",
@@ -593,13 +593,30 @@ export default {
     };
   },
   async created() {
-    try {
-      let url = `getNextAvailableIndexForTimezone`;
-      const { data } = await this.$axios.get(url);
-      this.editedItem.timezone_id = data;
-    } catch (error) {}
+    this.setExistingSlots();
   },
   methods: {
+    setExistingSlots() {
+      let existingSlots = JSON.parse(this.item.json);
+      existingSlots.forEach((existingDay) => {
+        let slots = existingDay.timeSlots;
+
+        
+
+        if (slots.length > 2) {
+          return;
+        }
+
+        this.updateSlotsByDay(existingDay.id, slots[0].id, slots[1].id + 1);
+
+        // this.updateSlotsByDay(existingDay.id, slots[0].id, slots[1].id + 1);
+
+        // console.log(slots);
+        // for (let i = 0; i < slots.length - 1; i += 2) {
+        //     console.log(existingDay.id, slots[i].id, slots[i + 1].id);
+        // }
+      });
+    },
     setHourRange(dayIndex) {
       this.hourRangeDialog = true;
       this.dayIndex = dayIndex;
@@ -674,17 +691,11 @@ export default {
 
       this.$axios
         .post(`/${this.endpoint}`, this.editedItem)
-        .then(async ({ data }) => {
+        .then(({ data }) => {
           if (!data.status) {
             this.errors = data.errors;
             return;
           }
-
-          try {
-            let url = `getNextAvailableIndexForTimezone`;
-            const { data } = await this.$axios.get(url);
-            this.editedItem.timezone_id = data;
-          } catch (error) {}
           this.$emit("success", data.message);
 
           setTimeout(() => {

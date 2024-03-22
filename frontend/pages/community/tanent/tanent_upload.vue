@@ -94,9 +94,6 @@
                 <v-col col="4" class="pt-2">
                   {{ user.full_name }} {{ user.isPrimaryUser }}
                 </v-col>
-                <v-col col="3" class="pt-2">
-                  {{ user.system_user_id }}
-                </v-col>
               </v-row>
             </v-card-text>
           </div>

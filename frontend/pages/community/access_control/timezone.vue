@@ -252,18 +252,10 @@
             Upload Timezone to Device(s)
           </v-btn>
         </span>
-        <span>
-          <TimezoneCreate @success="handleSuccessResponse" />
-          <!-- <v-btn
-            v-if="can(`timezone_create`)"
-            color="primary"
-            title="Add Timezone"
-            @click="addItem"
-          >
-            Add Timezone
-            <v-icon dark white>mdi-plus-circle-outline</v-icon>
-          </v-btn> -->
-        </span>
+        <TimezoneCreate
+          :key="generateRandomId()"
+          @success="handleSuccessResponse"
+        />
       </v-toolbar>
       <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
         {{ snackText }}
@@ -305,16 +297,22 @@
               </v-btn>
             </template>
             <v-list width="120" dense>
-              <v-list-item @click="viewItem(item)" v-if="can(`timezone_view`)">
+              <v-list-item v-if="can(`timezone_view`)">
                 <v-list-item-title style="cursor: pointer">
-                  <v-icon color="secondary" small> mdi-eye </v-icon>
-                  View
+                  <TimezoneSingle
+                    :key="generateRandomId()"
+                    @success="handleSuccessResponse"
+                    :item="item"
+                  />
                 </v-list-item-title>
               </v-list-item>
-              <v-list-item v-if="can(`timezone_edit`)" @click="editItem(item)">
+              <v-list-item v-if="can(`timezone_edit`)">
                 <v-list-item-title style="cursor: pointer">
-                  <v-icon color="secondary" small> mdi-pencil </v-icon>
-                  Edit
+                  <TimezoneEdit
+                    :key="generateRandomId()"
+                    @success="handleSuccessResponse"
+                    :item="item"
+                  />
                 </v-list-item-title>
               </v-list-item>
               <v-list-item
@@ -497,6 +495,11 @@ export default {
   },
 
   methods: {
+    generateRandomId() {
+      const length = 8; // Adjust the length of the ID as needed
+      const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number
+      return randomNumber.toString().padStart(length, "0"); // Convert to string and pad with leading zeros if necessary
+    },
     handleSuccessResponse(message) {
       this.snackbar = true;
       this.response = message;
@@ -771,44 +774,6 @@ export default {
       } else if (s > 2) {
         this.getDataFromApi(`${this.endpoint}/search/${search}`);
       }
-    },
-    submit() {
-      this.editedItem.company_id = this.$auth.user.company_id;
-
-      let myArray = Array.from(this.selectedCells);
-
-      console.log(myArray);
-
-      // return;
-
-      this.editedItem.intervals_raw_data = myArray;
-      this.editedItem.rowJson = myArray;
-
-      this.editedItem.dialogManualInput = this.dialogManualInput;
-      // if (!this.dialogManualInput) {
-      //   this.editedItem.rowJson = [myArray[0], myArray[myArray.length - 1]];
-      // } else {
-      //   this.editedItem.dialogManualInput = this.dialogManualInput;
-      // }
-
-      this.editedItem.input_time_slots = this.timeSlots;
-
-      return this.editedIndex === -1 ? this.store() : this.update();
-    },
-    store() {
-      this.$axios
-        .post(`/${this.endpoint}`, this.editedItem)
-        .then(({ data }) => {
-          if (!data.status) {
-            this.errors = data.errors;
-            return;
-          }
-          this.snackbar = data.status;
-          this.response = data.message;
-          this.dialog = false;
-          this.getDataFromApi();
-        })
-        .catch((err) => {});
     },
 
     update() {

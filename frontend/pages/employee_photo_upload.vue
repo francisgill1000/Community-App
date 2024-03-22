@@ -15,6 +15,21 @@
       </v-snackbar>
     </div>
     <v-row>
+      <v-col cols="4">
+        <v-autocomplete
+          @change="loadDepartmentemployees"
+          v-model="departmentautocompleteed"
+          :items="[{ id: `---`, name: `All Departments` }, ...departments]"
+          dense
+          outlined
+          item-value="id"
+          item-text="name"
+          hide-details
+          label="Department"
+        ></v-autocomplete>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="5">
         <v-card class="photo-displaylist" style="height: 300px">
           <v-toolbar color=" " dense flat style="border: 1px solid #ddd">
@@ -30,95 +45,35 @@
                 :key="user.id"
                 style="border-bottom: 1px solid #ddd"
               >
-                <v-col md="1" style="padding: 0px; margin-top: -7px">
+                <v-col cols="1" class="pa-0 ma-0">
                   <v-checkbox
                     dense
                     small
-                    hideDetails
-                    v-model="leftSelectedEmp"
-                    :value="user.id"
                     primary
                     hide-details
+                    v-model="leftSelectedEmp"
+                    :value="user.id"
                   ></v-checkbox>
-                  <!-- <v-checkbox
-                    style="padding: 0px"
-                    v-else
-                    dense
-                    small
-                    disabled
-                    hideDetails
-                    indeterminate
-                    v-model="leftSelectedEmp"
-                    :value="user.id"
-                    primary
-                    hide-details
-                  ></v-checkbox> -->
+                  <!-- :disabled="!user.profile_picture" -->
                 </v-col>
 
-                <v-col md="1" style="padding: 0px">
-                  <v-img
-                    class="employee-pic"
-                    :title="user.first_name + ' ' + user.last_name"
-                    style="float: left; border-radius: 50%; height: auto"
-                    :src="
-                      user.profile_picture
-                        ? user.profile_picture
-                        : '/no-profile-image.jpg'
-                    "
-                  >
-                  </v-img>
+                <v-col cols="1" class="py-1 ma-0">
+                  <v-avatar size="40">
+                    <v-img
+                      :src="
+                        user.profile_picture
+                          ? user.profile_picture
+                          : '/no-profile-image.jpg'
+                      "
+                    >
+                    </v-img>
+                  </v-avatar>
                 </v-col>
-                <v-col md="3" style="padding: 0px; padding-top: 5px">
-                  {{ user.first_name }}
-                  {{ user.last_name }}
-                </v-col>
-                <v-col md="3" style="padding: 0px; padding-top: 5px">
-                  {{ user.employee_id }}
+                <v-col col="4" class="pt-2">
+                  {{ user.first_name }} {{ user.last_name }}
                 </v-col>
               </v-row>
             </v-card-text>
-
-            <!-- <v-card-text
-              class="photo-displaylistview"
-              v-for="(user, index) in leftEmployees"
-              :id="user.id"
-              v-on:dblclick="
-                (counter += 1), moveToRightEmp(user.id, user.timezone)
-              "
-              :key="index"
-            >
-              <v-row>
-                <v-col class="col-1" style="padding: 0px">
-                  <v-checkbox
-                    v-if="user.profile_picture"
-                    class="col"
-                    v-model="leftSelectedEmp"
-                    :value="user.id"
-                    primary
-                    hide-details
-                  ></v-checkbox>
-                  <v-checkbox
-                    v-else
-                    indeterminate
-                    value
-                    disabled
-                    hide-details
-                    class="col-1 d-flex flex-column justify-center"
-                  ></v-checkbox>
-                </v-col>
-                <v-col col="2" class="col" style="padding-top: 21px">
-                  {{ user.employee_id }}: {{ user.display_name }}
-                </v-col>
-                <v-col col=" 2">
-                  <v-img
-                    v-if="user.profile_picture != ''"
-                    style="border-radius: 50%; width: 40px"
-                    :src="user.profile_picture || '/no-profile-image.jpg'"
-                  >
-                  </v-img>
-                </v-col>
-              </v-row>
-            </v-card-text> -->
           </div>
         </v-card>
       </v-col>
@@ -196,48 +151,32 @@
                 :key="user.id"
                 style="border-bottom: 1px solid #ddd"
               >
-                <v-col md="1" style="padding: 0px">
+                <v-col cols="1" class="pa-0 ma-0">
                   <v-checkbox
                     dense
                     small
-                    hideDetails
-                    v-model="rightSelectedEmp"
-                    :value="user.id"
                     primary
                     hide-details
+                    v-model="leftSelectedEmp"
+                    :value="user.id"
                   ></v-checkbox>
-                  <!-- <v-checkbox  v-if="user.profile_picture"
-                    style="padding: 0px"
-                    v-else
-                    dense
-                    small
-                    hideDetails
-                    v-model="rightSelectedEmp"
-                    :value="user.id"
-                    primary
-                    hide-details
-                  ></v-checkbox> -->
+                  <!-- :disabled="!user.profile_picture" -->
                 </v-col>
 
-                <v-col md="1" style="padding: 0px">
-                  <v-img
-                    class="employee-pic"
-                    :title="user.first_name + ' ' + user.last_name"
-                    style="float: left; border-radius: 50%; height: auto"
-                    :src="
-                      user.profile_picture
-                        ? user.profile_picture
-                        : '/no-profile-image.jpg'
-                    "
-                  >
-                  </v-img>
+                <v-col cols="1" class="py-1 ma-0">
+                  <v-avatar size="40">
+                    <v-img
+                      :src="
+                        user.profile_picture
+                          ? user.profile_picture
+                          : '/no-profile-image.jpg'
+                      "
+                    >
+                    </v-img>
+                  </v-avatar>
                 </v-col>
-                <v-col md="3" style="padding: 0px; padding-top: 5px">
-                  {{ user.first_name }}
-                  {{ user.last_name }}
-                </v-col>
-                <v-col md="3" style="padding: 0px; padding-top: 5px">
-                  {{ user.employee_id }}
+                <v-col col="4" class="pt-2">
+                  {{ user.first_name }} {{ user.last_name }}
                 </v-col>
               </v-row>
             </v-card-text>
@@ -435,48 +374,22 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-progress-linear
-        v-if="progressloading"
-        :active="loading"
-        :indeterminate="loading"
-        absolute
-        color="primary"
-      ></v-progress-linear>
-      <v-col cols="12">
-        <div class="row">
-          <div class="col col-lg-6 text-center">
-            <span v-if="errors && errors.message" class="text-danger mt-2">{{
-              errors.message
-            }}</span>
-          </div>
-          <div class="col col-lg-3 text-right">
-            <div style="width: 150px; float: right">
-              <button
-                :loading="loading"
-                @click="goback()"
-                type="button"
-                id="save"
-                class="btn primary btn-block white--text v-size--default"
-              >
-                Back
-              </button>
-            </div>
-          </div>
-          <div class="col col-lg-3 text-right">
-            <div style="width: 150px; float: right">
-              <button
-                :disabled="!displaybutton"
-                :loading="loading"
-                @click="onSubmit"
-                type="button"
-                id="save"
-                class="btn primary btn-block white--text v-size--default"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
+      <v-col cols="12" class="text-right">
+        <div>
+          <span v-if="errors && errors.message" class="text-danger mt-2">{{
+            errors.message
+          }}</span>
         </div>
+
+        <v-btn
+          :disabled="!displaybutton"
+          :loading="loading"
+          @click="submit"
+          id="save"
+          class="primary"
+        >
+          Submit
+        </v-btn>
       </v-col>
     </v-row>
   </div>
@@ -484,18 +397,13 @@
 </template>
 
 <script>
-// import Back from "../components/Snippets/Back.vue";
-
 export default {
-  components: {},
   data() {
     return {
       isCompany: true,
-      branch_id: null,
       branchesList: [],
       loading: false,
       counter: 0,
-      devices_dialog: [],
       displaybutton: false,
       progressloading: false,
       searchInput: "",
@@ -509,8 +417,6 @@ export default {
       color: "primary",
       loading: true,
       endpointEmployee: "get_employeeswith_timezonename",
-      endpointUpdatetimezoneStore: "employee_timezone_mapping",
-      //endpointUpdatetimezoneUpdate: "employee_timezone_mapping",
       endpointDevise: "device",
       leftSelectedEmp: [],
       departmentselected: [],
@@ -522,9 +428,6 @@ export default {
       leftDevices: [],
       rightSelectedDevices: [],
       rightDevices: [],
-      department_ids: ["---"],
-      timezones: ["Timeszones are not available"],
-      timezonesselected: [],
       options: {
         params: {
           company_id: this.$auth.user.company_id,
@@ -552,12 +455,25 @@ export default {
   },
   async created() {
     this.progressloading = true;
-    this.loadDepartmentemployees();
-    this.getDevisesDataFromApi();
+    let options = {
+      params: {
+        company_id: this.$auth.user.company_id,
+      },
+    };
+    this.getDepartments(options);
   },
   methods: {
     can(per) {
       return this.$pagePermission.can(per, this);
+    },
+    getDepartments(options) {
+      this.progressloading = true;
+      this.$axios
+        .get("department-list", options)
+        .then(({ data }) => {
+          this.departments = data;
+        })
+        .catch((err) => console.log(err));
     },
     loadDepartmentemployees() {
       //this.loading = true;
@@ -568,7 +484,6 @@ export default {
           per_page: 1000, //this.pagination.per_page,
           company_id: this.$auth.user.company_id,
           department_id: this.departmentselected,
-          branch_id: this.branch_id,
           cols: ["id", "employee_id", "first_name", "last_name"],
         },
       };
@@ -581,56 +496,13 @@ export default {
 
         this.rightEmployees = [];
         this.rightSelectedEmp = [];
+
+        this.getDevisesDataFromApi();
       });
-    },
-    getDepartmentsApi(options, branch_id) {
-      options.params.branch_id = branch_id;
-      this.progressloading = true;
-      this.$axios
-        .get("departments", options)
-        .then(({ data }) => {
-          this.departments = data.data;
-          this.departments.unshift({ id: "---", name: "All Departments" });
-        })
-        .catch((err) => console.log(err));
-    },
-    getTimezonesFromApi(branch_id) {
-      let options = {
-        params: {
-          per_page: 1000, //this.pagination.per_page,
-          company_id: this.$auth.user.company_id,
-          branch_id: branch_id,
-        },
-      };
-      this.$axios
-        .get("timezone", options)
-        .then(({ data }) => {
-          this.timezones = data.data;
-
-          this.$axios
-            .get("employee_timezone_mapping", options)
-            .then(({ data }) => {
-              data.data.forEach((element) => {
-                let selectedindex = this.timezones.findIndex(
-                  (e) => e.timezone_id == element.timezone_id
-                );
-
-                if (selectedindex >= 0) this.timezones.splice(selectedindex, 1);
-              });
-            });
-        })
-        .catch((err) => console.log(err));
     },
     resetErrorMessages() {
       this.errors = [];
       this.response = "";
-
-      // $.extend(this.rightEmployees, {
-      //   sdkEmpResponse: "",
-      // });
-      // $.extend(this.rightDevices, {
-      //   sdkDeviceResponse: "",
-      // });
       this.leftEmployees.forEach((element) => {
         element["sdkEmpResponse"] = "";
       });
@@ -638,10 +510,7 @@ export default {
         element["sdkDeviceResponse"] = "";
       });
     },
-    goback() {
-      this.$router.push("/timezonemapping/list");
-    },
-    getDevisesDataFromApi(branch_id, url = this.endpointDevise) {
+    getDevisesDataFromApi(url = this.endpointDevise) {
       //this.loading = true;
       // let page = this.pagination.current;
       let options = {
@@ -649,7 +518,6 @@ export default {
           per_page: 1000, //this.pagination.per_page,
           company_id: this.$auth.user.company_id,
           sortBy: "status_id",
-          branch_id: branch_id,
           //cols: ["id", "location", "name", "device_id", "status:id"],
         },
       };
@@ -657,28 +525,6 @@ export default {
       this.$axios.get(`${url}?page=${page}`, options).then(({ data }) => {
         this.leftDevices = data.data;
       });
-    },
-    getEmployeesDataFromApi(branch_id, url = this.endpointEmployee) {
-      //this.loading = true;
-      // let page = this.pagination.current;
-      let options = {
-        params: {
-          per_page: 1000, //this.pagination.per_page,
-          company_id: this.$auth.user.company_id,
-          cols: [
-            "id",
-            "employee_id",
-            "display_name",
-            "first_name",
-            "last_name",
-          ],
-          branch_id: branch_id,
-        },
-      };
-      let page = 1;
-      this.$axios.get(`${url}?page=${page}`, options).then(({ data }) => {
-        this.leftEmployees = data.data;
-      }, 1000);
     },
     sortObject: (o) =>
       o.sort(function compareByName(a, b) {
@@ -713,27 +559,10 @@ export default {
           return 0;
         }
       }),
-    sortObjectC: (o) =>
-      o.sort(function compareByName(a, b) {
-        if (a.name && b.name) {
-          let nameA = a.name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
-          let nameB = b.name.toUpperCase();
 
-          if (nameA < nameB) {
-            return -1;
-          } else if (nameA > nameB) {
-            return 1;
-          } else {
-            return 0;
-          }
-        }
-      }),
     verifySubmitButton() {
-      if (this.rightEmployees.length > 0 && this.rightDevices.length > 0) {
-        this.displaybutton = true;
-      } else {
-        this.displaybutton = false;
-      }
+      this.displaybutton =
+        this.rightEmployees.length > 0 && this.rightDevices.length > 0;
     },
     allmoveToLeftemp() {
       this.resetErrorMessages();
@@ -815,10 +644,6 @@ export default {
 
       this.rightSelectedEmp.pop(id);
       this.verifySubmitButton();
-    },
-    check: function (id, e) {},
-    selectLeftEmployee(id) {
-      this.leftSelectedEmp.push(id);
     },
 
     moveToRightEmpOption2() {
@@ -992,163 +817,8 @@ export default {
       this.leftSelectedDevices.pop(id);
       this.verifySubmitButton();
     },
-    // onSubmit_old() {
-    //   this.resetErrorMessages();
-    //   this.displaybutton = false;
-    //   this.loading = true;
-    //   if (this.rightEmployees.length == 0) {
-    //     this.response = this.response + " Atleast select one Employee Details";
-    //   } else if (this.rightDevices.length == 0) {
-    //     this.response = this.response + " Atleast select one Device Details";
-    //   }
 
-    //   this.loading_dialog = true;
-    //   this.errors = [];
-    //   let personListArray = [];
-    //   this.rightEmployees.forEach(async (item) => {
-    //     let person = {
-    //       name: item.first_name + " " + item.last_name,
-    //       userCode: parseInt(item.system_user_id),
-
-    //       //faceImage: `https://stagingbackend.ideahrms.com/media/employee/profile_picture/1686381362.jpg?t=786794`,
-    //       faceImage: item.profile_picture,
-    //     };
-    //     if (item.rfid_card_number != "") {
-    //       person.cardData = item.rfid_card_number;
-    //     }
-    //     if (item.rfid_card_password != "") {
-    //       person.password = item.rfid_card_password;
-    //     }
-    //     personListArray.push(person);
-    //   });
-
-    //   this.rightDevices.forEach(async (item) => {
-    //     // let person = {
-    //     //   name: item.display_name,
-    //     //   userCode: parseInt(item.system_user_id),
-
-    //     //   //faceImage: `https://stagingbackend.ideahrms.com/media/employee/profile_picture/1686381362.jpg?t=786794`,
-    //     //   faceImage: item.profile_picture
-    //     // };
-    //     // personListArray.push(person);
-
-    //     let payload = {
-    //       personList: personListArray,
-    //       snList: [item.device_id],
-    //     };
-
-    //     if (payload.snList && payload.snList.length === 0) {
-    //       alert(`Atleast one device must be selected`);
-    //       return false;
-    //     }
-
-    //     this.devices_dialog.forEach((e) => {
-    //       e.state = "---";
-    //       e.message = "---";
-    //     });
-
-    //     //try {
-    //     const { data } = await this.$axios.post(`/Person/AddRange`, payload);
-
-    //     if (data.status == 200) {
-    //       this.loading_dialog = false;
-
-    //       this.snackbar.show = true;
-    //       this.response = "Employee(s) pictures has been uploaded";
-
-    //       let jsrightEmployees = this.rightEmployees;
-    //       let SDKSuccessStatus = true;
-    //       this.rightDevices.forEach((elementDevice) => {
-    //         let SdkResponseDeviceobject = data.data.find(
-    //           (e) => e.sn == elementDevice.device_id
-    //         );
-
-    //         let deviceStatusResponse = "";
-    //         let EmpStatusResponse = "";
-
-    //         if (SdkResponseDeviceobject.message == "") {
-    //           deviceStatusResponse = "Success";
-    //         } else if (
-    //           SdkResponseDeviceobject.message == "The device was not found"
-    //         ) {
-    //           deviceStatusResponse = "The device was not found or offline";
-    //           SDKSuccessStatus = false;
-    //         } else if (SdkResponseDeviceobject.message == "person info error") {
-    //           let SDKUseridArray = SdkResponseDeviceobject.userList; //SDK error userslist
-    //           jsrightEmployees.forEach((element) => {
-    //             let systemUserid = element.system_user_id;
-    //             SDKSuccessStatus = false;
-
-    //             element["sdkEmpResponse"] = "Success";
-    //             let selectedEmpobject = SDKUseridArray.find(
-    //               (e) => e.userCode == systemUserid
-    //             );
-    //             EmpStatusResponse = SdkResponseDeviceobject.sdkEmpResponse;
-    //             deviceStatusResponse = "";
-
-    //             if (EmpStatusResponse != "") {
-    //               //Adding extra parameters for Employee object
-    //               if (selectedEmpobject) {
-    //                 element["sdkEmpResponse"] = "person photo error ";
-    //                 // $.extend(element, {
-    //                 //   sdkEmpResponse: "person info error ",
-    //                 // });
-    //               } else {
-    //                 // $.extend(element, {
-    //                 //   sdkEmpResponse: " Success",
-    //                 // });
-    //                 element["sdkEmpResponse"] = " Success";
-    //               }
-    //             }
-    //           });
-    //         } else {
-    //         }
-
-    //         //Adding extra parameters for Devices object
-    //         // $.extend(elementDevice, {
-    //         //   sdkDeviceResponse:
-    //         //     deviceStatusResponse != "" ? deviceStatusResponse : " Success",
-    //         // });
-
-    //         elementDevice["sdkDeviceResponse"] =
-    //           deviceStatusResponse != "" ? deviceStatusResponse : "Success";
-    //         this.errors = [];
-
-    //         this.loading = false;
-    //       });
-
-    //       // data.data.forEach((e) => {
-    //       //   const index = this.devices_dialog.findIndex(
-    //       //     (item) => item.device_id === e.sn
-    //       //   );
-    //       //   if (index !== -1) {
-    //       //     const updatedElement = {
-    //       //       ...this.devices_dialog[index],
-    //       //       state: e.state,
-    //       //       message: e.message || "Success",
-    //       //     };
-
-    //       //     this.devices_dialog.splice(index, 1, updatedElement);
-    //       //   }
-    //       // });
-    //     } else {
-    //       this.loading_dialog = false;
-    //       this.snackbar.show = true;
-    //       this.response = data.message;
-
-    //       this.loading = false;
-    //     }
-
-    //     this.displaybutton = true;
-    //     // } catch (error) {
-    //     //   this.loading_dialog = false;
-    //     //   this.snackbar = true;
-    //     //   this.response = error.message;
-
-    //     // }
-    //   });
-    // },
-    async onSubmit() {
+    async submit() {
       this.displaybutton = false;
       this.loading = true;
       if (this.rightEmployees.length == 0) {
@@ -1168,7 +838,6 @@ export default {
 
           userCode: parseInt(item.system_user_id),
           profile_picture_raw: item.profile_picture_raw,
-          //faceImage: `https://stagingbackend.ideahrms.com/media/employee/profile_picture/1686381362.jpg?t=786794`,
           faceImage:
             process.env.APP_ENV != "local"
               ? item.profile_picture
@@ -1186,7 +855,6 @@ export default {
       let payload = {
         personList: personListArray,
         snList: this.rightDevices.map((e) => e.device_id),
-        branch_id: this.branch_id,
       };
 
       if (payload.snList && payload.snList.length === 0) {
@@ -1194,25 +862,18 @@ export default {
         return false;
       }
 
-      this.devices_dialog.forEach((e) => {
-        e.state = "---";
-        e.message = "---";
-      });
-
-      //try {
       const { data } = await this.$axios.post(
         `/Person/AddRange/Photos`,
         payload
       );
 
-      if (data.deviceResponse.status == 200) {
+      if (data.status == 200) {
         this.loading_dialog = false;
 
         this.snackbar.show = true;
-        this.response = "Employee(s) Pictures  has been uploaded";
+        this.response = "Employee(s) Pictures has been uploaded";
 
         let jsrightEmployees = this.rightEmployees;
-        let SDKSuccessStatus = true;
         jsrightEmployees.forEach((element) => {
           element["sdkEmpResponse"] = "Success";
         });
@@ -1221,24 +882,6 @@ export default {
           this.errors = [];
           this.loading = false;
         });
-
-        setTimeout(() => {
-          location.reload();
-        }, 1000);
-        // data.data.forEach((e) => {
-        //   const index = this.devices_dialog.findIndex(
-        //     (item) => item.device_id === e.sn
-        //   );
-        //   if (index !== -1) {
-        //     const updatedElement = {
-        //       ...this.devices_dialog[index],
-        //       state: e.state,
-        //       message: e.message || "Success",
-        //     };
-
-        //     this.devices_dialog.splice(index, 1, updatedElement);
-        //   }
-        // });
       } else {
         this.loading_dialog = false;
         this.snackbar.show = true;
@@ -1248,45 +891,7 @@ export default {
       }
 
       this.displaybutton = true;
-      // } catch (error) {
-      //   this.loading_dialog = false;
-      //   this.snackbar = true;
-      //   this.response = error.message;
-
-      // }
     },
   },
 };
 </script>
-<style scoped>
-.employee-pic {
-  padding: 0px;
-  position: relative;
-  top: 0;
-  transition: top ease 1s;
-
-  margin-left: -3px;
-  width: 25px;
-  border: 1px solid #ddd;
-}
-
-@media (max-width: 500px) {
-  .employeepage-seach-textfield {
-    max-width: 68px;
-  }
-
-  .xs-padding-0 {
-    padding-right: 0px !important;
-  }
-
-  .xs-margin-5 {
-    margin-top: 5px !important;
-  }
-
-  .v-data-table > .v-data-table__wrapper .v-data-table__mobile-table-row {
-    margin: 10px;
-    border: 1px solid #ededed;
-    display: block;
-  }
-}
-</style>

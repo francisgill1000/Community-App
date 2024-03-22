@@ -2,7 +2,8 @@
 :error-messages="errors && errors.field_name && errors.field_name[0]"
 
 ## Versions 1.0.0
-"refresh": "cp -r .nuxt/* .nuxt-31/ && cp -r local-publish/* .nuxt/ && pm2 reload 19"
+
+"refresh": "cp -r .nuxt/_ .nuxt-31/ && cp -r local-publish/_ .nuxt/ && pm2 reload 19"
 Installation Guide:
 
 - clone repo
@@ -26,8 +27,7 @@ npm install --save vue-notification
 npm install --save vue-cropperjs
 
 npm install data-uri-to-buffer
-npm install xml2js 
-
+npm install xml2js
 
 <v-dialog v-model="dialogVisible" max-width="500px">
   <v-card flat dense class="white--text">
@@ -73,26 +73,26 @@ npm install xml2js
 <!-- dialogVisible: false, -->
 
 let data = {
-    "filo": [
-        "01-Sep-23: No Data Found",
-        "02-Sep-23: No Data Found",
-        "03-Sep-23: No Data Found",
-        "04-Sep-23: No Data Found",
-        "05-Sep-23: No Data Found",
-        "06-Sep-23: No Data Found",
-        "07-Sep-23: No Data Found",
-        "08-Sep-23: No Data Found"
-    ],
-    "single": [
-        "01-Sep-23: No Data Found",
-        "02-Sep-23: No Data Found",
-        "03-Sep-23: No Data Found",
-        "04-Sep-23: No Data Found",
-        "05-Sep-23: No Data Found",
-        "06-Sep-23: No Data Found",
-        "07-Sep-23: No Data Found",
-        "08-Sep-23: No Data Found"
-    ]
+"filo": [
+"01-Sep-23: No Data Found",
+"02-Sep-23: No Data Found",
+"03-Sep-23: No Data Found",
+"04-Sep-23: No Data Found",
+"05-Sep-23: No Data Found",
+"06-Sep-23: No Data Found",
+"07-Sep-23: No Data Found",
+"08-Sep-23: No Data Found"
+],
+"single": [
+"01-Sep-23: No Data Found",
+"02-Sep-23: No Data Found",
+"03-Sep-23: No Data Found",
+"04-Sep-23: No Data Found",
+"05-Sep-23: No Data Found",
+"06-Sep-23: No Data Found",
+"07-Sep-23: No Data Found",
+"08-Sep-23: No Data Found"
+]
 };
 
 const targetArray = [];
@@ -124,8 +124,39 @@ function pushValueWithDelay() {
             pushValueWithDelay(); // Call the function recursively
         }
     }
+
 }
 
 // Start the process by calling the function for the first time
 pushValueWithDelay();
 
+<!-- Dropdown -->
+
+<v-autocomplete
+v-model="departmentautocompleteed"
+:items="[{ id: `---`, name: `All Departments` }, ...departments]"
+dense
+outlined
+item-value="id"
+item-text="name"
+hide-details
+label="Department" ></v-autocomplete>
+
+  let options = {
+      params: {
+        company_id: this.$auth.user.company_id,
+      },
+    };
+
+getDepartments(options) {
+      this.progressloading = true;
+      this.$axios
+        .get("department-list", options)
+        .then(({ data }) => {
+          this.departments = data;
+        })
+        .catch((err) => console.log(err));
+    },
+
+
+<!-- Dropdown End -->

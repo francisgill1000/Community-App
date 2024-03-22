@@ -36,7 +36,7 @@ class TimezoneController extends Controller
     {
         $model = Timezone::count();
 
-        $count =  $model == 0 ? 1 : $model;
+        $count =  $model == 0 ? 1 : $model + 1;
 
         return $count + 1;
     }
