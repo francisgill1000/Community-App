@@ -41,28 +41,14 @@
               </v-btn>
             </span>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-col class="toolbaritems-button-design">
-                <!-- <v-tooltip top color="primary">
-                  <template v-slot:activator="{ on, attrs }"> -->
-                <v-btn
-                  v-if="can(`timezone_mapping_create`)"
-                  dense
-                  class="ma-0 px-0"
-                  x-small
-                  :ripple="false"
-                  text
-                  title="Add Timezone"
-                >
-                  <v-icon class="ml-2" @click="goToCreatePage()" dark
-                    >mdi mdi-plus-circle</v-icon
-                  >
-                </v-btn>
-                <!-- </template>
-                  <span>Add New Timezone</span>
-                </v-tooltip> -->
-              </v-col>
-            </v-toolbar-items>
+            <v-btn
+              v-if="can(`timezone_mapping_create`)"
+              color="primary"
+              title="Add Timezone"
+              @click="goToCreatePage()"
+            >
+              Add Mapping
+            </v-btn>
           </v-toolbar>
           <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
             {{ snackText }}
@@ -100,33 +86,6 @@
                       autocomplete="off"
                       :placeholder="header.placeHolder"
                     ></v-text-field>
-                    <v-select
-                      clearable
-                      @click:clear="
-                        filters[header.value] = '';
-                        applyFilters();
-                      "
-                      :id="header.key"
-                      :hide-details="true"
-                      v-if="
-                        header.filterSpecial &&
-                        header.value == 'branch.branch_name'
-                      "
-                      outlined
-                      dense
-                      small
-                      v-model="branch_id"
-                      item-text="branch_name"
-                      item-value="id"
-                      :items="[
-                        { branch_name: `All Branches`, id: `` },
-                        ...branchesList,
-                      ]"
-                      placeholder="All Branches"
-                      solo
-                      flat
-                      @change="applyFilters(header.key, id)"
-                    ></v-select>
                   </v-container>
                 </td>
               </tr>
@@ -143,13 +102,9 @@
                 v-for="(subitem, index) in item.device_id.slice(0, 3)"
                 :key="index"
               >
-                <v-sheet class="ma-2" cols="2"> {{ ++index }}: </v-sheet>
-                <v-sheet class="ma-2" cols="4">
-                  {{ caps(subitem.name) }}</v-sheet
-                >
-                <v-sheet class="ma-2" cols="4">{{
-                  caps(subitem.location)
-                }}</v-sheet>
+                {{ caps(subitem.name) }}
+                <br />
+                {{ caps(subitem.location) }}
               </div>
 
               <v-btn
@@ -343,34 +298,6 @@ export default {
   created() {
     //this.getData();
     this.loading = true;
-
-    if (this.$auth.user.branch_id == null) {
-      let branch_header = [
-        {
-          text: "Branch",
-          align: "left",
-          sortable: true,
-          key: "branch_id", //sorting
-          value: "branch.branch_name", //edit purpose
-          width: "300px",
-          filterable: true,
-          filterSpecial: true,
-        },
-      ];
-      this.headers.splice(1, 0, ...branch_header);
-
-      this.$axios
-        .get(`branches_list`, {
-          params: {
-            per_page: 100,
-            company_id: this.$auth.user.company_id,
-          },
-        })
-        .then(({ data }) => {
-          this.branchesList = data;
-          this.branch_id = this.$auth.user.branch_id || "";
-        });
-    }
   },
   mounted: function () {
     this.getDataFromApi();
@@ -401,7 +328,7 @@ export default {
       this.$router.push("/timezonemapping/" + rowId);
     },
     displayEdit(rowId) {
-      this.$router.push("/timezonemapping/edit?id=" + rowId);
+      this.$router.push("/community/access_control/tenant-mapping/" + rowId);
     },
     deleteItem(rowId, timezone_id) {
       let url = this.$axios.defaults.baseURL + "/deletetimezone";

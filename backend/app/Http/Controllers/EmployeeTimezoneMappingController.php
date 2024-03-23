@@ -188,12 +188,7 @@ class EmployeeTimezoneMappingController extends Controller
             ->with(["timezone"])
             ->where('company_id', $request->company_id)
             ->when($request->filled('department_id'), function ($q) use ($request) {
-                if ($request->department_id != '---') {
-                    $q->where('department_id', $request->department_id);
-                }
-            })
-            ->when($request->filled('branch_id'), function ($q) use ($request) {
-                $q->where('branch_id', $request->branch_id);
+                $q->where('department_id', $request->department_id);
             })
             ->get();
         return $employees;

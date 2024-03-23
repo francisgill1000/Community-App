@@ -15,7 +15,7 @@
       <v-col cols="3">
         <v-select
           @change="loadDepartmentemployees"
-          v-model="departmentselected"
+          v-model="department_id"
           :items="departments"
           dense
           outlined
@@ -462,13 +462,7 @@
         }}</span>
       </v-col>
       <v-col cols="12" class="text-right">
-        <v-btn
-          @click="onSubmit"
-          type="button"
-          class="primary"
-        >
-          Submit
-        </v-btn>
+        <v-btn @click="onSubmit" type="button" class="primary"> Submit </v-btn>
       </v-col>
     </v-row>
   </div>
@@ -493,7 +487,7 @@ export default {
       endpointEmployee: "get_employeeswith_timezonename",
       endpointDevise: "device",
       leftSelectedEmp: [],
-      departmentselected: [],
+      department_id: [],
       departments: [],
       leftEmployees: [],
       rightSelectedEmp: [],
@@ -532,14 +526,14 @@ export default {
     }, 2000);
   },
   async created() {
+    this.loadDepartmentemployees();
 
     this.$axios
-        .get(`employee_timezone_mapping/${this.$route.params.id}`)
-        .then(({ data }) => {
-          this.timezone_id = data.timezone_id;
-        })
-        .catch((err) => console.log(err));
-
+      .get(`employee_timezone_mapping/${this.$route.params.id}`)
+      .then(({ data }) => {
+        this.timezone_id = data.timezone_id;
+      })
+      .catch((err) => console.log(err));
 
     this.getDepartmentsApi();
     this.getTimezonesFromApi();
@@ -603,7 +597,6 @@ export default {
         this.displaybutton = false;
       }
     },
-    fetch_logs() {},
     loadDepartmentemployees() {
       //this.loading = true;
       // let page = this.pagination.current;
@@ -613,7 +606,7 @@ export default {
         params: {
           per_page: 1000, //this.pagination.per_page,
           company_id: this.$auth.user.company_id,
-          department_id: this.departmentselected,
+          department_id: this.department_id,
           cols: [
             "id",
             "employee_id",

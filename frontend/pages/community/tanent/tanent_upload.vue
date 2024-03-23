@@ -186,7 +186,6 @@
                     hide-details
                   ></v-checkbox>
                 </v-col>
-
                 <v-col md="1" style="padding: 0px">
                   <v-avatar>
                     <v-img
@@ -201,9 +200,6 @@
                 </v-col>
                 <v-col md="3" style="padding: 0px; padding-top: 5px">
                   {{ user.full_name }}
-                </v-col>
-                <v-col md="3" style="padding: 0px; padding-top: 5px">
-                  {{ user.employee_id }}
                 </v-col>
               </v-row>
             </v-card-text>

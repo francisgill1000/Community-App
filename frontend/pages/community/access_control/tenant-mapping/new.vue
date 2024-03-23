@@ -13,18 +13,32 @@
     </div>
     <v-row>
       <v-col cols="3">
-        <v-select
-          @change="loadDepartmentemployees"
-          v-model="departmentselected"
-          :items="departments"
-          dense
+        <v-autocomplete
+          @change="getRoomsByFloorId(floor_id)"
+          label="Floor Number"
           outlined
+          v-model="floor_id"
+          :items="floors"
+          dense
+          item-text="floor_number"
           item-value="id"
-          item-text="name"
-          hide-details
-          label="Department"
-          :search-input.sync="searchInput"
-        ></v-select>
+          :hide-details="true"
+        >
+        </v-autocomplete>
+      </v-col>
+      <v-col cols="3">
+        <v-autocomplete
+          @change="getTanentsAndMembersByRoom(room_id)"
+          label="Room"
+          outlined
+          v-model="room_id"
+          :items="[{ id: ``, room_number: `Select All` }, ...rooms]"
+          dense
+          item-text="room_number"
+          item-value="id"
+          :hide-details="true"
+        >
+        </v-autocomplete>
       </v-col>
       <v-col cols="3">
         <v-select
@@ -39,16 +53,7 @@
           required
         ></v-select>
       </v-col>
-
-      <!-- <v-col cols="2" class="toolbaritems-button-design text-right">
-
-          <v-btn @click="goback()" style="width:130px" align="right" small dark class="primary "><v-icon color="white">mdi
-              mdi-format-list-bulleted-square</v-icon>
-            View List
-          </v-btn>
-        </v-col> -->
-
-      <v-col cols="6" class="text-right">
+      <v-col cols="3" class="text-right">
         <div>
           <v-btn color="primary" @click="goback()"
             ><v-icon color="white">mdi-format-list-bulleted-square</v-icon> View
@@ -67,7 +72,7 @@
       <v-col cols="5">
         <v-card class="timezone-displaylist1" style="height: 300px">
           <v-toolbar dense flat style="border-bottom: 1px solid #ddd">
-            <span> Employees </span>
+            <span> Tanents & Members </span>
           </v-toolbar>
           <div style="height: 245px; overflow-y: auto; overflow-x: hidden">
             <v-card-text>
@@ -79,22 +84,21 @@
                 :key="user.id"
                 style="border-bottom: 1px solid #ddd"
               >
-                <v-col cols="1">
+                <v-col cols="1" class="pa-0 ma-0">
                   <v-checkbox
                     dense
                     small
-                    hideDetails
-                    v-model="leftSelectedEmp"
-                    :value="user.id"
                     primary
                     hide-details
+                    v-model="leftSelectedEmp"
+                    :value="user.id"
                   ></v-checkbox>
+                  <!-- :disabled="!user.profile_picture" -->
                 </v-col>
 
-                <v-col cols="1">
-                  <v-avatar>
+                <v-col cols="1" class="py-1 ma-0">
+                  <v-avatar size="40">
                     <v-img
-                      class="employee-pic"
                       :src="
                         user.profile_picture
                           ? user.profile_picture
@@ -104,10 +108,8 @@
                     </v-img>
                   </v-avatar>
                 </v-col>
-                <v-col cols="3">
-                  <div class="pt-3">
-                    {{ user.first_name }}
-                  </div>
+                <v-col col="4" class="pt-2">
+                  {{ user.full_name }} {{ user.isPrimaryUser }}
                 </v-col>
               </v-row>
             </v-card-text>
@@ -176,7 +178,7 @@
       <v-col cols="5">
         <v-card class="timezone-displaylist1" style="height: 300px">
           <v-toolbar color=" " dense flat style="border-bottom: 1px solid #ddd">
-            <span>Selected Employees List</span>
+            <span>Selected Tanents & Members List</span>
           </v-toolbar>
           <div style="max-height: 245px; overflow-y: auto; overflow-x: hidden">
             <v-card-text>
@@ -188,12 +190,9 @@
                 :key="user.id"
                 style="border-bottom: 1px solid #ddd"
               >
-                <v-col md="1" style="padding: 0px;margin-top-3">
+                <v-col md="1" style="padding: 0px">
                   <v-checkbox
-                    v-if="
-                      user.timezone.timezone_name == '---' ||
-                      user.timezone.timezone_id == 1
-                    "
+                    v-if="user.profile_picture"
                     dense
                     small
                     hideDetails
@@ -203,7 +202,7 @@
                     hide-details
                   ></v-checkbox>
                   <v-checkbox
-                    style="padding: 0px;margin-top-3"
+                    style="padding: 0px"
                     v-else
                     dense
                     small
@@ -214,47 +213,23 @@
                     hide-details
                   ></v-checkbox>
                 </v-col>
-                <v-col md="3" style="padding: 0px; padding-top: 5px">
-                  {{ user.first_name }}
-                  {{ user.last_name }}
+                <v-col md="1" style="padding: 0px">
+                  <v-avatar>
+                    <v-img
+                      :src="
+                        user.profile_picture
+                          ? user.profile_picture
+                          : '/no-profile-image.jpg'
+                      "
+                    >
+                    </v-img>
+                  </v-avatar>
                 </v-col>
                 <v-col md="3" style="padding: 0px; padding-top: 5px">
-                  {{ user.employee_id }}
-                </v-col>
-                <v-col md="3" style="padding: 0px">
-                  <span style="color: red">{{ user.sdkEmpResponse }}</span>
+                  {{ user.full_name }}
                 </v-col>
               </v-row>
             </v-card-text>
-
-            <!-- 
-              <v-card-text
-                class="timezone-displaylistview"
-                v-for="(user, index) in rightEmployees"
-                :id="user.id"
-                v-model="rightSelectedEmp"
-                :key="user.id"
-              >
-                <div class="row">
-                  <v-col class="col-1" style="padding: 0px">
-                    <v-checkbox
-                      hideDetails
-                      class="col-1 d-flex flex-column justify-center"
-                      v-model="rightSelectedEmp"
-                      :value="user.id"
-                      primary
-                      hide-details
-                    ></v-checkbox>
-                  </v-col>
-                  <div class="col-sm" style="padding-top: 21px; color: #000000">
-                    {{ user.employee_id }} : {{ user.first_name }}
-                    {{ user.last_name }}
-                  </div>
-                  <div class="col-sm" style="padding-top: 21px">
-                    <span style="color: red">{{ user.sdkEmpResponse }}</span>
-                  </div>
-                </div>
-              </v-card-text> -->
           </div>
         </v-card>
       </v-col>
@@ -479,6 +454,10 @@
 export default {
   data() {
     return {
+      floor_id: [],
+      floors: [],
+      room_id: [],
+      rooms: [],
       displaybutton: false,
       progressloading: false,
       searchInput: "",
@@ -496,7 +475,7 @@ export default {
       //endpointUpdatetimezoneUpdate: "employee_timezone_mapping",
       endpointDevise: "device",
       leftSelectedEmp: [],
-      departmentselected: [],
+      department_id: ``,
       departments: [],
       leftEmployees: [],
       rightSelectedEmp: [],
@@ -535,20 +514,72 @@ export default {
     }, 2000);
   },
   async created() {
-    this.getDepartmentsApi();
+    await this.getFloors();
     this.getTimezonesFromApi();
     this.getDevisesDataFromApi();
   },
   methods: {
-    getDepartmentsApi() {
-      this.$axios
-        .get("departments", this.options)
-        .then(({ data }) => {
-          this.departments = data.data;
-          this.departments.unshift({ id: "---", name: "All Departments" });
-        })
-        .catch((err) => console.log(err));
+    async getFloors() {
+      let { data: floors } = await this.$axios.get(`floor`, {
+        params: { company_id: this.$auth.user.company_id },
+      });
+      this.floors = floors.data;
     },
+    async getRoomsByFloorId(floor_id) {
+      let { data } = await this.$axios.get(`room-by-floor-id`, {
+        params: {
+          company_id: this.$auth.user.company_id,
+          floor_id: floor_id,
+        },
+      });
+      this.rooms = data;
+    },
+    async getTanentsAndMembersByRoom(room_id) {
+      let { data } = await this.$axios.get(`tanents-and-members-by-room-id`, {
+        params: {
+          company_id: this.$auth.user.company_id,
+          room_id: room_id,
+          floor_id: this.floor_id,
+        },
+      });
+
+      let result = [];
+      data.forEach((e) => {
+        result.push({
+          id: e.id,
+          full_name: e.full_name,
+          system_user_id: parseInt(e.system_user_id),
+          profile_picture: e.profile_picture,
+          isPrimaryUser: "(Primary Member)",
+          rfid: e.rfid,
+        });
+
+        e.members_only.forEach((member) => {
+          result.push({
+            id: e.id + member.id,
+            full_name: member.full_name,
+            system_user_id: member.system_user_id,
+            profile_picture: member.profile_picture,
+            rfid: member.rfid,
+          });
+        });
+
+        e.maids.forEach((maid) => {
+          result.push({
+            id: e.id + maid.id,
+            full_name: maid.full_name,
+            system_user_id: maid.system_user_id,
+            profile_picture: maid.profile_picture,
+            rfid: maid.rfid,
+          });
+        });
+      });
+
+      this.leftEmployees = result;
+
+      this.getDevisesDataFromApi();
+    },
+
     getDevisesDataFromApi() {
       let options = {
         params: {
@@ -597,7 +628,6 @@ export default {
         this.displaybutton = false;
       }
     },
-    fetch_logs() {},
     loadDepartmentemployees() {
       //this.loading = true;
       // let page = this.pagination.current;
@@ -607,7 +637,7 @@ export default {
         params: {
           per_page: 1000, //this.pagination.per_page,
           company_id: this.$auth.user.company_id,
-          department_id: this.departmentselected,
+          department_id: this.department_id,
           cols: [
             "id",
             "employee_id",
