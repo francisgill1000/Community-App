@@ -72,12 +72,7 @@ class TimezoneController extends Controller
     {
         $data = $request->validated();
         $data["json"] = json_encode($request->json);
-        $data["interval"] = json_encode($request->json);
-        $data["intervals_raw_data"] = json_encode($request->json);
-        $data["scheduled_days"] = json_encode($request->json);
-
-
-        $data["json_for_sdk"] = $this->getNewJsonIntervaldata($request) ;
+        $data["json_for_sdk"] = $this->getNewJsonIntervaldata($request);
 
         try {
             $record = Timezone::create($data);
@@ -154,18 +149,17 @@ class TimezoneController extends Controller
     }
     public function update(UpdateRequest $request, Timezone $timezone)
     {
-        $data = $request->validated();
-        $data["json"] = $data["interval"] = $this->getNewJsonIntervaldata($request);
-        $data["intervals_raw_data"] = json_encode($request->intervals_raw_data);
-        $data["scheduled_days"] = [];
 
+        $data = $request->validated();
+        $data["json"] = json_encode($request->json);
+        $data["json_for_sdk"] = $this->getNewJsonIntervaldata($request);
 
         try {
 
             $record = $timezone->update($data);
 
             if ($record) {
-                return $this->response('Timezone Successfully updated.', $record, true);
+                return $this->response('Timezone Successfully updated.', $data["json_for_sdk"], true);
             } else {
                 return $this->response('Timezone cannot create.', null, false);
             }

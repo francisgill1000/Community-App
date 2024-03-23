@@ -3,19 +3,22 @@
     <v-dialog persistent v-model="dialog" width="80%">
       <template v-slot:activator="{ on, attrs }">
         <span style="cursor: pointer" v-bind="attrs" v-on="on">
-          <v-icon color="secondary" small> mdi-eye </v-icon>
-          View
+          <v-icon color="secondary" small> mdi-pencil </v-icon>
+          Edit
         </span>
       </template>
       <v-card>
         <v-card-title
-          >View Timezone <v-spacer></v-spacer>
+          >Edit Timezone <v-spacer></v-spacer>
           <v-icon color="primary" @click="dialog = false"
             >mdi-close</v-icon
           ></v-card-title
         >
         <v-card-text>
           <v-row>
+            <!-- <v-col cols="12">
+              <pre>{{ bookedSlots }}</pre>
+            </v-col> -->
             <v-col cols="4">
               <v-text-field
                 dense
@@ -601,20 +604,21 @@ export default {
       existingSlots.forEach((existingDay) => {
         let slots = existingDay.timeSlots;
 
-        
-
         if (slots.length > 2) {
+          for (let i = 0; i < slots.length; i++) {
+            this.toggleChecked(existingDay.id, slots[i].id);
+            this.saveSlotTemp();
+          }
           return;
         }
 
         this.updateSlotsByDay(existingDay.id, slots[0].id, slots[1].id + 1);
 
-        // this.updateSlotsByDay(existingDay.id, slots[0].id, slots[1].id + 1);
-
-        // console.log(slots);
-        // for (let i = 0; i < slots.length - 1; i += 2) {
-        //     console.log(existingDay.id, slots[i].id, slots[i + 1].id);
-        // }
+        this.editedItem = {
+          timezone_id: this.item.timezone_id,
+          timezone_name: this.item.timezone_name,
+          description: this.item.description,
+        };
       });
     },
     setHourRange(dayIndex) {
@@ -650,23 +654,31 @@ export default {
           }
         });
 
-        this.modifyJsonForSDK(foundSlots, dayIndex, dayDisplayTable);
+        this.modifyJsonForSDK(
+          dayDisplayTable,
+          dialog_time_start,
+          dialog_time_end
+        );
       }
     },
 
-    modifyJsonForSDK(foundSlots, dayIndex, dayDisplayTable) {
-      if (!this.bookedSlots[dayIndex]) {
-        this.bookedSlots.push({
-          id: dayIndex,
-          shortName: dayDisplayTable.shortName,
-          timeSlots: [foundSlots[0], foundSlots[foundSlots.length - 1]],
-        });
+    modifyJsonForSDK(data, dialog_time_start, dialog_time_end) {
+      let timeSlots = data.timeSlots.filter((slot) => {
+        return slot.id == dialog_time_start || slot.id == dialog_time_end - 1;
+      });
+
+      let payload = {
+        id: data.id,
+        shortName: data.shortName,
+        timeSlots: timeSlots,
+      };
+
+      let foundIndex = this.bookedSlots.findIndex((e) => e.id === data.id);
+
+      if (foundIndex === -1) {
+        this.bookedSlots.push(payload);
       } else {
-        Object.assign(this.bookedSlots[dayIndex], {
-          id: dayIndex,
-          shortName: dayDisplayTable.shortName,
-          timeSlots: [foundSlots[0], foundSlots[foundSlots.length - 1]],
-        });
+        this.bookedSlots[foundIndex] = payload;
       }
 
       this.hourRangeDialog = false;
@@ -685,24 +697,26 @@ export default {
         timezone_id: this.editedItem.timezone_id,
         timezone_name: this.editedItem.timezone_name,
         description: this.editedItem.description,
-        company_id: this.$auth.user.company_id,
         json: this.bookedSlots,
       };
 
       this.$axios
-        .post(`/${this.endpoint}`, this.editedItem)
+        .put(`/${this.endpoint}/${this.item.id}`, this.editedItem)
         .then(({ data }) => {
           if (!data.status) {
             this.errors = data.errors;
             return;
           }
+
           this.$emit("success", data.message);
 
           setTimeout(() => {
             this.dialog = false;
           }, 3000);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          console.log(err.message);
+        });
     },
   },
 };

@@ -5,175 +5,6 @@
         {{ response }}
       </v-snackbar>
     </div>
-    <v-dialog v-model="dialogManualInput" width="300px">
-      <v-card>
-        <v-card-title dense class="popup_background">
-          <span>Select Hour Range</span>
-          <v-spacer></v-spacer>
-          <v-icon @click="dialogManualInput = false" outlined>
-            mdi mdi-close-circle
-          </v-icon>
-        </v-card-title>
-
-        <v-card-text>
-          <v-container style="min-height: 100px">
-            <v-row>
-              <v-col md="6">
-                <v-select
-                  outlined
-                  v-model="dialog_time_start"
-                  dense
-                  :items="seasons"
-                ></v-select>
-              </v-col>
-              <v-col md="6">
-                <v-select
-                  outlined
-                  v-model="dialog_time_end"
-                  dense
-                  :items="seasons"
-                ></v-select>
-              </v-col>
-
-              <v-spacer></v-spacer>
-
-              <v-btn dark color="violet" fill @click="selectTimeRange()"
-                >Update</v-btn
-              >
-            </v-row>
-          </v-container>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-    <v-dialog persistent v-model="dialog" width="80%" :key="editedIndex">
-      <v-card>
-        <v-card-title dense class="popup_background">
-          <span> {{ Module }}</span>
-          <v-spacer></v-spacer>
-          <v-icon @click="dialog = false" outlined dark>
-            mdi mdi-close-circle
-          </v-icon>
-        </v-card-title>
-        <v-card-text class="mt-2">
-          <v-row>
-            <v-col>
-              <div v-if="viewmode">
-                <strong class="">Zone</strong>:
-                {{ editedItem && editedItem.timezone_name }}
-              </div>
-              <v-text-field
-                dense
-                :label="`Timezone Name`"
-                style="padding-top: 8px"
-                v-model="editedItem.timezone_name"
-                outlined
-                v-else
-              ></v-text-field>
-              <span
-                class="error--text"
-                v-if="
-                  !viewmode &&
-                  errors &&
-                  errors.timezone_name &&
-                  errors.timezone_name[0]
-                "
-              >
-                {{ errors.timezone_name[0] }}
-              </span>
-            </v-col>
-            <v-col>
-              <div v-if="viewmode">
-                <strong class="">Description</strong>:{{
-                  editedItem.description
-                }}
-              </div>
-              <v-text-field
-                v-else
-                dense
-                outlined
-                label="Description"
-                style="padding-top: 8px"
-                v-model="editedItem.description"
-              ></v-text-field>
-              <span
-                class="error--text"
-                v-if="
-                  !viewmode &&
-                  errors &&
-                  errors.description &&
-                  errors.description[0]
-                "
-              >
-                {{ errors.description[0] }}
-              </span>
-            </v-col>
-            <v-col
-              v-if="!viewmode"
-              md="4"
-              style="float: right; text-align: right"
-            >
-              <v-btn
-                small
-                dense
-                dark
-                color="violet"
-                fill
-                @click="clearSelection()"
-              >
-                Cancel
-              </v-btn>
-              <v-btn small dense dark color="violet" fill @click="submit"
-                >Submit</v-btn
-              >
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-text>
-          <table style="width: 100%">
-            <thead>
-              <tr>
-                <th></th>
-                <th
-                  v-for="(slot, slotIndex) in timeSlots"
-                  :key="slot"
-                  class="settings-time"
-                >
-                  <div :title="getSlotTitle(slot, timeSlots[slotIndex + 1])">
-                    {{ slot }}
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(day, index) in days" :key="index">
-                <td>{{ day.name }}</td>
-                <td
-                  v-for="(slot, slotIndex) in timeSlots"
-                  :key="slot"
-                  :title="getSlotTitle(slot, timeSlots[slotIndex + 1])"
-                  @click="!viewmode && toggleCellBackground(index, slotIndex)"
-                  :class="
-                    selectedCells.has(index + '-' + slotIndex)
-                      ? 'tdcell selected'
-                      : 'tdcell un-selected'
-                  "
-                  :id="`cell_${index}_${slotIndex}`"
-                ></td>
-                <td>
-                  <img
-                    v-if="!viewmode"
-                    @click="manualINputSettings(index)"
-                    title="Manual Input"
-                    src="/../../icons/always_open.png"
-                    style="width: 33px; pointer: cursor"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
 
     <v-dialog persistent v-model="syncDeviceDialog" max-width="1100">
       <v-card>
@@ -334,15 +165,6 @@
 </template>
 
 <script>
-let days = [
-  { index: "0", name: "Monday", short_name: "M" },
-  { index: "1", name: "Tuesday", short_name: "T" },
-  { index: "2", name: "Wednesday", short_name: "W" },
-  { index: "3", name: "Thursday", short_name: "TH" },
-  { index: "4", name: "Friday", short_name: "F" },
-  { index: "5", name: "Saturday", short_name: "SA" },
-  { index: "6", name: "Sunday", short_name: "SU" },
-];
 let setTimezonesDefaultData = {
   timezone_id: "0",
   timezone_name: "Timezone Name",
@@ -369,10 +191,6 @@ export default {
 
     dialog_time_end: "",
     dialogManualInput: false,
-    seasons: [
-      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-      21, 22, 23, 24,
-    ],
     span_time_minutes: 30,
 
     timeSlots: {}, // Generate time slots for 24 hours with 30-minute intervals
@@ -382,7 +200,6 @@ export default {
     snack: false,
     snackColor: "",
     snackText: "",
-    datatable_search_textbox: "",
 
     pagination: {
       current: 1,
@@ -406,8 +223,6 @@ export default {
     data: [],
     dayBoxes: [],
     errors: {},
-
-    days,
     editedItem: setTimezonesDefaultData,
     defaultItem: setTimezonesDefaultData,
     headers: [
@@ -477,19 +292,11 @@ export default {
       },
       deep: true,
     },
-    options_dialog: {
-      handler() {
-        this.getDataFromApiForDialog();
-      },
-      deep: true,
-    },
     search() {
       this.pagination.current = 1;
-      this.searchIt();
     },
   },
   async created() {
-    this.timeSlots = this.generateTimeSlots(24);
     this.loading = true;
     this.loading_dialog = true;
   },
@@ -503,181 +310,8 @@ export default {
     handleSuccessResponse(message) {
       this.snackbar = true;
       this.response = message;
+      this.openDeviceDialog();
       this.getDataFromApi();
-    },
-    getSlotTitle(slot, slot2) {
-      slot2 = slot2 != undefined ? slot2 : "24:00";
-      return slot + " to " + slot2;
-    },
-    updateIndex(page) {
-      this.currentPage = page;
-      this.cumulativeIndex = (page - 1) * this.perPage;
-    },
-    manualINputSettings(day_index) {
-      this.day_index = day_index;
-      this.dialogManualInput = true;
-    },
-    generateTimeSlots(hours) {
-      let interval = 30; // this.span_time_minutes;
-      this.span_time_minutes = 30;
-      const timeSlots = [];
-      for (let hour = 0; hour < hours; hour++) {
-        for (let minute = 0; minute < 60; minute += interval) {
-          const formattedHour = `${hour.toString().padStart(2, "0")}:${minute
-            .toString()
-            .padStart(2, "0")}`;
-          timeSlots.push(formattedHour);
-        }
-      }
-      return timeSlots;
-    },
-    generateTimeSlotsRange(start, end) {
-      let interval = 30; // this.span_time_minutes;
-      this.span_time_minutes = 30;
-      let timeSlots = [];
-      for (let hour = start; hour < end; hour++) {
-        for (let minute = 0; minute < 60; minute += interval) {
-          const formattedHour = `${hour.toString().padStart(2, "0")}:${minute
-            .toString()
-            .padStart(2, "0")}`;
-          timeSlots.push(formattedHour);
-        }
-      }
-      return timeSlots;
-    },
-    selectTimeRange() {
-      let timeArray = this.generateTimeSlotsRange(
-        this.dialog_time_start,
-        this.dialog_time_end
-      );
-
-      timeArray.forEach((element) => {
-        let columnIndex = this.timeSlots.findIndex((item) => item == element);
-        this.toggleCellBackground(this.day_index, columnIndex, true);
-      });
-
-      this.dialogManualInput = false;
-    },
-    toggleCellBackground(rowIndex, columnIndex, isPopup = false) {
-      console.log(rowIndex, columnIndex);
-      const refName = `cell_${rowIndex}_${columnIndex}`;
-      const printableContent = document.getElementById(refName);
-
-      const key = `${rowIndex}-${columnIndex}`;
-
-      if (this.selectedCells.has(key)) {
-        if (!isPopup) {
-          this.selectedCells.delete(key);
-          if (printableContent) {
-            printableContent.classList.add("un-selected");
-            printableContent.classList.remove("selected");
-          }
-
-          // printableContent.style.backgroundColor = "#DDD";
-        }
-      } else {
-        this.selectedCells.add(key);
-        if (printableContent) {
-          printableContent.classList.add("selected");
-          printableContent.classList.remove("un-selected");
-        }
-      }
-    },
-    clearSelection() {
-      const elementsArray = document.getElementsByClassName("tdcell");
-
-      elementsArray.forEach((element, index, array) => {
-        element.classList.remove("selected");
-        element.classList.add("un-selected");
-      });
-      this.selectedCells = new Set();
-    },
-    async addItem() {
-      this.viewmode = false;
-      this.clearSelection();
-      this.dialog = true;
-      this.readOnly = false;
-      this.editedIndex = -1;
-      this.editedItem = this.defaultItem;
-
-      try {
-        let url = `getNextAvailableIndexForTimezone`;
-        const { data } = await this.$axios.get(url);
-        this.editedItem.timezone_id = data;
-      } catch (error) {}
-    },
-    viewItem(item) {
-      this.viewmode = true;
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-      this.readOnly = false;
-      this.editedIndex = this.data.indexOf(item);
-
-      this.editedItem = Object.assign({}, item);
-      this.clearSelection();
-
-      let intervals_raw_data = JSON.parse(item.intervals_raw_data);
-
-      intervals_raw_data.forEach((element) => {
-        console.log(element);
-        const myArray = element.split("-");
-        this.toggleCellBackground(myArray[0], myArray[1]);
-      });
-    },
-    editItem(item) {
-      this.viewmode = false;
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-      this.readOnly = false;
-      this.editedIndex = this.data.indexOf(item);
-
-      this.editedItem = Object.assign({}, item);
-      this.clearSelection();
-
-      let intervals_raw_data = JSON.parse(item.intervals_raw_data);
-
-      if (!intervals_raw_data) return;
-
-      intervals_raw_data.forEach((element) => {
-        console.log(element);
-        const myArray = element.split("-");
-        this.toggleCellBackground(myArray[0], myArray[1]);
-      });
-    },
-    clearSelection() {
-      const elementsArray = document.getElementsByClassName("tdcell");
-
-      elementsArray.forEach((element, index, array) => {
-        element.classList.remove("selected");
-        element.classList.add("un-selected");
-      });
-      this.selectedCells = new Set();
-    },
-    showShortDays(days) {
-      let arr = [];
-      for (let day in days) {
-        for (let interval in days[day]) {
-          if (
-            days[day][interval].hasOwnProperty("begin") &&
-            days[day][interval].hasOwnProperty("end")
-          ) {
-            arr.push({
-              day: this.days[day]["short_name"],
-              dayWeek: this.days[day]["dayWeek"],
-              isScheduled: true,
-            });
-            break;
-          } else {
-            arr.push({
-              day: this.days[day]["short_name"],
-              dayWeek: this.days[day]["dayWeek"],
-              isScheduled: false,
-            });
-            break;
-          }
-        }
-      }
-      return arr;
     },
     async openDeviceDialog() {
       if (!this.data.length) {
@@ -765,33 +399,6 @@ export default {
         this.pagination.total = data.last_page;
         this.loading = false;
       });
-    },
-    searchIt() {
-      let s = this.search.length;
-      let search = this.search;
-      if (s == 0) {
-        this.getDataFromApi();
-      } else if (s > 2) {
-        this.getDataFromApi(`${this.endpoint}/search/${search}`);
-      }
-    },
-
-    update() {
-      this.$axios
-        .put(`/${this.endpoint}/${this.editedItem.id}`, this.editedItem)
-        .then(({ data }) => {
-          if (!data.status) {
-            this.errors = data.errors;
-            return;
-          }
-          this.snackbar = data.status;
-          this.response = data.message;
-          this.dialog = false;
-          this.getDataFromApi();
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
     },
 
     deleteItem(item) {

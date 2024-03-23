@@ -16,8 +16,12 @@
         >
         <v-card-text>
           <v-row>
+            <!-- <v-col cols="12">
+              <pre>{{ bookedSlots }}</pre>
+            </v-col> -->
             <v-col cols="4">
               <v-text-field
+                readonly
                 dense
                 :label="`Timezone Name`"
                 v-model="editedItem.timezone_name"
@@ -30,6 +34,7 @@
             </v-col>
             <v-col cols="4">
               <v-text-field
+                readonly
                 dense
                 :label="`Description`"
                 v-model="editedItem.description"
@@ -66,20 +71,15 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(day, dayIndex) in dayWiseSlots" :key="day.id">
+              <tr v-for="day in dayWiseSlots" :key="day.id">
                 <td style="width: 5%">{{ day.shortName }}</td>
                 <td
                   class="tdcell"
                   :class="slot.class"
                   v-for="slot in day.timeSlots"
                   :key="slot.id"
-                  @click="
-                    () => {
-                      toggleChecked(day.id, slot.id), saveSlotTemp();
-                    }
-                  "
                 ></td>
-                <td @click="setHourRange(dayIndex)">
+                <td>
                   <img
                     title="Manual Input"
                     src="/../../icons/always_open.png"
@@ -90,81 +90,13 @@
             </tbody>
           </table>
         </v-card-text>
-        <v-row no-gutters class="px-5 pb-2">
+        <!-- <v-row no-gutters class="px-5 pb-2">
           <v-col class="text-right">
             <v-btn small color="primary" title="Add Timezone" @click="submit">
               Submit
             </v-btn>
           </v-col>
-        </v-row>
-      </v-card>
-    </v-dialog>
-    <v-dialog persistent v-model="hourRangeDialog" width="500px">
-      <v-card>
-        <v-toolbar flat dense v-if="dayWiseSlots[dayIndex]">
-          <div>
-            Select the hour range for day ({{
-              dayWiseSlots[dayIndex].shortName || ""
-            }})
-          </div>
-          <v-spacer></v-spacer>
-          <v-icon color="primary" @click="hourRangeDialog = false"
-            >mdi-close</v-icon
-          >
-        </v-toolbar>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col md="6">
-                <v-select
-                  hide-details
-                  outlined
-                  v-model="dialog_time_start[dayIndex]"
-                  dense
-                  :items="seasons"
-                  item-text="time"
-                  item-value="id"
-                ></v-select>
-              </v-col>
-              <v-col md="6">
-                <v-select
-                  hide-details
-                  outlined
-                  v-model="dialog_time_end[dayIndex]"
-                  dense
-                  :items="seasons"
-                  item-text="time"
-                  item-value="id"
-                ></v-select>
-              </v-col>
-              <v-col class="text-right">
-                <v-btn
-                  small
-                  color="grey"
-                  dark
-                  title="Add Timezone"
-                  @click="updateSlotsByDay(dayIndex, 1, 1)"
-                >
-                  Reset
-                </v-btn>
-                <v-btn
-                  small
-                  color="primary"
-                  title="Add Timezone"
-                  @click="
-                    updateSlotsByDay(
-                      dayIndex,
-                      dialog_time_start[dayIndex],
-                      dialog_time_end[dayIndex]
-                    )
-                  "
-                >
-                  Submit
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
+        </v-row> -->
       </v-card>
     </v-dialog>
   </div>
@@ -601,20 +533,21 @@ export default {
       existingSlots.forEach((existingDay) => {
         let slots = existingDay.timeSlots;
 
-        
-
         if (slots.length > 2) {
+          for (let i = 0; i < slots.length; i++) {
+            this.toggleChecked(existingDay.id, slots[i].id);
+            this.saveSlotTemp();
+          }
           return;
         }
 
         this.updateSlotsByDay(existingDay.id, slots[0].id, slots[1].id + 1);
 
-        // this.updateSlotsByDay(existingDay.id, slots[0].id, slots[1].id + 1);
-
-        // console.log(slots);
-        // for (let i = 0; i < slots.length - 1; i += 2) {
-        //     console.log(existingDay.id, slots[i].id, slots[i + 1].id);
-        // }
+        this.editedItem = {
+          timezone_id: this.item.timezone_id,
+          timezone_name: this.item.timezone_name,
+          description: this.item.description,
+        };
       });
     },
     setHourRange(dayIndex) {
@@ -650,23 +583,31 @@ export default {
           }
         });
 
-        this.modifyJsonForSDK(foundSlots, dayIndex, dayDisplayTable);
+        this.modifyJsonForSDK(
+          dayDisplayTable,
+          dialog_time_start,
+          dialog_time_end
+        );
       }
     },
 
-    modifyJsonForSDK(foundSlots, dayIndex, dayDisplayTable) {
-      if (!this.bookedSlots[dayIndex]) {
-        this.bookedSlots.push({
-          id: dayIndex,
-          shortName: dayDisplayTable.shortName,
-          timeSlots: [foundSlots[0], foundSlots[foundSlots.length - 1]],
-        });
+    modifyJsonForSDK(data, dialog_time_start, dialog_time_end) {
+      let timeSlots = data.timeSlots.filter((slot) => {
+        return slot.id == dialog_time_start || slot.id == dialog_time_end - 1;
+      });
+
+      let payload = {
+        id: data.id,
+        shortName: data.shortName,
+        timeSlots: timeSlots,
+      };
+
+      let foundIndex = this.bookedSlots.findIndex((e) => e.id === data.id);
+
+      if (foundIndex === -1) {
+        this.bookedSlots.push(payload);
       } else {
-        Object.assign(this.bookedSlots[dayIndex], {
-          id: dayIndex,
-          shortName: dayDisplayTable.shortName,
-          timeSlots: [foundSlots[0], foundSlots[foundSlots.length - 1]],
-        });
+        this.bookedSlots[foundIndex] = payload;
       }
 
       this.hourRangeDialog = false;
@@ -679,30 +620,6 @@ export default {
           timeSlots: day.timeSlots.filter((slot) => slot.checked),
         }))
         .filter((day) => day.timeSlots.length > 0);
-    },
-    submit() {
-      this.editedItem = {
-        timezone_id: this.editedItem.timezone_id,
-        timezone_name: this.editedItem.timezone_name,
-        description: this.editedItem.description,
-        company_id: this.$auth.user.company_id,
-        json: this.bookedSlots,
-      };
-
-      this.$axios
-        .post(`/${this.endpoint}`, this.editedItem)
-        .then(({ data }) => {
-          if (!data.status) {
-            this.errors = data.errors;
-            return;
-          }
-          this.$emit("success", data.message);
-
-          setTimeout(() => {
-            this.dialog = false;
-          }, 3000);
-        })
-        .catch((err) => {});
     },
   },
 };
