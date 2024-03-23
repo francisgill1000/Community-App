@@ -1,395 +1,1027 @@
 <template>
-  <div v-if="can(`employee_access`)">
-    <v-row class="mt-5 mb-5">
-      <v-col cols="8">
-        <h3>{{ Model }} : {{ timeZoneName }}</h3>
-        <div>Dashboard / {{ Model }}</div>
-      </v-col>
-      <!-- <v-col cols="4" class="text-right">
-        <v-btn @click="goToBackpage()" small dark class="primary pt-4 pb-4"
-          >Back
-        </v-btn>
-      </v-col> -->
-      <v-col cols="6">
-        <v-toolbar class="rounded-md" dense flat>
-          <span> Devices List</span>
-        </v-toolbar>
-        <v-data-table
+  <div>
+    <div class="text-center ma-2">
+      <v-snackbar
+        :color="snackbar.color"
+        v-model="snackbar.show"
+        small
+        top="top"
+        :timeout="3000"
+      >
+        {{ response }}
+      </v-snackbar>
+    </div>
+    <v-row>
+      <v-col cols="3">
+        <v-select
+          @change="loadDepartmentemployees"
+          v-model="departmentselected"
+          :items="departments"
           dense
-          :headers="devices_headers"
-          :items="device_data"
-          :loading="loading"
-          :options.sync="options"
-          :footer-props="{
-            itemsPerPageOptions: [50, 100, 500, 1000],
-          }"
-          class="elevation-1"
-        >
-          <template v-slot:item.sno="{ item, index }">
-            <b>{{ ++index }}</b>
-          </template>
-         
-          <template v-slot:item.name="{ item }">
-            {{ item.name }}
-          </template>
-
-          <template v-slot:item.device_id="{ item }">
-            {{ item.device_id }}
-          </template>
-          <template v-slot:item.location="{ item }">
-            {{ item.location }}
-          </template>
-        </v-data-table>
-        <!-- <table id="devicesTables" class="display nowrap" style="width: 100%">
-          <thead>
-            <tr>
-              <th># sno</th>
-              <th>Device Name</th>
-              <th>Device Location</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table> -->
+          outlined
+          item-value="id"
+          item-text="name"
+          hide-details
+          label="Department"
+          :search-input.sync="searchInput"
+        ></v-select>
+      </v-col>
+      <v-col cols="3">
+        <v-select
+          v-model="timezone_id"
+          :items="timezones"
+          dense
+          outlined
+          item-value="timezone_id"
+          item-text="name"
+          hide-details
+          label="Timezones"
+          required
+        ></v-select>
       </v-col>
 
-      <v-col cols="6">
-        <v-toolbar class="rounded-md" dense flat>
-          <span> Employees List</span>
-        </v-toolbar>
-        <v-data-table
-          :headers="employee_headers"
-          :items="employee_data"
-          :loading="loading"
-          :options.sync="options"
-          :footer-props="{
-            itemsPerPageOptions: [50, 100, 500, 1000],
-          }"
-          class="elevation-1"
-        >
-          <template v-slot:item.sno="{ item, index }">
-            <b>{{ ++index }}</b>
-          </template>
-          <template v-slot:item.display_name="{ item }">
-            {{ item.display_name }}
-          </template>
-          <template v-slot:item.employee_id="{ item }">
-            {{ item.employee_id }}
-          </template>
-        </v-data-table>
+      <!-- <v-col cols="2" class="toolbaritems-button-design text-right">
+  
+            <v-btn @click="goback()" style="width:130px" align="right" small dark class="primary "><v-icon color="white">mdi
+                mdi-format-list-bulleted-square</v-icon>
+              View List
+            </v-btn>
+          </v-col> -->
 
-        <!-- <table id="employeesTable" class="display nowrap" style="width: 100%">
-          <thead>
-            <tr>
-              <th># sno</th>
-              <th>Employee Name</th>
-              <th>Emp Id</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table> -->
+      <v-col cols="6" class="text-right">
+        <div>
+          <v-btn color="primary" @click="goback()"
+            ><v-icon color="white">mdi-format-list-bulleted-square</v-icon> View
+            List</v-btn
+          >
+        </div>
+      </v-col>
+      <!-- <div>
+            <button @click="goback()" type="button" id="back" class="btn primary btn-block white--text v-size--default">
+              <v-icon color="white">mdi mdi-format-list-bulleted-square</v-icon>
+              View List
+            </button>
+          </div> -->
+    </v-row>
+    <v-row>
+      <v-col cols="5">
+        <v-card class="timezone-displaylist1" style="height: 300px">
+          <v-toolbar dense flat style="border-bottom: 1px solid #ddd">
+            <span> Employees </span>
+          </v-toolbar>
+          <div style="height: 245px; overflow-y: auto; overflow-x: hidden">
+            <v-card-text>
+              <v-row
+                class="timezone-displaylistview1"
+                v-for="(user, index) in leftEmployees"
+                :id="user.id"
+                v-model="leftEmployees"
+                :key="user.id"
+                style="border-bottom: 1px solid #ddd"
+              >
+                <v-col cols="1">
+                  <v-checkbox
+                    dense
+                    small
+                    hideDetails
+                    v-model="leftSelectedEmp"
+                    :value="user.id"
+                    primary
+                    hide-details
+                  ></v-checkbox>
+                </v-col>
+
+                <v-col cols="1">
+                  <v-avatar>
+                    <v-img
+                      class="employee-pic"
+                      :src="
+                        user.profile_picture
+                          ? user.profile_picture
+                          : '/no-profile-image.jpg'
+                      "
+                    >
+                    </v-img>
+                  </v-avatar>
+                </v-col>
+                <v-col cols="3">
+                  <div class="pt-3">
+                    {{ user.first_name }}
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </div>
+        </v-card>
+      </v-col>
+
+      <v-col cols="2">
+        <div style="text-align: -webkit-center">
+          <button
+            type="button"
+            id="undo_redo_undo"
+            class="btn primary btn-block white--text"
+          >
+            Options
+          </button>
+
+          <button
+            @click="moveToRightEmpOption2"
+            type="button"
+            id="undo_redo_rightSelected"
+            class="btn btn-default btn-block"
+          >
+            <i
+              aria-hidden="true"
+              class="v-icon notranslate mdi mdi-chevron-right theme--red"
+            ></i>
+          </button>
+
+          <button
+            @click="allmoveToRightEmp"
+            type="button"
+            id="undo_redo_rightAll"
+            class="btn btn-default btn-block"
+          >
+            <i
+              aria-hidden="true"
+              class="v-icon notranslate mdi mdi-chevron-double-right theme--red"
+            ></i>
+          </button>
+          <button
+            @click="moveToLeftempOption2"
+            type="button"
+            id="undo_redo_leftSelected"
+            class="btn btn-default btn-block"
+          >
+            <i
+              aria-hidden="true"
+              class="v-icon notranslate mdi mdi-chevron-left theme--red"
+            ></i>
+          </button>
+          <button
+            @click="allmoveToLeftemp"
+            type="button"
+            id="undo_redo_leftAll"
+            class="btn btn-default btn-block"
+          >
+            <i
+              aria-hidden="true"
+              class="v-icon notranslate mdi mdi-chevron-double-left theme--red"
+            ></i>
+          </button>
+        </div>
+      </v-col>
+
+      <v-col cols="5">
+        <v-card class="timezone-displaylist1" style="height: 300px">
+          <v-toolbar color=" " dense flat style="border-bottom: 1px solid #ddd">
+            <span>Selected Employees List</span>
+          </v-toolbar>
+          <div style="max-height: 245px; overflow-y: auto; overflow-x: hidden">
+            <v-card-text>
+              <v-row
+                class="timezone-displaylistview1"
+                v-for="(user, index) in rightEmployees"
+                :id="user.id"
+                v-model="leftSelectedEmp"
+                :key="user.id"
+                style="border-bottom: 1px solid #ddd"
+              >
+                <v-col md="1" style="padding: 0px;margin-top-3">
+                  <v-checkbox
+                    v-if="
+                      user.timezone.timezone_name == '---' ||
+                      user.timezone.timezone_id == 1
+                    "
+                    dense
+                    small
+                    hideDetails
+                    v-model="rightSelectedEmp"
+                    :value="user.id"
+                    primary
+                    hide-details
+                  ></v-checkbox>
+                  <v-checkbox
+                    style="padding: 0px;margin-top-3"
+                    v-else
+                    dense
+                    small
+                    hideDetails
+                    v-model="rightSelectedEmp"
+                    :value="user.id"
+                    primary
+                    hide-details
+                  ></v-checkbox>
+                </v-col>
+                <v-col md="3" style="padding: 0px; padding-top: 5px">
+                  {{ user.first_name }}
+                  {{ user.last_name }}
+                </v-col>
+                <v-col md="3" style="padding: 0px; padding-top: 5px">
+                  {{ user.employee_id }}
+                </v-col>
+                <v-col md="3" style="padding: 0px">
+                  <span style="color: red">{{ user.sdkEmpResponse }}</span>
+                </v-col>
+              </v-row>
+            </v-card-text>
+
+            <!-- 
+                <v-card-text
+                  class="timezone-displaylistview"
+                  v-for="(user, index) in rightEmployees"
+                  :id="user.id"
+                  v-model="rightSelectedEmp"
+                  :key="user.id"
+                >
+                  <div class="row">
+                    <v-col class="col-1" style="padding: 0px">
+                      <v-checkbox
+                        hideDetails
+                        class="col-1 d-flex flex-column justify-center"
+                        v-model="rightSelectedEmp"
+                        :value="user.id"
+                        primary
+                        hide-details
+                      ></v-checkbox>
+                    </v-col>
+                    <div class="col-sm" style="padding-top: 21px; color: #000000">
+                      {{ user.employee_id }} : {{ user.first_name }}
+                      {{ user.last_name }}
+                    </div>
+                    <div class="col-sm" style="padding-top: 21px">
+                      <span style="color: red">{{ user.sdkEmpResponse }}</span>
+                    </div>
+                  </div>
+                </v-card-text> -->
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="5">
+        <v-card class="timezone-displaylist1" style="height: 305px">
+          <v-toolbar color=" " dense flat style="border-bottom: 1px solid #ddd">
+            <span> Devices </span>
+          </v-toolbar>
+          <div style="max-height: 260px; overflow-y: auto; overflow-x: hidden">
+            <v-card-text>
+              <v-row
+                class="timezone-displaylistview1"
+                v-for="(user, index) in leftDevices"
+                :id="user.id"
+                v-model="leftSelectedDevices"
+                :key="user.id"
+                style="border-bottom: 1px solid #ddd"
+              >
+                <v-col md="1" style="padding: 0px;margin-top-3">
+                  <v-checkbox
+                    v-if="user.status.name == 'active'"
+                    dense
+                    small
+                    hideDetails
+                    v-model="leftSelectedDevices"
+                    :value="user.id"
+                    primary
+                    hide-details
+                  ></v-checkbox>
+                  <v-checkbox
+                    style="padding: 0px;margin-top-3"
+                    v-else
+                    indeterminate
+                    value
+                    disabled
+                    dense
+                    small
+                    hideDetails
+                    v-model="leftSelectedDevices"
+                    :value="user.id"
+                    primary
+                    hide-details
+                  ></v-checkbox>
+                </v-col>
+                <v-col md="3" style="padding: 0px; padding-top: 5px">
+                  {{ user.name }}
+                </v-col>
+                <v-col md="3" style="padding: 0px; padding-top: 5px">
+                  {{ user.model_number }}
+                </v-col>
+                <v-col md="3" style="padding: 0px">
+                  <img
+                    title="Online"
+                    v-if="user.status.name == 'active'"
+                    src="/icons/device_status_open.png"
+                    style="width: 30px"
+                  />
+                  <img
+                    title="Offline"
+                    v-else
+                    src="/icons/device_status_close.png"
+                    style="width: 30px"
+                  />
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </div>
+        </v-card>
+      </v-col>
+
+      <v-col cols="2">
+        <div style="text-align: -webkit-center">
+          <button
+            type="button"
+            id="undo_redo_undo"
+            class="btn primary btn-block white--text"
+          >
+            Options
+          </button>
+
+          <button
+            @click="moveToRightDevicesOption2"
+            type="button"
+            id="undo_redo_rightSelected"
+            class="btn btn-default btn-block"
+          >
+            <i
+              aria-hidden="true"
+              class="v-icon notranslate mdi mdi-chevron-right theme--red"
+            ></i>
+          </button>
+
+          <button
+            @click="allmoveRightDevices"
+            type="button"
+            id="undo_redo_rightAll"
+            class="btn btn-default btn-block"
+          >
+            <i
+              aria-hidden="true"
+              class="v-icon notranslate mdi mdi-chevron-double-right theme--red"
+            ></i>
+          </button>
+          <button
+            @click="moveToLeftDevicesOption2"
+            type="button"
+            id="undo_redo_leftSelected"
+            class="btn btn-default btn-block"
+          >
+            <i
+              aria-hidden="true"
+              class="v-icon notranslate mdi mdi-chevron-left theme--red"
+            ></i>
+          </button>
+          <button
+            @click="allmoveLeftDevices"
+            type="button"
+            id="undo_redo_leftAll"
+            class="btn btn-default btn-block"
+          >
+            <i
+              aria-hidden="true"
+              class="v-icon notranslate mdi mdi-chevron-double-left theme--red"
+            ></i>
+          </button>
+        </div>
+      </v-col>
+
+      <v-col cols="5">
+        <v-card class="timezone-displaylist1" style="height: 305px">
+          <v-toolbar color=" " dense flat style="border-bottom: 1px solid #ddd">
+            <span>Selected Devices List</span>
+          </v-toolbar>
+          <div style="max-height: 260px; overflow-y: auto; overflow-x: hidden">
+            <v-card-text>
+              <v-row
+                class="timezone-displaylistview1"
+                v-for="(user, index) in rightDevices"
+                :id="user.id"
+                v-model="rightSelectedDevices"
+                :key="user.id"
+                style="border-bottom: 1px solid #ddd"
+              >
+                <v-col md="1" style="padding: 0px;margin-top-3">
+                  <v-checkbox
+                    v-if="user.status.name == 'active'"
+                    dense
+                    small
+                    hideDetails
+                    v-model="rightSelectedDevices"
+                    :value="user.id"
+                    primary
+                    hide-details
+                  ></v-checkbox>
+                  <v-checkbox
+                    style="padding: 0px;margin-top-3"
+                    v-else
+                    dense
+                    small
+                    hideDetails
+                    v-model="rightSelectedDevices"
+                    :value="user.id"
+                    primary
+                    hide-details
+                  ></v-checkbox>
+                </v-col>
+                <v-col md="3" style="padding: 0px; padding-top: 5px">
+                  {{ user.name }}
+                </v-col>
+                <v-col md="3" style="padding: 0px; padding-top: 5px">
+                  {{ user.model_number }}
+                </v-col>
+                <v-col md="3" style="padding: 0px">
+                  <img
+                    title="Online"
+                    v-if="user.status.name == 'active'"
+                    src="/icons/device_status_open.png"
+                    style="width: 30px" />
+                  <img
+                    title="Offline"
+                    v-else
+                    src="/icons/device_status_close.png"
+                    style="width: 30px"
+                /></v-col>
+                <v-col md="3" style="padding: 0px">
+                  <span
+                    v-if="user.sdkDeviceResponse == 'Success'"
+                    style="color: green"
+                    >{{ user.sdkDeviceResponse }}</span
+                  >
+                  <span v-else style="color: red">{{
+                    user.sdkDeviceResponse
+                  }}</span>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </div>
+        </v-card>
+      </v-col>
+      <v-col cols="12">
+        <span v-if="errors && errors.message" class="text-danger mt-2">{{
+          errors.message
+        }}</span>
+      </v-col>
+      <v-col cols="12" class="text-right">
+        <v-btn
+          @click="onSubmit"
+          type="button"
+          class="primary"
+        >
+          Submit
+        </v-btn>
       </v-col>
     </v-row>
   </div>
 </template>
-<script>
-import DataTable from "@andresouzaabreu/vue-data-table";
 
+<script>
 export default {
-  components: {
-    DataTable,
-  },
   data() {
     return {
-      loading: false,
-      employee_data: [],
-      options: [],
-      name: "fahath",
-      endpointUpdatetimezonelist: "employee_timezone_mapping",
-      Model: "Timezone Mapping  ",
+      displaybutton: false,
+      progressloading: false,
+      searchInput: "",
+      snackbar: {
+        message: "",
+        color: "black",
+        show: true,
+      },
+      errors: [],
       response: "",
-      tableData: [],
-      tableColumns: [],
-      Timezone: "",
-      timeZoneName: "",
-      devices_headers: [
-        { text: "#", align: "left", sortable: false, key: "sno", value: "sno" },
-        {
-          text: "Device Name",
-          align: "left",
-          sortable: true,
-          key: "name",
-          value: "name",
+      color: "primary",
+      loading: true,
+      endpointEmployee: "get_employeeswith_timezonename",
+      endpointDevise: "device",
+      leftSelectedEmp: [],
+      departmentselected: [],
+      departments: [],
+      leftEmployees: [],
+      rightSelectedEmp: [],
+      rightEmployees: [],
+      leftSelectedDevices: [],
+      leftDevices: [],
+      rightSelectedDevices: [],
+      rightDevices: [],
+      department_ids: ["---"],
+      timezones: [],
+      timezone_id: null,
+      options: {
+        params: {
+          company_id: this.$auth.user.company_id,
+          cols: ["id", "name"],
         },
-        {
-          text: "Device Name",
-          align: "left",
-          sortable: true,
-          key: "device_id",
-          value: "device_id",
-        },
-        {
-          text: "Device Location",
-          align: "left",
-          sortable: true,
-          key: "location",
-          value: "location",
-        },
-      ],
-      employee_headers: [
-        { text: "#", align: "left", sortable: false, key: "sno", value: "sno" },
-        {
-          text: "Employee Name",
-          align: "left",
-          sortable: true,
-          key: "display_name",
-          value: "display_name",
-        },
-        {
-          text: "Employee ID",
-          align: "left",
-          sortable: true,
-          key: "employee_id",
-          value: "employee_id",
-        },
-      ],
+      },
+      isCompany: true,
     };
   },
-  computed: {},
+  mounted() {
+    this.snackbar.show = true;
+    this.snackbar.message = "Data loading...Please wait ";
+    this.response = "Data loading...Please wait ";
 
-  created() {
-    //this.getData();
-    if (this.$auth.user.branch_id == null) {
-      let branch_header = [
-        {
-          text: "Branch",
-          align: "left",
-          sortable: true,
-          key: "branch_id", //sorting
-          value: "branch.branch_name", //edit purpose
-          width: "300px",
-          filterable: true,
-          filterSpecial: true,
-        },
-      ];
-
-      let company_branch_header = [
-        {
-          text: "Branch",
-          align: "left",
-          sortable: true,
-          value: "company_branch.branch_name", //edit purpose
-          width: "300px",
-          filterable: true,
-          filterSpecial: true,
-        },
-      ];
-      this.devices_headers.splice(1, 0, ...company_branch_header);
-      this.employee_headers.splice(1, 0, ...branch_header);
-    }
-  },
-  mounted: function () {
-    this.Timezone = this.$route.params.id;
     this.$nextTick(function () {
-      var options = {
-        params: {
-          per_page: 1000, //this.pagination.per_page,
-          company_id: this.$auth.user.company_id,
-          id: this.$route.params.id,
-          cols: ["id", "employee_id", "display_name"],
-        },
-      };
-      let url =
-        this.$axios.defaults.baseURL +
-        "/employee_timezone_mapping/" +
-        this.$route.params.id;
-      this.$axios.get(`${url}`, options).then(({ data }) => {
-        this.deviceTableContent(data.device_id);
-        this.employeeTableContent(data.employee_id);
-
-        this.timeZoneName = data.timezone.timezone_name;
-      });
+      setTimeout(() => {
+        this.loading = false;
+        //this.snackbar = false;
+      }, 2000);
     });
+
+    setTimeout(() => {
+      this.loading = false;
+      //this.snackbar = false;
+    }, 2000);
+  },
+  async created() {
+
+    this.$axios
+        .get(`employee_timezone_mapping/${this.$route.params.id}`)
+        .then(({ data }) => {
+          this.timezone_id = data.timezone_id;
+        })
+        .catch((err) => console.log(err));
+
+
+    this.getDepartmentsApi();
+    this.getTimezonesFromApi();
+    this.getDevisesDataFromApi();
   },
   methods: {
-    goToBackpage() {
-      this.$router.push("/timezonemapping/list");
+    getDepartmentsApi() {
+      this.$axios
+        .get("departments", this.options)
+        .then(({ data }) => {
+          this.departments = data.data;
+          this.departments.unshift({ id: "---", name: "All Departments" });
+        })
+        .catch((err) => console.log(err));
     },
-
-    deviceTableContent(ajaxData) {
-      this.device_data = ajaxData;
-
-      return false;
-      // Code that will run only after the
-      // entire view has been rendered
-      var options = {
+    getDevisesDataFromApi() {
+      let options = {
+        params: {
+          company_id: this.$auth.user.company_id,
+        },
+      };
+      this.$axios.get(`device_list`, options).then(({ data }) => {
+        this.leftDevices = data;
+      });
+    },
+    getEmployeesDataFromApi(url = this.endpointEmployee) {
+      let options = {
         params: {
           per_page: 1000, //this.pagination.per_page,
           company_id: this.$auth.user.company_id,
-          id: this.$route.params.id,
-          cols: ["id", "employee_id", "display_name"],
+          cols: [
+            "id",
+            "employee_id",
+            "display_name",
+            "first_name",
+            "last_name",
+          ],
         },
       };
       let page = 1;
-      // ${url}?page=${page}
+      this.$axios.get(`${url}?page=${page}`, options).then(({ data }) => {
+        this.leftEmployees = data.data;
+      }, 1000);
+    },
+    getTimezonesFromApi() {
+      let options = {
+        params: {
+          company_id: this.$auth.user.company_id,
+        },
+      };
+      this.$axios
+        .get("timezone-list", options)
+        .then(({ data }) => (this.timezones = data))
+        .catch((err) => console.log(err));
+    },
 
-      let url =
-        this.$axios.defaults.baseURL +
-        "/employee_timezone_mapping/" +
-        this.$route.params.id;
+    verifySubmitButton() {
+      if (this.rightEmployees.length > 0 && this.rightDevices.length > 0) {
+        this.displaybutton = true;
+      } else {
+        this.displaybutton = false;
+      }
+    },
+    fetch_logs() {},
+    loadDepartmentemployees() {
+      //this.loading = true;
+      // let page = this.pagination.current;
+      let url = this.endpointEmployee;
 
+      let options = {
+        params: {
+          per_page: 1000, //this.pagination.per_page,
+          company_id: this.$auth.user.company_id,
+          department_id: this.departmentselected,
+          cols: [
+            "id",
+            "employee_id",
+            "display_name",
+            "first_name",
+            "last_name",
+          ],
+        },
+      };
+      let page = 1;
+
+      this.$axios.get(`${url}?page=${page}`, options).then(({ data }) => {
+        this.leftEmployees = [];
+        this.leftEmployees = data.data;
+        this.leftSelectedEmp = [];
+
+        this.rightEmployees = [];
+        this.rightSelectedEmp = [];
+      });
+    },
+    resetErrorMessages() {
+      this.errors = [];
+      this.response = "";
+      this.leftEmployees.forEach((e) => (e["sdkEmpResponse"] = ""));
+      this.leftDevices.forEach((e) => (e["sdkDeviceResponse"] = ""));
+    },
+    onSubmit() {
+      this.resetErrorMessages();
+      this.displaybutton = false;
+      if (this.timezone_id == "") {
+        this.response = this.response + "Timezones not selected";
+      } else if (this.rightEmployees.length == 0) {
+        this.response = this.response + " Atleast select one Employee Details";
+      } else if (this.rightDevices.length == 0) {
+        this.response = this.response + " Atleast select one Device Details";
+      }
+
+      if (this.response != "") {
+        this.snackbar.show = true;
+        this.snackbar.message = this.response;
+        this.snackbar.color = "red";
+        setTimeout(() => {
+          this.snackbar.show = false;
+        }, 1000 * 10);
+        return false;
+      }
       this.loading = true;
 
-      $(document).ready(() => {
-        //setTimeout(() => {
+      let keysToSelect = ["system_user_id"];
 
-        var table = $("#devicesTables").DataTable({
-          responsive: true,
-          colReorder: true,
-          paging: false,
-          info: false,
-          searching: false,
-          // dom: "Bfrtip",
-          buttons: [],
-          order: [
-            [0, "asc"], // colonna index1
-            [1, "asc"], // colonna index2
-          ],
-          stateSave: true,
-          data: ajaxData,
-          // ajax: {
-          //   url,
-          //   data: options.params,
-          //   dataSrc: "device_id",
-          //   datatype: "json",
-          // },
-          columns: [
-            {
-              data: null,
-              render: function (data, type, row, meta) {
-                return meta.row + 1;
-              },
-            },
-
-            //{ data: "timezone_id" },
-
-            {
-              data: null,
-              render: function (data, type, row) {
-                return row.location;
-              },
-            },
-            {
-              data: null,
-              render: function (data, type, row) {
-                return row.device_id;
-              },
-            },
-          ],
+      // Select the specified keys from each object
+      let filteredDataEmp = [];
+      this.rightEmployees.map(function (obj) {
+        let selectedObj = {};
+        keysToSelect.forEach(function (key) {
+          if (obj.hasOwnProperty(key)) {
+            // selectedObj[key] = obj[key];
+            selectedObj = obj[key];
+            filteredDataEmp.push(selectedObj);
+          }
         });
-
-        $("a.toggle-vis").on("click", function (e) {
-          e.preventDefault();
-
-          // Get the column API object
-          var column = table.column($(this).attr("data-column"));
-
-          // Toggle the visibility
-          column.visible(!column.visible());
-        });
-        // }, 1000 * 1);
+        return selectedObj;
       });
-    },
-    employeeTableContent(ajaxData) {
-      this.employee_data = ajaxData;
+      //
+      // Define the keys you want to select
+      keysToSelect = ["device_id"];
 
-      return false;
-
-      // Code that will run only after the
-      // entire view has been rendered
-      var options = {
-        params: {
-          per_page: 1000, //this.pagination.per_page,
-          company_id: this.$auth.user.company_id,
-          id: this.$route.params.id,
-          cols: ["id", "employee_id", "display_name"],
-        },
+      // Select the specified keys from each object
+      let filteredDataDevices = [];
+      this.rightDevices.map(function (obj) {
+        let selectedObj = {};
+        keysToSelect.forEach(function (key) {
+          if (obj.hasOwnProperty(key)) {
+            // selectedObj[key] = obj[key];
+            selectedObj = obj[key];
+            filteredDataDevices.push(selectedObj);
+          }
+        });
+        return selectedObj;
+      });
+      let options = {
+        timezone_id: this.timezone_id,
+        employee_id: this.rightEmployees,
+        device_id: this.rightDevices,
+        company_id: this.$auth.user.company_id,
+        employee_ids: filteredDataEmp,
+        device_ids: filteredDataDevices,
       };
-      let page = 1;
-      // ${url}?page=${page}
 
-      let url =
-        this.$axios.defaults.baseURL +
-        "/employee_timezone_mapping/" +
-        this.$route.params.id;
+      this.progressloading = true;
+      let jsrightEmployees = this.rightEmployees;
 
-      $(document).ready(() => {
-        // setTimeout(() => {
+      let SDKSuccessStatus = true;
 
-        var table = $("#employeesTable").DataTable({
-          responsive: true,
-          colReorder: true,
-          paging: false,
-          searching: false,
-          info: false,
-          // dom: "Bfrtip",
-          // buttons: [],
+      this.$axios
+        .put(`employee_timezone_mapping/${this.$route.params.id}`, options)
+        .then(({ data }) => {
+          if (data.status) {
+            // this.snackbar.show = true;
+            // this.snackbar.message = "Employee(s) has been mapped";
+            this.$router.push("/community/access_control/tenant-mapping");
+          }
+          if (data.record.SDKResponse) {
+            this.loading = false;
+            this.rightDevices.forEach((rightDevicesobj) => {
+              let SdkResponseDeviceobject = data.record.SDKResponse.data.find(
+                (e) => e.sn == rightDevicesobj.device_id
+              );
 
-          order: [
-            [0, "asc"], // colonna index1
-            [1, "asc"], // colonna index2
-          ],
-          stateSave: true,
-          data: ajaxData,
-          // ajax: {
-          //   url,
-          //   data: options.params,
-          //   dataSrc: "employee_id",
-          //   datatype: "json",
-          // },
-          columns: [
-            {
-              data: null,
-              render: function (data, type, row, meta) {
-                return meta.row + 1;
-              },
-            },
+              let deviceStatusResponse = "";
+              let EmpStatusResponse = "";
 
-            //{ data: "timezone_id" },
-            {
-              data: null,
-              render: function (data, type, row) {
-                return row.display_name;
-              },
-            },
-            {
-              data: null,
-              render: function (data, type, row) {
-                return row.employee_id;
-              },
-            },
-          ],
+              if (SdkResponseDeviceobject.message == "") {
+                deviceStatusResponse = "Success";
+              } else if (
+                SdkResponseDeviceobject.message == "The device was not found"
+              ) {
+                deviceStatusResponse = "The device was not found or offline";
+                SDKSuccessStatus = false;
+              } else if (
+                SdkResponseDeviceobject.message == "person info error"
+              ) {
+                let SDKUseridArray = SdkResponseDeviceobject.userList; //SDK error userslist
+                jsrightEmployees.forEach((element) => {
+                  element["sdkEmpResponse"] = "Success";
+                  let systemUserid = element.system_user_id;
+                  SDKSuccessStatus = false;
+                  let selectedEmpobject = SDKUseridArray.find(
+                    (e) => e.userCode == systemUserid
+                  );
+                  EmpStatusResponse = SdkResponseDeviceobject.sdkEmpResponse;
+                  deviceStatusResponse = "";
+
+                  if (EmpStatusResponse != "") {
+                    //Adding extra parameters for Employee object
+                    if (selectedEmpobject) {
+                      element["sdkEmpResponse"] = "person photo error ";
+                      // $.extend(element, {
+                      //   sdkEmpResponse: "person info error ",
+                      // });
+                    } else {
+                      // $.extend(element, {
+                      //   sdkEmpResponse: " Success",
+                      // });
+                      element["sdkEmpResponse"] = "Success";
+                    }
+                  }
+                });
+              } else {
+              }
+
+              //Adding extra parameters for Devices object
+              rightDevicesobj["sdkDeviceResponse"] =
+                deviceStatusResponse != "" ? deviceStatusResponse : " Success";
+              this.errors = [];
+            });
+
+            this.rightEmployees = jsrightEmployees;
+            this.progressloading = false;
+
+            this.loading = false;
+            if (!SDKSuccessStatus) {
+              {
+                this.errors = data.errors;
+              }
+              this.errors = [];
+              this.errors["message"] =
+                "Device/Employee Error:   Device and Employee details are Mapped. You can add/remove items from Edit list ";
+
+              //this.displaybutton = false;
+            } else {
+              this.$router.push("/timezonemapping/list");
+            }
+          } else {
+            this.errors = [];
+            this.progressloading = false;
+            this.snackbar.show = true;
+            this.errors["message"] =
+              data.message +
+              " But, Error:" +
+              "Device Communication is not available";
+
+            this.snackbar.message =
+              data.message +
+              "But,  Error:" +
+              "Device Communication is not available";
+            this.response =
+              data.message +
+              "But,  Error:" +
+              "Device Communication is not available";
+            return false;
+          }
+
+          this.displaybutton = true;
         });
+    },
+    goback() {
+      this.$router.push("/community/access_control/tenant-mapping");
+    },
+    sortObject: (o) =>
+      o.sort(function compareByName(a, b) {
+        if (a.first_name && b.first_name) {
+          let nameA = a.first_name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+          let nameB = b.first_name.toUpperCase();
 
-        $("a.toggle-vis").on("click", function (e) {
-          e.preventDefault();
+          if (nameA < nameB) {
+            return -1;
+          } else if (nameA > nameB) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+      }),
+    sortObjectD: (o) =>
+      o.sort(function compareByName(a, b) {
+        if (a.device_id && b.device_id) {
+          let nameA = a.device_id.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+          let nameB = b.device_id.toUpperCase();
 
-          // Get the column API object
-          var column = table.column($(this).attr("data-column"));
+          if (nameA < nameB) {
+            return -1;
+          } else if (nameA > nameB) {
+            return 1;
+          } else {
+            return 0;
+          }
+        } else {
+          return 0;
+        }
+      }),
+    sortObjectC: (o) =>
+      o.sort(function compareByName(a, b) {
+        if (a.name && b.name) {
+          let nameA = a.name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
+          let nameB = b.name.toUpperCase();
 
-          // Toggle the visibility
-          column.visible(!column.visible());
-        });
-        // }, 1000 * 1);
-      });
+          if (nameA < nameB) {
+            return -1;
+          } else if (nameA > nameB) {
+            return 1;
+          } else {
+            return 0;
+          }
+        }
+      }),
+    allmoveToLeftemp() {
+      this.resetErrorMessages();
+      this.leftEmployees = this.leftEmployees.concat(this.rightEmployees);
+      this.rightEmployees = [];
+      this.leftEmployees = this.sortObject(this.leftEmployees);
+      this.verifySubmitButton();
+    },
+    allmoveToRightEmp() {
+      this.resetErrorMessages();
+      // this.rightEmployees = this.rightEmployees.concat(this.leftEmployees);
+      // this.leftEmployees = [];
+      this.rightEmployees = this.rightEmployees.concat(
+        this.leftEmployees.filter(
+          (el) =>
+            el.timezone.timezone_name == "---" || el.timezone.timezone_id == 1
+        )
+      );
+
+      this.leftEmployees = this.leftEmployees.filter(
+        (el) =>
+          el.timezone.timezone_name != "---" && el.timezone.timezone_id != 1
+      );
+      this.rightEmployees = this.sortObject(this.rightEmployees);
+      this.verifySubmitButton();
+    },
+    moveToLeftempOption2() {
+      this.resetErrorMessages();
+      if (!this.rightSelectedEmp.length) return;
+
+      //for (let i = this.leftSelectedEmp.length; i > 0; i--) {
+      let _rightSelectedEmp_length = this.rightSelectedEmp.length;
+      for (let i = 0; i < _rightSelectedEmp_length; i++) {
+        if (this.rightSelectedEmp) {
+          let selectedindex = this.rightEmployees.findIndex(
+            (e) => e.id == this.rightSelectedEmp[i]
+          );
+
+          let selectedobject = this.rightEmployees.find(
+            (e) => e.id == this.rightSelectedEmp[i]
+          );
+
+          selectedobject.sdkEmpResponse = "";
+          this.leftEmployees.push(selectedobject);
+
+          this.rightEmployees.splice(selectedindex, 1);
+        }
+      }
+      this.leftEmployees = this.sortObject(this.leftEmployees);
+
+      for (let i = 0; i < _rightSelectedEmp_length; i++) {
+        this.rightSelectedEmp.pop(this.rightSelectedEmp[i]);
+      }
+      this.verifySubmitButton();
     },
 
-    handleAction(actionName, data) {
-      //window.alert("check out the console to see the logs");
+    moveToRightEmpOption2() {
+      this.resetErrorMessages();
+      if (!this.leftSelectedEmp.length) return;
+
+      let _leftSelectedEmp_length = this.leftSelectedEmp.length;
+      for (let i = 0; i < _leftSelectedEmp_length; i++) {
+        if (this.leftSelectedEmp) {
+          let selectedindex = this.leftEmployees.findIndex(
+            (e) => e.id == this.leftSelectedEmp[i]
+          );
+
+          let selectedobject = this.leftEmployees.find(
+            (e) => e.id == this.leftSelectedEmp[i]
+          );
+
+          this.rightEmployees.push(selectedobject);
+
+          this.leftEmployees.splice(selectedindex, 1);
+        }
+      }
+      this.rightEmployees = this.sortObject(this.rightEmployees);
+      for (let i = 0; i < _leftSelectedEmp_length; i++) {
+        this.leftSelectedEmp.pop(this.leftSelectedEmp[i]);
+      }
+      this.verifySubmitButton();
     },
-    can(per) {
-      return this.$pagePermission.can(per, this);
+    /* Devices---------------------------------------- */
+    allmoveLeftDevices() {
+      this.resetErrorMessages();
+      this.leftDevices = this.leftDevices.concat(this.rightDevices);
+      this.rightDevices = [];
+
+      this.leftDevices = this.sortObjectD(this.leftDevices);
+      this.verifySubmitButton();
     },
-    
+    allmoveRightDevices() {
+      this.resetErrorMessages();
+      //this.rightDevices = this.rightDevices.concat(this.leftDevices);
+      //this.leftDevices = [];
+      this.rightDevices = this.rightDevices.concat(
+        this.leftDevices.filter((el) => el.status.name == "active")
+      );
+      this.leftDevices = this.leftDevices.filter(
+        (el) => el.status.name == "inactive"
+      );
+      this.rightDevices = this.sortObjectD(this.rightDevices);
+      this.verifySubmitButton();
+    },
+    moveToLeftDevicesOption2() {
+      this.resetErrorMessages();
+
+      if (!this.rightSelectedDevices.length) return;
+
+      //for (let i = this.leftSelectedDevices.length; i > 0; i--) {
+      let _rightSelectedDevices_length = this.rightSelectedDevices.length;
+      for (let i = 0; i < _rightSelectedDevices_length; i++) {
+        if (this.rightSelectedDevices) {
+          let selectedindex = this.rightDevices.findIndex(
+            (e) => e.id == this.rightSelectedDevices[i]
+          );
+
+          let selectedobject = this.rightDevices.find(
+            (e) => e.id == this.rightSelectedDevices[i]
+          );
+
+          this.leftDevices.push(selectedobject);
+
+          this.rightDevices.splice(selectedindex, 1);
+        }
+      }
+
+      this.leftDevices = this.sortObjectD(this.leftDevices);
+
+      for (let i = 0; i < _rightSelectedDevices_length; i++) {
+        this.rightSelectedDevices.pop(this.rightSelectedDevices[i]);
+      }
+      this.verifySubmitButton();
+    },
+
+    moveToRightDevicesOption2() {
+      this.resetErrorMessages();
+      if (!this.leftSelectedDevices.length) return;
+
+      let _leftSelectedDevices_length = this.leftSelectedDevices.length;
+      for (let i = 0; i < _leftSelectedDevices_length; i++) {
+        if (this.leftSelectedDevices) {
+          let selectedindex = this.leftDevices.findIndex(
+            (e) => e.id == this.leftSelectedDevices[i]
+          );
+
+          let selectedobject = this.leftDevices.find(
+            (e) => e.id == this.leftSelectedDevices[i]
+          );
+
+          this.rightDevices.push(selectedobject);
+
+          this.leftDevices.splice(selectedindex, 1);
+        }
+      }
+
+      this.rightDevices = this.sortObjectD(this.rightDevices);
+
+      for (let i = 0; i < _leftSelectedDevices_length; i++) {
+        this.leftSelectedDevices.pop(this.leftSelectedDevices[i]);
+      }
+      this.verifySubmitButton();
+    },
   },
 };
 </script>

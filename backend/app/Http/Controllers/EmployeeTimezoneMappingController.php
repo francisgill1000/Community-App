@@ -36,10 +36,10 @@ class EmployeeTimezoneMappingController extends Controller
             })
             ->paginate($request->per_page);
     }
-    public function show(EmployeeTimezoneMapping $model, $id)
+    public function show(EmployeeTimezoneMapping $EmployeeTimezoneMapping)
     {
 
-        return $model->with(["timezone"])->where('id', $id)->first();
+        return $EmployeeTimezoneMapping->load("timezone");
         //return $model->where("id", $id)->first();
     }
 
@@ -67,6 +67,7 @@ class EmployeeTimezoneMappingController extends Controller
             throw $th;
         }
     }
+
     public function filterRequestpayloadBySDKResponse($request, $SDKresponse)
     {
         $SDKresponse = json_decode(json_encode($SDKresponse), true);
@@ -133,33 +134,19 @@ class EmployeeTimezoneMappingController extends Controller
     public function update(UpdateRequest $request, EmployeeTimezoneMapping $EmployeeTimezoneMapping)
     {
         try {
-
-            //updating default timezone id which are already exist in TimezoneName
-            if ($request->timezone_id) {
-                Employee::where('timezone_id', $request->timezone_id)
-                    ->update(['timezone_id' => 1]);
-            }
-
-            $record = $EmployeeTimezoneMapping->update($request->all());
+            $record = $EmployeeTimezoneMapping->update($request->validated());
 
             if ($record) {
 
-                $SDKjsonRequest = $this->prepareSDKrequestjson($request->all());
+                $SDKjsonRequest = $this->prepareSDKrequestjson($EmployeeTimezoneMapping->first());
 
-                $SDKObj = new SDKController;
-                //$SDKresponse = ($SDKObj->processSDKRequest("localhost:5000/Person/AddRange", $SDKjsonRequest));
-                //$SDKresponse = ($SDKObj->processSDKRequest("", $SDKjsonRequest));
-                $SDKresponse = ($SDKObj->PersonAddRangeWithData($SDKjsonRequest));
+                $SDKresponse = (new SDKController)->PersonAddRangeWithData($SDKjsonRequest);
 
                 $finalArray['SDKRequest'] = $SDKjsonRequest;
+                $finalArray['SDKResponse'] = $SDKresponse;
 
-                try {
-                    $finalArray['SDKResponse'] = json_decode($SDKresponse, true);
-
-                    $finalArray['recordResponse'] = $request->all();
-                } catch (\Throwable $th) {
-                }
-                return $this->response('EmployeeTimezoneMapping successfully updated.', $finalArray, true);
+                $finalArray['recordResponse'] = $record;
+                return $this->response('EmployeeTimezoneMapping Successfully updated.', $finalArray, true);
             } else {
                 return $this->response('EmployeeTimezoneMapping cannot update.', null, false);
             }

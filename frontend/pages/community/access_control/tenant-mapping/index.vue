@@ -41,28 +41,14 @@
               </v-btn>
             </span>
             <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-col class="toolbaritems-button-design">
-                <!-- <v-tooltip top color="primary">
-                  <template v-slot:activator="{ on, attrs }"> -->
-                <v-btn
-                  v-if="can(`timezone_mapping_create`)"
-                  dense
-                  class="ma-0 px-0"
-                  x-small
-                  :ripple="false"
-                  text
-                  title="Add Timezone"
-                >
-                  <v-icon class="ml-2" @click="goToCreatePage()" dark
-                    >mdi mdi-plus-circle</v-icon
-                  >
-                </v-btn>
-                <!-- </template>
-                  <span>Add New Timezone</span>
-                </v-tooltip> -->
-              </v-col>
-            </v-toolbar-items>
+            <v-btn
+              v-if="can(`timezone_mapping_create`)"
+              color="primary"
+              title="Add Timezone"
+              @click="goToCreatePage()"
+            >
+              Add Mapping
+            </v-btn>
           </v-toolbar>
           <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
             {{ snackText }}
@@ -342,7 +328,7 @@ export default {
       this.$router.push("/timezonemapping/" + rowId);
     },
     displayEdit(rowId) {
-      this.$router.push("/timezonemapping/edit?id=" + rowId);
+      this.$router.push("/community/access_control/tenant-mapping/" + rowId);
     },
     deleteItem(rowId, timezone_id) {
       let url = this.$axios.defaults.baseURL + "/deletetimezone";

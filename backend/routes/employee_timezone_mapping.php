@@ -10,3 +10,8 @@ Route::post('/deletetimezone', [EmployeeTimezoneMappingController::class, 'delet
 Route::get('/gettimezonesinfo', [EmployeeTimezoneMappingController::class, 'gettimezonesinfo']);
 Route::get('/gettimezonesinfo/search/{key}', [EmployeeTimezoneMappingController::class, 'gettimezonesinfo_search']);
 Route::get('/get_employeeswith_timezonename_id/{id}', [EmployeeTimezoneMappingController::class, 'get_employeeswith_timezonename_id']);
+
+Route::post('/destroyAndCreatedPreviousMapping/{id}', [EmployeeTimezoneMappingController::class, 'destroyAndCreatedPreviousMapping']);
+
+
+

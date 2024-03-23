@@ -28,7 +28,7 @@
       </v-col>
       <v-col cols="3">
         <v-select
-          v-model="timezonesselected"
+          v-model="timezone_id"
           :items="timezones"
           dense
           outlined
@@ -507,7 +507,7 @@ export default {
       rightDevices: [],
       department_ids: ["---"],
       timezones: [],
-      timezonesselected: null,
+      timezone_id: null,
       options: {
         params: {
           company_id: this.$auth.user.company_id,
@@ -637,7 +637,7 @@ export default {
     onSubmit() {
       this.resetErrorMessages();
       this.displaybutton = false;
-      if (this.timezonesselected == "") {
+      if (this.timezone_id == "") {
         this.response = this.response + "Timezones not selected";
       } else if (this.rightEmployees.length == 0) {
         this.response = this.response + " Atleast select one Employee Details";
@@ -689,7 +689,7 @@ export default {
         return selectedObj;
       });
       let options = {
-        timezone_id: this.timezonesselected,
+        timezone_id: this.timezone_id,
         employee_id: this.rightEmployees,
         device_id: this.rightDevices,
         company_id: this.$auth.user.company_id,
