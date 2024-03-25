@@ -161,7 +161,7 @@
               <v-list width="150" dense>
                 <v-list-item v-if="can(`tanent_create`)">
                   <v-list-item-title style="cursor: pointer">
-                    <TanentAddMember
+                    <OnwerAddMember
                       :key="generateRandomId()"
                       @success="handleSuccessResponse"
                       :item="{
