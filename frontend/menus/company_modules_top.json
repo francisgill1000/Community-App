@@ -64,14 +64,6 @@
     "permission": "parking_access"
   },
   {
-    "icon": "mdi-calendar-account",
-    "title": "Access Control",
-    "to": "/community/access_control/timezone",
-    "menu": "timezone",
-    "module": "topmenu",
-    "permission": "timezone_access"
-  },
-  {
     "icon": "mdi-calendar-star-four-points",
     "title": "Employee",
     "to": "/employees",

@@ -52,7 +52,7 @@
           >
         </v-col>
       </v-row>
-      <TanentAddCardFromEdit
+      <!-- <TanentAddCardFromEdit
         @success="handleSuccessResponse"
         :item="{
           tanent_id: item.id,
@@ -61,9 +61,9 @@
             parseInt(item.members_count + parseInt(item.cards_count)) +
             1,
         }"
-        v-if="!payload.cards.length"
-      />
-      <div v-else>
+        v-if="payload && Array.isArray(payload.cards) && !payload.cards.length"
+      /> -->
+      <div>
         <v-card
           outlined
           v-for="(member, index) in payload.cards"

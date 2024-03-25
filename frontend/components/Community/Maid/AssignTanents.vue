@@ -18,7 +18,7 @@
               v-model="parent_ids"
               :items="tanents"
               item-value="id"
-              item-text="full_name"
+              item-text="full_name_with_room"
               dense
               :hide-details="!errors.parent_ids"
               :error-messages="
@@ -75,7 +75,10 @@ export default {
     let { data: tanents } = await this.$axios.get(`tanent-list`, {
       params: { company_id: this.$auth.user.company_id },
     });
-    this.tanents = tanents;
+    this.tanents = tanents.map((e) => ({
+      id: e.id,
+      full_name_with_room: e.full_name + ` (${e.room.room_number})`,
+    }));
 
     let { data: associated_tanent_ids } = await this.$axios.get(
       `get-associated-tanent-ids/${this.id}`

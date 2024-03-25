@@ -559,7 +559,11 @@ export default {
 
   methods: {
     async getCards() {
-      const { data } = await this.$axios.get(`/card-list`);
+      const { data } = await this.$axios.get(`/card-list`, {
+        params: {
+          type: this.visitor_type,
+        },
+      });
 
       this.cards = data;
     },

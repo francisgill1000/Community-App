@@ -46,6 +46,7 @@ include('community/parking.php');
 include('community/contractor.php');
 include('community/card.php');
 include('community/admin.php');
+include('community/tanent_timezone_mapping.php');
 
 include('csv.php');
 include('other.php');

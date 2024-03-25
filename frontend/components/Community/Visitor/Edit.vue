@@ -8,7 +8,7 @@
     </template>
     <v-card>
       <v-toolbar dense flat>
-        <v-card-title>Edit Visitor</v-card-title>
+        <v-card-title>Edit {{ label }}</v-card-title>
         <v-spacer></v-spacer>
         <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
       </v-toolbar>
@@ -16,7 +16,6 @@
         <v-row>
           <v-col cols="3">
             <v-row>
-             
               <v-col cols="12">
                 <div class="text-center">
                   <CameraORUpload
@@ -359,7 +358,7 @@ let dynamicTime = hours + ":" + minutes;
 hours = parseInt(hours) + 2;
 let dynamicOutTime = hours + ":" + minutes;
 export default {
-  props: ["item", "visitor_type"],
+  props: ["item", "visitor_type", "label"],
 
   data: () => ({
     disabled: false,
@@ -545,7 +544,11 @@ export default {
       }
     },
     async getCards() {
-      const { data } = await this.$axios.get(`/card-list`);
+      const { data } = await this.$axios.get(`/card-list`, {
+        params: {
+          type: this.visitor_type,
+        },
+      });
 
       this.cards = data;
     },

@@ -28,7 +28,6 @@ class CardController extends Controller
 
     public function dropDown()
     {
-        return Card::get();
         return Card::where("type", request("type"))->get();
     }
 

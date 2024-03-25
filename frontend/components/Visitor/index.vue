@@ -122,6 +122,7 @@
                     <CommunityVisitorEdit
                       :visitor_type="visitor_type"
                       :item="item"
+                      :label="label"
                       @success="handleSuccessResponse"
                     />
                   </v-list-item-title>
@@ -132,6 +133,7 @@
                       :visitor_type="visitor_type"
                       :key="generateRandomId()"
                       :item="item"
+                      :label="label"
                     />
                   </v-list-item-title>
                 </v-list-item>

@@ -398,7 +398,7 @@
               >
             </v-col>
           </v-row>
-          <TanentAddMemberFromEdit
+          <!-- <TanentAddMemberFromEdit
             :item="{
               tanent_id: item.id,
               system_user_id:
@@ -407,9 +407,15 @@
                 parseInt(item.cards_count) +
                 1,
             }"
-            v-if="!payload.members_only.length && !payload.maids.length"
-          />
-          <div v-else>
+            v-if="
+              payload &&
+              Array.isArray(payload.members_only) &&
+              !payload.members_only.length &&
+              Array.isArray(payload.maids) &&
+              !payload.maids.length
+            "
+          /> -->
+          <div>
             <v-card
               outlined
               v-for="(member, index) in payload.members_only"
