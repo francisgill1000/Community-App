@@ -80,7 +80,7 @@
 
           <template v-slot:item.tanent_for_maid="{ item, index }">
             <strong> {{ item.tanent_for_maid?.tanent?.full_name }}</strong>
-            <p>Flat {{ item.tanent_for_maid?.tanent?.room?.room_number }}</p>
+            <p v-if="item.tanent_for_maid?.tanent?.room?.room_number">Flat {{ item.tanent_for_maid?.tanent?.room?.room_number }}</p>
           </template>
 
           <template v-slot:item.options="{ item }">
