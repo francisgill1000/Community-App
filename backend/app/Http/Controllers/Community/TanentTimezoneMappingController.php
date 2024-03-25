@@ -29,8 +29,7 @@ class TanentTimezoneMappingController extends Controller
      */
     public function store(StoreRequest $request)
     {
-        return $appJsonPayload = $this->prepareAPPJson($request);
-
+        $appJsonPayload = $this->prepareAPPJson($request);
 
         $sdkJsonPayload = $this->prepareSDKJson($request);
 
