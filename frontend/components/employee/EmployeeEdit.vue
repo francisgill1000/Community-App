@@ -204,7 +204,7 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col class="col-sm-6">
+          <v-col class="col-sm-6" v-if="setPreviewImage">
             <CameraORUpload
               :PreviewImage="setPreviewImage"
               @imageSrc="handleAttachment"

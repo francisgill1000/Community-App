@@ -1,22 +1,7 @@
-<!-- ExportComponent.vue -->
 <template>
-   <span class="pa-2 text-center" @click="exportData">
-      <!-- <v-icon
-              title="Download"
-              @click="export_submit"
-              right
-              dark
-              color="black"
-              size="x-large"
-              >mdi-arrow-down-bold-circle</v-icon
-            > -->
-      <img
-        title="Download"
-        style="width: 20px; cursor: pointer"
-        src="@/static/icons/icon_excel.png"
-      />
-      <div style="font-size: 8px; color: black; margin-top: -4px">Download</div>
-    </span>
+  <v-icon title="Download" @click="exportData" right dark color="black"
+    >mdi-folder-download</v-icon
+  >
 </template>
 
 <script>

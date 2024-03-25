@@ -48,7 +48,7 @@
       <v-col cols="5">
         <v-card class="photo-displaylist" style="height: 300px">
           <v-toolbar dense flat style="border: 1px solid #ddd">
-            <span> Tanents & Members </span>
+            <span> Owners </span>
           </v-toolbar>
           <v-progress-linear
             v-if="progressloading"
@@ -151,7 +151,7 @@
       <v-col cols="5">
         <v-card class="photo-displaylist" style="height: 300px">
           <v-toolbar color=" " dense flat style="border: 1px solid #ddd">
-            <span>Selected Tanents </span>
+            <span>Selected Owners </span>
           </v-toolbar>
           <div style="max-height: 250px; overflow-y: auto; overflow-x: hidden">
             <v-card-text>
@@ -495,7 +495,7 @@ export default {
       this.rooms = data;
     },
     async getTanentsAndMembersByRoom(room_id) {
-      let { data } = await this.$axios.get(`tanents-and-members-by-room-id`, {
+      let { data } = await this.$axios.get(`owners-by-room-id`, {
         params: {
           company_id: this.$auth.user.company_id,
           room_id: room_id,
@@ -511,26 +511,6 @@ export default {
           system_user_id: parseInt(e.system_user_id),
           profile_picture: e.profile_picture,
           rfid: e.rfid,
-        });
-
-        e.members_only.forEach((member) => {
-          result.push({
-            id: e.id + member.id,
-            full_name: member.full_name + ` (${e?.room?.room_number || ""})`,
-            system_user_id: member.system_user_id,
-            profile_picture: member.profile_picture,
-            rfid: member.rfid,
-          });
-        });
-
-        e.maids.forEach((maid) => {
-          result.push({
-            id: e.id + maid.id,
-            full_name: maid.full_name + ` (${e?.room?.room_number || ""})`,
-            system_user_id: maid.system_user_id,
-            profile_picture: maid.profile_picture,
-            rfid: maid.rfid,
-          });
         });
       });
 

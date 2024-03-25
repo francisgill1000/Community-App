@@ -457,6 +457,37 @@
     "menu": "tanent",
     "module": "tanents"
   },
+
+  {
+    "icon": "mdi-account-card-details",
+    "image": "/tenet-3.png",
+    "title": "Owner",
+    "to": "/community/owner?1",
+    "menu": "owner",
+    "module": "owners"
+  },
+  {
+    "icon": "mdi-camera-account",
+    "title": "Owner Upload",
+    "to": "/community/owner/owner_upload",
+    "menu": "owner",
+    "module": "owners"
+  },
+  {
+    "icon": "mdi-credit-card-scan-outline",
+    "title": "Owner Card Upload",
+    "to": "/community/owner/owner_card_upload",
+    "menu": "owner",
+    "module": "owners"
+  },
+  {
+    "icon": "mdi-chart-box-outline",
+    "title": "Reports",
+    "to": "/community/owner/reports",
+    "menu": "owner",
+    "module": "owners"
+  },
+
   {
     "icon": "mdi-chart-box-outline",
     "image": "/tenet-3.png",

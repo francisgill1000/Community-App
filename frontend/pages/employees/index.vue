@@ -520,25 +520,40 @@
             </v-btn>
           </span>
           <v-spacer></v-spacer>
-          <span class="pa-2 text-center" @click="() => (dialog = true)">
-            <img
+          <span @click="() => (dialog = true)">
+            <!-- <img
               title="Import File"
               style="width: 20px; cursor: pointer"
               src="../../static/icons/import-icon.png"
             />
             <div style="font-size: 8px; color: black; margin-top: -5px">
               Import
-            </div>
+            </div> -->
+            <v-icon
+              title="Download"
+              right
+              dark
+              color="black"
+              >mdi-folder-upload</v-icon
+            >
           </span>
-          <span class="pa-2 text-center" @click="export_submit">
-            <img
+          <span @click="export_submit">
+            <!-- <img
               title="Download"
               style="width: 20px; cursor: pointer"
               src="../../static/icons/icon_excel.png"
             />
             <div style="font-size: 8px; color: black; margin-top: -4px">
               Download
-            </div>
+            </div> -->
+            <v-icon
+              title="Download"
+              @click="export_submit"
+              right
+              dark
+              color="black"
+              >mdi-folder-download</v-icon
+            >
           </span>
           <span
             class="pa-2 text-center"
@@ -552,13 +567,12 @@
               right
               dark
               color="black"
-              size="x-large"
               style="font-size: 30px; padding-left: 0px !important"
-              >mdi-account-plus mdi-flip-h</v-icon
+              >mdi-account-plus</v-icon
             >
-            <div style="font-size: 8px; color: black; margin-top: -5px">
+            <!-- <div style="font-size: 8px; color: black; margin-top: -5px">
               Add
-            </div>
+            </div> -->
           </span>
         </v-toolbar>
 

@@ -2,10 +2,7 @@
   <v-dialog persistent v-model="DialogBox" width="500">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-btn dense small class="primary" text title="Add Company">
-          Allocate Parking
-          <v-icon right dark>mdi-plus-circle-outline</v-icon>
-        </v-btn>
+        <v-icon right color="black">mdi-plus-circle</v-icon>
       </span>
     </template>
     <v-card>

@@ -2,7 +2,8 @@
   <v-dialog persistent v-model="dialog" width="900">
     <template v-slot:activator="{ on, attrs }">
       <span style="cursor: pointer" v-bind="attrs" v-on="on">
-        <v-icon
+        <v-icon right color="black">mdi-account-plus</v-icon>
+        <!-- <v-icon
           v-if="button_type == 'icon'"
           color="black"
           :title="`Create ${label}`"
@@ -18,7 +19,7 @@
         >
           Create {{ label }}
           <v-icon right dark>mdi-plus-circle-outline</v-icon>
-        </v-btn>
+        </v-btn> -->
       </span>
     </template>
     <v-card>

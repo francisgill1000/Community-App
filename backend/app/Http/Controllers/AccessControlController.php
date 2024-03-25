@@ -26,19 +26,23 @@ class AccessControlController extends Controller
             }
         }
 
-        if ($user_type == 'tanent' || $user_type == 'Maid') {
-            $tanents = DB::table('tanents');
-
-            if ($user_type == 'tanent') {
-                $tanents->whereIn("member_type", ["Owner", "Primary", "Family Member"]);
-            } else if ($user_type == 'Maid') {
-                $tanents->where("member_type", "Maid");
-            }
-            // $tanents = $tanents->get(["id", "full_name", "system_user_id"])->toArray();
-            $tanents = $tanents->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
+        if ($user_type == 'Owner') {
+            $tanents = DB::table('tanents')->where("member_type", "Owner")
+                ->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
                 ->orderBy("first_name", "asc")
                 ->get(['tanents.id', DB::raw('full_name || \' - \' || rooms.room_number  as full_name'), 'tanents.system_user_id']) // Include the room_name column from the rooms table
-
+                ->toArray();
+        } else if ($user_type == 'Maid') {
+            $tanents = DB::table('tanents')->where("member_type", "Maid")
+                ->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
+                ->orderBy("first_name", "asc")
+                ->get(['tanents.id', DB::raw('full_name || \' - \' || rooms.room_number  as full_name'), 'tanents.system_user_id']) // Include the room_name column from the rooms table
+                ->toArray();
+        } else if ($user_type == 'tanent') {
+            $tanents = DB::table('tanents')->whereIn("member_type", ["Primary", "Family Member"])
+                ->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
+                ->orderBy("first_name", "asc")
+                ->get(['tanents.id', DB::raw('full_name || \' - \' || rooms.room_number  as full_name'), 'tanents.system_user_id']) // Include the room_name column from the rooms table
                 ->toArray();
         }
 
@@ -67,7 +71,7 @@ class AccessControlController extends Controller
     }
     public function index()
     {
-        return $this->processFilter()->orderBy("id","desc")->paginate(request("per_page") ?? 100);
+        return $this->processFilter()->orderBy("id", "desc")->paginate(request("per_page") ?? 100);
     }
 
     public function search_visitor_by_user_id()

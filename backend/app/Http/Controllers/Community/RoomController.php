@@ -147,15 +147,27 @@ class RoomController extends Controller
         return Tanent::where("company_id", request("company_id"))
             ->where("floor_id", request("floor_id"))
             ->when(request()->filled("room_id"), fn ($q) => $q->where("room_id", request("room_id")))
-            ->with(["members_only","maids"])->get();
+            ->with(["members_only", "maids", "room"])->get();
     }
+
+    public function getOwnerssByRoomsId()
+    {
+        return Tanent::where("company_id", request("company_id"))
+            ->where("member_type", "Owner")
+            ->where("floor_id", request("floor_id"))
+            ->when(request()->filled("room_id"), fn ($q) => $q->where("room_id", request("room_id")))
+            ->with(["members_only", "maids", "room"])->get();
+    }
+
+
+
 
     public function getCardsByRoomsId()
     {
 
         $tanent_id = Room::where("id", request("room_id"))->orderBy("id", "desc")->value("tenant_id") ?? 0;
 
-        return Tanent::where("parent_id",$tanent_id)->where("member_type", "card")->get();
+        return Tanent::where("parent_id", $tanent_id)->where("member_type", "card")->get();
     }
 
     /**
