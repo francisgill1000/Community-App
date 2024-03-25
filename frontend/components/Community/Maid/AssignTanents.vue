@@ -77,7 +77,7 @@ export default {
     });
     this.tanents = tanents.map((e) => ({
       id: e.id,
-      full_name_with_room: e.full_name + ` (${e.room.room_number})`,
+      full_name_with_room: e.full_name + ` (${e?.room?.room_number})`,
     }));
 
     let { data: associated_tanent_ids } = await this.$axios.get(
