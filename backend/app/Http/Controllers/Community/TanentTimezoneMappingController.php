@@ -43,38 +43,37 @@ class TanentTimezoneMappingController extends Controller
 
         $appJsonPayload = $this->prepareAPPJson($request);
 
-        $sdkJsonPayload = $this->prepareSDKJson($request);
+        // $sdkJsonPayload = $this->prepareSDKJson($request);
 
-        $SDKresponses = $this->processSDKTimezoneCommand(env('SDK_URL') . "/Person/AddRange", $sdkJsonPayload);
+        // $SDKresponses = $this->processSDKTimezoneCommand(env('SDK_URL') . "/Person/AddRange", $sdkJsonPayload);
 
-        $payload = [];
+        // $payload = [];
 
-        if ($SDKresponses["status"] == 200) {
-            foreach ($SDKresponses["data"] as $SDKresponse) {
+        // if ($SDKresponses["status"] == 200) {
+        //     foreach ($SDKresponses["data"] as $SDKresponse) {
 
-                if ($SDKresponse["state"] == true) {
-                    $filteredArray = array_filter($appJsonPayload, fn ($item) => $item["device_id"] == $SDKresponse["sn"]);
-                    $array_values = array_values($filteredArray);
-                    $payload = array_merge($payload, $array_values);
-                }
-            }
-        }
+        //         if ($SDKresponse["state"] == true) {
+        //             $filteredArray = array_filter($appJsonPayload, fn ($item) => $item["device_id"] == $SDKresponse["sn"]);
+        //             $array_values = array_values($filteredArray);
+        //             $payload = array_merge($payload, $array_values);
+        //         }
+        //     }
+        // }
 
 
-        if (!count($payload)) {
-            return $this->response('No record found.', null, false);
-        }
+        // if (!count($payload)) {
+        //     return $this->response('No record found.', null, false);
+        // }
 
-        $tanent_ids = array_column($payload, "tanent_id");
-        $device_ids = array_column($payload, "device_id");
+        $tanent_ids = array_column($appJsonPayload, "tanent_id");
 
         try {
             $model = TanentTimezoneMapping::query();
             $model->whereIn("tanent_id", $tanent_ids);
-            $model->whereIn("device_id", $device_ids);
+            $model->whereIn("device_id", $request->device_ids);
             $model->delete();
-            $model->insert($payload);
-            return $this->response('Tenant(s) has been mapped.', $payload, true);
+            $model->insert($appJsonPayload);
+            return $this->response('Tenant(s) has been mapped.', $appJsonPayload, true);
         } catch (\Throwable $th) {
             return $this->response('Tenant(s) cannot be mapped.', $th->getMessage(), false);
         }
