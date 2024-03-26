@@ -812,7 +812,7 @@ export default {
         });
     },
     goback() {
-      this.$router.push("/community/access_control/tenant-mapping");
+      this.$router.push("/community/access_control/3");
     },
     sortObject: (o) =>
       o.sort(function compareByName(a, b) {

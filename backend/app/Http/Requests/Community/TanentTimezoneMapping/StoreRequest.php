@@ -31,7 +31,6 @@ class StoreRequest extends FormRequest
             'tanents' => 'required|array',
             'tanents.*.system_user_id' => 'required|integer',
             'tanents.*.full_name' => 'required|string',
-            'device_ids' => 'required|array',
             'device_ids.*' => 'required|string',
         ];
     }

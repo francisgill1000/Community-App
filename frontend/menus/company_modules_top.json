@@ -67,7 +67,7 @@
     "icon": "mdi-calendar-star-four-points",
     "title": "Employee",
     "to": "/employees",
-    "menu": "access_control",
+    "menu": "employees",
     "module": "topmenu",
     "permission": "employee_access"
   },

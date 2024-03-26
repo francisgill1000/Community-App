@@ -737,7 +737,7 @@ export default {
           if (data.status) {
             // this.snackbar.show = true;
             // this.snackbar.message = "Employee(s) has been mapped";
-            this.$router.push("/community/access_control/tenant-mapping");
+            this.$router.push("/community/access_control");
           }
           if (data.record.SDKResponse) {
             this.loading = false;
@@ -843,7 +843,7 @@ export default {
         });
     },
     goback() {
-      this.$router.push("/community/access_control/tenant-mapping");
+      this.$router.push("/community/access_control/2");
     },
     sortObject: (o) =>
       o.sort(function compareByName(a, b) {

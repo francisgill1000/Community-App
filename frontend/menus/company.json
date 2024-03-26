@@ -176,6 +176,13 @@
     "module": "settings"
   },
   {
+    "icon": "mdi-lock",
+    "title": "Access Control",
+    "open_menu": false,
+    "to": "/community/access_control",
+    "module": "settings"
+  },
+  {
     "icon": "mdi-account-tie",
     "title": "Employees",
     "to": "/employees",
@@ -183,13 +190,19 @@
     "module": "employees"
   },
   {
-    "icon": "mdi-bell",
-    "title": "Announcements",
-    "open_menu": false,
-    "to": "/announcements",
+    "icon": "mdi-clock-outline",
+    "title": "Shifts",
+    "to": "/shift",
+    "menu": "employee_access",
     "module": "employees"
   },
-
+  {
+    "icon": "mdi-account-tie",
+    "title": "Schedule",
+    "to": "/employee_schedule",
+    "menu": "employee_access",
+    "module": "employees"
+  },
   {
     "icon": "mdi mdi-camera-account",
     "title": "Photo Upload",
@@ -197,7 +210,6 @@
     "menu": "employee_photo_upload",
     "module": "employees"
   },
-
   {
     "icon": "mdi-clock-outline",
     "title": "Shifts",
@@ -264,18 +276,11 @@
   },
 
   {
-    "icon": "mdi mdi-camera-account",
-    "title": "Photo Upload",
-    "to": "/employee_photo_upload",
-    "menu": "employee_photo_upload",
-    "module": "access_control"
-  },
-  {
     "icon": "mdi-chart-box-outline",
     "title": "Reports",
-    "to": "/community/visitor/reports",
+    "to": "/attendance_report",
     "menu": "timezone_mapping_list",
-    "module": "access_control"
+    "module": "employees"
   },
   {
     "icon": "mdi-account",

@@ -410,22 +410,6 @@
           </v-btn>
         </span>
 
-        <v-col cols="3">
-          <v-select
-            style="width: 250px"
-            cols="1"
-            :hide-details="true"
-            @change="applyBranchFilter()"
-            item-value="id"
-            item-text="branch_name"
-            v-model="filterBranchId"
-            outlined
-            dense
-            clearable
-            :items="[{ branch_name: `All Branches`, id: `` }, ...branchesList]"
-          ></v-select
-        ></v-col>
-
         <v-col cols="6"> </v-col>
 
         <v-spacer></v-spacer>
@@ -526,21 +510,6 @@
                     { name: `All`, id: `` },
                     { name: `Scheduled`, id: `1` },
                     { name: `Un-Scheduled`, id: `0` },
-                  ]"
-                ></v-select>
-                <v-select
-                  v-if="header.filterSpecial && header.value == 'branch_id'"
-                  :hide-details="true"
-                  clearable
-                  @change="applyFilter()"
-                  item-value="id"
-                  item-text="branch_name"
-                  v-model="filters[header.value]"
-                  outlined
-                  dense
-                  :items="[
-                    { branch_name: `All Branches`, id: `` },
-                    ...branchesList,
                   ]"
                 ></v-select>
                 <v-select
@@ -835,7 +804,6 @@ export default {
     cumulativeIndex: 1,
     perPage: 20,
     currentPage: 1,
-    branchesList: [],
     branch_id: null,
     shifts_for_filter: [],
     shiftsTypes_for_filter: [],
@@ -1069,20 +1037,6 @@ export default {
     },
   },
   created() {
-    if (this.$auth.user.branch_id == null || this.$auth.user.branch_id == 0) {
-      let branch_header = [
-        {
-          text: "Branch",
-          align: "left",
-          sortable: true,
-          value: "branch_id",
-          filterable: true,
-          filterName: "branch_id",
-          filterSpecial: true,
-        },
-      ];
-      this.headers_table.splice(1, 0, ...branch_header);
-    }
     this.loading = true;
     this.loading_dialog = true;
     this.getShifts();
@@ -1095,7 +1049,6 @@ export default {
     };
 
     this.getShiftsForFilter();
-    this.getbranchesList();
   },
 
   methods: {
@@ -1116,19 +1069,6 @@ export default {
     updateIndex(page) {
       this.currentPage = page;
       this.cumulativeIndex = (page - 1) * this.perPage;
-    },
-    getbranchesList() {
-      this.payloadOptions = {
-        params: {
-          company_id: this.$auth.user.company_id,
-
-          // branch_id: this.$auth.user.branch_id,
-        },
-      };
-
-      this.$axios.get(`branches_list`, this.payloadOptions).then(({ data }) => {
-        this.branchesList = data;
-      });
     },
     applyFilter() {
       this.getDataFromApi();

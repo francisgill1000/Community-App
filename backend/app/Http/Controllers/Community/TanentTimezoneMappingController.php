@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Community;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SDKController;
 use App\Http\Requests\Community\TanentTimezoneMapping\StoreRequest;
+use App\Models\Community\Tanent;
 use App\Models\Community\TanentTimezoneMapping;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -18,7 +19,11 @@ class TanentTimezoneMappingController extends Controller
      */
     public function index()
     {
-        //
+        return Tanent::with(["devices", "floor", "room", "timezone"])
+            // ->whereIn("id", ["413"])
+            ->whereHas('mappings')
+            ->orderBy('id', 'desc')
+            ->paginate(request("per_page") ?? 10);
     }
 
     /**
@@ -29,49 +34,49 @@ class TanentTimezoneMappingController extends Controller
      */
     public function store(StoreRequest $request)
     {
+
+        if (!count($request->tanents)) {
+            return $this->response('No Tenant found.', null, false);
+        } else if (!count($request->device_ids)) {
+            return $this->response('No Device found.', null, false);
+        }
+
         $appJsonPayload = $this->prepareAPPJson($request);
 
         $sdkJsonPayload = $this->prepareSDKJson($request);
 
-        return $this->processSDKTimezoneCommand(env('SDK_URL') . "/Person/AddRange", $sdkJsonPayload);
+        $SDKresponses = $this->processSDKTimezoneCommand(env('SDK_URL') . "/Person/AddRange", $sdkJsonPayload);
 
+        $payload = [];
 
+        if ($SDKresponses["status"] == 200) {
+            foreach ($SDKresponses["data"] as $SDKresponse) {
 
-        foreach ($SDKresponses as $SDKresponse) {
-
-
-            $company_id = $request->company_id;
-            $floor_id = $request->floor_id;
-            $room_id = $request->room_id;
-            $timezone_id = $request->timezone_id;
-            $tanents = $request->tanents;
-            $device_ids = $request->device_ids;
-
-            if ($SDKresponse["state"] !== true) {
+                if ($SDKresponse["state"] == true) {
+                    $filteredArray = array_filter($appJsonPayload, fn ($item) => $item["device_id"] == $SDKresponse["sn"]);
+                    $array_values = array_values($filteredArray);
+                    $payload = array_merge($payload, $array_values);
+                }
             }
         }
 
-        return $appJsonPayload;
 
+        if (!count($payload)) {
+            return $this->response('No record found.', null, false);
+        }
+
+        $tanent_ids = array_column($payload, "tanent_id");
+        $device_ids = array_column($payload, "device_id");
 
         try {
-
-
-
-
-
-            $record = TanentTimezoneMapping::insert($appJsonPayload);
-
-            if ($record) {
-
-                $record['recordResponse'] = $record;
-
-                return $this->response('Tenant has been mapped.', $record, true);
-            } else {
-                return $this->response('Tenant cannot be mapped .', null, false);
-            }
+            $model = TanentTimezoneMapping::query();
+            $model->whereIn("tanent_id", $tanent_ids);
+            $model->whereIn("device_id", $device_ids);
+            $model->delete();
+            $model->insert($payload);
+            return $this->response('Tenant(s) has been mapped.', $payload, true);
         } catch (\Throwable $th) {
-            return $this->response('Tenant cannot be mapped.', $th->getMessage(), false);
+            return $this->response('Tenant(s) cannot be mapped.', $th->getMessage(), false);
         }
     }
 
@@ -123,7 +128,7 @@ class TanentTimezoneMappingController extends Controller
                     'floor_id' => $request->floor_id,
                     'room_id' => $request->room_id,
                     'timezone_id' => $request->timezone_id,
-                    'tanent_id' => $tenant['system_user_id'],
+                    'tanent_id' => $tenant['id'],
                     'device_id' => $device_id,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -142,19 +147,9 @@ class TanentTimezoneMappingController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        return TanentTimezoneMapping::where("id", $id)
+            ->with(["floor", "tanent", "device"])
+            ->first();
     }
 
     /**
@@ -165,6 +160,11 @@ class TanentTimezoneMappingController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            return TanentTimezoneMapping::where("id", $id)->delete();
+            return $this->response('Tenant has been mapped.', null, true);
+        } catch (\Throwable $th) {
+            return $this->response('Tenant cannot be mapped.', $th->getMessage(), false);
+        }
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Models\Community;
 
 use App\Models\AttendanceLog;
+use App\Models\Device;
+use App\Models\Timezone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,17 +23,22 @@ class Tanent extends Model
         "room_id" => "integer",
     ];
 
-    /**
-     * Get the user that owns the Room
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
 
-    /**
-     * Get all of the members for the Tanent
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+    public function mappings()
+    {
+        return $this->hasMany(TanentTimezoneMapping::class);
+    }
+
+    public function timezone()
+    {
+        return $this->hasManyThrough(Timezone::class, TanentTimezoneMapping::class, 'tanent_id', 'timezone_id', 'id', 'timezone_id');
+    }
+
+    public function devices()
+    {
+        return $this->hasManyThrough(Device::class, TanentTimezoneMapping::class, 'tanent_id', 'device_id', 'id', 'device_id');
+    }
+
     public function members()
     {
         return $this->hasMany(Tanent::class, "parent_id")->whereIn("member_type", ["Family Member", "Maid", "Owner"]);
