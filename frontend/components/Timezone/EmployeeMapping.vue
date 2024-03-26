@@ -103,8 +103,6 @@
                 :key="index"
               >
                 {{ caps(subitem.name) }}
-                <br />
-                {{ caps(subitem.location) }}
               </div>
 
               <v-btn
