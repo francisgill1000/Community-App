@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\Http;
 
 class TanentTimezoneMappingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         return Tanent::with(["devices", "floor", "room", "timezone"])
@@ -26,12 +21,6 @@ class TanentTimezoneMappingController extends Controller
             ->paginate(request("per_page") ?? 10);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreRequest $request)
     {
 
@@ -43,27 +32,9 @@ class TanentTimezoneMappingController extends Controller
 
         $appJsonPayload = $this->prepareAPPJson($request);
 
-        // $sdkJsonPayload = $this->prepareSDKJson($request);
-
-        // $SDKresponses = $this->processSDKTimezoneCommand(env('SDK_URL') . "/Person/AddRange", $sdkJsonPayload);
-
-        // $payload = [];
-
-        // if ($SDKresponses["status"] == 200) {
-        //     foreach ($SDKresponses["data"] as $SDKresponse) {
-
-        //         if ($SDKresponse["state"] == true) {
-        //             $filteredArray = array_filter($appJsonPayload, fn ($item) => $item["device_id"] == $SDKresponse["sn"]);
-        //             $array_values = array_values($filteredArray);
-        //             $payload = array_merge($payload, $array_values);
-        //         }
-        //     }
-        // }
-
-
-        // if (!count($payload)) {
-        //     return $this->response('No record found.', null, false);
-        // }
+        if (!count($appJsonPayload)) {
+            return $this->response('No record found.', null, false);
+        }
 
         $tanent_ids = array_column($appJsonPayload, "tanent_id");
 
@@ -71,48 +42,12 @@ class TanentTimezoneMappingController extends Controller
             $model = TanentTimezoneMapping::query();
             $model->whereIn("tanent_id", $tanent_ids);
             $model->whereIn("device_id", $request->device_ids);
-            $model->delete();
+            // $model->delete();
             $model->insert($appJsonPayload);
             return $this->response('Tenant(s) has been mapped.', $appJsonPayload, true);
         } catch (\Throwable $th) {
             return $this->response('Tenant(s) cannot be mapped.', $th->getMessage(), false);
         }
-    }
-
-    public function processSDKTimezoneCommand($url, $data)
-    {
-        try {
-            return Http::timeout(3600)->withoutVerifying()->withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post($url, $data)->json();
-        } catch (\Exception $e) {
-            return [
-                "status" => 102,
-                "message" => $e->getMessage(),
-            ];
-            // You can log the error or perform any other necessary actions here
-        }
-    }
-
-    public function prepareSDKJson($request)
-    {
-        $sdkJsonPayload = [
-            'snList' => $request->device_ids,
-            'personList' => []
-        ];
-
-        foreach ($request->tanents as $tenant) {
-
-            $sdkJson = [
-                'name' => $tenant['full_name'],
-                'userCode' => $tenant['system_user_id'],
-                'timeGroup' => $request->timezone_id,
-            ];
-
-            $sdkJsonPayload['personList'][] = $sdkJson;
-        }
-
-        return $sdkJsonPayload;
     }
 
     public function prepareAPPJson($request)
@@ -138,12 +73,6 @@ class TanentTimezoneMappingController extends Controller
         return $appJsonPayload;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         return TanentTimezoneMapping::where("id", $id)
@@ -151,16 +80,10 @@ class TanentTimezoneMappingController extends Controller
             ->first();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         try {
-            return TanentTimezoneMapping::where("id", $id)->delete();
+            return TanentTimezoneMapping::where("tanent_id", $id)->delete();
             return $this->response('Tenant has been mapped.', null, true);
         } catch (\Throwable $th) {
             return $this->response('Tenant cannot be mapped.', $th->getMessage(), false);

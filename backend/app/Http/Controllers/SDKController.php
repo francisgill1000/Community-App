@@ -56,97 +56,14 @@ class SDKController extends Controller
 
         $deviceResponse = $this->processSDKRequestCardsJob($url, $request->all());
 
-        Log::channel("camerasdk")->error(json_encode(["deviceResponse" => $deviceResponse]));
+        Log::channel("cardLogs")->error(json_encode(["deviceResponse" => $deviceResponse]));
 
         return ["deviceResponse" => $deviceResponse];
     }
     public function PersonAddRangePhotos(Request $request)
     {
-
-
-
-        $url = env('SDK_URL') . "/Person/AddRange";
-        try {
-            $cameraResponse1 = $this->filterCameraModel1Devices($request);
-            $cameraResponse2 = $this->filterCameraModel2Devices($request);
-        } catch (\Exception $e) {
-        }
-        return   $deviceResponse = $this->processSDKRequestJob($url, $request->all());
-
-        Log::channel("camerasdk")->error(json_encode(["cameraResponse2" => $cameraResponse2, "cameraResponse1" => $cameraResponse1, "deviceResponse" => $deviceResponse]));
-
-        return ["cameraResponse" => $cameraResponse1, "cameraResponse2" => $cameraResponse2, "deviceResponse" => $deviceResponse];
+        return $this->processSDKRequestJob(env('SDK_URL') . "/Person/AddRange", $request->all());
     }
-    // public function PersonAddRange(Request $request)
-    // {
-    //     $url = env('SDK_URL') . "/Person/AddRange";
-
-    //     return $this->processSDKRequestBulk($url, $request->all());
-    // }
-
-    public function filterCameraModel1Devices($request)
-    {
-
-        $snList = $request->snList;
-        //$Devices = Device::where('device_category_name', "CAMERA")->get()->all();
-        $Devices = Device::where('model_number', "CAMERA1")->get()->all();
-
-
-
-        $filteredCameraArray = array_filter($Devices, function ($item) use ($snList) {
-            return in_array($item['device_id'], $snList);
-        });
-        $message = [];
-        foreach ($filteredCameraArray as  $value) {
-
-            foreach ($request->personList as  $persons) {
-                if (isset($persons['faceImage'])) {
-
-                    $personProfilePic = $persons['faceImage'];
-                    if ($personProfilePic != '') {
-                        $imageData = file_get_contents($personProfilePic);
-                        $md5string = base64_encode($imageData);;
-                        $message[] = (new DeviceCameraController($value['camera_sdk_url']))->pushUserToCameraDevice($persons['name'],  $persons['userCode'], $md5string);
-                    }
-                }
-            }
-        }
-
-        return  $message;
-    }
-    public function filterCameraModel2Devices($request)
-    {
-        $snList = $request->snList;
-        //$Devices = Device::where('device_category_name', "CAMERA")->get()->all();
-        $Devices = Device::where('model_number', "MEGVII")->get()->all();
-
-
-
-        $filteredCameraArray = array_filter($Devices, function ($item) use ($snList) {
-            return in_array($item['device_id'], $snList);
-        });
-        $message = [];
-        foreach ($filteredCameraArray as  $value) {
-
-            foreach ($request->personList as  $persons) {
-                if (isset($persons['profile_picture_raw'])) {
-
-                    //$personProfilePic = $persons['faceImage'];
-                    $personProfilePic = public_path('media/employee/profile_picture/' . $persons['profile_picture_raw']);
-                    if ($personProfilePic != '') {
-                        //$imageData = file_get_contents($personProfilePic);
-                        $imageData = file_get_contents($personProfilePic);
-                        $md5string = base64_encode($imageData);;
-                        $message[] = (new DeviceCameraModel2Controller($value['camera_sdk_url']))->pushUserToCameraDevice($persons['name'],  $persons['userCode'], $md5string);
-                    }
-                }
-            }
-        }
-
-        return  $message;
-    }
-
-
 
     public function GetAllDevicesHealth()
     {
@@ -162,7 +79,6 @@ class SDKController extends Controller
     }
     public function processSDKRequestPersonAddJobJson($url, $json)
     {
-        $url = env('SDK_URL') . "/Person/AddRange";
         $return = TimezonePhotoUploadJob::dispatch($json, $url);
     }
     public function processSDKRequestPersonAddPersonCardsJobJson($url, $json)
@@ -255,7 +171,7 @@ class SDKController extends Controller
     }
     public function processSDKRequestJobAll($json, $url)
     {
-        $return = TimezonePhotoUploadJob::dispatch($json, $url);
+        TimezonePhotoUploadJob::dispatch($json, $url);
     }
     public function processSDKRequestJob($url, $data)
     {
@@ -263,40 +179,16 @@ class SDKController extends Controller
         $personList = $data['personList'];
         $snList = $data['snList'];
         $returnFinalMessage = [];
-        $devicePersonsArray = [];
 
-        $sdk_url = env("SDK_URL");
-        // if (env("APP_ENV") == "production") {
-        //     $sdk_url = env("SDK_PRODUCTION_COMM_URL");
-        // } else {
-        //     $sdk_url = env("SDK_STAGING_COMM_URL");
-        // }
+        foreach ($snList as  $device) {
 
-        if ($sdk_url == '') {
-            return false;
-        }
-        $sdk_url = $sdk_url . '/Person/AddRange';
-        foreach ($snList as $key => $device) {
-
-            $returnMsg = '';
-
-            foreach ($personList as $keyPerson => $valuePerson) {
-                # code...
-
-
+            foreach ($personList as  $valuePerson) {
 
                 $newArray = [
                     "personList" => [$valuePerson],
                     "snList" => [$device],
                 ];
-                // // $newArray[] = $newArray;
-                // $return = TimezonePhotoUploadJob::dispatch($newArray, $sdk_url);
-
-                // $url = env('SDK_URL') . "/Person/AddRange";
-                // $return = TimezonePhotoUploadJob::dispatch($json, $url);
-
-                // $returnContent[] = $newArray;
-                $return = (new SDKController)->processSDKRequestPersonAddJobJson('', $newArray);
+                (new SDKController)->processSDKRequestPersonAddJobJson($url, $newArray);
             }
         }
         $returnFinalMessage = $this->mergeDevicePersonslist($returnFinalMessage);

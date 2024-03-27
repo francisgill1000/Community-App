@@ -725,24 +725,6 @@ export default {
         this.dialogCropping = true;
       }
     },
-    mapper(obj) {
-      let formData = new FormData();
-
-      for (let x in obj) {
-        formData.append(x, obj[x]);
-      }
-      if (this.payload.profile_picture) {
-        formData.append("profile_picture", this.upload.name);
-      }
-
-      if (this.payload.passport_doc) {
-        formData.append("passport_doc", this.payload.passport_doc.name);
-      }
-
-      formData.append("company_id", this.$auth.user.company_id);
-
-      return formData;
-    },
     handleSuccessResponse(message) {
       this.snackbar = true;
       this.response = message;

@@ -926,7 +926,7 @@ export default {
         this.loading_dialog = false;
 
         this.snackbar.show = true;
-        this.response = "Employee(s) Pictures has been uploaded";
+        this.response = "Tanents(s) Pictures has been uploaded";
 
         let jsrightEmployees = this.rightEmployees;
         jsrightEmployees.forEach((element) => {

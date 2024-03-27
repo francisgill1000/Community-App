@@ -1,13 +1,8 @@
 <template>
   <v-tabs color="deep-purple accent-4" right v-model="tab">
     <v-tab>Timezone</v-tab>
-    <v-tab>Tenant Timezone Mapping</v-tab>
-    <!-- <v-tab>Visitor Timezone Mapping</v-tab>
-    <v-tab>Delivery Timezone Mapping</v-tab>
-    <v-tab>Contractor Timezone Mapping</v-tab> -->
-
-    <v-tab>Employee Timezone Mapping</v-tab>
-
+    <v-tab>Tenant Mapping</v-tab>
+    <v-tab>Employee Mapping</v-tab>
     <v-tab-item>
       <Timezone :id="companyId" :key="generateRandomId()" />
     </v-tab-item>
