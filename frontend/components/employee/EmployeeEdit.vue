@@ -201,11 +201,13 @@
                   dense
                   outlined
                 ></v-autocomplete>
+                {{ setPreviewImage }}
               </v-col>
             </v-row>
           </v-col>
-          <v-col class="col-sm-6" v-if="setPreviewImage">
+          <v-col class="col-sm-6">
             <CameraORUpload
+              v-if="!loading"
               :PreviewImage="setPreviewImage"
               @imageSrc="handleAttachment"
             />
@@ -344,6 +346,7 @@ export default {
       this.employee.profile_picture = e;
     },
     getInfo(id) {
+      this.loading = true;
       this.$axios
         .get(`employee-single/${id}`)
         .then(({ data }) => {
@@ -365,6 +368,8 @@ export default {
           };
           // this.employee.id = data.id;
           this.setPreviewImage = data.profile_picture;
+          this.loading = false;
+
           this.getDesignations();
         })
         .catch((err) => console.log(err));

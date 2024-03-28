@@ -6,54 +6,26 @@
         Edit
       </span>
     </template>
+
     <v-card>
-      <v-container>
+      <v-card-title>
+        Edit Mapping <v-spacer></v-spacer>
+        <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
+      </v-card-title>
+      <v-container fluid>
+        <div class="text-center ma-2">
+          <v-snackbar
+            color="primary"
+            v-model="snackbar.show"
+            small
+            top="top"
+            :timeout="3000"
+          >
+            Users has been uploaded.
+          </v-snackbar>
+        </div>
         <div style="width: 100% !important" v-if="can(`tanent_access`)">
-          <div class="text-center ma-2">
-            <v-snackbar
-              color="primary"
-              v-model="snackbar.show"
-              small
-              top="top"
-              :timeout="3000"
-            >
-              Users has been uploaded.
-            </v-snackbar>
-          </div>
-
           <v-row>
-            <v-col cols="12" class="text-right">
-              <v-icon color="primary" @click="dialog = false">mdi-close</v-icon>
-            </v-col>
-            <v-col cols="3">
-              <v-autocomplete
-                @change="getRoomsByFloorId(floor_id)"
-                label="Floor Number"
-                outlined
-                v-model="floor_id"
-                :items="floors"
-                dense
-                item-text="floor_number"
-                item-value="id"
-                :hide-details="true"
-              >
-              </v-autocomplete>
-            </v-col>
-
-            <v-col cols="3">
-              <v-autocomplete
-                @change="getTanentsAndMembersByRoom(room_id)"
-                label="Room"
-                outlined
-                v-model="room_id"
-                :items="[{ id: ``, room_number: `Select All` }, ...rooms]"
-                dense
-                item-text="room_number"
-                item-value="id"
-                :hide-details="true"
-              >
-              </v-autocomplete>
-            </v-col>
             <v-col cols="3">
               <v-select
                 v-model="timezone_id"
@@ -108,7 +80,6 @@
                           style="padding: 0px;margin-top-3"
                           v-else
                           indeterminate
-                          value
                           disabled
                           dense
                           small
@@ -229,7 +200,6 @@
                           style="padding: 0px;margin-top-3"
                           v-else
                           indeterminate
-                          value
                           disabled
                           dense
                           small
@@ -294,6 +264,7 @@ export default {
   props: ["item"],
   data() {
     return {
+      dialog: false,
       timezones: [],
       timezone_id: ``,
       floor_id: [],
@@ -361,10 +332,9 @@ export default {
     this.floor_id = item.floor_id;
     this.room_id = item.room_id;
     this.timezone_id = item.timezone_id;
-    await this.getFloors();
     await this.getTimezonesFromApi();
-    this.getRoomsByFloorId(this.floor_id);
     this.getDevisesDataFromApi();
+    await this.getTanentsAndMembersByRoom(item.room_id);
   },
   methods: {
     goback() {
@@ -380,21 +350,6 @@ export default {
         .get("timezone-list", options)
         .then(({ data }) => (this.timezones = data))
         .catch((err) => console.log(err));
-    },
-    async getFloors() {
-      let { data: floors } = await this.$axios.get(`floor`, {
-        params: { company_id: this.$auth.user.company_id },
-      });
-      this.floors = floors.data;
-    },
-    async getRoomsByFloorId(floor_id) {
-      let { data } = await this.$axios.get(`room-by-floor-id`, {
-        params: {
-          company_id: this.$auth.user.company_id,
-          floor_id: floor_id,
-        },
-      });
-      this.rooms = data;
     },
     async getTanentsAndMembersByRoom(room_id) {
       let { data } = await this.$axios.get(`tanents-and-members-by-room-id`, {
@@ -501,24 +456,7 @@ export default {
           return 0;
         }
       }),
-    sortObjectC: (o) =>
-      o.sort(function compareByName(a, b) {
-        if (a.name && b.name) {
-          let nameA = a.name.toUpperCase(); // Convert names to uppercase for case-insensitive sorting
-          let nameB = b.name.toUpperCase();
-
-          if (nameA < nameB) {
-            return -1;
-          } else if (nameA > nameB) {
-            return 1;
-          } else {
-            return 0;
-          }
-        }
-      }),
     verifySubmitButton() {
-
-        // return this.rightDevices.length > 0;
       if (this.rightDevices.length > 0) {
         this.displaybutton = true;
       } else {
@@ -636,8 +574,6 @@ export default {
       }
       this.verifySubmitButton();
     },
-
-    /* Devices---------------------------------------- */
     allmoveToLeftDevices() {
       this.resetErrorMessages();
       this.leftDevices = this.leftDevices.concat(this.rightDevices);
@@ -779,7 +715,6 @@ export default {
       this.leftSelectedDevices.pop(id);
       this.verifySubmitButton();
     },
-
     async processPayload() {
       let json = {
         company_id: this.$auth.user.company_id,
