@@ -81,16 +81,7 @@
               <v-list width="150" dense>
                 <v-list-item v-if="can(`tanent_edit`)">
                   <v-list-item-title style="cursor: pointer">
-                   <TimezoneTanentEditMapping :item="item" />
-                  </v-list-item-title>
-                </v-list-item>
-                <v-list-item
-                  v-if="can(`tanent_delete`)"
-                  @click="deleteItem(item)"
-                >
-                  <v-list-item-title style="cursor: pointer">
-                    <v-icon color="error" small> mdi-delete </v-icon>
-                    Delete
+                   <TimezoneTanentDeleteMapping :item="item" @success="handleSuccessResponse" />
                   </v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -247,19 +238,6 @@ export default {
 
         this.loadinglinear = false;
       });
-    },
-    deleteItem(item) {
-      confirm(
-        "Are you sure you wish to delete , to mitigate any inconvenience in future."
-      ) &&
-        this.$axios
-          .delete(`tanent-timezone-mapping/${item.id}`)
-          .then(({ data }) => {
-            this.getDataFromApi();
-            this.snackbar = true;
-            this.response = "Record deleted successfully";
-          })
-          .catch((err) => console.log(err));
     },
     close() {
       this.dialog = false;

@@ -3,6 +3,7 @@
 namespace App\Models\Community;
 
 use App\Models\Device;
+use App\Models\Timezone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,5 +29,10 @@ class TanentTimezoneMapping extends Model
     public function device()
     {
         return $this->belongsTo(Device::class, "device_id","device_id");
+    }
+
+    public function timezone()
+    {
+        return $this->belongsTo(Timezone::class, "timezone_id","timezone_id");
     }
 }

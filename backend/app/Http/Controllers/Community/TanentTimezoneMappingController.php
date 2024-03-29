@@ -14,7 +14,7 @@ class TanentTimezoneMappingController extends Controller
 {
     public function index()
     {
-        return Tanent::with(["devices", "floor", "room", "timezone"])
+        return Tanent::with(["devices", "floor", "room", "timezone", "mappings"])
             // ->whereIn("id", ["413"])
             ->whereHas('mappings')
             ->orderBy('id', 'desc')
@@ -83,8 +83,8 @@ class TanentTimezoneMappingController extends Controller
     public function destroy($id)
     {
         try {
-            return TanentTimezoneMapping::where("tanent_id", $id)->delete();
-            return $this->response('Tenant has been mapped.', null, true);
+            TanentTimezoneMapping::where("id", $id)->delete();
+            return $this->response('Mapping has been deleted.', null, true);
         } catch (\Throwable $th) {
             return $this->response('Tenant cannot be mapped.', $th->getMessage(), false);
         }

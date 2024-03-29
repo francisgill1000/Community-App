@@ -26,7 +26,7 @@ class Tanent extends Model
 
     public function mappings()
     {
-        return $this->hasMany(TanentTimezoneMapping::class);
+        return $this->hasMany(TanentTimezoneMapping::class)->with(["device","timezone"]);
     }
 
     public function timezone()
