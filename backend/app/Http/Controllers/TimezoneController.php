@@ -73,6 +73,7 @@ class TimezoneController extends Controller
         $data = $request->validated();
         $data["json"] = json_encode($request->json);
         $data["interval"] = json_encode($request->json);
+        $data["scheduled_days"] = json_encode($request->json);
         $data["json_for_sdk"] = $this->getNewJsonIntervaldata($request);
 
         try {
@@ -154,6 +155,7 @@ class TimezoneController extends Controller
         $data = $request->validated();
         $data["json"] = json_encode($request->json);
         $data["interval"] = json_encode($request->json);
+        $data["scheduled_days"] = json_encode($request->json);
         $data["json_for_sdk"] = $this->getNewJsonIntervaldata($request);
 
         try {
