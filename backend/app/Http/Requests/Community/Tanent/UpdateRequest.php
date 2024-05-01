@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            "full_name" => "nullable|min:3|max:20",
+            "full_name" => "nullable|min:3",
             "first_name" => "required|min:3|max:20",
             "last_name" => "required|min:3|max:20",
             "phone_number" => "required|min:10|max:20",
