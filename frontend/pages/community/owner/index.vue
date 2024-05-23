@@ -316,6 +316,16 @@ export default {
     errors: [],
     headers: [
       {
+        text: "User Device Id",
+        align: "left",
+        sortable: false,
+        key: "system_user_id",
+        value: "system_user_id",
+        filterable: true,
+        type: "text",
+        width: "200px",
+      },
+      {
         text: "Full Name",
         align: "left",
         sortable: false,

@@ -142,9 +142,7 @@
           </template>
 
           <template v-slot:item.members_and_maids="{ item, index }"> 
-
             {{ item.members_only.length + item.maids.length }}
-
           </template>
 
           <template v-slot:item.options="{ item }">
@@ -160,6 +158,7 @@
                     <TanentAddMember
                       :key="generateRandomId()"
                       @success="handleSuccessResponse"
+                      :fullItem="item"
                       :item="{
                         tanent_id: item.id,
                         system_user_id:
@@ -317,6 +316,15 @@ export default {
     errors: [],
     headers: [
       {
+        text: "Tanent Device ID",
+        align: "left",
+        sortable: false,
+        key: "system_user_id",
+        value: "system_user_id",
+        filterable: true,
+        type: "text",
+      },
+      {
         text: "Full Name",
         align: "left",
         sortable: false,
@@ -467,6 +475,7 @@ export default {
     },
   },
   methods: {
+    
     showDialog(item) {
       console.log("item", item);
       this.key++;

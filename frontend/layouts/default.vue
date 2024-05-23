@@ -148,6 +148,97 @@
                 <span>{{ items.title }}</span>
               </v-btn>
             </v-col>
+
+            <v-col>
+              <div class="text-center">
+                <v-dialog persistent v-model="isClicked" width="500">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="OpenDialogForRFID"
+                      small
+                      text
+                      :class="setColorClass"
+                      class="btn-text-size"
+                      :elevation="0"
+                      fill
+                    >
+                      <span>RFID</span>
+                    </v-btn>
+                  </template>
+
+                  <v-card>
+                    <v-toolbar dense flat color="primary" dark>
+                      <v-card-title style="color: white !important"
+                        >Find User By Access Card</v-card-title
+                      >
+                      <v-spacer></v-spacer>
+                      <v-icon
+                        style="color: white !important"
+                        @click="closeRFIDCard"
+                        >mdi-close</v-icon
+                      >
+                    </v-toolbar>
+
+                    <v-card-text class="mt-3">
+                      <v-row no-gutters>
+                        <v-col cols="8">
+                          <v-text-field
+                            v-model="RFID"
+                            label="Access Card"
+                            dense
+                            class="text-center"
+                            outlined
+                            hide-details
+                            append-icon="mdi-credit-card-scan-outline"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="1"></v-col>
+                        <v-col cols="3">
+                          <v-btn
+                            :loading="userLoading"
+                            color="primary"
+                            @click="searchUserByRFID(RFID)"
+                          >
+                            <v-icon>mdi-magnify</v-icon> Search
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-card-text>
+
+                    <CommunityNotFoundCard
+                      v-if="item && item.notFoundCard"
+                      :key="generateRandomId()"
+                      @close="closeRFIDCard"
+                    />
+
+                    <TanentRFIDCard
+                      v-else-if="item && item.tanent"
+                      :key="generateRandomId() + 1"
+                      :item="item.tanent"
+                      @close="closeRFIDCard"
+                    />
+
+                    <CommunityVisitorRFIDCard
+                      :key="generateRandomId() + 2"
+                      v-else-if="item && item.visitor"
+                      :visitor_type="item.visitor.visitor_type"
+                      :item="item.visitor"
+                      :label="item.visitor.label"
+                      @close="closeRFIDCard"
+                    />
+
+                    <EmployeeRFIDCard
+                      v-else-if="item && item.employee"
+                      :key="generateRandomId() + 3"
+                      :employeeId="item.employee.id"
+                      @close="closeRFIDCard"
+                    />
+                  </v-card>
+                </v-dialog>
+              </div>
+            </v-col>
           </v-row>
         </template>
       </span>
@@ -354,7 +445,13 @@
 export default {
   data() {
     return {
-      
+      userLoading: false,
+      RFID: 0,
+      item: {
+        tanent: null,
+      },
+      compName: null,
+      isClicked: false,
       menuProperties: require("../menus/menuProperties.json"),
       company_menus: require("../menus/company.json"),
       company_top_menu: require("../menus/company_modules_top.json"),
@@ -453,6 +550,10 @@ export default {
       return "#ecf0f4"; //this.$store.state.color;
     },
 
+    setColorClass() {
+      return this.isClicked ? "violet--text" : "";
+    },
+
     getLogo() {
       let logosrc = "/no-image.PNG";
 
@@ -464,6 +565,33 @@ export default {
     },
   },
   methods: {
+    closeRFIDCard() {
+      this.isClicked = false;
+      this.item = { tanent: null };
+    },
+    searchUserByRFID(RFID) {
+      this.userLoading = true;
+      this.$axios
+        .get(`search-user-by-rfid/${RFID}`)
+        .then(({ data }) => {
+          this.userLoading = false;
+
+          if (!this.userLoading) {
+            this.item = data;
+            this.isClicked = false;
+          }
+        })
+        .catch((e) => {
+          this.userLoading = false;
+        });
+    },
+    generateRandomId() {
+      return `id-${Math.random().toString(36).substr(2, 9)}`;
+    },
+    OpenDialogForRFID() {
+      this.setSubLeftMenuItems("dashboard", "/dashboard", false);
+      this.isClicked = true;
+    },
     toggleTheme() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
 
@@ -580,7 +708,7 @@ export default {
     },
     setSubLeftMenuItems(menu_name, page, redirect = true) {
       this.topMenu_Selected = menu_name;
-
+      this.isClicked = false;
       let bgColor = "violet";
       this.setMenus();
 

@@ -19,14 +19,14 @@
               <v-col cols="12">
                 <div class="text-center">
                   <CameraORUpload
+                    v-if="setImagePreview"
+                    :PreviewImage="setImagePreview"
                     ref="CameraComponent"
                     @imageSrc="handleAttachment"
                   />
-                  <span
-                    v-if="errors && errors.profile_picture"
-                    class="error--text mt-2"
-                    >{{ errors.profile_picture[0] }}</span
-                  >
+                  <span v-if="errors && errors.logo" class="error--text mt-2">{{
+                    errors.logo[0]
+                  }}</span>
                 </div>
               </v-col>
               <v-col cols="12">
@@ -514,6 +514,7 @@ export default {
     this.payload.tanent_email = this.item.tanent.email;
     this.payload.tanent_term = this.item.tanent.term;
     this.payload.tanent_nationality = this.item.tanent.nationality;
+    this.setImagePreview = this.item.logo;
   },
 
   methods: {
@@ -575,7 +576,7 @@ export default {
         .catch((e) => console.log(e));
     },
     handleAttachment(e) {
-      this.payload.profile_picture = e;
+      this.payload.logo = e;
     },
     can(per) {
       return this.$pagePermission.can(per, this);

@@ -201,7 +201,6 @@
                   dense
                   outlined
                 ></v-autocomplete>
-                {{ setPreviewImage }}
               </v-col>
             </v-row>
           </v-col>
