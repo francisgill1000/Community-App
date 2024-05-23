@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\DeviceStatusController;
 use App\Http\Controllers\ModuleController;
@@ -26,6 +27,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/search-user-by-rfid/{id}', [Controller::class, "searchUserByRFID"]);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/loginwith_otp', [AuthController::class, 'loginwithOTP']);

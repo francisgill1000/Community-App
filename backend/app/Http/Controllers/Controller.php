@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\AttendanceLog;
+use App\Models\Community\Tanent;
+use App\Models\Employee;
+use App\Models\Visitor;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -19,6 +22,31 @@ class Controller extends BaseController
     use AuthorizesRequests;
     use DispatchesJobs;
     use ValidatesRequests;
+
+    public function searchUserByRFID($RFID)
+    {
+        $tanent = Tanent::where("rfid", $RFID)
+            ->withCount("members")
+            ->with(["vehicles", "members", "floor", "room"])->first();
+
+        $visitor = Visitor::with("tanent")->where("rfid", $RFID)->first();
+
+        $employee = Employee::where("rfid_card_number", $RFID)->first();
+
+        if (!$tanent && !$visitor && !$employee) {
+
+            return [
+                "notFoundCard" => "User not found"
+            ];
+        }
+
+        return [
+            "tanent" =>     $tanent,
+            "visitor" =>   $visitor,
+            "employee" =>  $employee,
+
+        ];
+    }
 
     public function FilterCompanyList($model, $request, $model_name = null)
     {
@@ -409,7 +437,7 @@ class Controller extends BaseController
         $imageName = time() . ".png";
         $publicDirectory = public_path($folder);
         if (!file_exists($publicDirectory)) {
-            mkdir($publicDirectory,0777, true);
+            mkdir($publicDirectory, 0777, true);
         }
         file_put_contents($publicDirectory . '/' . $imageName, $base64Image);
         return $imageName;
