@@ -36,7 +36,7 @@
     "filterSpecial": false
   },
   {
-    "text": "phone_number",
+    "text": "Phone Number",
     "align": "left",
     "sortable": true,
     "key": "phone_number",
@@ -45,7 +45,7 @@
     "filterSpecial": true
   },
   {
-    "text": "mobile_number",
+    "text": "Mobile Number",
     "align": "left",
     "sortable": true,
     "key": "mobile_number",

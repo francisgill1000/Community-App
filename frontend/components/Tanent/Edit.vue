@@ -6,12 +6,16 @@
         Edit
       </span>
     </template>
-    <v-tabs color="deep-purple accent-4">
+    <v-toolbar dense flat color="primary" dark>
+      <v-card-title>Tenant</v-card-title>
+      <v-spacer></v-spacer>
+      <v-icon @click="dialog = false">mdi-close</v-icon>
+    </v-toolbar>
+    <v-tabs color="deep-purple accent-4" right> 
       <v-tab>Basic Info</v-tab>
       <v-tab>Members</v-tab>
       <v-tab>Cards</v-tab>
       <v-tab>Vechicle Info</v-tab>
-      <!-- <v-tab>Documentation</v-tab> -->
 
       <v-tab-item>
         <v-container>
