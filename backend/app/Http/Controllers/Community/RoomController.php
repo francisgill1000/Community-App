@@ -137,7 +137,7 @@ class RoomController extends Controller
     public function getRoomsByFloorId()
     {
         return Room::where("company_id", request("company_id"))
-            ->where("floor_id", request("floor_id"))
+            ->when(request()->filled("floor_id"), fn ($q) => $q->where("floor_id", request("floor_id")))
             //->where("room_category_id", request("room_category_id"))
             ->get(["id", "room_number"]);
     }
@@ -145,8 +145,11 @@ class RoomController extends Controller
     public function getTanentsAndMembersByRoomsId()
     {
         return Tanent::where("company_id", request("company_id"))
-            ->where("floor_id", request("floor_id"))
-            ->when(request()->filled("room_id"), fn ($q) => $q->where("room_id", request("room_id")))
+            // ->where("floor_id", request("floor_id"))
+            ->where('parent_id', 0)
+            ->when(request()->filled("floor_id"), fn ($q) => $q->where("floor_id", request("floor_id")))
+            ->when(request()->filled("room_id") && request("room_id") != 1, fn ($q) => $q->where("room_id", request("room_id")))
+
             ->with(["members_only", "maids", "room"])->get();
     }
 
@@ -164,10 +167,11 @@ class RoomController extends Controller
 
     public function getCardsByRoomsId()
     {
+        $room = Room::find(request("room_id"));
 
-        $tanent_id = Room::where("id", request("room_id"))->orderBy("id", "desc")->value("tenant_id") ?? 0;
+        $clauses = request()->filled("room_id") && $room ? ['parent_id' => $room->tenant_id ?? 0] : ['member_type' => 'card'];
 
-        return Tanent::where("parent_id", $tanent_id)->where("member_type", "card")->get();
+        return Tanent::where($clauses)->get();
     }
 
     /**

@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Http;
 
 class TanentController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -201,7 +200,6 @@ class TanentController extends Controller
             ->when(request()->filled("member_type"), fn ($q) => $q->where("member_type", request("member_type")))
 
 
-
             ->when($request->filled("floor_number"), function ($q) use ($request) {
                 $q->whereHas("floor", function ($qu) use ($request) {
                     $qu->where("floor_number", $request->input("floor_number"));
@@ -224,8 +222,8 @@ class TanentController extends Controller
                     ->whereDate('end_date', '<=', request("end_date"));
             })
 
-            ->withCount(["members", "cards"])
-            ->with(["vehicles", "members", "members_only", "cards", "maids", "floor", "room"])
+            ->withCount(["members_only", "cards"])
+            ->with(["vehicles", "members", "members_only", "cards", "floor", "room"])
             ->orderBy('id', 'desc')
             ->paginate(request("per_page") ?? 10);
 
@@ -268,8 +266,8 @@ class TanentController extends Controller
                     ->whereDate('end_date', '<=', request("end_date"));
             })
 
-            ->withCount("members")
-            ->with(["vehicles", "members", "floor", "room"])
+            ->withCount(["members_only", "cards"])
+            ->with(["vehicles", "members", "members_only", "cards", "floor", "room"])
             ->orderBy('id', 'desc')
             ->paginate(request("per_page") ?? 10);
 
@@ -368,8 +366,21 @@ class TanentController extends Controller
             $data["full_name"] = "{$data["first_name"]} {$data["last_name"]}";
 
             $room_number = $request->room_number;
-            $tanentId = Tanent::where("room_id", $request->room_id)->count() + 1;
-            $data["system_user_id"] = "{$room_number}{$tanentId}";
+
+            $first = Tanent::where("room_id", $request->room_id)->first();
+
+            $ParentTanentCountIfExist = 0;
+
+            $countForCardsAndMembers = 1;
+
+            if ($first) {
+                $ParentTanentCountIfExist = Tanent::where("id", $first->id)->count();
+                $countForCardsAndMembers = Tanent::where("parent_id", $first->id)->count() + 1;
+            }
+
+            $totalCount = $ParentTanentCountIfExist + $countForCardsAndMembers;
+
+            $data["system_user_id"] = "{$room_number}{$totalCount}";
 
 
             if ($request->filled("profile_picture")) {
@@ -473,6 +484,7 @@ class TanentController extends Controller
             }
 
             $data["full_name"] = "{$data["first_name"]} {$data["last_name"]}";
+            $data["member_type"] = "Family Member";
 
             $record = Tanent::create($data);
 
