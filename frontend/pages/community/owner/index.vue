@@ -161,7 +161,7 @@
                         tanent_id: item.id,
                         system_user_id:
                           parseInt(item.system_user_id) +
-                          parseInt(item.members_count) +
+                          parseInt(item.members_only_count) +
                           1,
                       }"
                     />
@@ -187,7 +187,7 @@
                         tanent_id: item.id,
                         system_user_id:
                           parseInt(item.system_user_id) +
-                          parseInt(item.members_count) +
+                          parseInt(item.members_only_count) +
                           1,
                       }"
                     />
@@ -489,7 +489,7 @@ export default {
       let cols = [
         "system_user_id",
         "full_name",
-        "members_count",
+        "members_only_count",
         "term",
         "floor_number",
         "room_number",
