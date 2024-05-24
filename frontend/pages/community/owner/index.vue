@@ -123,14 +123,7 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
-          <template v-slot:item.cards="{ item }">
-            {{ item.members.filter((e) => e.member_type == "card").length }}
-          </template>
-
-          <template v-slot:item.members="{ item }">
-            {{ item.members.filter((e) => e.member_type !== "card").length }}
-          </template>
-
+         
           <template v-slot:item.full_name="{ item, index }">
             <v-row no-gutters>
               <v-col cols="3" class="ma-2">
@@ -348,8 +341,8 @@ export default {
         text: "Members",
         align: "left",
         sortable: false,
-        key: "members",
-        value: "members",
+        key: "members_only_count",
+        value: "members_only_count",
         filterable: false,
         type: "text",
       },
@@ -357,8 +350,8 @@ export default {
         text: "Cards",
         align: "left",
         sortable: false,
-        key: "cards",
-        value: "cards",
+        key: "cards_count",
+        value: "cards_count",
         filterable: false,
         type: "text",
       },

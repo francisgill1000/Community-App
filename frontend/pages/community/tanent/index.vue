@@ -140,11 +140,7 @@
               </v-col>
             </v-row>
           </template>
-
-          <template v-slot:item.members_and_maids="{ item, index }"> 
-            {{ item.members_only.length + item.maids.length }}
-          </template>
-
+        
           <template v-slot:item.options="{ item }">
             <v-menu bottom left>
               <template v-slot:activator="{ on, attrs }">
@@ -347,8 +343,8 @@ export default {
         text: "Members",
         align: "left",
         sortable: false,
-        key: "members_and_maids",
-        value: "members_and_maids",
+        key: "members_only_count",
+        value: "members_only_count",
         filterable: false,
         type: "text",
       },
