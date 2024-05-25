@@ -140,7 +140,7 @@
               </v-col>
             </v-row>
           </template>
-        
+
           <template v-slot:item.options="{ item }">
             <v-menu bottom left>
               <template v-slot:activator="{ on, attrs }">
@@ -204,6 +204,14 @@
                       :key="generateRandomId()"
                       @success="handleSuccessResponse"
                       :item="item"
+                    />
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
+                    <DeviceUser
+                      :key="generateRandomId()"
+                      :system_user_id="item.system_user_id"
                     />
                   </v-list-item-title>
                 </v-list-item>
@@ -471,7 +479,6 @@ export default {
     },
   },
   methods: {
-    
     showDialog(item) {
       console.log("item", item);
       this.key++;

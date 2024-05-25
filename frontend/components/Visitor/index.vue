@@ -83,11 +83,7 @@
                     width: 50px;
                     max-width: 50px;
                   "
-                  :src="
-                    item.logo
-                      ? item.logo
-                      : '/no-profile-image.jpg'
-                  "
+                  :src="item.logo ? item.logo : '/no-profile-image.jpg'"
                 >
                 </v-img>
               </v-col>
@@ -127,13 +123,21 @@
                     />
                   </v-list-item-title>
                 </v-list-item>
-                <v-list-item  v-if="can(view)">
+                <v-list-item v-if="can(view)">
                   <v-list-item-title style="cursor: pointer">
                     <CommunityVisitorSingle
                       :visitor_type="visitor_type"
                       :key="generateRandomId()"
                       :item="item"
                       :label="label"
+                    />
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
+                    <DeviceUser
+                      :key="generateRandomId()"
+                      :system_user_id="item.system_user_id"
                     />
                   </v-list-item-title>
                 </v-list-item>

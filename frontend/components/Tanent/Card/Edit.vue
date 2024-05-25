@@ -45,13 +45,6 @@
       </v-card>
     </v-dialog>
     <v-container fluid>
-      <v-row>
-        <v-col cols="12" class="text-right mb-5">
-          <v-icon color="primary" @click="close"
-            >mdi-close-circle-outline</v-icon
-          >
-        </v-col>
-      </v-row>
       <!-- <TanentAddCardFromEdit
         @success="handleSuccessResponse"
         :item="{

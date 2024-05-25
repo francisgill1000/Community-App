@@ -507,13 +507,13 @@ export default {
     this.payload = this.item;
     this.payload.rfid = `` + this.item.rfid;
     this.payload.tanent_room_number = this.item?.tanent?.room?.room_number;
-    this.payload.tanent_id = this.item.tanent.id;
-    this.payload.tanent_full_name = this.item.tanent.full_name;
-    this.payload.tanent_phone_number = this.item.tanent.phone_number;
-    this.payload.tanent_gender = this.item.tanent.gender;
-    this.payload.tanent_email = this.item.tanent.email;
-    this.payload.tanent_term = this.item.tanent.term;
-    this.payload.tanent_nationality = this.item.tanent.nationality;
+    this.payload.tanent_id = this.item?.tanent?.id;
+    this.payload.tanent_full_name = this.item?.tanent?.full_name;
+    this.payload.tanent_phone_number = this.item?.tanent?.phone_number;
+    this.payload.tanent_gender = this.item?.tanent?.gender;
+    this.payload.tanent_email = this.item?.tanent?.email;
+    this.payload.tanent_term = this.item?.tanent?.term;
+    this.payload.tanent_nationality = this.item?.tanent?.nationality;
     this.setImagePreview = this.item.logo;
   },
 

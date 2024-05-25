@@ -36,7 +36,7 @@ class DeviceController extends Controller
         $model->where('company_id', request('company_id'));
         $model->when(request()->filled('branch_id'), fn ($q) => $q->where('branch_id', request('branch_id')));
         $model->orderBy(request('order_by') ?? "name", request('sort_by_desc') ? "desc" : "asc");
-        return $model->get(["id", "name", "location", "device_id", "device_type"]);
+        return $model->get(["id", "name", "location", "device_id", "device_type", "status_id"]);
     }
 
     public function index(Request $request)

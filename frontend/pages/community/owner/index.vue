@@ -207,6 +207,15 @@
                     />
                   </v-list-item-title>
                 </v-list-item>
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
+                    <DeviceUser
+                      label="Owner"
+                      :key="generateRandomId()"
+                      :system_user_id="item.system_user_id"
+                    />
+                  </v-list-item-title>
+                </v-list-item>
                 <v-list-item
                   v-if="can(`tanent_delete`)"
                   @click="deleteItem(item)"

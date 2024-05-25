@@ -529,11 +529,7 @@
             <div style="font-size: 8px; color: black; margin-top: -5px">
               Import
             </div> -->
-            <v-icon
-              title="Download"
-              right
-              dark
-              color="black"
+            <v-icon title="Download" right dark color="black"
               >mdi-folder-upload</v-icon
             >
           </span>
@@ -810,6 +806,17 @@
                     Edit
                   </v-list-item-title>
                 </v-list-item>
+
+                <v-list-item>
+                  <v-list-item-title style="cursor: pointer">
+                    <DeviceUser
+                      label="Employee"
+                      :key="generateRandomId()"
+                      :system_user_id="item.system_user_id"
+                    />
+                  </v-list-item-title>
+                </v-list-item>
+
                 <v-list-item
                   v-if="can('employee_delete')"
                   @click="deleteItem(item)"
@@ -1134,6 +1141,11 @@ export default {
     },
   },
   methods: {
+    generateRandomId() {
+      const length = 8; // Adjust the length of the ID as needed
+      const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number
+      return randomNumber.toString().padStart(length, "0"); // Convert to string and pad with leading zeros if necessary
+    },
     handleAttachment(e) {
       this.employee.profile_picture = e;
     },
