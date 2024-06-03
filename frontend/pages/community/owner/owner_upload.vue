@@ -609,38 +609,47 @@ export default {
 
       let result = [];
       data.forEach((e) => {
-        result.push({
-          id: e.id,
-          full_name: e.full_name,
-          system_user_id: parseInt(e.system_user_id),
-          profile_picture: e.profile_picture,
-          rfid: e.rfid,
-          type: "tanent",
-          room_number: e?.room?.room_number || "",
-        });
-
-        e.members_only.forEach((member) => {
+        let exists = result.some((item) => item.id === e.id);
+        if (!exists) {
           result.push({
-            id: e.id + member.id,
-            full_name: member.full_name,
-            system_user_id: parseInt(member.system_user_id),
-            profile_picture: member.profile_picture,
-            rfid: member.rfid,
-            type: "member",
+            id: e.id,
+            full_name: e.full_name,
+            system_user_id: parseInt(e.system_user_id),
+            profile_picture: e.profile_picture,
+            rfid: e.rfid,
+            type: "tanent",
             room_number: e?.room?.room_number || "",
           });
+        }
+
+        e.members_only.forEach((member) => {
+          let exists = result.some((item) => item.id === e.id + member.id);
+          if (!exists) {
+            result.push({
+              id: e.id + member.id,
+              full_name: member.full_name,
+              system_user_id: parseInt(member.system_user_id),
+              profile_picture: member.profile_picture,
+              rfid: member.rfid,
+              type: "member",
+              room_number: e?.room?.room_number || "",
+            });
+          }
         });
 
         e.maids.forEach((maid) => {
-          result.push({
-            id: e.id + maid.id,
-            full_name: maid.full_name,
-            system_user_id: parseInt(maid.system_user_id),
-            profile_picture: maid.profile_picture,
-            rfid: maid.rfid,
-            type: "maids",
-            room_number: e?.room?.room_number || "",
-          });
+          let exists = result.some((item) => item.id === e.id + maid.id);
+          if (!exists) {
+            result.push({
+              id: e.id + maid.id,
+              full_name: maid.full_name,
+              system_user_id: parseInt(maid.system_user_id),
+              profile_picture: maid.profile_picture,
+              rfid: maid.rfid,
+              type: "maids",
+              room_number: e?.room?.room_number || "",
+            });
+          }
         });
       });
 
@@ -1003,7 +1012,7 @@ export default {
           name: item.full_name,
           userCode: parseInt(item.system_user_id),
           faceImage: item.profile_picture,
-          cardData: item.rfid
+          cardData: item.rfid,
         };
         personListArray.push(person);
       });
