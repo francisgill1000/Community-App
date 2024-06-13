@@ -123,7 +123,6 @@
           class="elevation-1"
           :server-items-length="totalRowsCount"
         >
-         
           <template v-slot:item.full_name="{ item, index }">
             <v-row no-gutters>
               <v-col cols="3" class="ma-2">
@@ -162,6 +161,7 @@
                         system_user_id:
                           parseInt(item.system_user_id) +
                           parseInt(item.members_only_count) +
+                          parseInt(item.cards_count) +
                           1,
                       }"
                     />
