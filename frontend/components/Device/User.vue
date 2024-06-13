@@ -1,10 +1,10 @@
 <template>
   <v-dialog v-model="dialog" max-width="1100">
     <template v-slot:activator="{ on, attrs }">
-      <v-icon v-bind="attrs" v-on="on" :color="iconColor" :size="iconSize"
-        >mdi-cellphone-text</v-icon
-      >
-      {{ iconText }}
+      <span v-bind="attrs" v-on="on">
+        <v-icon :color="iconColor" :size="iconSize">mdi-cellphone-text</v-icon>
+        {{ iconText }}
+      </span>
     </template>
     <v-card>
       <v-toolbar dense flat color="primary" dark>
@@ -26,6 +26,7 @@
                   <th class="text-center">Face</th>
                   <th class="text-center">RFID</th>
                   <th class="text-center">PIN</th>
+                  <th class="text-center"></th>
                 </tr>
               </thead>
               <tbody>
@@ -46,15 +47,24 @@
                   <td class="text-center">{{ d.location }}</td>
                   <td class="text-center">
                     <v-icon color="green" v-if="d.IsFace">mdi-check</v-icon>
-                    <v-icon color="error" v-else>mdi-close</v-icon>
+                    <v-icon color="" v-else>mdi-minus</v-icon>
                   </td>
                   <td class="text-center">
                     <v-icon color="green" v-if="d.IsRFID">mdi-check</v-icon>
-                    <v-icon color="error" v-else>mdi-close</v-icon>
+                    <v-icon color="" v-else>mdi-minus</v-icon>
                   </td>
                   <td class="text-center">
                     <v-icon color="green" v-if="d.IsPIN">mdi-check</v-icon>
-                    <v-icon color="error" v-else>mdi-close</v-icon>
+                    <v-icon color="" v-else>mdi-minus</v-icon>
+                  </td>
+                  <td class="text-center">
+                    <v-icon
+                      color="red"
+                      @click="
+                        deleteUserFromDevice(d.device_id, d.system_user_id)
+                      "
+                      >mdi-close</v-icon
+                    >
                   </td>
                 </tr>
 
@@ -188,6 +198,7 @@ export default {
                   const { face, cardData, password } = data;
 
                   this.data.push({
+                    device_id: e.device_id,
                     name: e.name,
                     location: e.location,
                     IsFace: Boolean(face),
@@ -198,6 +209,20 @@ export default {
                   this.json = data;
                 });
             });
+        });
+    },
+
+    deleteUserFromDevice(device_id, system_user_id) {
+      this.$axios
+        .delete(`/SDK/delete-device-person-details/${device_id}`, {params:{ userCodeArray: [system_user_id] }})
+        .then(({ data }) => {
+          this.loading = false;
+          this.getDataFromApi();
+        })
+        .catch((e) => {
+          alert("Record cannot delete");
+          console.log(e);
+          this.loading = false;
         });
     },
   },

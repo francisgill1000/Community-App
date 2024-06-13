@@ -20,11 +20,12 @@ Route::post('/Person/UploadCards', [SDKController::class, 'UploadCards']);
 
 Route::post('/SDK/{id}/{command}', [SDKController::class, 'handleCommand']);
 Route::get('/SDK/get-device-person-details/{device_id}/{user_code}', [SDKController::class, 'getPersonDetails']);
+Route::delete('/SDK/delete-device-person-details/{device_id}', [SDKController::class, 'deletePersonDetails']);
 
 
 
 Route::get('/SDK/download-device-person-details/{device_id}/{user_code}', [SDKController::class, 'downloadDevicePersonDetails']);
 
-// Route::post('sdk-device-user/{device}/{userCode}', [DeviceUserController::class, "store"]);
+Route::post('sdk-device-user/{device}/{userCode}', [DeviceUserController::class, "store"]);
 
-// Route::get('sdk-device-user', [DeviceUserController::class, "index"]);
+Route::get('sdk-device-user', [DeviceUserController::class, "index"]);

@@ -286,6 +286,22 @@ class SDKController extends Controller
         }
     }
 
+    public function deletePersonDetails($device_id, Request $request)
+    {
+        try {
+            $response = Http::timeout(3600)->withoutVerifying()->withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post(env('SDK_URL') . "/" . "{$device_id}/DeletePerson", ["userCodeArray" => $request->userCodeArray]);
+
+            return $response->json();
+        } catch (\Exception $e) {
+            return [
+                "status" => 102,
+                "message" => $e->getMessage(),
+            ];
+        }
+    }
+
     public function downloadDevicePersonDetails($device_id, $user_code)
     {
         try {
