@@ -167,7 +167,7 @@ export default {
   data: () => ({
     payload: {
       parent_id: ``,
-      system_user_id: 111111,
+      system_user_id: null,
       first_name: "test",
       last_name: "test",
       age: "25",
@@ -220,17 +220,15 @@ export default {
 
   methods: {
     setSystemUserId(id) {
-      const tenant = this.tanents.find((e) => e.id === id);
+  const tenant = this.tanents.find(e => e.id === id);
 
-      if (tenant) {
-        console.log(tenant);
-        const { system_user_id, members_count, cards_count } = tenant;
-        this.payload.system_user_id =
-          parseInt(system_user_id) + members_count + cards_count + 1;
-      } else {
-        this.payload.system_user_id = `Tenant with ID ${id} not found.`;
-      }
-    },
+  if (tenant && tenant.get_last_member && tenant.get_last_member.system_user_id) {
+    this.payload.system_user_id = parseInt(tenant.get_last_member.system_user_id, 10) + 1;
+  } else {
+    this.payload.system_user_id = parseInt(tenant.system_user_id) + 1;
+  }
+},
+
     handleAttachment(e) {
       this.payload.profile_picture = e;
     },

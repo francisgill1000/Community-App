@@ -36,7 +36,7 @@ class TanentController extends Controller
             "company_id" => request("company_id"),
             "parent_id" => 0,
         ])
-            ->with(["floor", "room"])
+            ->with(["floor", "room","get_last_member"])
             ->withCount(["members", "cards"])
 
             ->orderBy('full_name', 'asc')

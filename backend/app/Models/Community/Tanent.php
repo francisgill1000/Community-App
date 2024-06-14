@@ -59,6 +59,11 @@ class Tanent extends Model
         return $this->hasMany(Tanent::class, "parent_id")->where("member_type", "card");
     }
 
+    public function get_last_member()
+    {
+        return $this->hasOne(Tanent::class, "parent_id")->latest();
+    }
+
     public function tanent()
     {
         return $this->belongsTo(Tanent::class, "parent_id");
