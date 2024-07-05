@@ -13,6 +13,7 @@ Route::get('/room_report_download_pdf', [RoomController::class, "download"]);
 
 Route::get('/room-by-floor-id', [RoomController::class, "getRoomsByFloorId"]);
 Route::get('/tanents-and-members-by-room-id', [RoomController::class, "getTanentsAndMembersByRoomsId"]);
+Route::get('/owners-and-members-by-room-id', [RoomController::class, "getOwnersAndMembersByRoomsId"]);
 Route::get('/owners-by-room-id', [RoomController::class, "getOwnerssByRoomsId"]);
 Route::get('/cards-by-room-id', [RoomController::class, "getCardsByRoomsId"]);
 

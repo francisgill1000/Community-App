@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[299],{1779:function(t,n,o){"use strict";o.r(n);var r=o(116),component=Object(r.a)({},(function(){return(0,this._self._c)("CommunityCard",{attrs:{label:"Contractor Card",type:"contractor"}})}),[],!1,null,null,null);n.default=component.exports;installComponents(component,{CommunityCard:o(1261).default})}}]);

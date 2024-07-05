@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[298],{1823:function(t,n,o){"use strict";o.r(n);var l=o(60),component=Object(l.a)({},(function(){return(0,this._self._c)("CommunityCardUpload",{attrs:{label:"Contractor",endpoint:"contractor-list"}})}),[],!1,null,null,null);n.default=component.exports;installComponents(component,{CommunityCardUpload:o(1213).default})}}]);
