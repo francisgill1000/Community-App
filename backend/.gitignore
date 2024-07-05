@@ -3,6 +3,7 @@
 /public/*
 
 /public/storage
+*.sqlite
 /storage/*.key
 /vendor
 .env
