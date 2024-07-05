@@ -1,2 +1,2 @@
-@set PATH=php;%PATH%
+@set PATH=backend/php;%PATH%
 start cmd
