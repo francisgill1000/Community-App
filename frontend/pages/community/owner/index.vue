@@ -188,6 +188,7 @@
                         system_user_id:
                           parseInt(item.system_user_id) +
                           parseInt(item.members_only_count) +
+                          parseInt(item.cards_count) +
                           1,
                       }"
                     />
