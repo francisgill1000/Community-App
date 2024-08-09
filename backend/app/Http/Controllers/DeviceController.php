@@ -34,7 +34,7 @@ class DeviceController extends Controller
     {
         $model = Device::query();
         $model->where('company_id', request('company_id'));
-        $model->when(request()->filled('branch_id'), fn ($q) => $q->where('branch_id', request('branch_id')));
+        $model->when(request()->filled('branch_id'), fn($q) => $q->where('branch_id', request('branch_id')));
         $model->orderBy(request('order_by') ?? "name", request('sort_by_desc') ? "desc" : "asc");
         return $model->get(["id", "name", "location", "device_id", "device_type", "status_id"]);
     }
@@ -206,7 +206,7 @@ class DeviceController extends Controller
         $model->with(['device']);
         $model->where('company_id', $id);
         $model->when($request->filled("branch_id"), function ($q) use ($request) {
-            $q->whereHas("employee", fn ($q) => $q->where("branch_id", $request->branch_id));
+            $q->whereHas("employee", fn($q) => $q->where("branch_id", $request->branch_id));
         });
         $model->whereIn('UserID', function ($query) use ($request) {
             // $model1 = Employee::query();
@@ -276,9 +276,9 @@ class DeviceController extends Controller
 
 
             $device = Device::where("serial_number", $request->serial_number)->first();
-            if ($device->status_id == 2) {
-                return $this->response("Device is offline. Please Check Device Online status.", null, false);
-            }
+            // if ($device->status_id == 2) {
+            //     return $this->response("Device is offline. Please Check Device Online status.", null, false);
+            // }
             try {
 
                 if ($device->device_category_name == 'CAMERA') {
@@ -498,7 +498,10 @@ class DeviceController extends Controller
         $model = Device::query();
 
         $fields = [
-            'name', 'device_id', 'location', 'short_name',
+            'name',
+            'device_id',
+            'location',
+            'short_name',
             'status' => ['name'],
             'company' => ['name'],
         ];
@@ -771,7 +774,7 @@ class DeviceController extends Controller
 
 
         $total_devices_count = Device::where("device_type", "!=", "Mobile")
-            ->when($company_id > 0, fn ($q) => $q->where('company_id', $company_id))
+            ->when($company_id > 0, fn($q) => $q->where('company_id', $company_id))
             ->where("device_type", "!=", "Manual")
             ->where("device_id", "!=", "Manual")
 
@@ -782,7 +785,7 @@ class DeviceController extends Controller
 
 
         $companyDevices = Device::where("device_type", "!=", "Mobile")
-            ->when($company_id > 0, fn ($q) => $q->where('company_id', $company_id))
+            ->when($company_id > 0, fn($q) => $q->where('company_id', $company_id))
             ->where("device_type", "!=", "Manual")
             ->where("device_id", "!=", "Manual")
 
@@ -951,7 +954,12 @@ class DeviceController extends Controller
         $device_settings_id = '';
 
         $devices_active_settings_array = [
-            'device_id' => $device_id, 'company_id' =>  $request->company_id, 'date_from' => $request->date_from, 'date_to' => $request->date_to,   'open_json' => json_encode($open_time_array), 'close_json' => json_encode($closing_time_array)
+            'device_id' => $device_id,
+            'company_id' =>  $request->company_id,
+            'date_from' => $request->date_from,
+            'date_to' => $request->date_to,
+            'open_json' => json_encode($open_time_array),
+            'close_json' => json_encode($closing_time_array)
         ];
 
         $record = DeviceActivesettings::where("device_id", $device_id)->where("company_id", $request->company_id);

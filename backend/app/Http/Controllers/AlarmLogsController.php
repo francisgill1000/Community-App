@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;;
 
 use App\Models\AlarmLogs;
+use App\Models\Company;
 use App\Models\Device;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log as Logger;
@@ -90,9 +92,15 @@ class AlarmLogsController extends Controller
     {
         $result = $this->handleFile();
 
-        if (array_key_exists("error", $result)) {
-            return $this->getMeta("Sync Attenance alarm Logs", $result["message"] . "\n");
+        // if (array_key_exists("error", $result)) {
+        //     return $this->getMeta("Sync Attenance alarm Logs", $result["message"] . "\n");
+        // }
+        if (is_array($result)) {
+            if (isset($result["error"])) {
+                return $this->getMeta("Sync Attenance alarm Logs", $result["message"] . "\n");
+            }
         }
+
 
         $result["data"] = array_values(array_unique($result["data"]));
 
@@ -166,6 +174,8 @@ class AlarmLogsController extends Controller
         $fullPath = storage_path($csvPath);
 
         if (!file_exists($fullPath)) {
+
+
             return ["error" => true, "message" => 'File doest not exist.'];
         }
 

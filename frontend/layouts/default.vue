@@ -389,25 +389,50 @@
                 <v-col cols="2"
                   ><img src="../static/fire2.png" width="50px"
                 /></v-col>
-                <v-col cols="10" class="pl-4">
+                <v-col cols="10" class="pl-0">
                   <div class="pa-3" style="font-size: 20px; font-weight: bold">
                     Fire Alarm Triggered at :
                     {{ $dateFormat.format5(device.alarm_start_datetime) }}
                   </div>
-                  <div class="bold pa-1">Device Name :{{ device.name }}</div>
-                  <div class="bold pa-1">
+
+                  <v-row>
+                    <v-col cols="8"
+                      ><div class="bold pa-1">
+                        Device Name :{{ device.name }}
+                      </div>
+                      <!-- <div class="bold pa-1">
                     Branch Name :{{ device.branch.branch_name }}
-                  </div>
-                  <div class="bold pa-1">
-                    Device Location :{{ device.branch.location }}
-                  </div>
+                  </div> -->
+                      <div class="bold pa-1">
+                        Device Location :{{ device.location }}
+                      </div></v-col
+                    >
+                    <v-col cols="4" class="text-center align-center"
+                      ><v-icon
+                        size="50"
+                        class="alarm"
+                        @click="UpdateAlarmStatus(device, 0)"
+                        title="Click to Turn OFF Alarm "
+                        >mdi mdi-alarm-light</v-icon
+                      >
+                      <v-btn
+                        color="red"
+                        fill
+                        small
+                        dark
+                        @click="UpdateAlarmStatus(device, 0)"
+                      >
+                        Turn OFF Alarm
+                      </v-btn>
+                    </v-col>
+                  </v-row>
                 </v-col>
               </v-row>
 
               <div></div>
               <div>
                 <div style="color: green">
-                  <strong>Note: </strong>All Branch Level Doors are Opened
+                  <strong>Note: </strong>All Doors are Opened
                 </div>
                 <br />
                 Check Devices list and Turn off Alarm to Close this popup.
@@ -499,6 +524,7 @@ export default {
       },
       inactivityTimeout: null,
       alarmNotificationStatus: false,
+      audio: null,
     };
   },
   created() {
@@ -513,6 +539,18 @@ export default {
 
   mounted() {
     //this.company_menus = [];
+    setTimeout(() => {
+      this.audio = new Audio(
+        process.env.BACKEND_URL.replace("api", "") +
+          "alarm_sounds/alarm-sound1.mp3"
+      );
+    }, 2000);
+    setInterval(() => {
+      if (this.$route.name != "login") {
+        this.resetTimer();
+        this.verifyAlarmStatus();
+      }
+    }, 1000 * 10 * 1);
 
     let menu_name = this.$route.name;
     let bgColor = "violet";
@@ -565,6 +603,62 @@ export default {
     },
   },
   methods: {
+    palysound() {
+      this.playAudioOnUserInteraction();
+    },
+    playAudioOnUserInteraction() {
+      if (!this.audio) {
+        this.audio = new Audio(
+          process.env.BACKEND_URL.replace("api", "") +
+            "alarm_sounds/alarm-sound1.mp3"
+        );
+      }
+      this.audio.play();
+    },
+    stopsound() {
+      if (!this.audio) {
+        this.audio = new Audio(
+          process.env.BACKEND_URL.replace("api", "") +
+            "alarm_sounds/alarm-sound1.mp3"
+        );
+      }
+      this.audio.pause();
+    },
+    UpdateAlarmStatus(item, status) {
+      if (status == 0) {
+        if (confirm("Are you sure you want to TURN OFF the Alarm")) {
+          let options = {
+            params: {
+              company_id: this.$auth.user.company_id,
+              serial_number: item.serial_number,
+              status: status,
+            },
+          };
+          this.loading = true;
+          this.$axios
+            .post(`/update-device-alarm-status`, options.params)
+            .then(({ data }) => {
+              if (!data.status) {
+                if (data.message == "undefined") {
+                  this.response = "Try again. No connection available";
+                } else this.response = "Try again. " + data.message;
+                this.snackbar = true;
+
+                return;
+              } else {
+                setTimeout(() => {
+                  this.loading = false;
+                  this.response = data.message;
+                  this.snackbar = true;
+                }, 2000);
+
+                return;
+              }
+            })
+            .catch((e) => console.log(e));
+        }
+      }
+    },
     closeRFIDCard() {
       this.isClicked = false;
       this.item = { tanent: null };
@@ -605,6 +699,34 @@ export default {
           violet: "#6946dd",
           popup_background: "#ecf0f4",
         };
+      }
+    },
+    verifyAlarmStatus() {
+      //if (this.apiCalNotificationInitiated == false)
+      {
+        this.apiCalNotificationInitiated = true;
+        let company_id = this.$auth.user?.company?.id || 0;
+        if (company_id == 0) {
+          return false;
+        }
+        let options = {
+          params: {
+            company_id: company_id,
+          },
+        };
+        //this.pendingNotificationsCount = 0;
+        let pendingcount = 0;
+        this.$axios.get(`get_notifications_alarm`, options).then(({ data }) => {
+          this.apiCalNotificationInitiated = false;
+          if (data.length > 0) {
+            this.notificationAlarmDevices = data;
+            this.palysound();
+            this.alarmNotificationStatus = true;
+          } else {
+            this.alarmNotificationStatus = false;
+            this.stopsound();
+          }
+        });
       }
     },
     updateTopmenu() {

@@ -74,6 +74,15 @@ class Kernel extends ConsoleKernel
             ->emailOutputOnFailure(env("ADMIN_MAIL_RECEIVERS"));
 
 
+        $schedule
+            ->command('task:sync_alarm_logs')
+            ->everyMinute()
+            //->withoutOverlapping()
+            ->appendOutputTo(storage_path("kernal_logs/alarm/" . date("d-M-y") . "-alarm-logs-laravel.log")); //->emailOutputOnFailure(env("ADMIN_MAIL_RECEIVERS"));
+
+
+
+
         // $companyIds = Company::pluck("id");
 
         // foreach ($companyIds as $companyId) {

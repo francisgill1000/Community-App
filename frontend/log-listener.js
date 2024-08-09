@@ -2,8 +2,7 @@ const WebSocket = require("ws");
 const fs = require("fs");
 const { log } = require("console");
 require("dotenv").config();
-const path = require('path');
-
+const path = require("path");
 
 const verification_methods = {
   1: "Card",
@@ -48,30 +47,35 @@ const socket = new WebSocket(SOCKET_ENDPOINT);
 // Handle WebSocket connection events
 socket.onopen = () => {
   console.log(
-    `Connected to ${SOCKET_ENDPOINT} at ${getFormattedDate().date}${getFormattedDate().time}`
+    `Connected to ${SOCKET_ENDPOINT} at ${getFormattedDate().date}${
+      getFormattedDate().time
+    }`
   );
 };
 
 socket.onerror = (error) => {
   console.error(
-    `WebSocket error ${error.message
-    } at ${getFormattedDate().date} ${getFormattedDate().time}`
+    `WebSocket error ${error.message} at ${getFormattedDate().date} ${
+      getFormattedDate().time
+    }`
   );
 };
 // Handle WebSocket close event
 socket.onclose = (event) => {
   console.error(
-    `WebSocket connection closed with code ${event.code
-    } at ${getFormattedDate().date} ${getFormattedDate().time}`
+    `WebSocket connection closed with code ${event.code} at ${
+      getFormattedDate().date
+    } ${getFormattedDate().time}`
   );
 };
 
-
 socket.onmessage = ({ data }) => {
-
-  const logFilePath = `../backend/storage/app/logs-${getFormattedDate().date}.csv`;
-  const logFilePathAlarm = `../backend/storage/app/alarm/alarm-logs-${getFormattedDate().date}.csv`;
-
+  const logFilePath = `../backend/storage/app/logs-${
+    getFormattedDate().date
+  }.csv`;
+  const logFilePathAlarm = `../backend/storage/app/alarm/alarm-logs-${
+    getFormattedDate().date
+  }.csv`;
 
   try {
     const jsonData = JSON.parse(data).Data;
@@ -96,17 +100,25 @@ socket.onmessage = ({ data }) => {
       // console.log(data);
     }
     //Alarm Code
-    if (UserCode == 0 && RecordCode == 19) {
-
-      // Ensure that the directory exists before attempting to write the file
-      const logDirectory = path.dirname(logFilePathAlarm);
-      if (!fs.existsSync(logDirectory)) {
-        fs.mkdirSync(logDirectory, { recursive: true });
-      }
-
+    if (RecordCode == 19) {
       const alarm_logEntry = `${SN},${RecordDate}`;
       fs.appendFileSync(logFilePathAlarm, alarm_logEntry + "\n");
       console.log("Alarm", alarm_logEntry);
+      if (process.env.BACKEND_URL) {
+        const params = { 11111: "1111" };
+
+        const url = process.env.BACKEND_URL + "/loadalarm_csv";
+        try {
+          const response = axios.get(url, {
+            params,
+            timeout: 1000 * 30, // 30 seconds timeout
+          });
+          // console.log("Response from backend:", response);
+        } catch (error) {
+          // console.error("Error getting from backend:", error.message);
+        } finally {
+        }
+      }
     }
   } catch (error) {
     console.error("Error processing message:", error.message);
@@ -115,7 +127,6 @@ socket.onmessage = ({ data }) => {
 
 // Separate function to format date
 function getFormattedDate() {
-
   const options = {
     year: "numeric",
     month: "2-digit",
@@ -137,17 +148,16 @@ function getFormattedDate() {
   };
 }
 
-
 process.on("SIGTERM", () => {
-  console.log(`Prcess killed at ${getFormattedDate().date} ${getFormattedDate().time}`);
+  console.log(
+    `Prcess killed at ${getFormattedDate().date} ${getFormattedDate().time}`
+  );
   process.exit(0); // Exit the process gracefully
 });
 
 process.on("SIGINT", () => {
-  console.log(`Prcess killed at ${getFormattedDate().date} ${getFormattedDate().time}`);
+  console.log(
+    `Prcess killed at ${getFormattedDate().date} ${getFormattedDate().time}`
+  );
   process.exit(0); // Exit the process gracefully
 });
-
-
-
-

@@ -1398,7 +1398,7 @@ export default {
       if (this.$route.name == "device") {
         this.getDataFromApi();
       }
-    }, 1000 * 60);
+    }, 1000 * 10);
   },
   async created() {
     this.loading = true;
