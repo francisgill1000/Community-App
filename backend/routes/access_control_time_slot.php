@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccessControlTimeSlotController;
 use App\Http\Controllers\AlarmLogsController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('/access-control-time-slot', AccessControlTimeSlotController::class);

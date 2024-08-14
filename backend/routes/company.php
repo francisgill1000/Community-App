@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\AlarmLogsController;
 use App\Http\Controllers\AllowanceController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssignPermissionController;
@@ -59,6 +60,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/get-company-id-by-device', [DeviceController::class, 'get_company_id_by_device']);
 
 
+Route::apiResource('alarm_logs', AlarmLogsController::class);
 Route::get('/master_dashboard', [CompanyController::class, 'getMasterDashboardCounts']);
 
 // employee reporter
