@@ -562,7 +562,13 @@
     "menu": "logs_access",
     "module": "reports"
   },
-
+  {
+    "icon": "mdi-clipboard-text-clock",
+    "title": "Alarms",
+    "to": "/alarmlogs",
+    "menu": "logs_access",
+    "module": "reports"
+  },
   {
     "icon": "mdi-web-box",
     "title": "Web Logs",

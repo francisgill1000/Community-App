@@ -638,6 +638,7 @@ export default {
           this.$axios
             .post(`/update-device-alarm-status`, options.params)
             .then(({ data }) => {
+              this.verifyAlarmStatus();
               if (!data.status) {
                 if (data.message == "undefined") {
                   this.response = "Try again. No connection available";
