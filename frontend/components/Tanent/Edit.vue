@@ -637,6 +637,13 @@
                       </v-col>
 
                       <v-col cols="6" class="text-right">
+                        <v-icon
+                          class="mt-2"
+                          :loading="deleteCardLoading"
+                          color="primary"
+                          @click="deleteMemberCardFromDevices(member)"
+                          >mdi-sync</v-icon
+                        >
                         <DeviceUser
                           iconText=""
                           iconSize=""
@@ -848,6 +855,8 @@ export default {
     rooms: [],
     devices: [],
     deleteCardLoading: false,
+    deleteMemberCardLoading: false,
+
     member: {
       full_name: null,
       phone_number: null,
@@ -964,6 +973,50 @@ export default {
         });
 
       this.displaybutton = true;
+    },
+
+    async deleteMemberCardFromDevices(member) {
+      this.deleteMemberCardLoading = true;
+      // this.payload.rfid = null;
+
+      this.deleteResponseList = [];
+
+      this.devices.forEach(async (device_id) => {
+        let deletePayload = {
+          UserID: this.payload.system_user_id,
+          DeviceID: device_id,
+        };
+
+        try {
+          const { data: deletedCard } = await this.$axios.post(
+            "delete-card",
+            deletePayload
+          );
+
+          let payload = {
+            personList: [
+              {
+                name: member.first_name + " " + member.last_name,
+                userCode: member.system_user_id,
+                faceImage: member.profile_picture,
+              },
+            ],
+            snList: [device_id],
+          };
+
+          await this.$axios.post(`/Person/AddRange/Photos`, payload);
+
+          this.deleteDialog = true;
+
+          this.deleteResponseList.push({
+            status: deletedCard.status,
+            message: deletedCard.message,
+            DeviceID: device_id,
+          });
+        } catch (error) {
+          console.error("Error deleting record:", error);
+        }
+      });
     },
     generateRandomId() {
       const length = 8; // Adjust the length of the ID as needed

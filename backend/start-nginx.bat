@@ -1,0 +1,1 @@
+cd nginx && start nginx
