@@ -50,6 +50,13 @@ class Kernel extends ConsoleKernel
             ->runInBackground();
 
         $schedule
+            ->command("sync_employee_report {$companyId} " . date("Y-m-d") . " " . false)
+            // ->hourly()
+            ->everyMinute()
+            ->runInBackground();
+
+
+        $schedule
             ->command('restart_sdk')
             ->dailyAt('4:00')
             //->hourly()
@@ -67,11 +74,11 @@ class Kernel extends ConsoleKernel
             // ->withoutOverlapping()
             ->appendOutputTo(storage_path("logs/$monthYear-devices-health.log")); //->emailOutputOnFailure(env("ADMIN_MAIL_RECEIVERS"));
 
-        $schedule
-            ->command('task:db_backup')
-            ->dailyAt('6:00')
-            ->appendOutputTo(storage_path("logs/db_backup.log"))
-            ->emailOutputOnFailure(env("ADMIN_MAIL_RECEIVERS"));
+        // $schedule
+        //     ->command('task:db_backup')
+        //     ->dailyAt('6:00')
+        //     ->appendOutputTo(storage_path("logs/db_backup.log"))
+        //     ->emailOutputOnFailure(env("ADMIN_MAIL_RECEIVERS"));
 
 
         $schedule
