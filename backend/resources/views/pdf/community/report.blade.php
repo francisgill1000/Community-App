@@ -255,8 +255,8 @@
                                 <tr>
                                     <td class="border-none">
                                         <b
-                                            style="margin-left:5px; padding-top:-30px;">{{ $entity['full_name'] }}</b><br>
-                                        <small style="margin-left:5px;">{{ $entity['phone_number'] }}</small>
+                                            style="margin-left:5px; padding-top:-30px;">{{ $entity['full_name'] ?? "---" }}</b><br>
+                                        <small style="margin-left:5px;">{{ $entity['phone_number'] ?? "---" }}</small>
                                     </td>
                                 </tr>
                             </table>

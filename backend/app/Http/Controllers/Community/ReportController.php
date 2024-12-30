@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Community;
 use Illuminate\Http\Request;
 use App\Models\AttendanceLog;
 use App\Http\Controllers\Controller;
+use App\Jobs\GenerateAccessControlReport;
 use App\Models\Community\CommunityReport;
 use App\Models\Company;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
@@ -24,8 +27,9 @@ class ReportController extends Controller
 
         $chunks = array_chunk($data, 10);
 
-        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.community.report', [
+        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.access_control_reports.report', [
             "chunks" => $chunks,
+            "date" => date("Y-m-d"),
             "company" => Company::whereId(request("company_id") ?? 0)->first(),
             "params" => $request->all(),
 
@@ -169,30 +173,32 @@ class ReportController extends Controller
 
             $userKey = array_key_first($userDetails);
             $item = [];
-            $item = [
-                "user_id" =>   $userDetails[$userKey]["id"],
-                "user_type" =>  $userKey,
-                "total_hrs" => '00:00',
-                "in_id" => $firstLog["id"],
-                "status" => "in",
-                "out_id" => "0",
-                "total_hrs" => "0",
-            ];
+            if (isset($userDetails[$userKey]["id"])) {
+                $item = [
+                    "user_id" =>   $userDetails[$userKey]["id"],
+                    "user_type" =>  $userKey,
+                    "total_hrs" => '00:00',
+                    "in_id" => $firstLog["id"],
+                    "status" => "in",
+                    "out_id" => "0",
+                    "total_hrs" => "0",
+                ];
 
-            if ($item["in_id"])
-                $in_ids[] =   $item["in_id"];
+                if ($item["in_id"])
+                    $in_ids[] =   $item["in_id"];
 
-            if ($lastLog) {
-                $item["out_id"] = $lastLog["id"] ?? 0;
-                $item["status"] = "out";
-                $item["total_hrs"] = $this->getTotalHrsMins($firstLog["time"] ?? 0, $lastLog["time"] ?? 0);
+                if ($lastLog) {
+                    $item["out_id"] = $lastLog["id"] ?? 0;
+                    $item["status"] = "out";
+                    $item["total_hrs"] = $this->getTotalHrsMins($firstLog["time"] ?? 0, $lastLog["time"] ?? 0);
 
 
-                $out_ids[] = $item["out_id"];
+                    $out_ids[] = $item["out_id"];
+                }
+
+                $item["date"] = $params["date"];
+                $items[] = $item;
             }
-
-            $item["date"] = $params["date"];
-            $items[] = $item;
         }
         //return json_encode($items);
         if (!count($items)) {
@@ -229,36 +235,12 @@ class ReportController extends Controller
         if (request()->filled("user_type")) {
             if (request("user_type") == 'tanent') {
                 $query->whereIn("user_type", ["Owner", "Primary", "Family Member", "Maid"]);
-
-                $query->with([
-
-                    "tanent",
-                    "family_member",
-                    "owner",
-
-
-                ]);
             } else if (request("user_type") == 'maid') {
                 $query->where("user_type", request("user_type"));
-                $query->with([
-                    "maid",
-
-
-                ]);
             } else if (request("user_type") == 'visitor') {
                 $query->where("user_type", request("user_type"));
-                $query->with([
-                    "visitor.purpose",
-
-
-                ]);
             } else if (request("user_type") == 'delivery') {
                 $query->where("user_type", request("user_type"));
-                $query->with([
-
-                    "delivery.purpose",
-
-                ]);
             } else if (request("user_type") == 'contractor') {
                 $query->where("user_type", request("user_type"));
                 $query->with([
@@ -268,11 +250,6 @@ class ReportController extends Controller
                 ]);
             } else if (request("user_type") == 'employee') {
                 $query->where("user_type", request("user_type"));
-                $query->with([
-
-                    'employee:id,first_name,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
-
-                ]);
             }
         }
 
@@ -295,14 +272,14 @@ class ReportController extends Controller
                 });
             });
         });
-        $query->when(request()->filled("from_date"), function ($q) {
 
-            $q->where('date', '>=', request("from_date"));
+        $query->when(request()->filled("from_date"), function ($q) {
+            $q->whereDate('date', '>=', request("from_date"));
         });
         $query->when(request()->filled("to_date"), function ($q) {
-
-            $q->where('date', '<=', request("to_date"));
+            $q->whereDate('date', '<=', request("to_date"));
         });
+
         // $query->when(request()->filled("from_date"), function ($query) {
         //     $query->where(function ($q) {
         //         $q->whereHas("in_log", function ($qu) {
@@ -326,8 +303,15 @@ class ReportController extends Controller
         // });
 
         $query->with([
+            "tanent",
+            "family_member",
+            "owner",
+            "maid",
+            "visitor.purpose",
+            "delivery.purpose",
             "in_log",
             "out_log",
+            'employee:id,first_name,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
         ]);
 
         return $query;

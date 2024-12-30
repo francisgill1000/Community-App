@@ -75,7 +75,11 @@ class Tanent extends Model
     }
     public function attendance_logs()
     {
-        return $this->hasMany(AttendanceLog::class, "UserID", "system_user_id")->orderBy("LogTime", "asc")->with("device")->take(10);
+        return $this->hasMany(AttendanceLog::class, "UserID", "system_user_id")
+        ->where("company_id",request("company_id"))
+        ->orderBy("LogTime", "desc")
+        ->with("device")
+        ->take(10);
     }
     public function tanent_for_maid()
     {

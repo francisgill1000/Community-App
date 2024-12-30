@@ -51,4 +51,5 @@ Route::get('search_visitor_by_user_id', [AccessControlController::class, 'search
 Route::get('get_logs_by_visitor_id', [AccessControlController::class, 'get_logs_by_visitor_id']);
 Route::get('get_logs_by_tanent_id', [AccessControlController::class, 'get_logs_by_tanent_id']);
 Route::get('get_users', [AccessControlController::class, 'getUniqueUsers']);
+Route::get('get_all_users', [AccessControlController::class, 'getAllUsers']);
 Route::post('renderAutoRequest', [AutoShiftController::class, 'renderRequest']);

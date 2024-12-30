@@ -1,49 +1,8 @@
 <template>
   <div v-if="can(`dashboard_access`)">
-    <v-dialog v-model="dialog" max-width="1000">
-      <v-card>
-        <v-container>
-          <v-row no-gutters class="pa-0 ma-0">
-            <v-col class="text-right">
-              <v-icon color="primary" @click="dialog = false">
-                mdi-close-circle-outline
-              </v-icon>
-            </v-col>
-          </v-row>
-
-          <EmployeeShortView
-            v-if="selectedItem.employee != null"
-            :item="selectedItem"
-            :key="key + 1"
-          />
-
-          <VisitorAttendanceLogsPopup
-            v-else-if="
-              visitor_type.toLowerCase() == 'visitor' ||
-              visitor_type.toLowerCase() == 'contractor' ||
-              visitor_type.toLowerCase() == 'delivery'
-            "
-            :key="generateRandomId()"
-            :UserID="UserID"
-          />
-          <TenantAttendanceLogsPopup
-            v-else-if="
-              visitor_type == 'tenant' ||
-              visitor_type == 'Tanent' ||
-              visitor_type == 'Owner' ||
-              visitor_type == 'Family Member' ||
-              visitor_type == 'Maid'
-            "
-            :key="key"
-            :UserID="UserID"
-            :visitor_type="visitor_type"
-          />
-        </v-container>
-      </v-card>
-    </v-dialog>
-    <v-card v-if="showFilters" elevation="1" class="mt-2">
+    <v-card elevation="1" class="mt-2">
       <v-toolbar dense flat>
-        <span class="headline black--text"> {{ label }}</span>
+        <span class="headline black--text">Access Control</span>
         <span>
           <v-btn
             dense
@@ -96,7 +55,7 @@
               :hide-details="true"
             ></v-select>
           </v-col>
-          <v-col md="2" sm="2" v-if="dropdown">
+          <v-col md="2" sm="2">
             <v-select
               label="User Type"
               outlined
@@ -137,18 +96,17 @@
           </v-col>
           <v-col md="2" sm="4">
             <v-autocomplete
-              @change="setUserID(UserID)"
               density="comfortable"
               label="Members"
               outlined
               dense
-              v-model="UserID"
+              v-model="payload.UserID"
               x-small
               :items="[
                 { system_user_id: ``, full_name: `Select All` },
                 ...users,
               ]"
-              item-value="id"
+              item-value="system_user_id"
               item-text="full_name"
             ></v-autocomplete>
           </v-col>
@@ -189,24 +147,24 @@
         <v-card class="mb-0" elevation="0">
           <v-toolbar class="backgrounds" flat style="height: 40px">
             <!-- <v-toolbar-title>
-              <span class="headline black--text"> Device Logs</span>
-            </v-toolbar-title> -->
+                <span class="headline black--text"> Device Logs</span>
+              </v-toolbar-title> -->
             <!-- <span>
-              <v-btn
-                dense
-                class="ma-0 px-0"
-                x-small
-                :ripple="false"
-                text
-                title="Reload"
-              >
-                <v-icon class="ml-2" @click="getDataFromApi" dark
-                  >mdi-reload</v-icon
+                <v-btn
+                  dense
+                  class="ma-0 px-0"
+                  x-small
+                  :ripple="false"
+                  text
+                  title="Reload"
                 >
-              </v-btn>
-            </span> -->
+                  <v-icon class="ml-2" @click="getDataFromApi" dark
+                    >mdi-reload</v-icon
+                  >
+                </v-btn>
+              </span> -->
             <v-spacer></v-spacer>
-            <span v-if="showFilters" style="padding-left: 15px"
+            <span style="padding-left: 15px"
               ><img
                 title="Print"
                 style="cursor: pointer"
@@ -214,9 +172,7 @@
                 src="/icons/icon_print.png"
                 class="iconsize"
             /></span>
-            <span
-              v-if="showFilters"
-              style="padding-left: 15px; padding-right: 10px"
+            <span style="padding-left: 15px; padding-right: 10px"
               ><img
                 title="Download Pdf"
                 style="cursor: pointer"
@@ -224,27 +180,10 @@
                 src="/icons/icon_pdf.png"
                 class="iconsize"
             /></span>
-            <CommunityManualCheckOut
-              class="pl-10"
-              style="padding-left: 10px !important"
-              button_type="icon"
-              visitor_type="visitor"
-              v-if="can(`${user_type}_view`) && !showFilters"
-              @success="handleSuccessResponse"
-            />
-            <CommunityVisitorCreate
-              :standalone="true"
-              :label="label"
-              button_type="icon"
-              :visitor_type="user_type"
-              v-if="can(`${user_type}_create`) && !showFilters"
-              @success="handleSuccessResponse"
-            />
           </v-toolbar>
 
           <v-data-table
             style="padding-top: 10px"
-            @click:row="showDialog"
             dense
             :headers="headers"
             :items="data"
@@ -278,64 +217,6 @@
                 <small> {{ item?.out_log?.device?.short_name ?? "---" }}</small>
               </div>
               <div v-else>---</div>
-            </template>
-            <template v-slot:item.flat="{ item, index }">
-              <div v-if="item.tanent" no-gutters>
-                {{ item.tanent?.room?.room_number ?? "---" }}
-              </div>
-              <div v-else-if="item.family_member" no-gutters>
-                {{ item.family_member?.room?.room_number ?? "---" }}
-              </div>
-              <div v-else-if="item.owner" no-gutters>
-                {{ item.owner?.room?.room_number ?? "---" }}
-              </div>
-              <div v-else-if="item.maid" no-gutters>
-                {{ item.maid?.room?.room_number ?? "---" }}
-              </div>
-              <div v-else-if="item.primary" no-gutters>
-                {{ item.primary?.room?.room_number ?? "---" }}
-              </div>
-            </template>
-
-            <template v-slot:item.host="{ item }" style="padding: 0px">
-              <v-row v-if="item.visitor" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item?.visitor?.tanent?.full_name ?? "---" }}
-                    <br />
-                    {{ item?.visitor?.tanent?.room?.room_number ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-              <v-row v-if="item.contractor" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item?.contractor?.tanent?.full_name ?? "---" }}
-                    <br />
-                    {{ item?.contractor?.tanent?.room?.room_number ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-              <v-row v-if="item.delivery" no-gutters>
-                <v-col md="8">
-                  <div>
-                    {{ item?.delivery?.tanent?.full_name ?? "---" }}
-                    <br />
-                    {{ item?.delivery?.tanent?.room?.room_number ?? "---" }}
-                  </div>
-                </v-col>
-              </v-row>
-            </template>
-            <template v-slot:item.purpose="{ item }" style="padding: 0px">
-              <div v-if="item.visitor">
-                {{ item.visitor?.purpose?.name ?? "---" }}
-              </div>
-              <div v-if="item.contractor">
-                {{ item.contractor?.purpose?.name ?? "---" }}
-              </div>
-              <div v-if="item.delivery">
-                {{ item.delivery?.purpose?.name ?? "---" }}
-              </div>
             </template>
             <template v-slot:item.user="{ item }" style="padding: 0px">
               <v-row v-if="item.tanent" no-gutters>
@@ -412,6 +293,16 @@
                   </div>
                 </v-col>
               </v-row>
+              <v-row v-else-if="item.user_type == ''" no-gutters>
+                <v-col md="8">
+                    <pre>{{ item }}</pre>
+                  <!-- <div>
+                    {{ item.tanent?.full_name ?? "---" }}
+                    <br />
+                    <small> {{ item.tanent?.phone_number ?? "---" }}</small>
+                  </div> -->
+                </v-col>
+              </v-row>
             </template>
           </v-data-table>
         </v-card>
@@ -422,15 +313,7 @@
   <NoAccess v-else />
 </template>
 <script>
-import VisitorAttendanceLogsPopup from "../../../components/Community/VisitorAttendanceLogsPopup.vue";
-import TenantAttendanceLogsPopup from "../../../components/Community/TenantAttendanceLogsPopup.vue";
-
 export default {
-  props: ["user_type", "dropdown", "label", "showFilters"],
-  components: {
-    VisitorAttendanceLogsPopup,
-    TenantAttendanceLogsPopup,
-  },
   data: () => ({
     key: 1,
     selectedItem: {},
@@ -453,8 +336,6 @@ export default {
     search: "",
     snackbar: false,
     add_manual_log: false,
-    dialog: false,
-    generateLogsDialog: false,
     reportSync: false,
     from_menu: false,
     to_menu: false,
@@ -466,7 +347,6 @@ export default {
 
     loading: false,
     total: 0,
-    UserID: ``,
     payload: {
       DeviceID: ``,
       report_type: ``,
@@ -543,130 +423,9 @@ export default {
     },
   },
   created() {
-    this.getUsers();
-    this.getDeviceList();
-
     this.payload.user_type = this.user_type;
-
-    if (this.user_type == "tanent") {
-      let branch_header = [
-        {
-          text: "Flat",
-          align: "left",
-          sortable: true,
-          key: "flat",
-          value: "flat",
-        },
-      ];
-      this.headers.splice(2, 0, ...branch_header);
-    } else if (
-      this.user_type == "visitor" ||
-      this.user_type == "delivery" ||
-      this.user_type == "contractor"
-    ) {
-      let branch_header = [
-        {
-          text: "Host",
-          align: "left",
-          sortable: true,
-          key: "host",
-          value: "host",
-        },
-      ];
-      this.headers.splice(2, 0, ...branch_header);
-      branch_header = [
-        {
-          text: "Purpose",
-          align: "left",
-          sortable: true,
-          key: "purpose",
-          value: "purpose",
-        },
-      ];
-      this.headers.splice(6, 0, ...branch_header);
-    }
   },
   methods: {
-    handleSuccessResponse(message) {
-      this.snackbar = true;
-      this.response = message;
-      this.getDataFromApi();
-    },
-    showDialog(item) {
-      this.key++;
-      this.selectedItem = item;
-
-      if (item.visitor) {
-        this.UserID = item.visitor.id;
-      } else if (item.tanent) {
-        this.UserID = item.tanent.id;
-      } else if (item.owner) {
-        this.UserID = item.owner.id;
-      } else if (item.contractor) {
-        this.UserID = item.contractor.id;
-      } else if (item.delivery) {
-        this.UserID = item.delivery.id;
-      } else if (item.maid) {
-        this.UserID = item.maid.id;
-      } else if (item.primary) {
-        this.UserID = item.primary.id;
-      } else if (item.family_member) {
-        this.UserID = item.family_member.id;
-      }
-
-      this.visitor_type = this.getUserType(item);
-      this.dialog = true;
-    },
-    setUserID(id) {
-      this.payload.UserID =
-        this.users.find((e) => e.id == id).system_user_id ?? 0;
-    },
-    getUserType(item) {
-      const relationships = {
-        Tanent: item.tanent,
-        "Family Member": item.family_member,
-        Relative: item.relative,
-        Visitor: item.visitor,
-        Delivery: item.delivery,
-        Contractor: item.contractor,
-        Maid: item.maid,
-        Owner: item.owner,
-        Employee: item.employee,
-      };
-
-      for (const [type, value] of Object.entries(relationships)) {
-        if (value) {
-          return type;
-        }
-      }
-
-      return "Unknown";
-    },
-    generateRandomId() {
-      const length = 8; // Adjust the length of the ID as needed
-      const randomNumber = Math.floor(Math.random() * Math.pow(10, length)); // Generate a random number
-      return randomNumber.toString().padStart(length, "0"); // Convert to string and pad with leading zeros if necessary
-    },
-    getUserPhone(item) {
-      const relationships = {
-        Tanent: item.tanent,
-        "Family Member": item.family_member,
-        Relative: item.relative,
-        Visitor: item.visitor,
-        Delivery: item.delivery,
-        Contractor: item.contractor,
-        Maid: item.maid,
-      };
-
-      for (const [type, value] of Object.entries(relationships)) {
-        if (value) {
-          return value;
-        }
-      }
-
-      return "---";
-    },
-
     filterAttr(data) {
       this.payload.from_date = data.from;
       this.payload.to_date = data.to;
@@ -676,12 +435,11 @@ export default {
     getUsers() {
       let options = {
         params: {
-          per_page: 1000,
           company_id: this.$auth.user.company_id,
         },
       };
 
-      this.$axios.get(`/get_users`, options).then(({ data }) => {
+      this.$axios.get(`/get_all_users`, options).then(({ data }) => {
         this.users = data;
       });
     },
@@ -724,6 +482,9 @@ export default {
       this.data = data;
       this.totalRowsCount = total;
       this.loading = false;
+
+      this.getUsers();
+      this.getDeviceList();
     },
 
     async process_file(endpoint) {

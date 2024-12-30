@@ -104,13 +104,13 @@ class AccessControlController extends Controller
 
         // $model->whereHas('device', fn ($q) => $q->whereIn('device_type', ["all", "Access Control"]));
 
-        $model->when(request()->filled("user_type"), fn ($q) => $q->whereHas(request("user_type")));
+        $model->when(request()->filled("user_type"), fn($q) => $q->whereHas(request("user_type")));
 
-        $model->when(request()->filled("report_type") && request("report_type") == 'Access Denied', fn ($q) => $q->where('status', request("report_type")));
+        $model->when(request()->filled("report_type") && request("report_type") == 'Access Denied', fn($q) => $q->where('status', request("report_type")));
 
-        $model->when(request()->filled("UserID"), fn ($q) => $q->where('UserID', request("UserID")));
+        $model->when(request()->filled("UserID"), fn($q) => $q->where('UserID', request("UserID")));
 
-        $model->when(request()->filled("DeviceID"), fn ($q) => $q->where('DeviceID', request("DeviceID")));
+        $model->when(request()->filled("DeviceID"), fn($q) => $q->where('DeviceID', request("DeviceID")));
 
         $model->with(["device", "tanent", "family_member", "visitor", "delivery", "contractor", "maid", "owner"]);
 
@@ -140,5 +140,31 @@ class AccessControlController extends Controller
         // });
 
         return $model;
+    }
+
+
+    public function getAllUsers()
+    {
+        $tanents = DB::table('tanents')
+            ->where("tanents.company_id", request("company_id", 0))
+            ->whereIn("member_type", ["Owner", "Maid", "Primary", "Family Member"])
+            ->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
+            ->orderBy("first_name", "asc")
+            ->get(['tanents.company_id', 'tanents.id', DB::raw('full_name || \' - \' || rooms.room_number  as full_name'), 'tanents.system_user_id']) // Include the room_name column from the rooms table
+            ->toArray();
+
+        $visitors = DB::table('visitors');
+        $visitors->where("company_id", request("company_id", 0));
+        $visitors->whereIn("visitor_type", ["visitor", "delivery", "contractor"]);
+        $visitors->orderBy("first_name", "asc");
+        $visitors = $visitors->get(['company_id', "id", DB::raw('first_name || \' \' || last_name  as full_name'), "system_user_id"])
+            ->toArray();
+
+        $employees = DB::table('employees')
+            ->where("company_id", request("company_id", 0))
+            ->orderBy("first_name", "asc")
+            ->get(['company_id',"id", "full_name", "system_user_id"])->toArray();
+
+        return array_merge($tanents, $visitors, $employees);
     }
 }

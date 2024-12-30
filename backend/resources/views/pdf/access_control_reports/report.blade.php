@@ -120,7 +120,9 @@
         }
 
         .page-break {
-            page-break-after: always;
+            page-break-before: auto;
+            page-break-after: auto;
+            /* Add this for proper page breaks */
         }
 
         footer {
@@ -155,186 +157,142 @@
         .pageCounter span {
             counter-increment: pageTotal;
         }
-
-        #pageNumbers span:before {
-            counter-increment: currentPage;
-            content: "Page " counter(currentPage) "/";
-        }
     </style>
 </head>
 
 <body>
     <div>
 
-        @foreach ($chunks as $chunk)
-            <div id="footer">
-                <div class="pageCounter">
-                    <p></p>
-                    @php
-                        $p = count($chunks);
-                        if ($p <= 1) {
-                            echo '<span></span>';
-                        } else {
-                            for ($a = 1; $a <= $p; $a++) {
-                                echo '<span></span>';
-                            }
-                    } @endphp
-                </div>
+        <table>
+            <tr>
+                <td class="text-left border-none col-4">
+                    <div class="logo pt">
+                        <img height="75" width="75"
+                            src="{{ !empty($company->logo_raw) ? env('BASE_URL') . '/' . $company->logo_raw : '' }}"
+                            alt="Company Logo" />
 
-            </div>
+                    </div>
+                </td>
+                <td class="text-center border-none col-4 uppercase">
+                    <div>
+                        <b>{{ $params['report_type'] ?? 'Access Control Report' }} </b>
+                    </div>
+                    <div>
+                        <b>{{ date('d M y', strtotime($date)) }} </b>
+                    </div>
+                </td>
+                <td class="text-right border-none col-4">
+                    <div class="company-info">
+                        <h3>{{ $company->name ?? '---' }}</h3>
+                        <p>{{ $company->location ?? '---' }}</p>
+                        <p>{{ $company->contact->number ?? '---' }}, {{ $company->user->email ?? '---' }}</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table class="mt-5">
+            <tr>
+                <th>S.NO</th>
+                <th>Name</th>
+                <th>In</th>
+                <th>Out</th>
+                <th>Status</th>
+                <th>Mode</th>
+                <th>User Type</th>
+            </tr>
+            @foreach ($chunk as $key => $data)
+                <tr>
+                    <td style="width:10px;">{{ $key + 1 }}</td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    @if (isset($data['tanent']) && $data['tanent'])
+                                        <b style="margin-left:5px;">
+                                            {{ $data['tanent']['first_name'] ?? '---' }}
+                                            {{ $data['tanent']['last_name'] ?? '---' }}
+                                        </b>
+                                    @elseif (isset($data['family_member']) && $data['family_member'])
+                                        <b style="margin-left:5px;">
+                                            {{ $data['family_member']['first_name'] ?? '---' }}
+                                            {{ $data['family_member']['last_name'] ?? '---' }}
+                                        </b>
+                                    @elseif (isset($data['owner']) && $data['owner'])
+                                        <b style="margin-left:5px;">
+                                            {{ $data['owner']['first_name'] ?? '---' }}
+                                            {{ $data['owner']['last_name'] ?? '---' }}
+                                        </b>
+                                    @elseif (isset($data['maid']) && $data['maid'])
+                                        <b style="margin-left:5px;">
+                                            {{ $data['maid']['first_name'] ?? '---' }}
+                                            {{ $data['maid']['last_name'] ?? '---' }}
+                                        </b>
+                                    @elseif (isset($data['visitor']) && $data['visitor'])
+                                        <b style="margin-left:5px;">
+                                            {{ $data['visitor']['first_name'] ?? '---' }}
+                                            {{ $data['visitor']['last_name'] ?? '---' }}
+                                        </b>
+                                    @elseif (isset($data['delivery']) && $data['delivery'])
+                                        <b style="margin-left:5px;">
+                                            {{ $data['delivery']['first_name'] ?? '---' }}
+                                            {{ $data['delivery']['last_name'] ?? '---' }}
+                                        </b>
+                                    @elseif (isset($data['contractor']) && $data['contractor'])
+                                        <b style="margin-left:5px;">
+                                            {{ $data['contractor']['first_name'] ?? '---' }}
+                                            {{ $data['contractor']['last_name'] ?? '---' }}
+                                        </b>
+                                    @elseif (isset($data['employee']) && $data['employee'])
+                                        <b style="margin-left:5px;">
+                                            {{ $data['employee']['first_name'] ?? '---' }}
+                                            {{ $data['employee']['last_name'] ?? '---' }}
+                                        </b>
+                                    @endif
+                                    <small style="margin-left:5px;">EID:{{ $data['UserID'] ?? '---' }}</small>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        {{ $date['in_log']['LogTime'] ?? '---' }}
+                        <br />
+                        <small> {{ $date['in_log']['device']['short_name'] ?? '---' }}</small>
+                    </td>
+                    <td>
+                        {{ $date['out_log']['LogTime'] ?? '---' }}
+                        <br />
+                        <small> {{ $date['out_log']['device']['short_name'] ?? '---' }}</small>
+                    </td>
+                    <td>{{ $data['status'] }}</td>
+                    <td>{{ $data['device']['mode'] ?? '---' }}</td>
+                    <td>{{ $data['user_type'] ?? '---' }}</td>
+                </tr>
+            @endforeach
+        </table>
+        <footer class="page page-break">
+            <hr class="mt-1" style="color:#dddddd;">
             <table>
                 <tr>
                     <td class="text-left border-none col-4">
-                        <div class="logo pt">
-                            @if (env('APP_ENV') == 'local')
-                                <img style="width: 100%" src="{{ getcwd() . '/upload/logo22.png' }}" alt="Company Logo" />
-                            @else
-                                <img style="width: 100%" src="{{ $company->logo }}" alt="Company Logo" />
-                            @endif
+                        <div>
+                            Printed On {{ date('d M Y') }}
                         </div>
                     </td>
-                    <td class="text-center border-none col-4 uppercase">
+                    <td class="text-center border-none col-4 ">
                         <div>
-                            <b>{{ $params['report_type'] ?? 'Access Control Report' }} </b>
-                            <div class="border-top border-bottom">
-                                {{ date('d-M-Y', strtotime($params['from_date'])) }} TO
-                                {{ date('d-M-Y', strtotime($params['to_date'])) }}
-
-                            </div>
+                            This is system generated report
                         </div>
                     </td>
                     <td class="text-right border-none col-4">
                         <div class="company-info">
-                            <h3>{{ $company->name ?? '---' }}</h3>
-                            <p>{{ $company->location ?? '---' }}</p>
-                            <p>{{ $company->contact->number ?? '---' }}, {{ $company->user->email ?? '---' }}</p>
+                            {{ $currentPage }} / {{ $totalPages }}
+
                         </div>
                     </td>
                 </tr>
             </table>
-            <table class="mt-5">
-                <tr>
-                    <th>S.NO</th>
-                    <th>Name</th>
-                    <th>Flat</th>
-                    <th>Phone</th>
-                    <th>Door</th>
-                    <th>DateTime</th>
-                    <th>In</th>
-                    <th>Out</th>
-                    <th>Mode</th>
-                    <th>Status</th>
-                    <th>User Type</th>
-                </tr>
-                @foreach ($chunk as $key => $data)
-                    <tr>
-                        <td style="width:10px;">{{ $key + 1 }}</td>
-
-                        <td>
-                            @php
-                                // $pic = 'https://i.pinimg.com/originals/df/5f/5b/df5f5b1b174a2b4b6026cc6c8f9395c1.jpg';
-
-                                // $pic = 'http://localhost:8000/upload/1707982257.png';
-
-                                // if ($data['employee']) {
-                                // $pic = getcwd() . '/upload/no-profile-image.jpg';
-                                // }
-                            @endphp
-
-                            <table>
-                                <tr>
-                                    {{-- <td style="width:20px;" class="border-none">
-                                        <img alt="{{ $pic }}"
-                                            style="border-radius: 50%;width:40px;padding-top:5px;"src="{{ $pic }}" />
-                                    </td> --}}
-                                    <td class="border-none">
-                                        <b style="margin-left:0px; padding-top:-30px;">
-                                            @if ($data['employee'])
-                                                {{ $data['employee']['first_name'] ?? '---' }}
-                                                {{ $data['employee']['last_name'] ?? '---' }}
-                                            @else
-                                                {{ getUserType($data)['value']['full_name'] ?? '---' }}
-                                            @endif
-
-
-                                        </b>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-
-                        <td>{{ $data['tanent']['room']['room_number'] ?? '---' }}</td>
-                        <td>{{ getUserType($data)['value']['phone_number'] ?? '---' }}</td>
-
-                        <td>{{ $data['device']['location'] ?? '---' }}</td>
-                        <td>{{ $data['date'] }} {{ $data['time'] }}</td>
-                        <td>
-                            {{ strtolower($data['device']['function']) !== 'out' ? 'IN' : '---' }}
-                        </td>
-                        <td>
-                            {{ strtolower($data['device']['function']) == 'out' ? 'OUT' : '---' }}
-                        </td>
-                        </td>
-                        <td>{{ $data['device']['mode'] ?? '---' }}</td>
-                        <td>{{ $data['status'] }}</td>
-                        <td>{{ getUserType($data)['type'] ?? '---' }}</td>
-                    </tr>
-                @endforeach
-            </table>
-            <footer class="page page-break">
-
-                <hr class="mt-1" style="color:#dddddd;">
-                <table>
-                    <tr>
-                        <td class="text-left border-none col-4">
-                            <div>
-                                Printed On {{ date('d M Y') }}
-                            </div>
-                        </td>
-                        <td class="text-center border-none col-4 ">
-                            <div>
-                                This is system generated report
-                            </div>
-                        </td>
-                        <td class="text-right border-none col-4">
-                            <div id="pageNumbers" class="company-info">
-                                <span class="page-number"></span>
-                                {{ count($chunks) }}
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </footer>
-        @endforeach
+        </footer>
     </div>
-    @php
-        function getUserType($item)
-        {
-            $relationships = [
-                'Employee' => $item['employee'],
-                'Tanent' => $item['tanent'],
-                'Family Member' => $item['family_member'],
-                'Visitor' => $item['visitor'],
-                'Delivery' => $item['delivery'],
-                'Contractor' => $item['contractor'],
-                'Maid' => $item['maid'],
-            ];
-
-            foreach ($relationships as $type => $value) {
-                if ($value) {
-                    return [
-                        'type' => $type,
-                        'value' => $value,
-                    ];
-                }
-            }
-
-            return [
-                'type' => false,
-                'value' => false,
-            ];
-        }
-    @endphp
 </body>
 
 </html>
