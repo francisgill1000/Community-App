@@ -442,4 +442,40 @@ class Controller extends BaseController
         file_put_contents($publicDirectory . '/' . $imageName, $base64Image);
         return $imageName;
     }
+
+    public function mergePdfFiles(array $pdfFiles, $action = "D", $outputFileName = "report.pdf", $outputPath = null)
+    {
+        ini_set('memory_limit', '512M'); // Adjust to the required value
+
+        set_time_limit(60);
+
+        // Initialize FPDI
+        $pdf = new \setasign\Fpdi\Fpdi();
+
+        // Loop through each PDF file
+        foreach ($pdfFiles as $file) {
+            $pageCount = $pdf->setSourceFile($file);
+
+            // Add each page from the source PDF to the final output
+            for ($i = 1; $i <= $pageCount; $i++) {
+                $tplId = $pdf->importPage($i);
+                $size = $pdf->getTemplateSize($tplId);  // Get the page size of the imported PDF
+
+                // Adjust orientation based on the original page's width and height
+                $orientation = ($size['width'] > $size['height']) ? 'L' : 'P';  // Auto-detect orientation
+
+                // Add a new page with the detected orientation
+                $pdf->AddPage($orientation, [$size['width'], $size['height']]);
+                $pdf->useTemplate($tplId);
+            }
+        }
+
+        // Save the merged PDF to the specified output path
+        if ($outputPath) {
+            $pdf->Output($outputPath, 'F');  // 'F' for saving to file
+            return $outputPath;  // Return the path to the saved file
+        }
+        // Stream or Download the merged PDF directly to the browser
+        return response($pdf->Output($outputFileName, $action))->header('Content-Type', 'application/pdf'); // download
+    }
 }

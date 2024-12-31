@@ -19,36 +19,20 @@ class ReportController extends Controller
         return $this->processFilter()->paginate(request("per_page") ?? 10);
     }
 
-    public function print(Request $request)
+    public function print()
     {
-        $data = $this->processFilter()->get()->toArray();
+        $company_id = request("company_id", 0);
+        $from_date = request("from_date", date("Y-m-d"));
+        $to_date = request("to_date", date("Y-m-d"));
+        return $this->PDFMerge("I", $company_id, $from_date, $to_date);
 
-        if ($request->debug) return $data;
-
-        $chunks = array_chunk($data, 10);
-
-        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.access_control_reports.report', [
-            "chunks" => $chunks,
-            "date" => date("Y-m-d"),
-            "company" => Company::whereId(request("company_id") ?? 0)->first(),
-            "params" => $request->all(),
-
-        ])->stream();
     }
     public function download(Request $request)
     {
-        $data = $this->processFilter()->get()->toArray();
-
-        if ($request->debug) return $data;
-
-        $chunks = array_chunk($data, 10);
-
-        return Pdf::setPaper('a4', 'landscape')->loadView('pdf.community.report', [
-            "chunks" => $chunks,
-            "company" => Company::whereId(request("company_id") ?? 0)->first(),
-            "params" => $request->all(),
-
-        ])->download();
+        $company_id = request("company_id", 0);
+        $from_date = request("from_date", date("Y-m-d"));
+        $to_date = request("to_date", date("Y-m-d"));
+        return $this->PDFMerge("D", $company_id, $from_date, $to_date);
     }
     public function renderData(Request $request)
     {
@@ -280,28 +264,6 @@ class ReportController extends Controller
             $q->whereDate('date', '<=', request("to_date"));
         });
 
-        // $query->when(request()->filled("from_date"), function ($query) {
-        //     $query->where(function ($q) {
-        //         $q->whereHas("in_log", function ($qu) {
-        //             $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
-        //         });
-        //         $q->orWhereHas("out_log", function ($qu) {
-        //             $qu->whereDate('LogTime', '>=', request("from_date", date("Y-m-d")));
-        //         });
-        //     });
-        // });
-
-        // $query->when(request()->filled("to_date"), function ($query) {
-        //     $query->where(function ($q) {
-        //         $q->whereHas("in_log", function ($qu) {
-        //             $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
-        //         });
-        //         $q->orWhereHas("out_log", function ($qu) {
-        //             $qu->whereDate('LogTime', '<=', request("to_date", date("Y-m-d")));
-        //         });
-        //     });
-        // });
-
         $query->with([
             "tanent",
             "family_member",
@@ -316,4 +278,44 @@ class ReportController extends Controller
 
         return $query;
     }
+
+    public function PDFMerge($action = "I", $company_id, $from_date, $to_date)
+    {
+        $filesDirectory = public_path("access_control_reports/companies/$company_id");
+
+        // Check if the directory exists
+        if (!is_dir($filesDirectory)) {
+            return response()->json(['error' => 'Directory not found'], 404);
+        }
+
+        // $pdfFiles = glob($filesDirectory . '/*.pdf');
+        $pdfFiles = [];
+
+        // Convert start and end dates to DateTime objects
+        $startDate = new \DateTime($from_date);
+        $endDate = new \DateTime($to_date);
+
+        while ($startDate <= $endDate) {
+
+            $date = $startDate->format("Y-m-d");
+
+            if (glob($filesDirectory . "/$date.pdf")) {
+                $pdfFiles[] = glob($filesDirectory . "/$date.pdf")[0];
+            }
+
+            $startDate->modify('+1 day');
+        }
+
+
+        if (empty($pdfFiles)) {
+            return 'No PDF files found';
+        }
+
+        if ($action == "I") {
+            return (new Controller)->mergePdfFiles($pdfFiles, $action, "Access-Control-Report.pdf");
+        }
+
+        return (new Controller)->mergePdfFiles($pdfFiles, $action, "Access-Control-Report.pdf");
+    }
+    
 }
