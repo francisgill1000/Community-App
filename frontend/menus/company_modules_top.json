@@ -74,7 +74,7 @@
   {
     "icon": "mdi-bell",
     "title": "Reports",
-    "to": "/community/access_control/report",
+    "to": "/community/tanent/reports",
     "menu": "reports",
     "module": "topmenu",
     "permission": "attendance_report_access"
