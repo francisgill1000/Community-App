@@ -204,67 +204,84 @@
                 <tr>
                     <td style="width:10px;">{{ $key + 1 }}</td>
                     <td>
-                        <table>
-                            <tr>
-                                <td>
-                                    @if (isset($data['tanent']) && $data['tanent'])
-                                        <b style="margin-left:5px;">
-                                            {{ $data['tanent']['first_name'] ?? '---' }}
-                                            {{ $data['tanent']['last_name'] ?? '---' }}
-                                        </b>
-                                    @elseif (isset($data['family_member']) && $data['family_member'])
-                                        <b style="margin-left:5px;">
-                                            {{ $data['family_member']['first_name'] ?? '---' }}
-                                            {{ $data['family_member']['last_name'] ?? '---' }}
-                                        </b>
-                                    @elseif (isset($data['owner']) && $data['owner'])
-                                        <b style="margin-left:5px;">
-                                            {{ $data['owner']['first_name'] ?? '---' }}
-                                            {{ $data['owner']['last_name'] ?? '---' }}
-                                        </b>
-                                    @elseif (isset($data['maid']) && $data['maid'])
-                                        <b style="margin-left:5px;">
-                                            {{ $data['maid']['first_name'] ?? '---' }}
-                                            {{ $data['maid']['last_name'] ?? '---' }}
-                                        </b>
-                                    @elseif (isset($data['visitor']) && $data['visitor'])
-                                        <b style="margin-left:5px;">
-                                            {{ $data['visitor']['first_name'] ?? '---' }}
-                                            {{ $data['visitor']['last_name'] ?? '---' }}
-                                        </b>
-                                    @elseif (isset($data['delivery']) && $data['delivery'])
-                                        <b style="margin-left:5px;">
-                                            {{ $data['delivery']['first_name'] ?? '---' }}
-                                            {{ $data['delivery']['last_name'] ?? '---' }}
-                                        </b>
-                                    @elseif (isset($data['contractor']) && $data['contractor'])
-                                        <b style="margin-left:5px;">
-                                            {{ $data['contractor']['first_name'] ?? '---' }}
-                                            {{ $data['contractor']['last_name'] ?? '---' }}
-                                        </b>
-                                    @elseif (isset($data['employee']) && $data['employee'])
-                                        <b style="margin-left:5px;">
-                                            {{ $data['employee']['first_name'] ?? '---' }}
-                                            {{ $data['employee']['last_name'] ?? '---' }}
-                                        </b>
-                                    @endif
-                                    <small style="margin-left:5px;">EID:{{ $data['UserID'] ?? '---' }}</small>
-                                </td>
-                            </tr>
-                        </table>
+                        @if (isset($data['tanent']) && $data['tanent'])
+                            <b style="margin-left:5px;">
+                                {{ $data['tanent']['first_name'] ?? '---' }}
+                                {{ $data['tanent']['last_name'] ?? '---' }}
+                            </b>
+                            <br>
+                            <small style="margin-left:5px;">{{ $data['tanent']['system_user_id'] ?? '---' }}</small>
+                        @elseif (isset($data['family_member']) && $data['family_member'])
+                            <b style="margin-left:5px;">
+                                {{ $data['family_member']['first_name'] ?? '---' }}
+                                {{ $data['family_member']['last_name'] ?? '---' }}
+                            </b>
+                            <br>
+                            <small
+                                style="margin-left:5px;">{{ $data['family_member']['system_user_id'] ?? '---' }}</small>
+                        @elseif (isset($data['owner']) && $data['owner'])
+                            <b style="margin-left:5px;">
+                                {{ $data['owner']['first_name'] ?? '---' }}
+                                {{ $data['owner']['last_name'] ?? '---' }}
+                            </b>
+                            <br>
+                            <small style="margin-left:5px;">{{ $data['owner']['system_user_id'] ?? '---' }}</small>
+                        @elseif (isset($data['maid']) && $data['maid'])
+                            <b style="margin-left:5px;">
+                                {{ $data['maid']['first_name'] ?? '---' }}
+                                {{ $data['maid']['last_name'] ?? '---' }}
+                            </b>
+                            <br>
+                            <small style="margin-left:5px;">{{ $data['maid']['system_user_id'] ?? '---' }}</small>
+                        @elseif (isset($data['visitor']) && $data['visitor'])
+                            <b style="margin-left:5px;">
+                                {{ $data['visitor']['first_name'] ?? '---' }}
+                                {{ $data['visitor']['last_name'] ?? '---' }}
+                            </b>
+                            <br>
+                            <small style="margin-left:5px;">{{ $data['visitor']['system_user_id'] ?? '---' }}</small>
+                        @elseif (isset($data['delivery']) && $data['delivery'])
+                            <b style="margin-left:5px;">
+                                {{ $data['delivery']['first_name'] ?? '---' }}
+                                {{ $data['delivery']['last_name'] ?? '---' }}
+                            </b>
+                            <br>
+                            <small style="margin-left:5px;">{{ $data['delivery']['system_user_id'] ?? '---' }}</small>
+                        @elseif (isset($data['contractor']) && $data['contractor'])
+                            <b style="margin-left:5px;">
+                                {{ $data['contractor']['first_name'] ?? '---' }}
+                                {{ $data['contractor']['last_name'] ?? '---' }}
+                            </b>
+                            <br>
+                            <small
+                                style="margin-left:5px;">{{ $data['contractor']['system_user_id'] ?? '---' }}</small>
+                        @elseif (isset($data['employee']) && $data['employee'])
+                            <b style="margin-left:5px;">
+                                {{ $data['employee']['first_name'] ?? '---' }}
+                                {{ $data['employee']['last_name'] ?? '---' }}
+                            </b>
+                            <br>
+                            <small style="margin-left:5px;">{{ $data['employee']['system_user_id'] ?? '---' }}</small>
+                        @else
+                            ---
+                        @endif
                     </td>
                     <td>
-                        {{ $date['in_log']['LogTime'] ?? '---' }}
+                        {{ $data['in_log']['LogTime'] ?? '---' }}
                         <br />
-                        <small> {{ $date['in_log']['device']['short_name'] ?? '---' }}</small>
+                        <small> {{ $data['in_log']['device']['short_name'] ?? '---' }}</small>
                     </td>
                     <td>
-                        {{ $date['out_log']['LogTime'] ?? '---' }}
+                        {{ $data['out_log']['LogTime'] ?? '---' }}
                         <br />
-                        <small> {{ $date['out_log']['device']['short_name'] ?? '---' }}</small>
+                        <small> {{ $data['out_log']['device']['short_name'] ?? '---' }}</small>
                     </td>
-                    <td>{{ $data['status'] }}</td>
-                    <td>{{ $data['device']['mode'] ?? '---' }}</td>
+                    <td>
+                        {{ $data['in_log']['status'] ?? '---' }}
+                    </td>
+                    <td>
+                        {{ $data['in_log']['mode'] ?? '---' }}
+                    </td>
                     <td>{{ $data['user_type'] ?? '---' }}</td>
                 </tr>
             @endforeach

@@ -43,6 +43,8 @@ class PDFReport extends Command
 
         $data = $query->get()->toArray();
 
+        // echo count($data);die;
+
         $company = Company::whereId($company_id)->first();
 
         $chunks = array_chunk($data, 10);
