@@ -458,7 +458,7 @@
   {
     "icon": "mdi-chart-box-outline",
     "title": "Reports",
-    "to": "/community/tanent/reports",
+    "to": "/community/access_control/report",
     "menu": "tanent",
     "module": "tanents"
   },
@@ -493,6 +493,14 @@
     "module": "owners"
   },
 
+  {
+    "icon": "mdi-chart-box-outline",
+    "image": "/tenet-3.png",
+    "title": "Access Report",
+    "to": "/community/access_control/report",
+    "menu": "tanents_access",
+    "module": "reports"
+  },
   {
     "icon": "mdi-chart-box-outline",
     "image": "/tenet-3.png",

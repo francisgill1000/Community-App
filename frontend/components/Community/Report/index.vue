@@ -678,7 +678,6 @@ export default {
         params: {
           per_page: 1000,
           company_id: this.$auth.user.company_id,
-          user_type: this.user_type,
         },
       };
 
