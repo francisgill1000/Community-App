@@ -19,10 +19,10 @@ class GenerateAccessControlReport implements ShouldQueue
         public $chunk,
         public $companyId,
         public $date,
-        public $params,
+        public $report_type,
         public $company,
         public $batchKey,
-        public $totalPages
+        public $totalPages,
     ) {}
     /**
      * Execute the job.
@@ -44,7 +44,7 @@ class GenerateAccessControlReport implements ShouldQueue
         $payload = [
             "chunk" => $this->chunk,
             "company" => $this->company,
-            "params" => $this->params,
+            "report_type" => $this->report_type,
             "currentPage" => $this->batchKey,
             "totalPages" => $this->totalPages,
             "date" => $date
@@ -60,9 +60,9 @@ class GenerateAccessControlReport implements ShouldQueue
 
             $this->MergeAllGenerateFiles($company_id, $date);
 
-            $message = "\n Access control report has been generated. Company id = $company_id, date = $date";
+            $message = "Access control report has been generated. Company id = $company_id, date = $date";
 
-            echo $message;
+            echo "\n" . $message;
 
             info($message);
         }

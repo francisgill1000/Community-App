@@ -175,7 +175,7 @@
                 </td>
                 <td class="text-center border-none col-4 uppercase">
                     <div>
-                        <b>{{ $params['report_type'] ?? 'Access Control Report' }} </b>
+                        <b>{{ $report_type ?? 'Access Control Report' }} </b>
                     </div>
                     <div>
                         <b>{{ date('d M y', strtotime($date)) }} </b>

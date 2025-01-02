@@ -49,13 +49,21 @@ class PDFReport extends Command
 
         $chunks = array_chunk($data, 10);
 
-        $params = ["report_type" => "Date Wise Report"];
+        $report_type = "Access Control Report";
 
         foreach ($chunks as $index => $chunk) {
 
             $batchKey = $index + 1;
 
-            GenerateAccessControlReport::dispatch($chunk, $company_id, $date, $params, $company, $batchKey, count($chunks));
+            GenerateAccessControlReport::dispatch(
+                $chunk,
+                $company_id,
+                $date,
+                $report_type,
+                $company,
+                $batchKey,
+                count($chunks),
+            );
         };
     }
 }
