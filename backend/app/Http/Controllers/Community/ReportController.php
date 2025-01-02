@@ -307,9 +307,9 @@ class ReportController extends Controller
             $q->whereHas("in_log", function ($qu) {
                 $qu->where('UserID', request("UserID"));
             });
-            $q->orWhereHas("out_log", function ($qu) {
-                $qu->where('UserID', request("UserID"));
-            });
+            // $q->orWhereHas("out_log", function ($qu) {
+            //     $qu->where('UserID', request("UserID"));
+            // });
         });
 
         $query->when(request()->filled("DeviceID"), function ($query) {
