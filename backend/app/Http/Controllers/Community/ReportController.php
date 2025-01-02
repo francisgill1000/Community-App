@@ -18,17 +18,83 @@ class ReportController extends Controller
     {
         return $this->processFilter()->paginate(request("per_page") ?? 10);
     }
+    public function processPDFForSingle($action)
+    {
+        $company_id = request("company_id", 0);
+
+        $date       = date("Y-m-d");
+
+        $data = $this->processFilter()->get()->toArray();
+
+        $company = Company::whereId($company_id)->first();
+
+        $chunks = array_chunk($data, 10);
+
+        $report_type = "Access Control Report";
+
+        // Initialize the PDF merger object outside the loop
+        $pdfMerger = new \setasign\Fpdi\Fpdi();
+
+        $filesPath = public_path("access_control_reports/companies/$company_id/runtime");
+
+        if (!file_exists($filesPath)) {
+            mkdir($filesPath, 0777, true);
+        }
+
+        // Process and merge the PDFs directly in memory
+        $generatedPdfs = array_map(function ($chunk, $index) use ($chunks, $company, $report_type, $date, $filesPath) {
+            $batchKey = $index + 1;
+
+            $payload = [
+                "chunk" => $chunk,
+                "company" => $company,
+                "report_type" => $report_type,
+                "currentPage" => $batchKey,
+                "totalPages" => count($chunks),
+                "date" => $date
+            ];
+
+            $output = Pdf::loadView('pdf.access_control_reports.report', $payload)->output();
+
+            // Store PDF in memory, avoiding file system operations
+            $tempFile = tempnam(sys_get_temp_dir(), 'pdf');
+            file_put_contents($tempFile, $output);
+            return $tempFile;
+        }, $chunks, array_keys($chunks));
+
+        // Merge PDFs from memory
+        foreach ($generatedPdfs as $pdfFile) {
+            $pdfMerger->addPage('L');
+            $pdfMerger->setSourceFile($pdfFile);
+            $template = $pdfMerger->importPage(1);
+            $pdfMerger->useTemplate($template);
+
+            // Clean up the temporary file after merging
+            unlink($pdfFile);
+        }
+
+        return response($pdfMerger->Output('Access_Control_Report.pdf', $action))
+            ->header('Content-Type', 'application/pdf');
+    }
 
     public function print()
     {
+        if (request("UserID")) {
+            return $this->processPDFForSingle("I");
+        }
+
+
         $company_id = request("company_id", 0);
         $from_date = request("from_date", date("Y-m-d"));
         $to_date = request("to_date", date("Y-m-d"));
         return $this->PDFMerge("I", $company_id, $from_date, $to_date);
-
     }
-    public function download(Request $request)
+    public function download()
     {
+        if (request("UserID")) {
+            return $this->processPDFForSingle("D");
+        }
+
         $company_id = request("company_id", 0);
         $from_date = request("from_date", date("Y-m-d"));
         $to_date = request("to_date", date("Y-m-d"));
@@ -129,7 +195,7 @@ class ReportController extends Controller
             ->groupBy('UserID');
 
 
-        //update atendance table with shift ID if shift with employee not found 
+        //update atendance table with shift ID if shift with employee not found
         if (count($userLogs) == 0) {
             return "No Record found";
         }
@@ -317,5 +383,4 @@ class ReportController extends Controller
 
         return (new Controller)->mergePdfFiles($pdfFiles, $action, "Access-Control-Report.pdf");
     }
-    
 }
