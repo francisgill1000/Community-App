@@ -27,7 +27,7 @@ class CardUpdateRequest extends FormRequest
             "parent_id" => "required",
             "system_user_id" => "required",
             "full_name" => "required|min:3|max:20",
-            "rfid" => "nullable",
+            'rfid' => 'nullable|numeric',
             "member_type" => "required",
             "company_id" => "required",
         ];

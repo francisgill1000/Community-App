@@ -57,7 +57,7 @@ class RegisterRequest extends FormRequest
             "whatsapp_number" => "nullable",
             "date_of_birth" => "nullable",
 
-            "rfid" => "nullable",
+            'rfid' => 'nullable|numeric',
             "pin" => "nullable",
 
             "nationality" => "required",
