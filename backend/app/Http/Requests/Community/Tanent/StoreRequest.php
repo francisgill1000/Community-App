@@ -52,7 +52,7 @@ class StoreRequest extends FormRequest
             "car_number" => "nullable",
             "parking_number" => "nullable",
 
-            "rfid" => "nullable",
+            'rfid' => 'nullable|numeric',
             "pin" => "nullable",
 
             "nationality" => "required",
