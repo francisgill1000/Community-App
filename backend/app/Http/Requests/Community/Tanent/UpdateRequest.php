@@ -43,7 +43,7 @@ class UpdateRequest extends FormRequest
             "nationality" => "nullable",
             "car_number" => "nullable",
             "parking_number" => "nullable",
-            "rfid" => "required",
+            "rfid" => "nullable",
             "address" => "required",
 
             "passport_doc" => "nullable|file|mimes:jpeg,png,gif,pdf|max:2048",
