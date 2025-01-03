@@ -96,8 +96,9 @@
                     <v-row no-gutters>
                       <v-col cols="10">
                         <v-text-field
+                          type="number"
                           label="RFID"
-                          v-model="payload.rfid"
+                          v-model.number="payload.rfid"
                           dense
                           class="text-center"
                           outlined
@@ -864,6 +865,8 @@ export default {
       member_type: null,
       tanent_id: 0,
     },
+
+    isPictureChanged: false,
   }),
 
   async created() {
@@ -1045,9 +1048,10 @@ export default {
       this.payload[key] = document;
     },
     handleAttachment(e) {
-      console.log("🚀 ~ handleAttachment ~ e:", e);
+      this.isPictureChanged = true;
       this.payload.profile_picture = e;
     },
+
     getRoomNumber(room_id) {
       let { room_number } = this.rooms.find((e) => e.id == room_id);
       this.payload.room_number = room_number || 0;
@@ -1170,10 +1174,15 @@ export default {
             },
           }
         )
-        .then(({ data }) => {
+        .then(async ({ data }) => {
           this.singleMessage = null;
           this.errors = [];
-          this.$emit("success", "Tanent has been updated");
+
+          if (this.isPictureChanged) {
+            await this.deleteOldFaceFromDevices(); // how to
+          } else {
+            this.$emit("success", "Tanent has been updated");
+          }
         })
         .catch(({ response }) => {
           this.handleErrorResponse(response);
@@ -1215,6 +1224,52 @@ export default {
             this.$emit("success", "Record deleted successfully");
           })
           .catch((err) => console.log(err));
+    },
+    async deleteOldFaceFromDevices() {
+      const image = this.setImagePreview.replace(
+        /^data:image\/\w+;base64,/,
+        ""
+      );
+      this.deleteCardLoading = true;
+      this.deleteResponseList = [];
+
+      for (const device_id of this.devices) {
+        let deletePayload = {
+          UserID: this.payload.system_user_id,
+          DeviceID: device_id,
+        };
+
+        try {
+          const { data: deletedCard } = await this.$axios.post(
+            "delete-card",
+            deletePayload
+          );
+
+          let payload = {
+            personList: [
+              {
+                name: `${this.payload.first_name} ${this.payload.last_name}`,
+                userCode: this.payload.system_user_id,
+                faceImage: image,
+                rfid: this.payload.rfid,
+              },
+            ],
+            snList: [device_id],
+          };
+
+          await this.$axios.post(`/Person/AddRange/Photos`, payload);
+
+          this.deleteResponseList.push({
+            status: deletedCard.status,
+            message: deletedCard.message,
+            DeviceID: device_id,
+          });
+        } catch (error) {
+          console.error("Error deleting record:", error);
+        }
+
+        this.$emit("success", "Tanent has been updated");
+      }
     },
     handleErrorResponse(response) {
       if (!response) {
