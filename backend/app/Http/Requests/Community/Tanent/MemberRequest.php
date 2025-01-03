@@ -35,7 +35,7 @@ class MemberRequest extends FormRequest
             "member_type" => "required",
             "nationality" => "required",
             "gender" => "required",
-            "rfid" => "nullable",
+            'rfid' => 'nullable|numeric',
             "pin" => "nullable",
             "full_name" => "nullable|min:3|max:20",
             "phone_number" => "required|min:10|max:20",

@@ -31,7 +31,7 @@ class MemberUpdateRequest extends FormRequest
             'member_type' => 'required',
             'nationality' => 'required',
             'gender' => 'required',
-            'rfid' => 'required',
+            'rfid' => 'nullable|numeric',
             'profile_picture' => 'nullable',
         ];
     }
