@@ -11,63 +11,26 @@ class AccessControlController extends Controller
 {
     public function getUniqueUsers()
     {
+        $user_type = request("user_type", "Primary");
 
-        $tanents = [];
-        $visitors = [];
-        $employees = [];
-
-
-        $user_type = '';
-        if (request()->filled("user_type")) {
-            $user_type = request("user_type");
-
-            if ($user_type == 'maid') {
-                $user_type = 'Maid';
-            }
-        }
-
-        if ($user_type == 'Owner') {
-            $tanents = DB::table('tanents')->where("member_type", "Owner")
-                ->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
+        if (in_array($user_type, ['Primary', 'Owner', 'Family Member', 'Maid'])) {
+            return DB::table('tanents')
+                ->where("member_type", $user_type)
+                ->join('rooms', 'tanents.room_id', '=', 'rooms.id')
                 ->orderBy("first_name", "asc")
                 ->get(['tanents.id', DB::raw('full_name || \' - \' || rooms.room_number  as full_name'), 'tanents.system_user_id']) // Include the room_name column from the rooms table
                 ->toArray();
-        } else if ($user_type == 'Maid') {
-            $tanents = DB::table('tanents')->where("member_type", "Maid")
-                ->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
+        } else if (in_array($user_type, ['visitor', 'delivery', 'contractor'])) {
+            return DB::table('visitors')
+                ->where("visitor_type", $user_type)
                 ->orderBy("first_name", "asc")
-                ->get(['tanents.id', DB::raw('full_name || \' - \' || rooms.room_number  as full_name'), 'tanents.system_user_id']) // Include the room_name column from the rooms table
-                ->toArray();
-        } else if ($user_type == 'tanent') {
-            $tanents = DB::table('tanents')->whereIn("member_type", ["Primary", "Family Member"])
-                ->join('rooms', 'tanents.room_id', '=', 'rooms.id') // Join with the rooms table
-                ->orderBy("first_name", "asc")
-                ->get(['tanents.id', DB::raw('full_name || \' - \' || rooms.room_number  as full_name'), 'tanents.system_user_id']) // Include the room_name column from the rooms table
+                ->get(["id", DB::raw('first_name || \' \' || last_name  as full_name'), "system_user_id"])
                 ->toArray();
         }
 
-        if ($user_type == 'visitor' || $user_type == 'delivery' || $user_type == 'contractor') {
-            $visitors = DB::table('visitors');
-            if ($user_type == 'visitor') {
-                $visitors->where("visitor_type", "visitor");
-            } else if ($user_type == 'delivery') {
-                $visitors->where("visitor_type", "delivery");
-            } else if ($user_type == 'contractor') {
-                $visitors->where("visitor_type", "contractor");
-            }
-            $visitors->orderBy("first_name", "asc");
-            $visitors = $visitors->get(["id", DB::raw('first_name || \' \' || last_name  as full_name'), "system_user_id"])
-
-
-                ->toArray();
-        }
-        if ($user_type == 'employee') {
-            $employees = DB::table('employees')
-                ->orderBy("first_name", "asc")
-                ->get(["id", "full_name", "system_user_id"])->toArray();
-        }
-
-        return array_merge($tanents, $visitors, $employees);
+        return DB::table('employees')
+            ->orderBy("first_name", "asc")
+            ->get(["id", "full_name", "system_user_id"])->toArray();
     }
     public function index()
     {
@@ -163,7 +126,7 @@ class AccessControlController extends Controller
         $employees = DB::table('employees')
             ->where("company_id", request("company_id", 0))
             ->orderBy("first_name", "asc")
-            ->get(['company_id',"id", "full_name", "system_user_id"])->toArray();
+            ->get(['company_id', "id", "full_name", "system_user_id"])->toArray();
 
         return array_merge($tanents, $visitors, $employees);
     }
