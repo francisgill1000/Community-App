@@ -62,6 +62,10 @@ class UpdateRequest extends FormRequest
             "room_sub_category_id" => "required",
 
             "isStaying" => "required",
+
+            "deactivateToggle" => "boolean",
+            "removeFaceToggle" => "boolean",
+
         ];
     }
 }
