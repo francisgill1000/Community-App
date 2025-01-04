@@ -23,6 +23,11 @@ class CommunityReport extends Model
         return $this->belongsTo(AttendanceLog::class, "out_id")->with("device");
     }
 
+    public function logs()
+    {
+        return $this->hasMany(AttendanceLog::class, "UserID", "user_id")->with("device");
+    }
+
     public function visitor()
     {
         return $this->belongsTo(Visitor::class, 'user_id')->where("visitor_type", "visitor")->with("tanent.room");
