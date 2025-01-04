@@ -23,40 +23,6 @@
         <v-row>
           <v-col md="2" sm="2">
             <v-select
-              label="Report Type"
-              outlined
-              dense
-              v-model="payload.report_type"
-              x-small
-              :items="[
-                {
-                  id: ``,
-                  name: `Select All`,
-                },
-                {
-                  id: `Date Wise Access Control Report`,
-                  name: `Date Wise Access Control Report`,
-                },
-                {
-                  id: `Door Wise Access Control Report`,
-                  name: `Door Wise Access Control Report`,
-                },
-                {
-                  id: `Allowed`,
-                  name: `Access Granted Access Control Report`,
-                },
-                {
-                  id: `Access Denied`,
-                  name: `Access Denied Access Control Report`,
-                },
-              ]"
-              item-value="id"
-              item-text="name"
-              :hide-details="true"
-            ></v-select>
-          </v-col>
-          <v-col md="2" sm="2">
-            <v-select
               label="User Type"
               outlined
               dense
@@ -67,18 +33,19 @@
                   id: ``,
                   name: `Select All`,
                 },
-                { id: `tanent`, name: `Tanent` },
-                { id: `family_member`, name: `Family Member` },
-                { id: `relative`, name: `Relative` },
+                { id: `Primary`, name: `Tanent` },
+                { id: `Owner`, name: `Owner` },
+                { id: `Family Member`, name: `Family Member` },
+                { id: `Maid`, name: `Maid` },
+                { id: `Employee`, name: `Employee` },
                 { id: `visitor`, name: `Visitor` },
                 { id: `delivery`, name: `Delivery` },
                 { id: `contractor`, name: `Contractor` },
-                { id: `maid`, name: `Maid` },
-                { id: `employee`, name: `Employee` },
               ]"
               item-value="id"
               item-text="name"
               :hide-details="true"
+              @change="getUsersByType(payload.user_type)"
             ></v-select>
           </v-col>
           <v-col md="2" sm="4">
@@ -293,16 +260,6 @@
                   </div>
                 </v-col>
               </v-row>
-              <v-row v-else-if="item.user_type == ''" no-gutters>
-                <v-col md="8">
-                    <pre>{{ item }}</pre>
-                  <!-- <div>
-                    {{ item.tanent?.full_name ?? "---" }}
-                    <br />
-                    <small> {{ item.tanent?.phone_number ?? "---" }}</small>
-                  </div> -->
-                </v-col>
-              </v-row>
             </template>
           </v-data-table>
         </v-card>
@@ -432,14 +389,15 @@ export default {
       this.getDataFromApi();
     },
 
-    getUsers() {
+    getUsersByType(user_type) {
       let options = {
         params: {
           company_id: this.$auth.user.company_id,
+          user_type: user_type,
         },
       };
 
-      this.$axios.get(`/get_all_users`, options).then(({ data }) => {
+      this.$axios.get(`/get_users`, options).then(({ data }) => {
         this.users = data;
       });
     },
@@ -483,8 +441,6 @@ export default {
       this.totalRowsCount = total;
       this.loading = false;
 
-      this.getUsers();
-      this.getDeviceList();
     },
 
     async process_file(endpoint) {
@@ -501,7 +457,7 @@ export default {
           DeviceID: this.payload.DeviceID,
           from_date: this.payload.from_date,
           to_date: this.payload.to_date,
-          report_type: this.payload.report_type,
+          report_type: `Access Control Report`,
           user_type: this.payload.user_type,
         };
 
