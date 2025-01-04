@@ -5,6 +5,47 @@
         {{ response }}
       </v-snackbar>
     </div>
+    <v-dialog persistent v-model="deleteDialog" max-width="700">
+      <v-card>
+        <v-toolbar flat dense class="popup_background">
+          <span class="popup_title">Delete From Device(s)</span>
+
+          <v-spacer></v-spacer>
+
+          <v-icon @click="deleteDialog = false" class="primary--text">
+            mdi-close
+          </v-icon>
+        </v-toolbar>
+        <v-card-text>
+          <table style="width: 100%" class="mt-2">
+            <thead>
+              <tr class=" " dark>
+                <th style="width: 30%">Device ID</th>
+                <th style="width: 60%">Message</th>
+                <th class="text-center">Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-for="(d, index) in deleteResponseList" :key="index">
+                <td>{{ d.DeviceID }}</td>
+                <td v-html="d.message"></td>
+                <td class="text-center">
+                  <v-icon color="green" v-if="d.status == 200"
+                    >mdi-check</v-icon
+                  >
+                  <v-icon color="error" v-else>mdi-close</v-icon>
+                </td>
+              </tr>
+
+              <tr v-if="deleteResponseList.length == 0">
+                <td colspan="3" class="text-center">No Data available</td>
+              </tr>
+            </tbody>
+          </table>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="viewDocumentsDialog" width="900">
       <!-- <v-toolbar flat dense>
         <b> Documents </b>
@@ -203,6 +244,7 @@
                     <TanentEdit
                       :key="generateRandomId()"
                       @success="handleSuccessResponse"
+                      @silentlyClose="getDataFromApi"
                       :item="item"
                     />
                   </v-list-item-title>
@@ -236,6 +278,7 @@
 
 <script>
 import TenantAttendanceLogsPopup from "../../../components/Community/TenantAttendanceLogsPopup.vue";
+import { fetchActiveDevices } from "@/utils/deviceFetcher";
 
 export default {
   components: { TenantAttendanceLogsPopup },
@@ -461,8 +504,22 @@ export default {
     UserID: null,
     tenant_id: null,
     component_data: null,
-  }),
 
+    deleteDialog: false,
+    deleteCardLoading: true,
+    deleteResponseList: [],
+    devices: [],
+  }),
+  async mounted() {
+    try {
+      this.devices = await fetchActiveDevices(
+        this.$axios,
+        this.$auth.user.company_id
+      );
+    } catch (error) {
+      console.log("🚀 ~ mounted ~ error: on fetchActiveDevices", error);
+    }
+  },
   async created() {
     this.loading = false;
     this.boilerplate = true;
@@ -665,11 +722,36 @@ export default {
         this.$axios
           .delete(`tanent/${item.id}`)
           .then(({ data }) => {
-            this.getDataFromApi();
-            this.snackbar = true;
-            this.response = "Record deleted successfully";
+            this.deleteFromDevices(item.system_user_id);
           })
           .catch((err) => console.log(err));
+    },
+    async deleteFromDevices(system_user_id) {
+      this.deleteDialog = true;
+      this.deleteCardLoading = true;
+      this.deleteResponseList = [];
+
+      for (const device_id of this.devices) {
+        try {
+          const { data: deletedCard } = await this.$axios.post("delete-card", {
+            UserID: system_user_id,
+            DeviceID: device_id,
+          });
+
+          this.deleteResponseList.push({
+            status: deletedCard.status,
+            message: deletedCard.message,
+            DeviceID: device_id,
+          });
+        } catch (error) {
+          console.error("Error deleting record:", error);
+        }
+      }
+
+      // Run after all deletions are complete
+      this.getDataFromApi();
+      this.snackbar = true;
+      this.response = "Record deleted successfully";
     },
     close() {
       this.dialog = false;
@@ -746,3 +828,6 @@ export default {
   },
 };
 </script>
+<style scoped>
+@import url("@/assets/tableStyles.css");
+</style>

@@ -3,7 +3,7 @@
     <v-dialog persistent v-model="deleteDialog" max-width="700">
       <v-card>
         <v-toolbar flat dense class="popup_background">
-          <span class="popup_title">Card Delete From Device(s)</span>
+          <span class="popup_title">Reponse from Device(s)</span>
 
           <v-spacer></v-spacer>
 
@@ -51,7 +51,15 @@
       <v-toolbar dense flat color="primary" dark>
         <v-card-title>Tenant</v-card-title>
         <v-spacer></v-spacer>
-        <v-icon @click="dialog = false">mdi-close</v-icon>
+        <v-icon
+          @click="
+            () => {
+              this.$emit(`silentlyClose`);
+              dialog = false;
+            }
+          "
+          >mdi-close</v-icon
+        >
       </v-toolbar>
       <v-tabs color="deep-purple accent-4" right>
         <v-tab>Basic Info</v-tab>
@@ -113,9 +121,32 @@
                           class="mt-2"
                           :loading="deleteCardLoading"
                           color="secondary"
-                          @click="deleteFromDevices"
+                          @click="
+                            () => {
+                              payload.rfid = null;
+                            }
+                          "
                           >mdi-sync</v-icon
                         >
+                      </v-col>
+                      <v-col>
+                        <div class="mt-3">
+                          <!-- Switch for Deactivate -->
+                          <v-switch
+                            v-model="payload.deactivateToggle"
+                            label="Deactivate"
+                            :color="payload.deactivateToggle ? 'red' : 'grey'"
+                            dense
+                          ></v-switch>
+
+                          <!-- Switch for Remove Face -->
+                          <v-switch
+                            v-model="payload.removeFaceToggle"
+                            label="Remove Face"
+                            :color="payload.removeFaceToggle ? 'red' : 'grey'"
+                            dense
+                          ></v-switch>
+                        </div>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -458,8 +489,18 @@
                 </v-tooltip>
               </v-col>
               <v-col cols="6" class="text-right">
-                <v-btn @click="dialog = false">Close</v-btn>
-                <v-btn class="primary" @click="update_data">Update</v-btn>
+                <v-btn
+                  @click="
+                    () => {
+                      this.$emit(`silentlyClose`);
+                      dialog = false;
+                    }
+                  "
+                  >Close</v-btn
+                >
+                <v-btn :loading="loading" class="primary" @click="update_data"
+                  >Update</v-btn
+                >
               </v-col>
             </v-row>
           </v-container>
@@ -671,7 +712,12 @@
         <v-tab-item>
           <TanentCardEdit
             :item="payload"
-            @close="(e) => (dialog = false)"
+            @close="
+              (e) => {
+                this.$emit(`silentlyClose`);
+                dialog = false;
+              }
+            "
             @success="handleSuccessResponse"
           />
         </v-tab-item>
@@ -779,6 +825,7 @@
 <script>
 import "cropperjs/dist/cropper.css";
 import VueCropper from "vue-cropperjs";
+import { fetchActiveDevices } from "@/utils/deviceFetcher";
 
 export default {
   props: ["item"],
@@ -804,6 +851,8 @@ export default {
       start_date: "",
       end_date: "",
       vehicles: [{ car_number: "", car_brand: "", parking_id: "" }],
+      deactivateToggle: false,
+      removeFaceToggle: false,
     },
     documents: [
       { label: "Passport", key: "passport_doc" },
@@ -814,6 +863,7 @@ export default {
       { label: "Other", key: "others_doc" },
     ],
     setImagePreview: null,
+
     tab: null,
 
     tabMenu: [],
@@ -866,28 +916,24 @@ export default {
       tanent_id: 0,
     },
 
-    isPictureChanged: false,
+    isImageChanged: false,
   }),
-
+  async mounted() {
+    try {
+      this.devices = await fetchActiveDevices(
+        this.$axios,
+        this.$auth.user.company_id
+      );
+    } catch (error) {
+      console.log("🚀 ~ mounted ~ error: on fetchActiveDevices", error);
+    }
+  },
   async created() {
     this.loading = false;
     this.boilerplate = true;
     this.editItem(this.item);
     await this.getFloors();
 
-    this.$axios
-      .get(`device`, {
-        params: {
-          per_page: 1000, //this.pagination.per_page,
-          company_id: this.$auth.user.company_id,
-          sortBy: "status_id",
-        },
-      })
-      .then(({ data }) => {
-        this.devices = data.data
-          .filter((el) => el.status.name == "active")
-          .map((e) => e.device_id);
-      });
     let config = {
       params: { company_id: this.$auth.user.company_id },
     };
@@ -911,73 +957,6 @@ export default {
   },
 
   methods: {
-    async deleteFromDevices() {
-      this.deleteCardLoading = true;
-      this.payload.rfid = null;
-
-      this.deleteResponseList = [];
-
-      this.devices.forEach(async (device_id) => {
-        let deletePayload = {
-          UserID: this.payload.system_user_id,
-          DeviceID: device_id,
-        };
-
-        try {
-          const { data: deletedCard } = await this.$axios.post(
-            "delete-card",
-            deletePayload
-          );
-
-          let payload = {
-            personList: [
-              {
-                name: this.payload.first_name + " " + this.payload.last_name,
-                userCode: this.payload.system_user_id,
-                faceImage: this.setImagePreview,
-              },
-            ],
-            snList: [device_id],
-          };
-
-          await this.$axios.post(`/Person/AddRange/Photos`, payload);
-
-          this.deleteDialog = true;
-
-          this.deleteResponseList.push({
-            status: deletedCard.status,
-            message: deletedCard.message,
-            DeviceID: device_id,
-          });
-        } catch (error) {
-          console.error("Error deleting record:", error);
-        }
-      });
-
-      this.payload.isStaying = this.payload.isStaying ? 1 : 0;
-      this.$axios
-        .post(
-          this.endpoint + "-update/" + this.payload.id,
-
-          this.payload,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then(({ data }) => {
-          this.singleMessage = null;
-          this.errors = [];
-          this.deleteCardLoading = false;
-        })
-        .catch(({ response }) => {
-          this.handleErrorResponse(response);
-        });
-
-      this.displaybutton = true;
-    },
-
     async deleteMemberCardFromDevices(member) {
       this.deleteMemberCardLoading = true;
       // this.payload.rfid = null;
@@ -1048,8 +1027,9 @@ export default {
       this.payload[key] = document;
     },
     handleAttachment(e) {
-      this.isPictureChanged = true;
+      this.setImagePreview = e;
       this.payload.profile_picture = e;
+      this.isImageChanged = true;
     },
 
     getRoomNumber(room_id) {
@@ -1162,7 +1142,12 @@ export default {
         });
     },
     update_data() {
+      this.loading = true;
+
       this.payload.isStaying = this.payload.isStaying ? 1 : 0;
+      this.payload.deactivateToggle = this.payload.deactivateToggle ? 1 : 0;
+      this.payload.removeFaceToggle = this.payload.removeFaceToggle ? 1 : 0;
+
       this.$axios
         .post(
           this.endpoint + "-update/" + this.payload.id,
@@ -1178,14 +1163,36 @@ export default {
           this.singleMessage = null;
           this.errors = [];
 
-          if (this.isPictureChanged) {
-            await this.deleteOldFaceFromDevices(); // how to
-          } else {
-            this.$emit("success", "Tanent has been updated");
+          let faceImage = this.setImagePreview;
+
+          if (this.isImageChanged) {
+            faceImage = this.setImagePreview.replace(
+              /^data:image\/\w+;base64,/,
+              ""
+            );
           }
+
+          const cardData = this.payload.rfid ? `${this.payload.rfid}` : null;
+
+          let personObject = {
+            name: `${this.payload.first_name} ${this.payload.last_name}`,
+            userCode: this.payload.system_user_id,
+            faceImage,
+            cardData,
+            expiry: this.payload.deactivateToggle
+              ? "2001-01-01 00:00:00"
+              : "2089-12-31 23:59:59",
+          };
+
+          if (this.payload.removeFaceToggle) {
+            personObject.faceImage = null;
+          }
+
+          this.processDeviceFunction(personObject, `Data has been Updated`);
         })
         .catch(({ response }) => {
           this.handleErrorResponse(response);
+          this.loading = false;
         });
 
       // }
@@ -1225,52 +1232,40 @@ export default {
           })
           .catch((err) => console.log(err));
     },
-    async deleteOldFaceFromDevices() {
-      const image = this.setImagePreview.replace(
-        /^data:image\/\w+;base64,/,
-        ""
-      );
+
+    async processDeviceFunction(personObject, actionMessage) {
       this.deleteCardLoading = true;
+
       this.deleteResponseList = [];
-
       for (const device_id of this.devices) {
-        let deletePayload = {
-          UserID: this.payload.system_user_id,
-          DeviceID: device_id,
-        };
-
         try {
-          const { data: deletedCard } = await this.$axios.post(
-            "delete-card",
-            deletePayload
-          );
+          const { data: deletedCard } = await this.$axios.post("delete-card", {
+            UserID: this.payload.system_user_id,
+            DeviceID: device_id,
+          });
 
           let payload = {
-            personList: [
-              {
-                name: `${this.payload.first_name} ${this.payload.last_name}`,
-                userCode: this.payload.system_user_id,
-                faceImage: image,
-                rfid: this.payload.rfid,
-              },
-            ],
+            personList: [personObject],
             snList: [device_id],
           };
 
           await this.$axios.post(`/Person/AddRange/Photos`, payload);
 
+          this.deleteDialog = true;
+
           this.deleteResponseList.push({
             status: deletedCard.status,
-            message: deletedCard.message,
+            message: actionMessage,
             DeviceID: device_id,
           });
         } catch (error) {
           console.error("Error deleting record:", error);
         }
-
-        this.$emit("success", "Tanent has been updated");
       }
+      this.loading = false;
+      // this.$emit("success", "Tanent has been updated");
     },
+
     handleErrorResponse(response) {
       if (!response) {
         alert("An unexpected error occurred.");
