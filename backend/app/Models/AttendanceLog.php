@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Community\CommunityReport;
 use App\Models\Community\Tanent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -500,9 +501,9 @@ class AttendanceLog extends Model
         //     return  $results = DB::select("
         //     SELECT *
         //     FROM attendance_logs
-        //     WHERE company_id = 20 
-        //         AND 'LogTime' >= '2023-11-30 08:00' 
-        //         AND 'LogTime' <= '2023-12-01 01:00' 
+        //     WHERE company_id = 20
+        //         AND 'LogTime' >= '2023-11-30 08:00'
+        //         AND 'LogTime' <= '2023-12-01 01:00'
 
         //     ORDER BY 'LogTime' ASC;
         // ");
@@ -521,5 +522,15 @@ class AttendanceLog extends Model
             ->get()
 
             ->groupBy(['UserID']);
+    }
+
+        /**
+     * Get the log that owns the AttendanceLog
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function community_report()
+    {
+        return $this->hasOne(CommunityReport::class, 'user_id', 'UserID');
     }
 }

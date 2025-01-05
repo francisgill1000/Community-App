@@ -277,41 +277,35 @@ class ReportController extends Controller
 
     public function processFilter()
     {
+        $query = AttendanceLog::query();
+
+        $query->where("LogTime", ">=", request("from_date") . " 00:00:00");
+
+        $query->where("LogTime", "<=", request("to_date") . " 23:59:59");
+
+        $query->when(request()->filled("UserID"), function ($q) {
+            $q->where('UserID', request("UserID"));
+        });
+
+        $query->when(request()->filled("DeviceID"), function ($q) {
+            $q->where('DeviceID', request("DeviceID"));
+        });
+
         $user_type = request("user_type");
 
-        $query = CommunityReport::query();
-
         if ($user_type) {
-            // Convert 'Employee' to lowercase for consistency
             if (strtolower($user_type) === 'employee') {
                 $user_type = strtolower($user_type);
             }
 
-            $query->where("user_type", $user_type);
-        }
-
-        $query->when(request()->filled("UserID"), function ($q) {
-            $q->where('user_id', request("UserID"));
-        });
-
-        $query->when(request()->filled("DeviceID"), function ($query) {
-            $query->whereHas("logs", function ($q) {
-                $q->where('DeviceID', request("DeviceID"));
+            $query->whereHas("community_report", function ($q) use ($user_type) {
+                $q->where("user_type", $user_type);
             });
-        });
-
-        $query->whereHas("logs", function ($q) {
-            $q->where("LogTime", ">=", request("from_date"));
-            $q->where("LogTime", "<=", request("to_date"));
-        });
-
-        // $query->with("logs");
+        }
 
 
         if (in_array(request("user_type"), ['Primary', 'Owner', 'Family Member', 'Maid'])) {
             $query->with([
-                "in_log",
-                "out_log",
                 "tanent",
                 "family_member",
                 "owner",
@@ -319,20 +313,15 @@ class ReportController extends Controller
             ]);
         } else if (in_array(request("user_type"), ['visitor', 'delivery', 'contractor'])) {
             $query->with([
-                "in_log",
-                "out_log",
                 "visitor.purpose",
                 "delivery.purpose",
                 "contractor.purpose",
             ]);
         } else {
-
-            $query->with([
-                "in_log",
-                "out_log",
-                'employee:id,first_name,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id'
-            ]);
+            $query->with('employee:id,first_name,last_name,phone_number,profile_picture,employee_id,branch_id,system_user_id,display_name,department_id');
         }
+
+        $query->with('community_report','device');
 
         return $query;
     }
