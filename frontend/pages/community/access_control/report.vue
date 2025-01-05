@@ -168,22 +168,17 @@
             <template v-slot:item.id="{ item, index }">
               {{ index + 1 }}
             </template>
-            <template v-slot:item.mode="{ item, index }">
-              {{ item?.in_log?.mode ?? item?.out_log?.mode }}
+            <template v-slot:item.status="{ item, index }">
+              <span v-if="item.status == 'Allowed'">Allowed</span>
+              <span v-else>Denied</span>
             </template>
-            <template v-slot:item.status="{ item, index }"> Allowed </template>
             <template v-slot:item.in="{ item, index }">
-              {{ $dateFormat.format4(item?.in_log?.LogTime) ?? "---" }}
+              {{ $dateFormat.format4(item?.LogTime) ?? "---" }}
               <br />
-              <small> {{ item?.in_log?.device?.short_name ?? "---" }}</small>
+              <small> {{ item?.device?.short_name ?? "---" }}</small>
             </template>
             <template v-slot:item.out="{ item, index }">
-              <div v-if="item.out_log">
-                {{ $dateFormat.format4(item?.out_log?.LogTime) ?? "---" }}
-                <br />
-                <small> {{ item?.out_log?.device?.short_name ?? "---" }}</small>
-              </div>
-              <div v-else>---</div>
+              <div>---</div>
             </template>
             <template v-slot:item.user="{ item }" style="padding: 0px">
               <v-row v-if="item.tanent" no-gutters>
@@ -365,7 +360,7 @@ export default {
         align: "left",
         sortable: false,
         key: "user_type",
-        value: "user_type",
+        value: "community_report.user_type",
       },
     ],
     visitor_type: "",
@@ -440,7 +435,6 @@ export default {
       this.data = data;
       this.totalRowsCount = total;
       this.loading = false;
-
     },
 
     async process_file(endpoint) {
