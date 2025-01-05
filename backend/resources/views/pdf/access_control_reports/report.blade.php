@@ -267,22 +267,22 @@
                         @endif
                     </td>
                     <td>
-                        {{ $data['in_log']['LogTime'] ?? '---' }}
+                        {{ $data['LogTime'] ?? '---' }}
                         <br />
-                        <small> {{ $data['in_log']['device']['short_name'] ?? '---' }}</small>
+                        <small> {{ $data['device']['short_name'] ?? '---' }}</small>
                     </td>
                     <td>
-                        {{ $data['out_log']['LogTime'] ?? '---' }}
+                        ---
                         <br />
-                        <small> {{ $data['out_log']['device']['short_name'] ?? '---' }}</small>
+                        <small> ---</small>
                     </td>
                     <td>
-                        {{ $data['in_log']['status'] ?? '---' }}
+                        {{ $data['status'] ?? '---' }}
                     </td>
                     <td>
-                        {{ $data['in_log']['mode'] ?? '---' }}
+                        {{ $data['mode'] ?? '---' }}
                     </td>
-                    <td>{{ $data['user_type'] ?? '---' }}</td>
+                    <td>{{ $data['community_report']['user_type'] ?? '---' }}</td>
                 </tr>
             @endforeach
         </table>
