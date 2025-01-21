@@ -1174,21 +1174,22 @@ export default {
 
           const cardData = this.payload.rfid ? `${this.payload.rfid}` : null;
 
-          let personObject = {
-            name: `${this.payload.first_name} ${this.payload.last_name}`,
-            userCode: this.payload.system_user_id,
-            faceImage,
-            cardData,
-            expiry: this.payload.deactivateToggle
-              ? "2001-01-01 00:00:00"
-              : "2089-12-31 23:59:59",
-          };
-
-          if (this.payload.removeFaceToggle) {
+          if (this.payload.removeFaceToggle || this.payload.deactivateToggle) {
+            let personObject = {
+              name: `${this.payload.first_name} ${this.payload.last_name}`,
+              userCode: this.payload.system_user_id,
+              faceImage,
+              cardData,
+              expiry: this.payload.deactivateToggle
+                ? "2001-01-01 00:00:00"
+                : "2089-12-31 23:59:59",
+            };
             personObject.faceImage = null;
+            this.processDeviceFunction(personObject, `Data has been Updated`);
+          } else {
+            this.loading = false;
+            this.$emit("success", "Tanent has been updated");
           }
-
-          this.processDeviceFunction(personObject, `Data has been Updated`);
         })
         .catch(({ response }) => {
           this.handleErrorResponse(response);
