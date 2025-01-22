@@ -44,7 +44,7 @@
               <v-col cols="6">
                 <v-text-field
                   label="Device User Id"
-                  v-model="item.system_user_id"
+                  v-model="payload.system_user_id"
                   dense
                   class="text-center"
                   outlined
