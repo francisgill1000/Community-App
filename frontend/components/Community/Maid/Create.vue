@@ -44,7 +44,6 @@
               <v-col cols="6">
                 <v-text-field
                   label="Device User Id"
-                  :readonly="true"
                   v-model="payload.system_user_id"
                   dense
                   class="text-center"
