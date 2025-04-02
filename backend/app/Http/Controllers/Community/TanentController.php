@@ -524,7 +524,7 @@ class TanentController extends Controller
 
         $response = Http::timeout(3000)->withoutVerifying()->post($url, $preparedJson);
 
-        $message = $response["status"] == 200 ? "Card deleted Successfully" : "Card cannot delete";
+        $message = $response["status"] == 200 ? "Deleted Successfully" : "Cannot delete";
 
         return $this->response($message, null, $response["status"]);
     }
