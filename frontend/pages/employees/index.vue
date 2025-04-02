@@ -12,6 +12,47 @@
         </template>
       </v-snackbar>
     </div>
+    <v-dialog persistent v-model="deleteDialog" max-width="700">
+      <v-card>
+        <v-toolbar flat dense class="popup_background">
+          <span class="popup_title">Delete From Device(s)</span>
+
+          <v-spacer></v-spacer>
+
+          <v-icon @click="deleteDialog = false" class="primary--text">
+            mdi-close
+          </v-icon>
+        </v-toolbar>
+        <v-card-text>
+          <table style="width: 100%" class="mt-2">
+            <thead>
+              <tr class=" " dark>
+                <th style="width: 30%">Device ID</th>
+                <th style="width: 60%">Message</th>
+                <th class="text-center">Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-for="(d, index) in deleteResponseList" :key="index">
+                <td>{{ d.DeviceID }}</td>
+                <td v-html="d.message"></td>
+                <td class="text-center">
+                  <v-icon color="green" v-if="d.status == 200"
+                    >mdi-check</v-icon
+                  >
+                  <v-icon color="error" v-else>mdi-close</v-icon>
+                </td>
+              </tr>
+
+              <tr v-if="deleteResponseList.length == 0">
+                <td colspan="3" class="text-center">No Data available</td>
+              </tr>
+            </tbody>
+          </table>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-dialog persistent v-model="dialogCropping" width="500">
       <v-card style="padding-top: 20px">
         <v-card-text>
@@ -852,6 +893,7 @@ import Login from "../../components/employee/Login.vue";
 import Rfid from "../../components/employee/Rfid.vue";
 
 import EmployeeProfileView from "../../components/EmployeesLogin/EmployeeLanding.vue";
+import { fetchActiveDevices } from "@/utils/deviceFetcher";
 
 import "cropperjs/dist/cropper.css";
 import VueCropper from "vue-cropperjs";
@@ -1098,6 +1140,11 @@ export default {
     isCompany: true,
 
     refresh: false,
+
+
+    deleteDialog: false,
+    deleteResponseList: [],
+    devices: [],
   }),
 
   async created() {
@@ -1111,7 +1158,7 @@ export default {
       await this.getDataFromApi();
     }
   },
-  mounted() {
+  async mounted() {
     //this.getDataFromApi();
     this.headers = [
       // { text: "#" },
@@ -1131,6 +1178,15 @@ export default {
     this.getDepartments();
 
     this.getTimezone(null);
+
+    try {
+      this.devices = await fetchActiveDevices(
+        this.$axios,
+        this.$auth.user.company_id
+      );
+    } catch (error) {
+      console.log("🚀 ~ mounted ~ error: on fetchActiveDevices", error);
+    }
   },
   watch: {
     options: {
@@ -1407,12 +1463,36 @@ export default {
               this.errors = data.errors;
             } else {
               this.refresh = true;
-              await this.getDataFromApi();
-              this.snackbar = data.status;
-              this.response = data.message;
+              this.deleteFromDevices(item.system_user_id);
             }
           })
           .catch((err) => console.log(err));
+    },
+    async deleteFromDevices(system_user_id) {
+      this.deleteDialog = true;
+      this.deleteResponseList = [];
+
+      for (const device_id of this.devices) {
+        try {
+          const { data: deletedCard } = await this.$axios.post("delete-card", {
+            UserID: system_user_id,
+            DeviceID: device_id,
+          });
+
+          this.deleteResponseList.push({
+            status: deletedCard.status,
+            message: deletedCard.message,
+            DeviceID: device_id,
+          });
+        } catch (error) {
+          console.error("Error deleting record:", error);
+        }
+      }
+
+      // Run after all deletions are complete
+      this.getDataFromApi();
+      this.snackbar = true;
+      this.response = "Record deleted successfully";
     },
     close() {
       this.dialog = false;
@@ -1561,3 +1641,6 @@ export default {
   },
 };
 </script>
+<style scoped>
+@import url("@/assets/tableStyles.css");
+</style>
