@@ -331,8 +331,8 @@ class Employee extends Model
             ->when($request->filled('employee_id'), function ($q) use ($request) {
                 //$q->where('employee_id', 'LIKE', "$key%");
                 $q->where(function ($q) use ($request) {
-                    $q->Where('employee_id', 'ILIKE', "$request->employee_id%");
-                    $q->orWhere('system_user_id', 'ILIKE', "$request->employee_id%");
+                    $q->Where('employee_id', 'LIKE', "$request->employee_id%");
+                    $q->orWhere('system_user_id', 'LIKE', "$request->employee_id%");
                 });
             })
             ->when($request->filled('id'), function ($q) use ($request) {
@@ -341,21 +341,21 @@ class Employee extends Model
             })
             ->when($request->filled('phone_number'), function ($q) use ($request) {
 
-                $q->where('phone_number', 'ILIKE', "$request->phone_number%");
+                $q->where('phone_number', 'LIKE', "$request->phone_number%");
             })
             ->when($request->filled('first_name'), function ($q) use ($request) {
                 $q->where(function ($q) use ($request) {
-                    $q->Where('first_name', 'ILIKE', "$request->first_name%");
-                    //$q->orWhere('last_name', 'ILIKE', "$request->first_name%");
+                    $q->Where('first_name', 'LIKE', "$request->first_name%");
+                    //$q->orWhere('last_name', 'LIKE', "$request->first_name%");
                 });
             })
 
             ->when($request->filled('user_email'), function ($q) use ($request) {
                 // $q->where('local_email', 'LIKE', "$request->user_email%");
-                $q->whereHas('user', fn (Builder $query) => $query->where('email', 'ILIKE', "$request->user_email%"));
+                $q->whereHas('user', fn (Builder $query) => $query->where('email', 'LIKE', "$request->user_email%"));
             })
             ->when($request->filled('department_name_id'), function ($q) use ($request) {
-                // $q->whereHas('department', fn(Builder $query) => $query->where('name', 'ILIKE', "$request->department_name%"));
+                // $q->whereHas('department', fn(Builder $query) => $query->where('name', 'LIKE', "$request->department_name%"));
                 $q->whereHas('department', fn (Builder $query) => $query->where('id', $request->department_name_id));
             })
 
@@ -363,12 +363,12 @@ class Employee extends Model
                 $q->whereHas('schedule', fn (Builder $query) => $query->where('shift_id', $request->shceduleshift_id));
             })
             ->when($request->filled('schedule_shift_name'), function ($q) use ($request) {
-                $q->whereHas('schedule.shift', fn (Builder $query) => $query->where('name', 'ILIKE', "$request->schedule_shift_name%"));
+                $q->whereHas('schedule.shift', fn (Builder $query) => $query->where('name', 'LIKE', "$request->schedule_shift_name%"));
                 $q->whereHas('schedule.shift', fn (Builder $query) => $query->whereNotNull('name'));
                 $q->whereHas('schedule.shift', fn (Builder $query) => $query->where('name', '<>', '---'));
             })
             // ->when($request->filled('timezone_name'), function ($q) use ($request) {
-            //     $q->whereHas('timezone', fn (Builder $query) => $query->where('timezone_name', 'ILIKE', "$request->timezone_name%"));
+            //     $q->whereHas('timezone', fn (Builder $query) => $query->where('timezone_name', 'LIKE', "$request->timezone_name%"));
             // })
             // ->when($request->filled('timezone'), function ($q) use ($request) {
             //     $q->whereHas('timezone', fn (Builder $query) => $query->where('timezone_id', $request->timezone));
@@ -461,8 +461,8 @@ class Employee extends Model
             ->when($request->filled('employee_id'), function ($q) use ($request) {
                 //$q->where('employee_id', 'LIKE', "$key%");
                 $q->where(function ($q) use ($request) {
-                    $q->Where('employee_id', 'ILIKE', "$request->employee_id%");
-                    $q->orWhere('system_user_id', 'ILIKE', "$request->employee_id%");
+                    $q->Where('employee_id', 'LIKE', "$request->employee_id%");
+                    $q->orWhere('system_user_id', 'LIKE', "$request->employee_id%");
                 });
             })
             ->when($request->filled('id'), function ($q) use ($request) {
@@ -471,21 +471,21 @@ class Employee extends Model
             })
             ->when($request->filled('phone_number'), function ($q) use ($request) {
 
-                $q->where('phone_number', 'ILIKE', "$request->phone_number%");
+                $q->where('phone_number', 'LIKE', "$request->phone_number%");
             })
             ->when($request->filled('first_name'), function ($q) use ($request) {
                 $q->where(function ($q) use ($request) {
-                    $q->Where('first_name', 'ILIKE', "$request->first_name%");
-                    //$q->orWhere('last_name', 'ILIKE', "$request->first_name%");
+                    $q->Where('first_name', 'LIKE', "$request->first_name%");
+                    //$q->orWhere('last_name', 'LIKE', "$request->first_name%");
                 });
             })
 
             ->when($request->filled('user_email'), function ($q) use ($request) {
                 // $q->where('local_email', 'LIKE', "$request->user_email%");
-                $q->whereHas('user', fn (Builder $query) => $query->where('email', 'ILIKE', "$request->user_email%"));
+                $q->whereHas('user', fn (Builder $query) => $query->where('email', 'LIKE', "$request->user_email%"));
             })
             ->when($request->filled('department_name_id'), function ($q) use ($request) {
-                // $q->whereHas('department', fn(Builder $query) => $query->where('name', 'ILIKE', "$request->department_name%"));
+                // $q->whereHas('department', fn(Builder $query) => $query->where('name', 'LIKE', "$request->department_name%"));
                 $q->whereHas('department', fn (Builder $query) => $query->where('id', $request->department_name_id));
             })
 
@@ -493,12 +493,12 @@ class Employee extends Model
                 $q->whereHas('schedule', fn (Builder $query) => $query->where('shift_id', $request->shceduleshift_id));
             })
             ->when($request->filled('schedule_shift_name'), function ($q) use ($request) {
-                $q->whereHas('schedule.shift', fn (Builder $query) => $query->where('name', 'ILIKE', "$request->schedule_shift_name%"));
+                $q->whereHas('schedule.shift', fn (Builder $query) => $query->where('name', 'LIKE', "$request->schedule_shift_name%"));
                 $q->whereHas('schedule.shift', fn (Builder $query) => $query->whereNotNull('name'));
                 $q->whereHas('schedule.shift', fn (Builder $query) => $query->where('name', '<>', '---'));
             })
             // ->when($request->filled('timezone_name'), function ($q) use ($request) {
-            //     $q->whereHas('timezone', fn (Builder $query) => $query->where('timezone_name', 'ILIKE', "$request->timezone_name%"));
+            //     $q->whereHas('timezone', fn (Builder $query) => $query->where('timezone_name', 'LIKE', "$request->timezone_name%"));
             // })
             // ->when($request->filled('timezone'), function ($q) use ($request) {
             //     $q->whereHas('timezone', fn (Builder $query) => $query->where('timezone_id', $request->timezone));
