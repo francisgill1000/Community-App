@@ -455,20 +455,23 @@ Route::get('/check_device_health_old', function (Request $request) {
 });
 
 
-function checkSDKServerStatus($url)
-{
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_exec($ch);
+if (!function_exists('checkSDKServerStatus')) {
+    function checkSDKServerStatus($url)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_exec($ch);
 
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-    curl_close($ch);
+        curl_close($ch);
 
-    return $httpCode;
+        return $httpCode;
+    }
 }
+
 
 Route::get('/checkSDKServerStatus/{url}', function ($url) {
     return checkSDKServerStatus($url) ? "Server is running" : "Server is down";
