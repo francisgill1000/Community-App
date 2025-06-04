@@ -393,8 +393,7 @@ class SDKController extends Controller
     public function getDevicesCountForTimezone(Request $request)
     {
 
-
-        return Device::where('company_id', $request->company_id)->pluck('device_id');
+        return Device::where('company_id', $request->company_id)->where("status_id", Device::ACTIVE)->pluck('device_id');
     }
 
     public function handleCommand($id, $command)
@@ -443,5 +442,26 @@ class SDKController extends Controller
                 "message" => $e->getMessage(),
             ];
         }
+    }
+
+    public function WriteResetDefaultTimeGroup()
+    {
+        //return false;
+        (new TimezoneController)->storeTimezoneDefaultJson();
+        $TimezoneDefaultJson = TimezoneDefaultJson::query();
+        $data = $TimezoneDefaultJson->get(["index", "dayTimeList"])->toArray();
+        asort($data);
+
+        $ids = Device::where("company_id", request("company_id"))->where("status_id", 1)->pluck('device_id');
+
+        $sdkResponses = [];
+        foreach ($ids as  $id) {
+
+            $url = env('SDK_URL') . "/" . "{$id}/WriteTimeGroup";
+
+            $sdkResponses[] = $this->processSDKRequestBulk($url, $data)->json();
+        }
+
+        return $sdkResponses;
     }
 }
