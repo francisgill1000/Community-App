@@ -105,7 +105,7 @@
         :footer-props="{
           itemsPerPageOptions: [10, 50, 100, 500, 1000],
         }"
-        class="elevation-1"
+        class="elevation-0"
       >
         <template v-slot:item.sno="{ item, index }">
           {{
@@ -116,9 +116,9 @@
           }}
         </template>
 
-        <template v-slot:item.member="{ item }">
+        <!-- <template v-slot:item.member="{ item }">
           {{ item.employee_device && item.employee_device.employee_ids.length }}
-        </template>
+        </template> -->
 
         <template v-slot:item.menu="{ item }">
           <v-menu bottom left>
@@ -249,13 +249,13 @@ export default {
         key: "description",
         value: "description",
       },
-      {
-        text: "Member",
-        align: "left",
-        sortable: true,
-        key: "member",
-        value: "member",
-      },
+      // {
+      //   text: "Member",
+      //   align: "left",
+      //   sortable: true,
+      //   key: "member",
+      //   value: "member",
+      // },
       {
         text: "Created",
         align: "left",

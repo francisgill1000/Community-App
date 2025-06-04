@@ -13,7 +13,7 @@
     </div>
 
     <v-row>
-      <v-col cols="3">
+      <v-col>
         <v-autocomplete
           @change="getRoomsByFloorId(floor_id)"
           label="Floor Number"
@@ -27,8 +27,7 @@
         >
         </v-autocomplete>
       </v-col>
-
-      <v-col cols="3">
+      <v-col>
         <v-autocomplete
           @change="getTanentsAndMembersByRoom(room_id)"
           label="Room"
@@ -42,10 +41,21 @@
         >
         </v-autocomplete>
       </v-col>
-      <v-col cols="3">
+       <v-col>
+        <v-select
+          :items="[`Male`, `Female`]"
+          dense
+          outlined
+          label="Gender"
+          required
+          :hide-details="true"
+          @change="filterByGender"
+        ></v-select>
+      </v-col>
+      <v-col>
         <v-select
           v-model="timezone_id"
-          :items="timezones"
+          :items="[{ timezone_id: 1, name: `Select Defaul (24 Hrs)` }, ...timezones]"
           dense
           outlined
           item-value="timezone_id"
@@ -58,7 +68,7 @@
           "
         ></v-select>
       </v-col>
-      <v-col cols="3" class="text-right">
+      <v-col class="text-right">
         <div>
           <v-btn color="primary" @click="goback()"
             ><v-icon color="white">mdi-format-list-bulleted-square</v-icon> View
@@ -66,6 +76,8 @@
           >
         </div>
       </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="5">
         <v-card class="photo-displaylist" style="height: 300px">
           <v-toolbar dense flat style="border: 1px solid #ddd">
@@ -501,6 +513,12 @@ export default {
     await this.getTimezonesFromApi();
   },
   methods: {
+    async filterByGender(gender) {
+
+      await this.getTanentsAndMembersByRoom(this.room_id);
+
+      this.leftTenants = this.leftTenants.filter((e) => e.gender == gender);
+    },
     goback() {
       this.$router.push("/community/access_control/2");
     },
@@ -547,6 +565,7 @@ export default {
           system_user_id: parseInt(e.system_user_id),
           profile_picture: e.profile_picture,
           rfid: e.rfid,
+          gender: e.gender,
         });
 
         e.members_only.forEach((member) => {
@@ -556,6 +575,7 @@ export default {
             system_user_id: member.system_user_id,
             profile_picture: member.profile_picture,
             rfid: member.rfid,
+            gender: member.gender,
           });
         });
 
@@ -566,6 +586,7 @@ export default {
             system_user_id: maid.system_user_id,
             profile_picture: maid.profile_picture,
             rfid: maid.rfid,
+            gender: maid.gender,
           });
         });
       });
