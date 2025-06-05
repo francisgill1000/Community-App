@@ -42,7 +42,7 @@ class TanentTimezoneMappingController extends Controller
             $model = TanentTimezoneMapping::query();
             $model->whereIn("tanent_id", $tanent_ids);
             $model->whereIn("device_id", $request->device_ids);
-            // $model->delete();
+            $model->delete();
             $model->insert($appJsonPayload);
             return $this->response('Tenant(s) has been mapped.', $appJsonPayload, true);
         } catch (\Throwable $th) {

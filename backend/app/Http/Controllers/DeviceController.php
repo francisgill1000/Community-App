@@ -1116,4 +1116,11 @@ class DeviceController extends Controller
             "Password"
         ];
     }
+
+    public function getOnlineDevices(Request $request)
+    {
+        return Device::where('company_id', $request->company_id)
+            ->where("status_id", Device::ACTIVE)
+            ->get(['name', 'device_id']);
+    }
 }

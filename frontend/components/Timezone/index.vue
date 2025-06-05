@@ -6,24 +6,39 @@
       </v-snackbar>
     </div>
 
-    <v-dialog persistent v-model="syncDeviceDialog" max-width="1100">
+    <v-dialog persistent v-model="syncDeviceDialog" max-width="700">
       <v-card>
-        <v-card-title dense class="popup_background">
-          <span class="popup_title">Sync Device</span>
-
-          <v-spacer></v-spacer>
-          <v-icon @click="syncDeviceDialog = false" outlined dark>
-            mdi mdi-close-circle
-          </v-icon>
-        </v-card-title>
+        <v-alert dense class="popup_background">
+          <div class="d-flex justify-space-between align-center">
+            <span class="popup_title">Sync Device</span>
+            <v-icon @click="syncDeviceDialog = false" outlined dark>
+              mdi-close-circle
+            </v-icon>
+          </div>
+        </v-alert>
         <v-card-text>
-          <v-progress-linear
-            v-if="loading_devicesync"
-            :active="loading_devicesync"
-            :indeterminate="loading_devicesync"
-            absolute
-            color="primary"
-          ></v-progress-linear>
+          <div class="d-flex justify-space-between align-center">
+            <v-autocomplete
+              v-model="selectedDevices"
+              :items="devicesList"
+              item-text="name"
+              item-value="device_id"
+              label="Select Devices"
+              multiple
+              hide-details
+              outlined
+              dense
+              return-object
+            ></v-autocomplete>
+            &nbsp;
+            <v-btn
+              :loading="loading_devicesync"
+              class="primary"
+              @click="uploadTimezones(selectedDevices)"
+              ><v-icon left>mdi-upload</v-icon>Upload</v-btn
+            >
+          </div>
+
           <table style="width: 100%" class="mt-2">
             <thead>
               <tr class=" " dark>
@@ -35,9 +50,9 @@
 
             <tbody>
               <tr v-for="(d, index) in deviceResults" :key="index">
-                <td>{{ d.DeviceID }}</td>
-                <td v-html="d.message"></td>
-                <td class="text-center">
+                <td class="py-2">{{ d.name }}</td>
+                <td class="py-2"  v-html="d.message"></td>
+                <td class="py-2 text-center">
                   <v-icon color="primary" v-if="d.status">mdi-check</v-icon>
                   <v-icon color="error" v-else>mdi-close</v-icon>
                 </td>
@@ -276,6 +291,8 @@ export default {
     editedIndex: -1,
 
     isCompany: true,
+    selectedDevices: [],
+    devicesList: [],
   }),
 
   computed: {},
@@ -299,6 +316,14 @@ export default {
   async created() {
     this.loading = true;
     this.loading_dialog = true;
+
+    try {
+      let endpoint = `online-device-list?company_id=${this.$auth.user.company_id}`;
+      const { data } = await this.$axios.get(endpoint);
+      this.devicesList = data;
+    } catch (error) {
+      console.log("🚀 ~ created ~ error:", error);
+    }
   },
 
   methods: {
@@ -310,57 +335,50 @@ export default {
     handleSuccessResponse(message) {
       this.snackbar = true;
       this.response = message;
-      this.openDeviceDialog();
+      // this.openDeviceDialog();
       this.getDataFromApi();
     },
     async openDeviceDialog() {
-      if (!this.data.length) {
-        this.snackbar = true;
-        this.response = "No data found";
-        return;
-      }
+      // if (!this.data.length) {
+      //   this.snackbar = true;
+      //   this.response = "No data found";
+      //   return;
+      // }
       this.syncDeviceDialog = true;
-
-      this.editedItem.company_id = this.$auth.user.company_id;
-
-      try {
-        let endpoint = "getDevicesCountForTimezone";
-        const { data } = await this.$axios.post(endpoint, this.editedItem);
-        this.processTimeZone(data);
-      } catch (error) {}
     },
-    processTimeZone(devices) {
+    async uploadTimezones(devices) {
       this.deviceResults = [];
-      let payload = {
+      this.loading_devicesync = true;
+
+      const payload = {
         company_id: this.$auth.user.company_id,
       };
-      let counter = 0;
-      devices.forEach(async (DeviceID) => {
+
+      const requests = devices.map(async ({device_id,name}) => {
+
+        const endpoint = `${device_id}/WriteTimeGroup`;
         try {
-          this.loading_devicesync = true;
-          let endpoint = `${DeviceID}/WriteTimeGroup`;
           const { data } = await this.$axios.post(endpoint, payload);
-          let json = {
-            DeviceID,
-            message: `<span style="color:red">Device communication error ${data.status}</span>`,
+          const success = data.status === 200;
+
+          return {
+            name,
+            message: success
+              ? '<span style="color:green;">Timezone data has been uploaded</span>'
+              : `<span style="color:red">Device communication error ${data.status}</span>`,
+            status: success,
+          };
+        } catch (error) {
+          return {
+            name,
+            message: `<span style="color:red">Request failed: ${error.message}</span>`,
             status: false,
           };
-
-          if (data.status == 200) {
-            (json.message =
-              '<span style="color:green">Timezone data has been upload'),
-              (json.status = true);
-            counter++;
-          } else {
-            counter++;
-          }
-
-          this.deviceResults.push(json);
-          if (counter == devices.length) {
-            this.loading_devicesync = false;
-          }
-        } catch (error) {}
+        }
       });
+
+      this.deviceResults = await Promise.all(requests);
+      this.loading_devicesync = false;
     },
     close() {
       this.dialog = false;
