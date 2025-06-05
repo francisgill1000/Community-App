@@ -163,13 +163,13 @@ export default {
         filterable: true,
         type: "text",
       },
-      {
-        text: "Details",
-        align: "left",
-        sortable: false,
-        key: "options",
-        value: "options",
-      },
+      // {
+      //   text: "Details",
+      //   align: "left",
+      //   sortable: false,
+      //   key: "options",
+      //   value: "options",
+      // },
     ],
   }),
 

@@ -612,7 +612,7 @@ export default {
           return;
         }
 
-        this.updateSlotsByDay(existingDay.id, slots[0].id, slots[1].id + 1);
+        this.updateSlotsByDay(existingDay.id, slots[0]?.id, slots[1]?.id + 1);
 
         this.editedItem = {
           timezone_id: this.item.timezone_id,
