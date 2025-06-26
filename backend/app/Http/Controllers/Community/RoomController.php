@@ -147,6 +147,7 @@ class RoomController extends Controller
         return Tanent::where("company_id", request("company_id"))
             // ->where("floor_id", request("floor_id"))
             ->where('parent_id', 0)
+            ->when(request()->filled("gender") && request("gender") != "All", fn ($q) => $q->where("gender", request("gender")))
             ->when(request()->filled("floor_id"), fn ($q) => $q->where("floor_id", request("floor_id")))
             ->when(request()->filled("room_id") && request("room_id") != 1, fn ($q) => $q->where("room_id", request("room_id")))
 
