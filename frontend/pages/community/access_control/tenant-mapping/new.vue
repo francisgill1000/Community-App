@@ -41,9 +41,10 @@
         >
         </v-autocomplete>
       </v-col>
-       <v-col>
+      <v-col>
         <v-select
-          :items="[`Male`, `Female`]"
+          v-model="gender"
+          :items="[`All`, `Male`, `Female`]"
           dense
           outlined
           label="Gender"
@@ -55,7 +56,10 @@
       <v-col>
         <v-select
           v-model="timezone_id"
-          :items="[{ timezone_id: 1, name: `Select Defaul (24 Hrs)` }, ...timezones]"
+          :items="[
+            { timezone_id: 1, name: `Select Defaul (24 Hrs)` },
+            ...timezones,
+          ]"
           dense
           outlined
           item-value="timezone_id"
@@ -451,6 +455,7 @@ export default {
       floor_id: [],
       floors: [],
       room_id: [],
+      gender: 'All',
       rooms: [],
       isCompany: true,
       loading: false,
@@ -513,11 +518,9 @@ export default {
     await this.getTimezonesFromApi();
   },
   methods: {
-    async filterByGender(gender) {
-
+    async filterByGender() {
       await this.getTanentsAndMembersByRoom(this.room_id);
 
-      this.leftTenants = this.leftTenants.filter((e) => e.gender == gender);
     },
     goback() {
       this.$router.push("/community/access_control/2");
@@ -554,6 +557,7 @@ export default {
           company_id: this.$auth.user.company_id,
           room_id: room_id,
           floor_id: this.floor_id,
+          gender: this.gender,
         },
       });
 
@@ -1014,7 +1018,7 @@ export default {
         this.loading = false;
         this.displaybutton = true;
         this.errors = [];
-        setTimeout(() => this.goback(), 3000);
+        // setTimeout(() => this.goback(), 3000);
       } catch (error) {
         this.loading_dialog = false;
         this.loading = false;
