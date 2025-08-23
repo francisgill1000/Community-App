@@ -1,21 +1,17 @@
 <?php
-
 namespace App\Http\Controllers\Community;
 
 use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\Attendance;
 use App\Models\AttendanceLog;
-use App\Models\Community\Member;
 use App\Models\Community\Parking;
 use App\Models\Community\Room;
 use App\Models\Community\Tanent;
-use App\Models\Community\Vehicle;
 use App\Models\Department;
 use App\Models\Device;
 use App\Models\Employee;
 use App\Models\Theme;
-use App\Models\VisitorLog;
 use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -56,12 +52,12 @@ class DashboardController extends Controller
         $model = Attendance::with("employee")->where('company_id', $id)
 
             ->when($request->filled("department_ids") && count($request->department_ids) > 0, function ($q) use ($request) {
-                $q->with(["employee" =>  function ($q) use ($request) {
-                    $q->whereHas('department', fn (Builder $query) => $query->whereIn('department_id', $request->department_ids));
+                $q->with(["employee" => function ($q) use ($request) {
+                    $q->whereHas('department', fn(Builder $query) => $query->whereIn('department_id', $request->department_ids));
                 }]);
             })
             ->when($request->filled("branch_id"), function ($q) use ($request) {
-                $q->whereHas("employee", fn ($q) => $q->where("branch_id", $request->branch_id));
+                $q->whereHas("employee", fn($q) => $q->where("branch_id", $request->branch_id));
             })
             ->whereIn('status', ['P', 'A', 'M', 'O', 'H', 'L', 'V'])
             ->whereDate('date', date("Y-m-d"))
@@ -71,17 +67,17 @@ class DashboardController extends Controller
         $attendanceCounts = AttendanceLog::with(["employee"])->where("company_id", $id)
             ->whereDate("LogTime", date("Y-m-d"))
             ->when($request->filled("branch_id"), function ($q) use ($request) {
-                $q->whereHas("employee", fn ($q) => $q->where("branch_id", $request->branch_id));
+                $q->whereHas("employee", fn($q) => $q->where("branch_id", $request->branch_id));
             })
             ->groupBy("UserID")
 
             ->selectRaw('"UserID", COUNT(*) as count')
             ->get();
 
-        $countsByParity = $attendanceCounts->groupBy(fn ($item) => $item->count % 2 === 0 ? 'even' : 'odd')->map->count();
+        $countsByParity = $attendanceCounts->groupBy(fn($item) => $item->count % 2 === 0 ? 'even' : 'odd')->map->count();
 
         return [
-            "employeeCount" => Employee::where("company_id", $id)
+            "employeeCount"  => Employee::where("company_id", $id)
                 ->when($request->filled("department_ids") && count($request->department_ids) > 0, function ($q) use ($request) {
                     $q->whereIn("department_id", $request->department_ids);
                 })
@@ -90,14 +86,14 @@ class DashboardController extends Controller
                     $q->where("branch_id", $request->branch_id);
                 })
                 ->count() ?? 0,
-            'totalIn' => $countsByParity->get('odd', 0),
-            'totalOut' => $countsByParity->get('even', 0),
-            "presentCount" => $model->where('status', 'P')->count(),
-            "absentCount" => $model->where('status', 'A')->count(),
-            "missingCount" => $model->where('status', 'M')->count(),
-            "offCount" => $model->where('status', 'O')->count(),
-            "holidayCount" => $model->where('status', 'H')->count(),
-            "leaveCount" => $model->where('status', 'L')->count(),
+            'totalIn'        => $countsByParity->get('odd', 0),
+            'totalOut'       => $countsByParity->get('even', 0),
+            "presentCount"   => $model->where('status', 'P')->count(),
+            "absentCount"    => $model->where('status', 'A')->count(),
+            "missingCount"   => $model->where('status', 'M')->count(),
+            "offCount"       => $model->where('status', 'O')->count(),
+            "holidayCount"   => $model->where('status', 'H')->count(),
+            "leaveCount"     => $model->where('status', 'L')->count(),
             "vaccationCount" => $model->where('status', 'V')->count(),
         ];
     }
@@ -107,7 +103,7 @@ class DashboardController extends Controller
             ->whereIn('status', ['P', 'A', 'M', 'O', 'H', 'L', 'V'])
             ->whereDate('date', date('Y-m-d'))
             ->when($request->filled("branch_id"), function ($q) use ($request) {
-                $q->whereHas("employee", fn ($q) => $q->where("branch_id", $request->branch_id));
+                $q->whereHas("employee", fn($q) => $q->where("branch_id", $request->branch_id));
             })
 
             ->get();
@@ -117,63 +113,59 @@ class DashboardController extends Controller
         $return = [];
         foreach ($departments as $department) {
 
+            $return[$department->name] = [
 
-            $return[$department->name] =   [
-
-                "presentCount" => $model->where('status', 'P')->where('employee.department_id', $department->id)->count(),
-                "absentCount" => $model->where('status', 'A')->where('employee.department_id', $department->id)->count(),
-                "missingCount" => $model->where('status', 'M')->where('employee.department_id', $department->id)->count(),
-                "offCount" => $model->where('status', 'O')->where('employee.department_id', $department->id)->count(),
-                "holidayCount" => $model->where('status', 'H')->where('employee.department_id', $department->id)->count(),
-                "leaveCount" => $model->where('status', 'L')->where('employee.department_id', $department->id)->count(),
+                "presentCount"   => $model->where('status', 'P')->where('employee.department_id', $department->id)->count(),
+                "absentCount"    => $model->where('status', 'A')->where('employee.department_id', $department->id)->count(),
+                "missingCount"   => $model->where('status', 'M')->where('employee.department_id', $department->id)->count(),
+                "offCount"       => $model->where('status', 'O')->where('employee.department_id', $department->id)->count(),
+                "holidayCount"   => $model->where('status', 'H')->where('employee.department_id', $department->id)->count(),
+                "leaveCount"     => $model->where('status', 'L')->where('employee.department_id', $department->id)->count(),
                 "vaccationCount" => $model->where('status', 'V')->where('employee.department_id', $department->id)->count(),
             ];
         }
 
-        return  $return;
+        return $return;
     }
     public function previousWeekAttendanceCount(Request $request, $id)
     {
         $dates = [];
 
         for ($i = 13; $i >= 7; $i--) {
-            $date = date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
+            $date    = date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
             $dates[] = $date;
         }
 
-        $date = date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
+        $date  = date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
         $model = Attendance::with("employee")->where('company_id', $id)
             ->whereIn('status', ['P', 'A', 'M', 'O', 'H', 'L', 'V'])
             ->whereIn('date', $dates)
             ->when($request->filled("branch_id"), function ($q) use ($request) {
-                $q->whereHas("employee", fn ($q) => $q->where("branch_id", $request->branch_id));
+                $q->whereHas("employee", fn($q) => $q->where("branch_id", $request->branch_id));
             })
             ->select('status')
             ->get();
 
         return [
-            "date" => $date,
-            "presentCount" => $model->where('status', 'P')->count(),
-            "absentCount" => $model->where('status', 'A')->count(),
-            "missingCount" => $model->where('status', 'M')->count(),
-            "offCount" => $model->where('status', 'O')->count(),
-            "holidayCount" => $model->where('status', 'H')->count(),
-            "leaveCount" => $model->where('status', 'L')->count(),
+            "date"           => $date,
+            "presentCount"   => $model->where('status', 'P')->count(),
+            "absentCount"    => $model->where('status', 'A')->count(),
+            "missingCount"   => $model->where('status', 'M')->count(),
+            "offCount"       => $model->where('status', 'O')->count(),
+            "holidayCount"   => $model->where('status', 'H')->count(),
+            "leaveCount"     => $model->where('status', 'L')->count(),
             "vaccationCount" => $model->where('status', 'V')->count(),
         ];
     }
     public function dashboardGetCountslast7Days(Request $request)
     {
 
-
-
-
-        $finalarray = [];
+        $finalarray  = [];
         $dateStrings = [];
         if ($request->has("date_from") && $request->has("date_to")) {
-            // Usage example:
+                                                            // Usage example:
             $startDate = new DateTime($request->date_from); // Replace with your start date
-            $endDate = new DateTime($request->date_to);   // Replace with your end date
+            $endDate   = new DateTime($request->date_to);   // Replace with your end date
 
             $dateStrings = $this->createDateRangeArray($startDate, $endDate);
         } else {
@@ -182,12 +174,11 @@ class DashboardController extends Controller
             }
         }
 
-
         foreach ($dateStrings as $key => $value) {
 
-            $date = $value; //date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
+            $date               = $value; //date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
             $AttendanceLogModel = AttendanceLog::where('company_id', $request->company_id)
-                ->whereDate("LogTime",  $date)->distinct("UserID");
+                ->whereDate("LogTime", $date)->distinct("UserID");
 
             $EmployeesCount = $AttendanceLogModel->clone()
                 ->whereIn('UserID', function ($query) use ($request) {
@@ -209,7 +200,6 @@ class DashboardController extends Controller
                 })
                 ->get()->count();
 
-
             $TenantsCount = $AttendanceLogModel->clone()
                 ->whereIn('UserID', function ($query) use ($request) {
                     $query->select('system_user_id')
@@ -223,52 +213,44 @@ class DashboardController extends Controller
                 ->get()->count();
 
             $finalarray[] = [
-                "date" => $date,
+                "date"          => $date,
                 "EmployeeCount" => $EmployeesCount,
-                "VisitorCount" => $VisitorsCount,
-                "TenantCount" =>  $TenantsCount,
-                "DeniedCount" =>  $DeniedCount
+                "VisitorCount"  => $VisitorsCount,
+                "TenantCount"   => $TenantsCount,
+                "DeniedCount"   => $DeniedCount,
             ];
         }
 
-
-        return  $finalarray;
+        return $finalarray;
     }
     public function dashboardMaleFemaleCount(Request $request)
     {
-
 
         $kids_count = Tanent::where('company_id', $request->company_id)
             ->where('age', "<", 18)
             ->get()->count();
 
-
         $Tanents = Tanent::where('company_id', $request->company_id)
             ->where('age', ">=", 18);
 
-
-        $male_count = $Tanents->clone()->where("gender", "Male")->get()->count();
+        $male_count   = $Tanents->clone()->where("gender", "Male")->get()->count();
         $female_count = $Tanents->clone()->where("gender", "Female")->get()->count();
 
-
-
-
-        $finalarray  = [
-            "male" => $male_count,
+        $finalarray = [
+            "male"   => $male_count,
             "female" => $female_count,
-            "kids" => $kids_count,
+            "kids"   => $kids_count,
         ];
 
-        return  $finalarray;
+        return $finalarray;
     }
     public function dashboardGetAssetsStatistics(Request $request)
     {
 
-
         $expiryDate = date("Y-m-d", strtotime("+30 days"));
 
         $contract_expiring_count = Tanent::where('company_id', $request->company_id)
-            ->whereDate("end_date", "<=",  $expiryDate)
+            ->whereDate("end_date", "<=", $expiryDate)
             ->where("checkout_date", null)
             ->get()->count();
 
@@ -279,39 +261,34 @@ class DashboardController extends Controller
         //     ->where("checkout_date", "!=", null)
         //     ->get()->count();
 
-        $occupied_count =  Room::where('company_id', $request->company_id)->where("tenant_id", ">", 0)->get()->count();
+        $occupied_count = Room::where('company_id', $request->company_id)->where("tenant_id", ">", 0)->get()->count();
 
         $offline_devices = Device::where('company_id', $request->company_id)->where('status_id', 2)->get()->count();
 
         $car_parking_count = Parking::get()->count();
-        $allocated_count = Parking::whereHas("vehicle.tanent")->count();
+        $allocated_count   = Parking::whereHas("vehicle.tanent")->count();
 
-
-        $finalarray  = [
-            "flats_count" => $flats_count,
-            "occupied_count" => $occupied_count,
-            "car_parking_count" => $car_parking_count,
-            "allocated_count" => $allocated_count,
-            "offline_devices" =>  $offline_devices,
+        $finalarray = [
+            "flats_count"             => $flats_count,
+            "occupied_count"          => $occupied_count,
+            "car_parking_count"       => $car_parking_count,
+            "allocated_count"         => $allocated_count,
+            "offline_devices"         => $offline_devices,
             "contract_expiring_count" => $contract_expiring_count,
-
 
         ];
 
-        return  $finalarray;
+        return $finalarray;
     }
     public function dashboardGetCountsTodayStatistics(Request $request)
     {
 
-
-
-
-        $finalarray = [];
+        $finalarray  = [];
         $dateStrings = [];
         if ($request->has("date_from") && $request->has("date_to")) {
-            // Usage example:
+                                                            // Usage example:
             $startDate = new DateTime($request->date_from); // Replace with your start date
-            $endDate = new DateTime($request->date_to);   // Replace with your end date
+            $endDate   = new DateTime($request->date_to);   // Replace with your end date
 
             $dateStrings = $this->createDateRangeArray($startDate, $endDate);
         } else {
@@ -320,16 +297,11 @@ class DashboardController extends Controller
             }
         }
 
-
         foreach ($dateStrings as $key => $value) {
 
-
-
-            $date = $value; //date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
+            $date               = $value; //date('Y-m-d', strtotime(date('Y-m-d') . '-' . $i . ' days'));
             $AttendanceLogModel = AttendanceLog::where('company_id', $request->company_id)
-                ->whereDate("LogTime",  $date)->distinct("UserID");
-
-
+                ->whereDate("LogTime", $date)->distinct("UserID");
 
             $EmployeesCount = $AttendanceLogModel->clone()
                 ->where("status", "Allowed")
@@ -376,7 +348,6 @@ class DashboardController extends Controller
                 })
                 ->get()->count();
 
-
             $TenantsCount = $AttendanceLogModel->clone()
                 ->where("status", "Allowed")
                 ->whereIn('UserID', function ($query) use ($request) {
@@ -391,21 +362,20 @@ class DashboardController extends Controller
                 ->where("status", "Access Denied")
                 ->get()->count();
 
-            $finalarray  = [
-                "date" => $date,
-                "EmployeeCount" => $EmployeesCount,
-                "VisitorCount" => $VisitorsCount,
-                "TenantCount" =>  $TenantsCount,
-                "DeniedCount" =>  $DeniedCount,
-                "DeliverysCount" =>  $DeliverysCount,
-                "ContractorsCount" =>  $ContractorsCount
+            $finalarray = [
+                "date"             => $date,
+                "EmployeeCount"    => $EmployeesCount,
+                "VisitorCount"     => $VisitorsCount,
+                "TenantCount"      => $TenantsCount,
+                "DeniedCount"      => $DeniedCount,
+                "DeliverysCount"   => $DeliverysCount,
+                "ContractorsCount" => $ContractorsCount,
             ];
         }
 
-
-        return  $finalarray;
+        return $finalarray;
     }
-    function createDateRangeArray($startDate, $endDate)
+    public function createDateRangeArray($startDate, $endDate)
     {
         $dateStrings = [];
         $currentDate = $startDate;
@@ -418,108 +388,47 @@ class DashboardController extends Controller
         return $dateStrings;
     }
 
-
-
-
     public function dashboardGetCountsTodayHourInOut(Request $request)
     {
+        $date      = $request->date_to;
+        $companyId = $request->company_id;
 
-        $finalarray = [];
+        // Fetch all logs for the company and date in one query
+        $logs = AttendanceLog::where('company_id', $companyId)
+            ->whereDate('LogTime', $date)
+            ->when($request->filled('DeviceID'), function ($query) use ($request) {
+                $query->where('DeviceID', $request->DeviceID);
+            })
+            ->get();
+
+        // Fetch IDs once
+        $employeeIds     = DB::table('employees')->where('company_id', $companyId)->pluck('system_user_id')->toArray();
+        $visitorsGrouped = DB::table('visitors')->where('company_id', $companyId)->get()->groupBy('visitor_type');
+        $visitor = $visitorsGrouped['visitor'] ?? false;
+        $contractor = $visitorsGrouped['contractor'] ?? false;
+        $delivery = $visitorsGrouped['delivery'] ?? false;
+        $tenantIds       = DB::table('tanents')->where('company_id', $companyId)->pluck('system_user_id')->toArray();
+
+        $finalArray = [];
 
         for ($i = 0; $i < 24; $i++) {
-
-            $j = $i;
-
-            $j = $i <= 9 ? "0" . $i : $i;
-
-            $date = $request->date_to; // date('Y-m-d', $request->date_to);
-
-            $AttendanceLogModel = AttendanceLog::where('company_id', $request->company_id)
-                ->where('LogTime', '>=', $date . ' ' . $j . ':00:00')
-                ->where('LogTime', '<', $date  . ' ' . $j . ':59:59');
-
-            $AttendanceLogModel->when(request()->filled("device_id"), function ($query) use ($request) {
-                $query->where('DeviceID', $request->DeviceID);
+            $hourLogs = $logs->filter(function ($log) use ($i) {
+                return (int) date('H', strtotime($log->LogTime)) === $i;
             });
 
-            $EmployeesCount = $AttendanceLogModel->clone()
-                ->where("status", "Allowed")
-                ->whereIn('UserID', function ($query) use ($request) {
-                    $query->select('system_user_id')
-                        ->where('company_id', $request->company_id)
-                        ->from('employees');
-                })
-                ->distinct("UserID")
-                ->get()->count();
-
-            $VisitorsCount = $AttendanceLogModel->clone()
-                ->where("status", "Allowed")
-
-                ->whereIn('UserID', function ($query) use ($request) {
-                    $query->select('system_user_id')
-                        ->where('company_id', $request->company_id)
-                        ->where("visitor_type", "visitor")
-                        ->from('visitors');
-                })
-                ->get()->count();
-
-            $ContractorsCount = $AttendanceLogModel->clone()
-                ->where("status", "Allowed")
-
-                ->whereIn('UserID', function ($query) use ($request) {
-                    $query->select('system_user_id')
-                        ->where('company_id', $request->company_id)
-                        ->where("visitor_type", "contractor")
-                        ->from('visitors');
-                })
-                ->get()->count();
-            $DeliveryCount = $AttendanceLogModel->clone()
-                ->where("status", "Allowed")
-
-                ->whereIn('UserID', function ($query) use ($request) {
-                    $query->select('system_user_id')
-                        ->where('company_id', $request->company_id)
-                        ->where("visitor_type", "delivery")
-                        ->from('visitors');
-                })
-                ->get()->count();
-
-
-
-
-            $TenantsCount = $AttendanceLogModel->clone()
-                ->where("status", "Allowed")
-                ->whereIn('UserID', function ($query) use ($request) {
-                    $query->select('system_user_id')
-                        ->where('company_id', $request->company_id)
-                        ->from('tanents');
-                })
-                ->get()->count();
-
-
-
-            $DeniedCount = $AttendanceLogModel->clone()
-                ->where("status", "Access Denied")
-                ->get()->count();
-
-
-
-
-            $finalarray[] = [
-                "date" => $date,
-                "hour" => $i,
-                "EmployeeCount" => $EmployeesCount,
-                "VisitorCount" => $VisitorsCount,
-                "TenantCount" =>  $TenantsCount,
-                "DeniedCount" =>  $DeniedCount,
-                "DeliveryCount" =>  $DeliveryCount,
-                "ContractorsCount" =>  $ContractorsCount
-
+            $finalArray[] = [
+                'date'             => $date,
+                'hour'             => $i,
+                'EmployeeCount'    => $hourLogs->whereIn('UserID', $employeeIds)->where('status', 'Allowed')->count(),
+                'VisitorCount'     => $hourLogs->whereIn('UserID', ($visitor) && $visitor->pluck('system_user_id')->toArray() ?? [])->where('status', 'Allowed')->count(),
+                'ContractorsCount' => $hourLogs->whereIn('UserID', ($contractor) && $contractor->pluck('system_user_id')->toArray() ?? [])->where('status', 'Allowed')->count(),
+                'DeliveryCount'    => $hourLogs->whereIn('UserID', ($delivery) && $delivery->pluck('system_user_id')->toArray() ?? [])->where('status', 'Allowed')->count(),
+                'TenantCount'      => $hourLogs->whereIn('UserID', $tenantIds)->where('status', 'Allowed')->count(),
+                'DeniedCount'      => $hourLogs->where('status', 'Access Denied')->count(),
             ];
         }
 
-
-        return  $finalarray;
+        return $finalArray;
     }
 
     public function dashboardGetVisitorCountsTodayHourInOut(Request $request)
@@ -533,30 +442,29 @@ class DashboardController extends Controller
 
             $j = $i <= 9 ? "0" . $i : $i;
 
-            $date = date('Y-m-d'); //, strtotime(date('Y-m-d') . '-' . $i . ' days'));
+            $date  = date('Y-m-d'); //, strtotime(date('Y-m-d') . '-' . $i . ' days'));
             $model = AttendanceLog::with(["visitor"])->where('company_id', $request->company_id)
 
                 ->where('LogTime', '>=', $date . ' ' . $j . ':00:00')
-                ->where('LogTime', '<', $date  . ' ' . $j . ':59:59')
+                ->where('LogTime', '<', $date . ' ' . $j . ':59:59')
                 ->get();
 
             $finalarray[] = [
-                "date" => $date,
-                "hour" => $i,
+                "date"  => $date,
+                "hour"  => $i,
                 "count" => $model->count(),
 
             ];
         }
 
-
-        return  $finalarray;
+        return $finalarray;
     }
     public function dashboardAnnouncementList(Request $request)
     {
 
         return (new Announcement())->with(['category', 'user.company', 'branch'])->withOut("employees")
-            // ->where('start_date', '<=', date("Y-m-d"))
-            // ->where('end_date', '>=', date("Y-m-d"))
+        // ->where('start_date', '<=', date("Y-m-d"))
+        // ->where('end_date', '>=', date("Y-m-d"))
             ->when($request->filled("branch_id"), function ($q) use ($request) {
                 $q->where("branch_id", $request->branch_id);
             })
@@ -571,44 +479,41 @@ class DashboardController extends Controller
     public function dashboardGetCountsTodayMultiGeneral(Request $request)
     {
 
-        $finalarray = []; {
-
-
+        $finalarray = [];{
 
             $model = Attendance::with("employee")->where('company_id', $request->company_id)
                 ->whereIn('status', ['P', 'A', 'M', 'O', 'H', 'L', 'V'])
                 ->whereDate('date', date('Y-m-d'))
                 ->when($request->filled("branch_id"), function ($q) use ($request) {
-                    $q->whereHas("employee", fn ($q) => $q->where("branch_id", $request->branch_id));
+                    $q->whereHas("employee", fn($q) => $q->where("branch_id", $request->branch_id));
                 })
                 ->select('status')
                 ->get();
 
             $finalarray['multi'] = [
-                "date" => date('Y-m-d'),
-                "presentCount" => $model->where('status', 'P')->where('shift_type_id', 2)->count(),
-                "absentCount" => $model->where('status', 'A')->where('shift_type_id', 2)->count(),
-                "missingCount" => $model->where('status', 'M')->where('shift_type_id', 2)->count(),
-                "offCount" => $model->where('status', 'O')->where('shift_type_id', 2)->count(),
-                "holidayCount" => $model->where('status', 'H')->where('shift_type_id', 2)->count(),
-                "leaveCount" => $model->where('status', 'L')->where('shift_type_id', 2)->count(),
+                "date"           => date('Y-m-d'),
+                "presentCount"   => $model->where('status', 'P')->where('shift_type_id', 2)->count(),
+                "absentCount"    => $model->where('status', 'A')->where('shift_type_id', 2)->count(),
+                "missingCount"   => $model->where('status', 'M')->where('shift_type_id', 2)->count(),
+                "offCount"       => $model->where('status', 'O')->where('shift_type_id', 2)->count(),
+                "holidayCount"   => $model->where('status', 'H')->where('shift_type_id', 2)->count(),
+                "leaveCount"     => $model->where('status', 'L')->where('shift_type_id', 2)->count(),
                 "vaccationCount" => $model->where('status', 'V')->where('shift_type_id', 2)->count(),
             ];
 
             $finalarray['general'] = [
-                "date" => date('Y-m-d'),
-                "presentCount" => $model->where('status', 'P')->where('shift_type_id', '!=', 2)->count(),
-                "absentCount" => $model->where('status', 'A')->where('shift_type_id', '!=', 2)->count(),
-                "missingCount" => $model->where('status', 'M')->where('shift_type_id', '!=', 2)->count(),
-                "offCount" => $model->where('status', 'O')->where('shift_type_id', '!=', 2)->count(),
-                "holidayCount" => $model->where('status', 'H')->where('shift_type_id', '!=', 2)->count(),
-                "leaveCount" => $model->where('status', 'L')->where('shift_type_id', '!=', 2)->count(),
+                "date"           => date('Y-m-d'),
+                "presentCount"   => $model->where('status', 'P')->where('shift_type_id', '!=', 2)->count(),
+                "absentCount"    => $model->where('status', 'A')->where('shift_type_id', '!=', 2)->count(),
+                "missingCount"   => $model->where('status', 'M')->where('shift_type_id', '!=', 2)->count(),
+                "offCount"       => $model->where('status', 'O')->where('shift_type_id', '!=', 2)->count(),
+                "holidayCount"   => $model->where('status', 'H')->where('shift_type_id', '!=', 2)->count(),
+                "leaveCount"     => $model->where('status', 'L')->where('shift_type_id', '!=', 2)->count(),
                 "vaccationCount" => $model->where('status', 'V')->where('shift_type_id', '!=', 2)->count(),
             ];
         }
 
-
-        return  $finalarray;
+        return $finalarray;
     }
 
     /**
@@ -622,10 +527,10 @@ class DashboardController extends Controller
         Theme::where("company_id", $request->company_id)->where("page", $request->page)->where("type", $request->type)->delete();
 
         return Theme::create([
-            "page" => $request->page,
-            "type" => $request->type,
-            "style" => $request->style,
-            "company_id" => $request->company_id
+            "page"       => $request->page,
+            "type"       => $request->type,
+            "style"      => $request->style,
+            "company_id" => $request->company_id,
         ]);
     }
 
